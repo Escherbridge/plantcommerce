@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { publicProcedure, protectedProcedure, adminProcedure, router } from './trpc';
-import { eq, desc, asc, like, and, or } from 'drizzle-orm';
+import { eq, desc, asc, like, and, or, isNotNull } from 'drizzle-orm';
 import { db } from '../db';
 import * as table from '../db/schema';
 
@@ -35,55 +35,46 @@ export const productsRouter = router({
 		.query(async ({ input }) => {
 			const { categoryId, search, featured, limit, offset, sortBy, sortOrder } = input;
 
-			let query = db
-				.select({
-					product: table.product,
-					category: {
-						id: table.productCategory.id,
-						name: table.productCategory.name,
-						slug: table.productCategory.slug
-					}
-				})
-				.from(table.product)
-				.innerJoin(table.productCategory, eq(table.product.categoryId, table.productCategory.id))
-				.where(
-					and(
-						eq(table.product.isActive, true),
-						eq(table.productCategory.isActive, true)
-					)
-				);
+		// Build all conditions
+		const conditions = [
+			eq(table.product.isActive, true),
+			eq(table.productCategory.isActive, true)
+		];
 
-			// Apply filters
-			const conditions = [eq(table.product.isActive, true)];
+		if (categoryId) {
+			conditions.push(eq(table.product.categoryId, categoryId));
+		}
 
-			if (categoryId) {
-				conditions.push(eq(table.product.categoryId, categoryId));
-			}
+		if (search) {
+			conditions.push(
+				like(table.product.name, `%${search}%`)
+			);
+		}
 
-			if (search) {
-				conditions.push(
-					or(
-						like(table.product.name, `%${search}%`),
-						like(table.product.description, `%${search}%`)
-					)
-				);
-			}
+		if (featured !== undefined) {
+			conditions.push(eq(table.product.isFeatured, featured));
+		}
 
-			if (featured !== undefined) {
-				conditions.push(eq(table.product.isFeatured, featured));
-			}
+		// Apply sorting
+		const sortColumn = sortBy === 'name' ? table.product.name : 
+						 sortBy === 'price' ? table.product.price : 
+						 table.product.createdAt;
 
-			query = query.where(and(...conditions));
-
-			// Apply sorting
-			const sortColumn = sortBy === 'name' ? table.product.name : 
-							 sortBy === 'price' ? table.product.price : 
-							 table.product.createdAt;
-
-			query = query.orderBy(sortOrder === 'asc' ? asc(sortColumn) : desc(sortColumn));
-
-			// Apply pagination
-			query = query.limit(limit).offset(offset);
+		const query = db
+			.select({
+				product: table.product,
+				category: {
+					id: table.productCategory.id,
+					name: table.productCategory.name,
+					slug: table.productCategory.slug
+				}
+			})
+			.from(table.product)
+			.innerJoin(table.productCategory, eq(table.product.categoryId, table.productCategory.id))
+			.where(and(...conditions))
+			.orderBy(sortOrder === 'asc' ? asc(sortColumn) : desc(sortColumn))
+			.limit(limit)
+			.offset(offset);
 
 			return await query;
 		}),
@@ -219,9 +210,11 @@ export const productsRouter = router({
 			};
 
 			// Remove undefined values
-			Object.keys(finalUpdateData).forEach(key => 
-				finalUpdateData[key] === undefined && delete finalUpdateData[key]
-			);
+			Object.keys(finalUpdateData).forEach(key => {
+				if (finalUpdateData[key as keyof typeof finalUpdateData] === undefined) {
+					delete finalUpdateData[key as keyof typeof finalUpdateData];
+				}
+			});
 
 			try {
 				const [product] = await db
@@ -306,6 +299,113 @@ export const productsRouter = router({
 	}),
 
 	/**
+	 * Add product image (admin only)
+	 */
+	addProductImage: adminProcedure
+		.input(
+			z.object({
+				productId: z.number(),
+				url: z.string().url(),
+				altText: z.string().optional(),
+				isMain: z.boolean().default(false),
+				sortOrder: z.number().optional()
+			})
+		)
+		.mutation(async ({ input }) => {
+			try {
+				// Use the ProductService to add the image
+				const ProductService = (await import('../services/product')).default;
+				const image = await ProductService.addProductImage(
+					input.productId,
+					input.url,
+					input.altText,
+					input.isMain,
+					input.sortOrder
+				);
+				return image;
+			} catch (error) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: error instanceof Error ? error.message : 'Failed to add product image'
+				});
+			}
+		}),
+
+	/**
+	 * Update product image (admin only)
+	 */
+	updateProductImage: adminProcedure
+		.input(
+			z.object({
+				imageId: z.number(),
+				url: z.string().url().optional(),
+				altText: z.string().optional(),
+				isMain: z.boolean().optional(),
+				sortOrder: z.number().optional()
+			})
+		)
+		.mutation(async ({ input }) => {
+			try {
+				const { imageId, ...updates } = input;
+				const ProductService = (await import('../services/product')).default;
+				const image = await ProductService.updateProductImage(imageId, updates);
+				return image;
+			} catch (error) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: error instanceof Error ? error.message : 'Failed to update product image'
+				});
+			}
+		}),
+
+	/**
+	 * Delete product image (admin only)
+	 */
+	deleteProductImage: adminProcedure
+		.input(z.object({ imageId: z.number() }))
+		.mutation(async ({ input }) => {
+			try {
+				const ProductService = (await import('../services/product')).default;
+				await ProductService.deleteProductImage(input.imageId);
+				return { success: true };
+			} catch (error) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: error instanceof Error ? error.message : 'Failed to delete product image'
+				});
+			}
+		}),
+
+	/**
+	 * Get product images (admin only)
+	 */
+	getProductImages: adminProcedure
+		.input(z.object({ productId: z.number() }))
+		.query(async ({ input }) => {
+			try {
+				const images = await db
+					.select()
+					.from(table.productImage)
+					.where(eq(table.productImage.productId, input.productId))
+					.orderBy(asc(table.productImage.sortOrder));
+
+				return images.map(img => ({
+					id: img.id,
+					url: img.url,
+					altText: img.altText,
+					sortOrder: img.sortOrder,
+					isMain: img.isMain,
+					createdAt: img.createdAt
+				}));
+			} catch (error) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Failed to retrieve product images'
+				});
+			}
+		}),
+
+	/**
 	 * Get all products for admin management
 	 */
 	getAllProducts: adminProcedure
@@ -320,17 +420,6 @@ export const productsRouter = router({
 		)
 		.query(async ({ input }) => {
 			const { limit, offset, search, categoryId, isActive } = input;
-
-			let query = db
-				.select({
-					product: table.product,
-					category: {
-						id: table.productCategory.id,
-						name: table.productCategory.name
-					}
-				})
-				.from(table.product)
-				.innerJoin(table.productCategory, eq(table.product.categoryId, table.productCategory.id));
 
 			// Apply filters
 			const conditions = [];
@@ -352,16 +441,27 @@ export const productsRouter = router({
 				conditions.push(eq(table.product.isActive, isActive));
 			}
 
-			if (conditions.length > 0) {
-				query = query.where(and(...conditions));
-			}
+			const baseQuery = db
+				.select({
+					product: table.product,
+					category: {
+						id: table.productCategory.id,
+						name: table.productCategory.name
+					}
+				})
+				.from(table.product)
+				.innerJoin(table.productCategory, eq(table.product.categoryId, table.productCategory.id));
 
-			query = query
-				.orderBy(desc(table.product.updatedAt))
-				.limit(limit)
-				.offset(offset);
-
-			return await query;
+			return conditions.length > 0
+				? await baseQuery
+					.where(and(...conditions))
+					.orderBy(desc(table.product.updatedAt))
+					.limit(limit)
+					.offset(offset)
+				: await baseQuery
+					.orderBy(desc(table.product.updatedAt))
+					.limit(limit)
+					.offset(offset);
 		})
 });
 

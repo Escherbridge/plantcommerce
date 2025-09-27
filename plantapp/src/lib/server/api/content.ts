@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { publicProcedure, protectedProcedure, adminProcedure, router } from './trpc';
-import { eq, desc, asc, like, and, or } from 'drizzle-orm';
+import { eq, desc, asc, like, and, or, isNotNull } from 'drizzle-orm';
 import { db } from '../db';
 import * as table from '../db/schema';
 
@@ -21,7 +21,20 @@ export const contentRouter = router({
 		.query(async ({ input }) => {
 			const { type, limit, offset, search } = input;
 
-			let query = db
+			// Apply filters
+			const conditions = [eq(table.contentPage.status, 'published')];
+
+			if (type) {
+				conditions.push(eq(table.contentPage.type, type));
+			}
+
+		if (search) {
+			conditions.push(
+				like(table.contentPage.title, `%${search}%`)
+			);
+		}
+
+			return await db
 				.select({
 					id: table.contentPage.id,
 					title: table.contentPage.title,
@@ -38,32 +51,10 @@ export const contentRouter = router({
 				})
 				.from(table.contentPage)
 				.innerJoin(table.user, eq(table.contentPage.authorId, table.user.id))
-				.where(eq(table.contentPage.status, 'published'));
-
-			// Apply filters
-			const conditions = [eq(table.contentPage.status, 'published')];
-
-			if (type) {
-				conditions.push(eq(table.contentPage.type, type));
-			}
-
-			if (search) {
-				conditions.push(
-					or(
-						like(table.contentPage.title, `%${search}%`),
-						like(table.contentPage.excerpt, `%${search}%`)
-					)
-				);
-			}
-
-			query = query.where(and(...conditions));
-
-			query = query
+				.where(and(...conditions))
 				.orderBy(desc(table.contentPage.publishedAt))
 				.limit(limit)
 				.offset(offset);
-
-			return await query;
 		}),
 
 	/**
@@ -208,9 +199,11 @@ export const contentRouter = router({
 			};
 
 			// Remove undefined values
-			Object.keys(finalUpdateData).forEach(key => 
-				finalUpdateData[key] === undefined && delete finalUpdateData[key]
-			);
+			Object.keys(finalUpdateData).forEach(key => {
+				if (finalUpdateData[key as keyof typeof finalUpdateData] === undefined) {
+					delete finalUpdateData[key as keyof typeof finalUpdateData];
+				}
+			});
 
 			try {
 				const [updatedPage] = await db
@@ -278,11 +271,6 @@ export const contentRouter = router({
 		.query(async ({ ctx, input }) => {
 			const { status, type, limit, offset } = input;
 
-			let query = db
-				.select()
-				.from(table.contentPage)
-				.where(eq(table.contentPage.authorId, ctx.user.id));
-
 			// Apply filters
 			const conditions = [eq(table.contentPage.authorId, ctx.user.id)];
 
@@ -294,14 +282,13 @@ export const contentRouter = router({
 				conditions.push(eq(table.contentPage.type, type));
 			}
 
-			query = query.where(and(...conditions));
-
-			query = query
+			return await db
+				.select()
+				.from(table.contentPage)
+				.where(and(...conditions))
 				.orderBy(desc(table.contentPage.updatedAt))
 				.limit(limit)
 				.offset(offset);
-
-			return await query;
 		}),
 
 	/**
@@ -321,18 +308,6 @@ export const contentRouter = router({
 		.query(async ({ input }) => {
 			const { status, type, authorId, limit, offset, search } = input;
 
-			let query = db
-				.select({
-					page: table.contentPage,
-					author: {
-						username: table.user.username,
-						firstName: table.user.firstName,
-						lastName: table.user.lastName
-					}
-				})
-				.from(table.contentPage)
-				.innerJoin(table.user, eq(table.contentPage.authorId, table.user.id));
-
 			// Apply filters
 			const conditions = [];
 
@@ -348,25 +323,34 @@ export const contentRouter = router({
 				conditions.push(eq(table.contentPage.authorId, authorId));
 			}
 
-			if (search) {
-				conditions.push(
-					or(
-						like(table.contentPage.title, `%${search}%`),
-						like(table.contentPage.excerpt, `%${search}%`)
-					)
-				);
-			}
+		if (search) {
+			conditions.push(
+				like(table.contentPage.title, `%${search}%`)
+			);
+		}
 
-			if (conditions.length > 0) {
-				query = query.where(and(...conditions));
-			}
+			const baseQuery = db
+				.select({
+					page: table.contentPage,
+					author: {
+						username: table.user.username,
+						firstName: table.user.firstName,
+						lastName: table.user.lastName
+					}
+				})
+				.from(table.contentPage)
+				.innerJoin(table.user, eq(table.contentPage.authorId, table.user.id));
 
-			query = query
-				.orderBy(desc(table.contentPage.updatedAt))
-				.limit(limit)
-				.offset(offset);
-
-			return await query;
+			return conditions.length > 0
+				? await baseQuery
+					.where(and(...conditions))
+					.orderBy(desc(table.contentPage.updatedAt))
+					.limit(limit)
+					.offset(offset)
+				: await baseQuery
+					.orderBy(desc(table.contentPage.updatedAt))
+					.limit(limit)
+					.offset(offset);
 		})
 });
 

@@ -1,7 +1,6 @@
 import { eq, and, desc, sum, count } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
-import { generateId } from '@lucia-auth/adapter-drizzle';
 import { encodeBase64url } from '@oslojs/encoding';
 
 export interface AffiliateStats {
@@ -135,10 +134,14 @@ export class AffiliateService {
 	 * Track a click on an affiliate link
 	 */
 	static async trackClick(linkCode: string, clickData: AffiliateClickData): Promise<boolean> {
-		// Get affiliate link
+		// Get affiliate link with affiliate info
 		const linkResult = await db
-			.select()
+			.select({
+				link: table.affiliateLink,
+				affiliate: table.affiliate
+			})
 			.from(table.affiliateLink)
+			.innerJoin(table.affiliate, eq(table.affiliateLink.affiliateId, table.affiliate.id))
 			.where(
 				and(
 					eq(table.affiliateLink.linkCode, linkCode),
@@ -151,7 +154,7 @@ export class AffiliateService {
 			return false;
 		}
 
-		const link = linkResult[0];
+		const { link, affiliate } = linkResult[0];
 
 		// Record the click
 		const clickRecord: typeof table.affiliateClick.$inferInsert = {
@@ -178,7 +181,7 @@ export class AffiliateService {
 			db
 				.update(table.affiliate)
 				.set({ 
-					totalClicks: link.affiliate?.totalClicks ? link.affiliate.totalClicks + 1 : 1,
+					totalClicks: affiliate.totalClicks + 1,
 					updatedAt: new Date()
 				})
 				.where(eq(table.affiliate.id, link.affiliateId))

@@ -21,12 +21,12 @@ export async function createContext(event: RequestEvent): Promise<Context> {
 		};
 	}
 
-	const { user, session } = await validateSessionToken(sessionToken);
+	const result = await validateSessionToken(sessionToken);
 	
 	return {
 		event,
-		user,
-		session
+		user: result.user,
+		session: result.session
 	};
 }
 
@@ -64,6 +64,54 @@ export const adminProcedure = t.procedure.use(async ({ ctx, next }) => {
 		throw new TRPCError({
 			code: 'FORBIDDEN',
 			message: 'You must be an admin to access this resource'
+		});
+	}
+
+	return next({
+		ctx: {
+			...ctx,
+			user: ctx.user,
+			session: ctx.session
+		}
+	});
+});
+
+export const affiliateProcedure = t.procedure.use(async ({ ctx, next }) => {
+	if (!ctx.user || !ctx.session) {
+		throw new TRPCError({
+			code: 'UNAUTHORIZED',
+			message: 'You must be logged in to access this resource'
+		});
+	}
+
+	if (ctx.user.role !== 'affiliate' && ctx.user.role !== 'admin') {
+		throw new TRPCError({
+			code: 'FORBIDDEN',
+			message: 'You must be an affiliate to access this resource'
+		});
+	}
+
+	return next({
+		ctx: {
+			...ctx,
+			user: ctx.user,
+			session: ctx.session
+		}
+	});
+});
+
+export const customerProcedure = t.procedure.use(async ({ ctx, next }) => {
+	if (!ctx.user || !ctx.session) {
+		throw new TRPCError({
+			code: 'UNAUTHORIZED',
+			message: 'You must be logged in to access this resource'
+		});
+	}
+
+	if (!['customer', 'affiliate', 'admin'].includes(ctx.user.role)) {
+		throw new TRPCError({
+			code: 'FORBIDDEN',
+			message: 'Access denied'
 		});
 	}
 
