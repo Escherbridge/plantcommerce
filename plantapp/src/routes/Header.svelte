@@ -1,129 +1,78 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import logo from '$lib/images/svelte-logo.svg';
-	import github from '$lib/images/github.svg';
+	import { page } from '$app/stores';
+	
+	// Theme switcher functionality
+	let currentTheme = 'light';
+	
+	function toggleTheme() {
+		const themes = ['light', 'dark', 'cupcake', 'forest', 'luxury', 'business'];
+		const currentIndex = themes.indexOf(currentTheme);
+		currentTheme = themes[(currentIndex + 1) % themes.length];
+		document.documentElement.setAttribute('data-theme', currentTheme);
+	}
 </script>
 
-<header>
-	<div class="corner">
-		<a href="https://svelte.dev/docs/kit">
-			<img src={logo} alt="SvelteKit" />
+<header class="navbar bg-base-100 shadow-lg">
+	<div class="navbar-start">
+		<!-- Mobile menu button -->
+		<label for="drawer-toggle" class="btn btn-square btn-ghost lg:hidden">
+			<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+			</svg>
+		</label>
+		
+		<!-- Logo/Brand -->
+		<a href="/" class="btn btn-ghost text-xl">
+			🌱 PlantCommerce
 		</a>
 	</div>
-
-	<nav>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
-		</svg>
-		<ul>
-			<li aria-current={page.url.pathname === '/' ? 'page' : undefined}>
-				<a href="/">Home</a>
-			</li>
-			<li aria-current={page.url.pathname === '/about' ? 'page' : undefined}>
-				<a href="/about">About</a>
-			</li>
-			<li aria-current={page.url.pathname.startsWith('/sverdle') ? 'page' : undefined}>
-				<a href="/sverdle">Sverdle</a>
-			</li>
+	
+	<!-- Desktop navigation -->
+	<div class="navbar-center hidden lg:flex">
+		<ul class="menu menu-horizontal px-1">
+			<li><a href="/" class="btn btn-ghost" class:active={$page.url.pathname === '/'}>Home</a></li>
+			<li><a href="/about" class="btn btn-ghost" class:active={$page.url.pathname === '/about'}>About</a></li>
+			<li><a href="/demo" class="btn btn-ghost" class:active={$page.url.pathname.startsWith('/demo')}>Demo</a></li>
 		</ul>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
-		</svg>
-	</nav>
-
-	<div class="corner">
-		<a href="https://github.com/sveltejs/kit">
-			<img src={github} alt="GitHub" />
-		</a>
+	</div>
+	
+	<div class="navbar-end">
+		<!-- Theme selector -->
+		<div class="dropdown dropdown-end">
+			<button class="btn btn-ghost" aria-label="Theme selector">
+				🎨 Theme
+			</button>
+			<ul class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+				<li><button on:click={() => { currentTheme = 'light'; document.documentElement.setAttribute('data-theme', 'light'); }}>Light</button></li>
+				<li><button on:click={() => { currentTheme = 'dark'; document.documentElement.setAttribute('data-theme', 'dark'); }}>Dark</button></li>
+				<li><button on:click={() => { currentTheme = 'cupcake'; document.documentElement.setAttribute('data-theme', 'cupcake'); }}>Cupcake</button></li>
+				<li><button on:click={() => { currentTheme = 'forest'; document.documentElement.setAttribute('data-theme', 'forest'); }}>Forest</button></li>
+				<li><button on:click={() => { currentTheme = 'luxury'; document.documentElement.setAttribute('data-theme', 'luxury'); }}>Luxury</button></li>
+				<li><button on:click={() => { currentTheme = 'business'; document.documentElement.setAttribute('data-theme', 'business'); }}>Business</button></li>
+			</ul>
+		</div>
+		
+		<!-- User menu -->
+		<div class="dropdown dropdown-end">
+			<button class="btn btn-ghost btn-circle avatar" aria-label="User menu">
+				<div class="w-10 rounded-full">
+					<div class="bg-neutral-focus text-neutral-content rounded-full w-10 h-10 flex items-center justify-center">
+						👤
+					</div>
+				</div>
+			</button>
+			<ul class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+				<li><a href="/profile">Profile</a></li>
+				<li><a href="/settings">Settings</a></li>
+				<li><hr class="my-2"/></li>
+				<li><a href="/demo/lucia/login">Login</a></li>
+			</ul>
+		</div>
 	</div>
 </header>
 
 <style>
-	header {
-		display: flex;
-		justify-content: space-between;
-	}
-
-	.corner {
-		width: 3em;
-		height: 3em;
-	}
-
-	.corner a {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 100%;
-		height: 100%;
-	}
-
-	.corner img {
-		width: 2em;
-		height: 2em;
-		object-fit: contain;
-	}
-
-	nav {
-		display: flex;
-		justify-content: center;
-		--background: rgba(255, 255, 255, 0.7);
-	}
-
-	svg {
-		width: 2em;
-		height: 3em;
-		display: block;
-	}
-
-	path {
-		fill: var(--background);
-	}
-
-	ul {
-		position: relative;
-		padding: 0;
-		margin: 0;
-		height: 3em;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		list-style: none;
-		background: var(--background);
-		background-size: contain;
-	}
-
-	li {
-		position: relative;
-		height: 100%;
-	}
-
-	li[aria-current='page']::before {
-		--size: 6px;
-		content: '';
-		width: 0;
-		height: 0;
-		position: absolute;
-		top: 0;
-		left: calc(50% - var(--size));
-		border: var(--size) solid transparent;
-		border-top: var(--size) solid var(--color-theme-1);
-	}
-
-	nav a {
-		display: flex;
-		height: 100%;
-		align-items: center;
-		padding: 0 0.5rem;
-		color: var(--color-text);
-		font-weight: 700;
-		font-size: 0.8rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		text-decoration: none;
-		transition: color 0.2s linear;
-	}
-
-	a:hover {
-		color: var(--color-theme-1);
+	.active {
+		@apply bg-primary text-primary-content;
 	}
 </style>
