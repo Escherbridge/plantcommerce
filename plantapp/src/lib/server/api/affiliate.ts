@@ -1,11 +1,8 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { publicProcedure, protectedProcedure, router } from './trpc';
-import { and } from 'drizzle-orm';
 import AffiliateService from '../services/affiliate';
-import { eq } from 'drizzle-orm';
-import { db } from '../db';
-import * as table from '../db/schema';
+import { UserService } from '../services/user';
 
 export const affiliateRouter = router({
 	/**
@@ -23,10 +20,7 @@ export const affiliateRouter = router({
 				
 				// Update user role to affiliate if not already
 				if (ctx.user.role !== 'affiliate' && ctx.user.role !== 'admin') {
-					await db
-						.update(table.user)
-						.set({ role: 'affiliate' })
-						.where(eq(table.user.id, ctx.user.id));
+					await UserService.updateUserRole(ctx.user.id, 'affiliate');
 				}
 
 				return affiliate;
@@ -42,21 +36,26 @@ export const affiliateRouter = router({
 	 * Get affiliate stats for current user
 	 */
 	getStats: protectedProcedure.query(async ({ ctx }) => {
-		// Get user's affiliate record
-		const affiliateResult = await db
-			.select()
-			.from(table.affiliate)
-			.where(eq(table.affiliate.userId, ctx.user.id))
-			.limit(1);
+		try {
+			const affiliate = await AffiliateService.getAffiliateByUserId(ctx.user.id);
+			
+			if (!affiliate) {
+				throw new TRPCError({
+					code: 'NOT_FOUND',
+					message: 'Affiliate account not found'
+				});
+			}
 
-		if (affiliateResult.length === 0) {
+			return await AffiliateService.getAffiliateStats(affiliate.id);
+		} catch (error) {
+			if (error instanceof TRPCError) {
+				throw error;
+			}
 			throw new TRPCError({
-				code: 'NOT_FOUND',
-				message: 'Affiliate account not found'
+				code: 'INTERNAL_SERVER_ERROR',
+				message: 'Failed to retrieve affiliate stats'
 			});
 		}
-
-		return AffiliateService.getAffiliateStats(affiliateResult[0].id);
 	}),
 
 	/**
@@ -70,29 +69,27 @@ export const affiliateRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			// Get user's affiliate record
-			const affiliateResult = await db
-				.select()
-				.from(table.affiliate)
-				.where(eq(table.affiliate.userId, ctx.user.id))
-				.limit(1);
-
-			if (affiliateResult.length === 0) {
-				throw new TRPCError({
-					code: 'NOT_FOUND',
-					message: 'Affiliate account not found. Please create one first.'
-				});
-			}
-
 			try {
+				const affiliate = await AffiliateService.getAffiliateByUserId(ctx.user.id);
+				
+				if (!affiliate) {
+					throw new TRPCError({
+						code: 'NOT_FOUND',
+						message: 'Affiliate account not found. Please create one first.'
+					});
+				}
+
 				const link = await AffiliateService.createAffiliateLink({
-					affiliateId: affiliateResult[0].id,
+					affiliateId: affiliate.id,
 					productId: input.productId,
 					customCode: input.customCode
 				});
 
 				return link;
 			} catch (error) {
+				if (error instanceof TRPCError) {
+					throw error;
+				}
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
 					message: error instanceof Error ? error.message : 'Failed to create affiliate link'
@@ -104,44 +101,14 @@ export const affiliateRouter = router({
 	 * Get all affiliate links for current user
 	 */
 	getLinks: protectedProcedure.query(async ({ ctx }) => {
-		// Get user's affiliate record
-		const affiliateResult = await db
-			.select()
-			.from(table.affiliate)
-			.where(eq(table.affiliate.userId, ctx.user.id))
-			.limit(1);
-
-		if (affiliateResult.length === 0) {
+		try {
+			return await AffiliateService.getAffiliateLinks(ctx.user.id);
+		} catch (error) {
 			throw new TRPCError({
-				code: 'NOT_FOUND',
-				message: 'Affiliate account not found'
+				code: 'INTERNAL_SERVER_ERROR',
+				message: error instanceof Error ? error.message : 'Failed to retrieve affiliate links'
 			});
 		}
-
-		const links = await db
-			.select({
-				id: table.affiliateLink.id,
-				linkCode: table.affiliateLink.linkCode,
-				originalUrl: table.affiliateLink.originalUrl,
-				affiliateUrl: table.affiliateLink.affiliateUrl,
-				clicks: table.affiliateLink.clicks,
-				conversions: table.affiliateLink.conversions,
-				earnings: table.affiliateLink.earnings,
-				isActive: table.affiliateLink.isActive,
-				createdAt: table.affiliateLink.createdAt,
-				product: {
-					id: table.product.id,
-					name: table.product.name,
-					slug: table.product.slug,
-					price: table.product.price,
-					stockQuantity: table.product.stockQuantity
-				}
-			})
-			.from(table.affiliateLink)
-			.innerJoin(table.product, eq(table.affiliateLink.productId, table.product.id))
-			.where(eq(table.affiliateLink.affiliateId, affiliateResult[0].id));
-
-		return links;
 	}),
 
 	/**
@@ -179,33 +146,26 @@ export const affiliateRouter = router({
 	getLinkByCode: publicProcedure
 		.input(z.object({ linkCode: z.string() }))
 		.query(async ({ input }) => {
-			const link = await AffiliateService.getLinkByCode(input.linkCode);
-			
-			if (!link) {
+			try {
+				const linkWithProduct = await AffiliateService.getLinkWithProductByCode(input.linkCode);
+				
+				if (!linkWithProduct) {
+					throw new TRPCError({
+						code: 'NOT_FOUND',
+						message: 'Affiliate link not found'
+					});
+				}
+
+				return linkWithProduct;
+			} catch (error) {
+				if (error instanceof TRPCError) {
+					throw error;
+				}
 				throw new TRPCError({
-					code: 'NOT_FOUND',
-					message: 'Affiliate link not found'
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Failed to retrieve affiliate link'
 				});
 			}
-
-			// Get product details
-			const productResult = await db
-				.select()
-				.from(table.product)
-				.where(eq(table.product.id, link.productId))
-				.limit(1);
-
-			if (productResult.length === 0) {
-				throw new TRPCError({
-					code: 'NOT_FOUND',
-					message: 'Product not found'
-				});
-			}
-
-			return {
-				...link,
-				product: productResult[0]
-			};
 		}),
 
 	/**
@@ -218,40 +178,14 @@ export const affiliateRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			// Verify user owns this link
-			const linkResult = await db
-				.select({
-					link: table.affiliateLink,
-					affiliate: table.affiliate
-				})
-				.from(table.affiliateLink)
-				.innerJoin(table.affiliate, eq(table.affiliateLink.affiliateId, table.affiliate.id))
-				.where(
-					and(
-						eq(table.affiliateLink.id, input.linkId),
-						eq(table.affiliate.userId, ctx.user.id)
-					)
-				)
-				.limit(1);
-
-			if (linkResult.length === 0) {
+			try {
+				return await AffiliateService.toggleLinkStatus(input.linkId, ctx.user.id);
+			} catch (error) {
 				throw new TRPCError({
-					code: 'NOT_FOUND',
-					message: 'Affiliate link not found or access denied'
+					code: 'BAD_REQUEST',
+					message: error instanceof Error ? error.message : 'Failed to toggle link status'
 				});
 			}
-
-			const newStatus = !linkResult[0].link.isActive;
-			
-			await db
-				.update(table.affiliateLink)
-				.set({ 
-					isActive: newStatus,
-					updatedAt: new Date()
-				})
-				.where(eq(table.affiliateLink.id, input.linkId));
-
-			return { success: true, isActive: newStatus };
 		})
 });
 

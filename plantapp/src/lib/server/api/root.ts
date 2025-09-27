@@ -6,6 +6,7 @@ import { cartRouter } from './cart';
 import { ordersRouter } from './orders';
 import { usersRouter } from './users';
 import { authRouter } from './auth';
+import { filesRouter } from './files';
 
 export const appRouter = router({
 	affiliate: affiliateRouter,
@@ -14,7 +15,8 @@ export const appRouter = router({
 	cart: cartRouter,
 	orders: ordersRouter,
 	users: usersRouter,
-	auth: authRouter
+	auth: authRouter,
+	files: filesRouter
 });
 
 export type AppRouter = typeof appRouter;

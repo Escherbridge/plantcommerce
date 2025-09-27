@@ -1,9 +1,7 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { publicProcedure, protectedProcedure, adminProcedure, router } from './trpc';
-import { eq, desc, asc, like, and, or, isNotNull } from 'drizzle-orm';
-import { db } from '../db';
-import * as table from '../db/schema';
+import { ContentService } from '../services/content';
 
 export const contentRouter = router({
 	/**
@@ -19,42 +17,14 @@ export const contentRouter = router({
 			})
 		)
 		.query(async ({ input }) => {
-			const { type, limit, offset, search } = input;
-
-			// Apply filters
-			const conditions = [eq(table.contentPage.status, 'published')];
-
-			if (type) {
-				conditions.push(eq(table.contentPage.type, type));
+			try {
+				return await ContentService.getPublishedPages(input);
+			} catch (error) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Failed to retrieve content pages'
+				});
 			}
-
-		if (search) {
-			conditions.push(
-				like(table.contentPage.title, `%${search}%`)
-			);
-		}
-
-			return await db
-				.select({
-					id: table.contentPage.id,
-					title: table.contentPage.title,
-					slug: table.contentPage.slug,
-					excerpt: table.contentPage.excerpt,
-					type: table.contentPage.type,
-					featuredImageUrl: table.contentPage.featuredImageUrl,
-					publishedAt: table.contentPage.publishedAt,
-					author: {
-						username: table.user.username,
-						firstName: table.user.firstName,
-						lastName: table.user.lastName
-					}
-				})
-				.from(table.contentPage)
-				.innerJoin(table.user, eq(table.contentPage.authorId, table.user.id))
-				.where(and(...conditions))
-				.orderBy(desc(table.contentPage.publishedAt))
-				.limit(limit)
-				.offset(offset);
 		}),
 
 	/**
@@ -63,33 +33,26 @@ export const contentRouter = router({
 	getPage: publicProcedure
 		.input(z.object({ slug: z.string() }))
 		.query(async ({ input }) => {
-			const result = await db
-				.select({
-					page: table.contentPage,
-					author: {
-						username: table.user.username,
-						firstName: table.user.firstName,
-						lastName: table.user.lastName
-					}
-				})
-				.from(table.contentPage)
-				.innerJoin(table.user, eq(table.contentPage.authorId, table.user.id))
-				.where(
-					and(
-						eq(table.contentPage.slug, input.slug),
-						eq(table.contentPage.status, 'published')
-					)
-				)
-				.limit(1);
+			try {
+				const page = await ContentService.getPageBySlug(input.slug);
+				
+				if (!page) {
+					throw new TRPCError({
+						code: 'NOT_FOUND',
+						message: 'Page not found'
+					});
+				}
 
-			if (result.length === 0) {
+				return page;
+			} catch (error) {
+				if (error instanceof TRPCError) {
+					throw error;
+				}
 				throw new TRPCError({
-					code: 'NOT_FOUND',
-					message: 'Page not found'
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Failed to retrieve page'
 				});
 			}
-
-			return result[0];
 		}),
 
 	/**
@@ -112,26 +75,23 @@ export const contentRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			// Only admins can publish immediately
-			const finalStatus = input.status === 'published' && ctx.user.role !== 'admin' 
-				? 'draft' 
-				: input.status;
-
-			const pageData: typeof table.contentPage.$inferInsert = {
-				...input,
-				status: finalStatus,
-				authorId: ctx.user.id,
-				tags: input.tags ? JSON.stringify(input.tags) : null,
-				publishedAt: finalStatus === 'published' ? (input.publishedAt || new Date()) : null
-			};
-
 			try {
-				const [page] = await db.insert(table.contentPage).values(pageData).returning();
+				// Only admins can publish immediately
+				const finalStatus = input.status === 'published' && ctx.user.role !== 'admin' 
+					? 'draft' 
+					: input.status;
+
+				const page = await ContentService.createPage({
+					...input,
+					status: finalStatus,
+					authorId: ctx.user.id
+				});
+				
 				return page;
 			} catch (error) {
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
-					message: 'Failed to create page. Slug may already exist.'
+					message: error instanceof Error ? error.message : 'Failed to create page'
 				});
 			}
 		}),
@@ -157,66 +117,26 @@ export const contentRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const { id, tags, status, publishedAt, ...updateData } = input;
-
-			// Check if user can edit this page
-			const existingPage = await db
-				.select()
-				.from(table.contentPage)
-				.where(eq(table.contentPage.id, id))
-				.limit(1);
-
-			if (existingPage.length === 0) {
-				throw new TRPCError({
-					code: 'NOT_FOUND',
-					message: 'Page not found'
-				});
-			}
-
-			const page = existingPage[0];
-
-			// Only allow authors to edit their own pages, or admins to edit any
-			if (page.authorId !== ctx.user.id && ctx.user.role !== 'admin') {
-				throw new TRPCError({
-					code: 'FORBIDDEN',
-					message: 'You can only edit your own pages'
-				});
-			}
-
-			// Only admins can change status to published
-			const finalStatus = status === 'published' && ctx.user.role !== 'admin' 
-				? page.status 
-				: status;
-
-			const finalUpdateData = {
-				...updateData,
-				status: finalStatus,
-				tags: tags ? JSON.stringify(tags) : undefined,
-				publishedAt: finalStatus === 'published' && !page.publishedAt 
-					? (publishedAt || new Date()) 
-					: publishedAt,
-				updatedAt: new Date()
-			};
-
-			// Remove undefined values
-			Object.keys(finalUpdateData).forEach(key => {
-				if (finalUpdateData[key as keyof typeof finalUpdateData] === undefined) {
-					delete finalUpdateData[key as keyof typeof finalUpdateData];
-				}
-			});
-
 			try {
-				const [updatedPage] = await db
-					.update(table.contentPage)
-					.set(finalUpdateData)
-					.where(eq(table.contentPage.id, id))
-					.returning();
+				const { id, status, ...updateData } = input;
+
+				// Only admins can change status to published
+				const finalStatus = status === 'published' && ctx.user.role !== 'admin' 
+					? undefined // Don't change status if not admin
+					: status;
+
+				const updatedPage = await ContentService.updatePage(
+					id,
+					{ ...updateData, status: finalStatus },
+					ctx.user.id,
+					ctx.user.role
+				);
 
 				return updatedPage;
 			} catch (error) {
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
-					message: 'Failed to update page'
+					message: error instanceof Error ? error.message : 'Failed to update page'
 				});
 			}
 		}),
@@ -227,33 +147,15 @@ export const contentRouter = router({
 	deletePage: protectedProcedure
 		.input(z.object({ id: z.number() }))
 		.mutation(async ({ ctx, input }) => {
-			// Check if user can delete this page
-			const existingPage = await db
-				.select()
-				.from(table.contentPage)
-				.where(eq(table.contentPage.id, input.id))
-				.limit(1);
-
-			if (existingPage.length === 0) {
+			try {
+				await ContentService.deletePage(input.id, ctx.user.id, ctx.user.role);
+				return { success: true };
+			} catch (error) {
 				throw new TRPCError({
-					code: 'NOT_FOUND',
-					message: 'Page not found'
+					code: 'BAD_REQUEST',
+					message: error instanceof Error ? error.message : 'Failed to delete page'
 				});
 			}
-
-			const page = existingPage[0];
-
-			// Only allow authors to delete their own pages, or admins to delete any
-			if (page.authorId !== ctx.user.id && ctx.user.role !== 'admin') {
-				throw new TRPCError({
-					code: 'FORBIDDEN',
-					message: 'You can only delete your own pages'
-				});
-			}
-
-			await db.delete(table.contentPage).where(eq(table.contentPage.id, input.id));
-
-			return { success: true };
 		}),
 
 	/**
@@ -269,26 +171,17 @@ export const contentRouter = router({
 			})
 		)
 		.query(async ({ ctx, input }) => {
-			const { status, type, limit, offset } = input;
-
-			// Apply filters
-			const conditions = [eq(table.contentPage.authorId, ctx.user.id)];
-
-			if (status) {
-				conditions.push(eq(table.contentPage.status, status));
+			try {
+				return await ContentService.getUserPages({
+					...input,
+					authorId: ctx.user.id
+				});
+			} catch (error) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Failed to retrieve pages'
+				});
 			}
-
-			if (type) {
-				conditions.push(eq(table.contentPage.type, type));
-			}
-
-			return await db
-				.select()
-				.from(table.contentPage)
-				.where(and(...conditions))
-				.orderBy(desc(table.contentPage.updatedAt))
-				.limit(limit)
-				.offset(offset);
 		}),
 
 	/**
@@ -306,51 +199,14 @@ export const contentRouter = router({
 			})
 		)
 		.query(async ({ input }) => {
-			const { status, type, authorId, limit, offset, search } = input;
-
-			// Apply filters
-			const conditions = [];
-
-			if (status) {
-				conditions.push(eq(table.contentPage.status, status));
+			try {
+				return await ContentService.getAllPages(input);
+			} catch (error) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Failed to retrieve pages'
+				});
 			}
-
-			if (type) {
-				conditions.push(eq(table.contentPage.type, type));
-			}
-
-			if (authorId) {
-				conditions.push(eq(table.contentPage.authorId, authorId));
-			}
-
-		if (search) {
-			conditions.push(
-				like(table.contentPage.title, `%${search}%`)
-			);
-		}
-
-			const baseQuery = db
-				.select({
-					page: table.contentPage,
-					author: {
-						username: table.user.username,
-						firstName: table.user.firstName,
-						lastName: table.user.lastName
-					}
-				})
-				.from(table.contentPage)
-				.innerJoin(table.user, eq(table.contentPage.authorId, table.user.id));
-
-			return conditions.length > 0
-				? await baseQuery
-					.where(and(...conditions))
-					.orderBy(desc(table.contentPage.updatedAt))
-					.limit(limit)
-					.offset(offset)
-				: await baseQuery
-					.orderBy(desc(table.contentPage.updatedAt))
-					.limit(limit)
-					.offset(offset);
 		})
 });
 

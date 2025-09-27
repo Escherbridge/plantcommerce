@@ -298,6 +298,55 @@ export class AffiliateService {
 	}
 
 	/**
+	 * Get affiliate record by user ID
+	 */
+	static async getAffiliateByUserId(userId: string): Promise<table.Affiliate | null> {
+		const result = await db
+			.select()
+			.from(table.affiliate)
+			.where(eq(table.affiliate.userId, userId))
+			.limit(1);
+
+		return result.length > 0 ? result[0] : null;
+	}
+
+	/**
+	 * Get affiliate links for a user
+	 */
+	static async getAffiliateLinks(userId: string) {
+		// First get the affiliate record
+		const affiliate = await this.getAffiliateByUserId(userId);
+		if (!affiliate) {
+			throw new Error('Affiliate account not found');
+		}
+
+		const links = await db
+			.select({
+				id: table.affiliateLink.id,
+				linkCode: table.affiliateLink.linkCode,
+				originalUrl: table.affiliateLink.originalUrl,
+				affiliateUrl: table.affiliateLink.affiliateUrl,
+				clicks: table.affiliateLink.clicks,
+				conversions: table.affiliateLink.conversions,
+				earnings: table.affiliateLink.earnings,
+				isActive: table.affiliateLink.isActive,
+				createdAt: table.affiliateLink.createdAt,
+				product: {
+					id: table.product.id,
+					name: table.product.name,
+					slug: table.product.slug,
+					price: table.product.price,
+					stockQuantity: table.product.stockQuantity
+				}
+			})
+			.from(table.affiliateLink)
+			.innerJoin(table.product, eq(table.affiliateLink.productId, table.product.id))
+			.where(eq(table.affiliateLink.affiliateId, affiliate.id));
+
+		return links;
+	}
+
+	/**
 	 * Get affiliate link by code
 	 */
 	static async getLinkByCode(linkCode: string): Promise<table.AffiliateLink | null> {
@@ -313,6 +362,69 @@ export class AffiliateService {
 			.limit(1);
 
 		return result.length > 0 ? result[0] : null;
+	}
+
+	/**
+	 * Get affiliate link with product details by code
+	 */
+	static async getLinkWithProductByCode(linkCode: string) {
+		const link = await this.getLinkByCode(linkCode);
+		if (!link) {
+			return null;
+		}
+
+		// Get product details
+		const productResult = await db
+			.select()
+			.from(table.product)
+			.where(eq(table.product.id, link.productId))
+			.limit(1);
+
+		if (productResult.length === 0) {
+			throw new Error('Product not found');
+		}
+
+		return {
+			...link,
+			product: productResult[0]
+		};
+	}
+
+	/**
+	 * Toggle affiliate link status
+	 */
+	static async toggleLinkStatus(linkId: number, userId: string): Promise<{ success: boolean; isActive: boolean }> {
+		// Verify user owns this link
+		const linkResult = await db
+			.select({
+				link: table.affiliateLink,
+				affiliate: table.affiliate
+			})
+			.from(table.affiliateLink)
+			.innerJoin(table.affiliate, eq(table.affiliateLink.affiliateId, table.affiliate.id))
+			.where(
+				and(
+					eq(table.affiliateLink.id, linkId),
+					eq(table.affiliate.userId, userId)
+				)
+			)
+			.limit(1);
+
+		if (linkResult.length === 0) {
+			throw new Error('Affiliate link not found or access denied');
+		}
+
+		const newStatus = !linkResult[0].link.isActive;
+		
+		await db
+			.update(table.affiliateLink)
+			.set({ 
+				isActive: newStatus,
+				updatedAt: new Date()
+			})
+			.where(eq(table.affiliateLink.id, linkId));
+
+		return { success: true, isActive: newStatus };
 	}
 
 	/**

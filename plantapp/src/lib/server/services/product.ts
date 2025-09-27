@@ -1,6 +1,7 @@
 import { eq, and, like, or, desc, asc } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
+import { FileService } from './file';
 
 export interface ProductWithImages {
 	id: number;
@@ -32,7 +33,8 @@ export interface ProductWithImages {
 	};
 	images: Array<{
 		id: number;
-		url: string;
+		fileId: string;
+		url?: string;
 		altText: string | null;
 		sortOrder: number;
 		isMain: boolean;
@@ -90,10 +92,37 @@ export interface UpdateProductParams {
 
 export interface ProductImage {
 	id: number;
-	url: string;
+	fileId: string;
+	url?: string; // This will be populated by joining with files or generating URL
 	altText: string | null;
 	sortOrder: number;
 	isMain: boolean;
+}
+
+export interface ProductFilter {
+	categoryId?: number;
+	search?: string;
+	featured?: boolean;
+	limit?: number;
+	offset?: number;
+	sortBy?: 'name' | 'price' | 'created';
+	sortOrder?: 'asc' | 'desc';
+}
+
+export interface AdminProductFilter {
+	limit?: number;
+	offset?: number;
+	search?: string;
+	categoryId?: number;
+	isActive?: boolean;
+}
+
+export interface CategoryParams {
+	name: string;
+	slug: string;
+	description?: string;
+	parentId?: number;
+	sortOrder?: number;
 }
 
 export class ProductService {
@@ -249,10 +278,14 @@ export class ProductService {
 
 		const { product, category } = productResult[0];
 
-		// Get product images
+		// Get product images with file information
 		const images = await db
-			.select()
+			.select({
+				image: table.productImage,
+				file: table.file
+			})
 			.from(table.productImage)
+			.leftJoin(table.file, eq(table.productImage.fileId, table.file.id))
 			.where(eq(table.productImage.productId, productId))
 			.orderBy(asc(table.productImage.sortOrder));
 
@@ -266,12 +299,13 @@ export class ProductService {
 				slug: category.slug,
 				description: category.description
 			},
-			images: images.map(img => ({
-				id: img.id,
-				url: img.url,
-				altText: img.altText,
-				sortOrder: img.sortOrder,
-				isMain: img.isMain
+			images: images.map(({ image, file }) => ({
+				id: image.id,
+				fileId: image.fileId,
+				url: file ? FileService.generatePublicUrl(file.bucketPath, file.isPublic) : undefined,
+				altText: image.altText,
+				sortOrder: image.sortOrder,
+				isMain: image.isMain
 			}))
 		};
 	}
@@ -334,7 +368,7 @@ export class ProductService {
 	 */
 	static async addProductImage(
 		productId: number,
-		url: string,
+		fileId: string,
 		altText?: string,
 		isMain: boolean = false,
 		sortOrder?: number
@@ -375,7 +409,7 @@ export class ProductService {
 
 		const imageData: typeof table.productImage.$inferInsert = {
 			productId,
-			url,
+			fileId,
 			altText: altText || null,
 			sortOrder,
 			isMain
@@ -385,7 +419,7 @@ export class ProductService {
 
 		return {
 			id: image.id,
-			url: image.url,
+			fileId: image.fileId,
 			altText: image.altText,
 			sortOrder: image.sortOrder,
 			isMain: image.isMain
@@ -412,7 +446,7 @@ export class ProductService {
 	static async updateProductImage(
 		imageId: number,
 		updates: {
-			url?: string;
+			fileId?: string;
 			altText?: string;
 			isMain?: boolean;
 			sortOrder?: number;
@@ -449,7 +483,7 @@ export class ProductService {
 
 		return {
 			id: updatedImage.id,
-			url: updatedImage.url,
+			fileId: updatedImage.fileId,
 			altText: updatedImage.altText,
 			sortOrder: updatedImage.sortOrder,
 			isMain: updatedImage.isMain
@@ -499,13 +533,15 @@ export class ProductService {
 		const products = await db
 			.select({
 				product: table.product,
-				image: table.productImage
+				image: table.productImage,
+				file: table.file
 			})
 			.from(table.product)
 			.leftJoin(table.productImage, and(
 				eq(table.product.id, table.productImage.productId),
 				eq(table.productImage.isMain, true)
 			))
+			.leftJoin(table.file, eq(table.productImage.fileId, table.file.id))
 			.where(and(
 				eq(table.product.isActive, true),
 				eq(table.product.isFeatured, true)
@@ -513,13 +549,210 @@ export class ProductService {
 			.orderBy(desc(table.product.updatedAt))
 			.limit(limit);
 
-		return products.map(({ product, image }) => ({
+		return products.map(({ product, image, file }) => ({
 			id: product.id,
 			name: product.name,
 			slug: product.slug,
 			price: product.price,
 			shortDescription: product.shortDescription,
-			mainImage: image?.url || null
+			mainImage: file ? FileService.generatePublicUrl(file.bucketPath, file.isPublic) : null
+		}));
+	}
+
+	/**
+	 * Get categories (public)
+	 */
+	static async getCategories() {
+		return await db
+			.select()
+			.from(table.productCategory)
+			.where(eq(table.productCategory.isActive, true))
+			.orderBy(asc(table.productCategory.sortOrder), asc(table.productCategory.name));
+	}
+
+	/**
+	 * Get all categories (admin)
+	 */
+	static async getAllCategories() {
+		return await db
+			.select()
+			.from(table.productCategory)
+			.orderBy(asc(table.productCategory.sortOrder), asc(table.productCategory.name));
+	}
+
+	/**
+	 * Get products with filtering and pagination
+	 */
+	static async getProducts(filter: ProductFilter): Promise<Array<{
+		product: table.Product;
+		category: {
+			id: number;
+			name: string;
+			slug: string;
+		};
+	}>> {
+		const {
+			categoryId,
+			search,
+			featured,
+			limit = 20,
+			offset = 0,
+			sortBy = 'created',
+			sortOrder = 'desc'
+		} = filter;
+
+		// Build all conditions
+		const conditions = [
+			eq(table.product.isActive, true),
+			eq(table.productCategory.isActive, true)
+		];
+
+		if (categoryId) {
+			conditions.push(eq(table.product.categoryId, categoryId));
+		}
+
+		if (search) {
+			conditions.push(
+				like(table.product.name, `%${search}%`)
+			);
+		}
+
+		if (featured !== undefined) {
+			conditions.push(eq(table.product.isFeatured, featured));
+		}
+
+		// Apply sorting
+		const sortColumn = sortBy === 'name' ? table.product.name : 
+						 sortBy === 'price' ? table.product.price : 
+						 table.product.createdAt;
+
+		const query = db
+			.select({
+				product: table.product,
+				category: {
+					id: table.productCategory.id,
+					name: table.productCategory.name,
+					slug: table.productCategory.slug
+				}
+			})
+			.from(table.product)
+			.innerJoin(table.productCategory, eq(table.product.categoryId, table.productCategory.id))
+			.where(and(...conditions))
+			.orderBy(sortOrder === 'asc' ? asc(sortColumn) : desc(sortColumn))
+			.limit(limit)
+			.offset(offset);
+
+		return await query;
+	}
+
+	/**
+	 * Get all products for admin management
+	 */
+	static async getAllProducts(filter: AdminProductFilter): Promise<Array<{
+		product: table.Product;
+		category: {
+			id: number;
+			name: string;
+		};
+	}>> {
+		const { limit = 50, offset = 0, search, categoryId, isActive } = filter;
+
+		// Apply filters
+		const conditions = [];
+
+		if (search) {
+			conditions.push(
+				or(
+					like(table.product.name, `%${search}%`),
+					like(table.product.sku, `%${search}%`)
+				)
+			);
+		}
+
+		if (categoryId) {
+			conditions.push(eq(table.product.categoryId, categoryId));
+		}
+
+		if (isActive !== undefined) {
+			conditions.push(eq(table.product.isActive, isActive));
+		}
+
+		const baseQuery = db
+			.select({
+				product: table.product,
+				category: {
+					id: table.productCategory.id,
+					name: table.productCategory.name
+				}
+			})
+			.from(table.product)
+			.innerJoin(table.productCategory, eq(table.product.categoryId, table.productCategory.id));
+
+		return conditions.length > 0
+			? await baseQuery
+				.where(and(...conditions))
+				.orderBy(desc(table.product.updatedAt))
+				.limit(limit)
+				.offset(offset)
+			: await baseQuery
+				.orderBy(desc(table.product.updatedAt))
+				.limit(limit)
+				.offset(offset);
+	}
+
+	/**
+	 * Create product category
+	 */
+	static async createCategory(params: CategoryParams): Promise<table.ProductCategory> {
+		// Check if slug already exists
+		const existingCategory = await db
+			.select()
+			.from(table.productCategory)
+			.where(eq(table.productCategory.slug, params.slug))
+			.limit(1);
+
+		if (existingCategory.length > 0) {
+			throw new Error('Category slug already exists');
+		}
+
+		const categoryData: typeof table.productCategory.$inferInsert = {
+			...params,
+			sortOrder: params.sortOrder || 0,
+			isActive: true
+		};
+
+		const [category] = await db.insert(table.productCategory).values(categoryData).returning();
+		return category;
+	}
+
+	/**
+	 * Get product images by product ID
+	 */
+	static async getProductImages(productId: number): Promise<Array<{
+		id: number;
+		url: string | null;
+		altText: string | null;
+		sortOrder: number;
+		isMain: boolean;
+		createdAt: Date;
+	}>> {
+		const images = await db
+			.select({
+				image: table.productImage,
+				file: table.file
+			})
+			.from(table.productImage)
+			.leftJoin(table.file, eq(table.productImage.fileId, table.file.id))
+			.where(eq(table.productImage.productId, productId))
+			.orderBy(asc(table.productImage.sortOrder));
+
+		return images.map(({ image, file }) => ({
+			id: image.id,
+			url: file ? FileService.generatePublicUrl(file.bucketPath, file.isPublic) : null,
+			altText: image.altText,
+			sortOrder: image.sortOrder,
+			isMain: image.isMain,
+			createdAt: image.createdAt
 		}));
 	}
 }

@@ -9,6 +9,7 @@ export const user = pgTable('user', {
 	passwordHash: text('password_hash').notNull(),
 	firstName: text('first_name'),
 	lastName: text('last_name'),
+	avatarFileId: text('avatar_file_id'), // Reference to file table
 	role: text('role', { enum: ['admin', 'customer', 'affiliate'] }).notNull().default('customer'),
 	isActive: boolean('is_active').notNull().default(true),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
@@ -71,7 +72,7 @@ export const productImage = pgTable('product_image', {
 	productId: integer('product_id')
 		.notNull()
 		.references(() => product.id, { onDelete: 'cascade' }),
-	url: text('url').notNull(),
+	fileId: text('file_id').notNull(), // Reference to file table
 	altText: text('alt_text'),
 	sortOrder: integer('sort_order').notNull().default(0),
 	isMain: boolean('is_main').notNull().default(false),
@@ -206,6 +207,29 @@ export const orderItem = pgTable('order_item', {
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 });
 
+// ======= FILE STORAGE =======
+export const file = pgTable('file', {
+	id: text('id').primaryKey(), // UUID v4
+	filename: text('filename').notNull(),
+	originalFilename: text('original_filename').notNull(),
+	mimeType: text('mime_type').notNull(),
+	fileSize: integer('file_size').notNull(), // Size in bytes
+	bucketPath: text('bucket_path').notNull(), // Full GCS path
+	bucketName: text('bucket_name').notNull().default('plantcommerce-files'),
+	entityType: text('entity_type', { enum: ['user', 'product', 'content', 'general'] }).notNull().default('general'),
+	entityId: text('entity_id'), // Foreign key to the related entity (user.id, product.id, etc.)
+	uploadedBy: text('uploaded_by').references(() => user.id),
+	isPublic: boolean('is_public').notNull().default(false),
+	metadata: text('metadata'), // JSON string for additional file info
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+}, (table) => ({
+	bucketPathIdx: uniqueIndex('file_bucket_path_idx').on(table.bucketPath),
+	entityIdx: index('file_entity_idx').on(table.entityType, table.entityId),
+	uploadedByIdx: index('file_uploaded_by_idx').on(table.uploadedBy),
+	createdIdx: index('file_created_idx').on(table.createdAt)
+}));
+
 // ======= CMS CONTENT =======
 export const contentPage = pgTable('content_page', {
 	id: serial('id').primaryKey(),
@@ -218,7 +242,7 @@ export const contentPage = pgTable('content_page', {
 	authorId: text('author_id')
 		.notNull()
 		.references(() => user.id),
-	featuredImageUrl: text('featured_image_url'),
+	featuredImageFileId: text('featured_image_file_id'), // Reference to file table
 	metaTitle: text('meta_title'),
 	metaDescription: text('meta_description'),
 	tags: text('tags'), // JSON array
@@ -238,7 +262,13 @@ export const userRelations = relations(user, ({ many, one }) => ({
 	sessions: many(session),
 	affiliate: one(affiliate),
 	contentPages: many(contentPage),
-	orders: many(order)
+	orders: many(order),
+	uploadedFiles: many(file, { relationName: 'file_uploaded_by' }),
+	avatarFile: one(file, {
+		fields: [user.avatarFileId],
+		references: [file.id],
+		relationName: 'user_avatar_file'
+	})
 }));
 
 export const affiliateRelations = relations(affiliate, ({ one, many }) => ({
@@ -273,6 +303,18 @@ export const productRelations = relations(product, ({ one, many }) => ({
 	orderItems: many(orderItem)
 }));
 
+export const productImageRelations = relations(productImage, ({ one }) => ({
+	product: one(product, {
+		fields: [productImage.productId],
+		references: [product.id]
+	}),
+	file: one(file, {
+		fields: [productImage.fileId],
+		references: [file.id],
+		relationName: 'product_image_file'
+	})
+}));
+
 export const productCategoryRelations = relations(productCategory, ({ one, many }) => ({
 	parent: one(productCategory, {
 		fields: [productCategory.parentId],
@@ -294,6 +336,26 @@ export const orderRelations = relations(order, ({ one, many }) => ({
 	items: many(orderItem)
 }));
 
+export const fileRelations = relations(file, ({ one }) => ({
+	uploadedBy: one(user, {
+		fields: [file.uploadedBy],
+		references: [user.id],
+		relationName: 'file_uploaded_by'
+	})
+}));
+
+export const contentPageRelations = relations(contentPage, ({ one }) => ({
+	author: one(user, {
+		fields: [contentPage.authorId],
+		references: [user.id]
+	}),
+	featuredImageFile: one(file, {
+		fields: [contentPage.featuredImageFileId],
+		references: [file.id],
+		relationName: 'content_page_featured_image'
+	})
+}));
+
 // ======= EXPORTED TYPES =======
 export type Session = typeof session.$inferSelect;
 export type User = typeof user.$inferSelect;
@@ -303,3 +365,4 @@ export type Affiliate = typeof affiliate.$inferSelect;
 export type AffiliateLink = typeof affiliateLink.$inferSelect;
 export type Order = typeof order.$inferSelect;
 export type ContentPage = typeof contentPage.$inferSelect;
+export type File = typeof file.$inferSelect;
