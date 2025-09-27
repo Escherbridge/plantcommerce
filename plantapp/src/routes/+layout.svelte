@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import { Header } from '$lib/components/navigation';
 
 	let { children } = $props();
 </script>
@@ -16,7 +17,7 @@
 				</label>
 			</div>
 			<div class="flex-1">
-				<a href="/" class="btn btn-ghost text-xl">PlantCommerce</a>
+				<a href="/" class="btn btn-ghost text-xl font-liter">PlantCommerce</a>
 			</div>
 		</header>
 
@@ -34,7 +35,7 @@
 		<label for="drawer-toggle" class="drawer-overlay"></label>
 		<div class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
 			<!-- Sidebar content here -->
-			<h3 class="font-bold text-lg mb-4">Navigation</h3>
+			<h3 class="font-bold text-lg mb-4 font-liter">Navigation</h3>
 			<ul>
 				<li><a href="/" class="btn btn-ghost justify-start">Home</a></li>
 			</ul>

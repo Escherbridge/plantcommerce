@@ -4,8 +4,7 @@
 @plugin '@tailwindcss/typography';
 
 :root {
-	--font-body:
-		Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+	--font-body: 'Liter', Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
 		'Open Sans', 'Helvetica Neue', sans-serif;
 	--font-mono: 'Fira Mono', monospace;
 	--column-width: 42rem;
@@ -30,4 +29,10 @@ pre {
 
 .visually-hidden {
 	@apply sr-only;
+}
+
+.liter-regular {
+	font-family: "Liter", sans-serif;
+	font-weight: 400;
+	font-style: normal;
 }

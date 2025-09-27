@@ -22,7 +22,7 @@
 		</label>
 		
 		<!-- Logo/Brand -->
-		<a href="/" class="btn btn-ghost text-xl">
+		<a href="/" class="btn btn-ghost text-xl font-liter">
 			🌱 PlantCommerce
 		</a>
 	</div>
@@ -72,7 +72,7 @@
 </header>
 
 <style>
-	.active {
+	/* .active {
 		@apply bg-primary text-primary-content;
-	}
+	} */
 </style>
