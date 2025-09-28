@@ -1,10 +1,29 @@
-# Plant Commerce
+# PlantCommerce Application
 
-A sustainable agriculture e-commerce platform built with SvelteKit, Drizzle ORM, and TrPC.
+> **Note**: This is the application-specific README. For the complete project overview, architecture, and documentation, see the [main README.md](../README.md) in the project root.
 
-## Project Overview
+## Quick Start
 
-Plant Commerce is an e-commerce application designed to promote and sell products related to hydroponics, aquaponics, silvopasture, and agroforestry. The platform includes both a public-facing store and an admin backend for managing products and orders.
+This directory contains the main PlantCommerce application built with SvelteKit, Drizzle ORM, and tRPC.
+
+### Setup
+```bash
+npm install
+npm run db:start
+npm run db:push
+npm run dev
+```
+
+### Documentation
+- **Complete Project Documentation**: [../README.md](../README.md)
+- **Affiliate System Guide**: [../documentation/AFFILIATE_SYSTEM_GUIDE.md](../documentation/AFFILIATE_SYSTEM_GUIDE.md)
+- **Information Architecture**: [../documentation/INFORMATION_ARCHITECTURE.md](../documentation/INFORMATION_ARCHITECTURE.md)
+- **DaisyUI Setup**: [../documentation/DAISYUI_SETUP.md](../documentation/DAISYUI_SETUP.md)
+- **File Upload Setup**: [../documentation/FILE_UPLOAD_SETUP.md](../documentation/FILE_UPLOAD_SETUP.md)
+
+## Application Overview
+
+This is the main application for PlantCommerce, a sustainable agriculture e-commerce platform featuring hydroponics, aquaponics, silvopasture, and agroforestry products with a comprehensive affiliate marketing system.
 
 ## Key Features
 
