@@ -611,9 +611,13 @@ export class ProductService {
 			conditions.push(eq(table.product.categoryId, categoryId));
 		}
 
+import { sanitizeLike } from '$lib/utils/string';
+
+// ...
+
 		if (search) {
 			conditions.push(
-				like(table.product.name, `%${search}%`)
+				like(table.product.name, `%${sanitizeLike(search)}%`)
 			);
 		}
 
@@ -661,10 +665,11 @@ export class ProductService {
 		const conditions = [];
 
 		if (search) {
+			const sanitizedSearch = sanitizeLike(search);
 			conditions.push(
 				or(
-					like(table.product.name, `%${search}%`),
-					like(table.product.sku, `%${search}%`)
+					like(table.product.name, `%${sanitizedSearch}%`),
+					like(table.product.sku, `%${sanitizedSearch}%`)
 				)
 			);
 		}

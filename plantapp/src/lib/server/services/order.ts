@@ -95,11 +95,14 @@ export class OrderService {
 		// Generate order number
 		const orderNumber = await this.generateOrderNumber();
 
+		// TODO: Make this configurable via environment variable
+		const TAX_RATE = 0.08; // 8% sales tax
+
 		// Calculate totals
 		const subtotalAmount = cart.totalAmount;
-		const taxAmount = 0; // TODO: Implement tax calculation
-		const shippingAmount = 0; // TODO: Implement shipping calculation
-		const discountAmount = 0; // TODO: Implement discount calculation
+		const taxAmount = subtotalAmount * TAX_RATE; // Implement tax calculation
+		const shippingAmount = 5.00; // TODO: Make this configurable, e.g., via env var or a more complex shipping logic
+		const discountAmount = 0; // TODO: Implement discount/coupon code logic
 		const totalAmount = subtotalAmount + taxAmount + shippingAmount - discountAmount;
 
 		// Create order

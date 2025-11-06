@@ -5,6 +5,8 @@
     align?: 'start' | 'center' | 'end' | 'stretch';
     justify?: 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly';
     className?: string;
+    class?: string;
+    title?: string;
     children: any;
   }
 
@@ -14,6 +16,8 @@
     align = 'start',
     justify = 'start',
     className = '',
+    class: classProp = '',
+    title,
     children
   }: Props = $props();
 
@@ -71,6 +75,6 @@
   }
 </script>
 
-<div class="{gridClasses} {className}">
+<div class="{gridClasses} {className} {classProp}" {title}>
   {@render children()}
 </div>

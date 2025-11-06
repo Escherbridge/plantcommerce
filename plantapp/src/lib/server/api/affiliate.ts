@@ -33,12 +33,27 @@ export const affiliateRouter = router({
 		}),
 
 	/**
+	 * Get current user's affiliate account
+	 */
+	getMyAffiliate: protectedProcedure.query(async ({ ctx }) => {
+		try {
+			const affiliate = await AffiliateService.getAffiliateByUserId(ctx.user.id);
+			return affiliate;
+		} catch (error) {
+			throw new TRPCError({
+				code: 'INTERNAL_SERVER_ERROR',
+				message: 'Failed to retrieve affiliate account'
+			});
+		}
+	}),
+
+	/**
 	 * Get affiliate stats for current user
 	 */
 	getStats: protectedProcedure.query(async ({ ctx }) => {
 		try {
 			const affiliate = await AffiliateService.getAffiliateByUserId(ctx.user.id);
-			
+
 			if (!affiliate) {
 				throw new TRPCError({
 					code: 'NOT_FOUND',
@@ -54,6 +69,78 @@ export const affiliateRouter = router({
 			throw new TRPCError({
 				code: 'INTERNAL_SERVER_ERROR',
 				message: 'Failed to retrieve affiliate stats'
+			});
+		}
+	}),
+
+	/**
+	 * Get recent clicks for current user's affiliate account
+	 */
+	getRecentClicks: protectedProcedure
+		.input(z.object({ limit: z.number().optional() }))
+		.query(async ({ ctx, input }) => {
+			try {
+				const affiliate = await AffiliateService.getAffiliateByUserId(ctx.user.id);
+
+				if (!affiliate) {
+					return [];
+				}
+
+				// This would need to be implemented in AffiliateService
+				// For now, return empty array as placeholder
+				return [];
+			} catch (error) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Failed to retrieve recent clicks'
+				});
+			}
+		}),
+
+	/**
+	 * Get earnings data for current user's affiliate account
+	 */
+	getEarnings: protectedProcedure.query(async ({ ctx }) => {
+		try {
+			const affiliate = await AffiliateService.getAffiliateByUserId(ctx.user.id);
+
+			if (!affiliate) {
+				return {
+					totalEarnings: 0,
+					pendingPayout: 0,
+					currentMonthEarnings: 0,
+					history: [],
+					paymentMethod: null
+				};
+			}
+
+			// Return basic structure with affiliate's total earnings
+			// pendingPayout and paymentMethod would need to be added to the schema
+			return {
+				totalEarnings: parseFloat(affiliate.totalEarnings || '0'),
+				pendingPayout: 0,
+				currentMonthEarnings: 0,
+				history: [],
+				paymentMethod: null
+			};
+		} catch (error) {
+			throw new TRPCError({
+				code: 'INTERNAL_SERVER_ERROR',
+				message: 'Failed to retrieve earnings data'
+			});
+		}
+	}),
+
+	/**
+	 * Get all affiliate links for current user (alias for getLinks)
+	 */
+	getMyLinks: protectedProcedure.query(async ({ ctx }) => {
+		try {
+			return await AffiliateService.getAffiliateLinks(ctx.user.id);
+		} catch (error) {
+			throw new TRPCError({
+				code: 'INTERNAL_SERVER_ERROR',
+				message: error instanceof Error ? error.message : 'Failed to retrieve affiliate links'
 			});
 		}
 	}),

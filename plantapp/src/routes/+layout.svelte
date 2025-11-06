@@ -2,8 +2,30 @@
 	import '../app.css';
 	import { Header } from '$lib/components/navigation';
 	import { page } from '$app/stores';
+	import { trpc } from '$lib/trpc/client';
+	import { browser } from '$app/environment';
 
-	let { children } = $props();
+	let { children, data } = $props();
+
+	$: user = data.user;
+
+	// Logout function for mobile
+	let isLoggingOut = false;
+	async function handleLogout() {
+		if (isLoggingOut) return;
+		isLoggingOut = true;
+
+		try {
+			await trpc.auth.logout.mutate();
+			if (browser) {
+				window.location.href = '/';
+			}
+		} catch (error) {
+			console.error('Logout error:', error);
+		} finally {
+			isLoggingOut = false;
+		}
+	}
 
 	// Mobile navigation structure
 	const mobileNavigation = [
@@ -78,28 +100,21 @@
 					<div class="footer-brand">
 						<div class="brand">
 							<span class="brand-icon">🌱</span>
-							<span class="brand-text">PlantCommerce</span>
-						</div>
+							<span class="brand-text">Aevani</span>
 						<p class="brand-description">
 							Sustainable agriculture solutions for the future. 
 							Hydroponics, aquaponics, and agroforestry products 
 							to help you grow better.
 						</p>
 						<div class="social-links">
-							<a href="https://facebook.com/plantcommerce" class="social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
-								<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-									<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-								</svg>
+							<a href="https://facebook.com/aevani" class="social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+								<i class="fab fa-facebook-f"></i>
 							</a>
-							<a href="https://twitter.com/plantcommerce" class="social-link" aria-label="Twitter" target="_blank" rel="noopener noreferrer">
-								<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-									<path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-								</svg>
+							<a href="https://twitter.com/aevani" class="social-link" aria-label="Twitter" target="_blank" rel="noopener noreferrer">
+								<i class="fab fa-twitter"></i>
 							</a>
-							<a href="https://instagram.com/plantcommerce" class="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-								<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-									<path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987 6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.198 14.895 3.708 13.744 3.708 12.447s.49-2.448 1.297-3.323c.875-.807 2.026-1.297 3.323-1.297s2.448.49 3.323 1.297c.807.875 1.297 2.026 1.297 3.323s-.49 2.448-1.297 3.323c-.875.807-2.026 1.297-3.323 1.297zm7.83-9.281h-1.563v-1.563h1.563v1.563zm-3.262 0c-2.026 0-3.662 1.636-3.662 3.662s1.636 3.662 3.662 3.662 3.662-1.636 3.662-3.662-1.636-3.662-3.662-3.662z"/>
-								</svg>
+							<a href="https://instagram.com/aevani" class="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+								<i class="fab fa-instagram"></i>
 							</a>
 						</div>
 					</div>
@@ -147,7 +162,7 @@
 
 				<div class="footer-bottom">
 					<div class="footer-bottom-content">
-						<p class="copyright">&copy; 2024 PlantCommerce. All rights reserved.</p>
+						<p class="copyright">&copy; 2024 Aevani. All rights reserved.</p>
 						<div class="footer-bottom-links">
 							<a href="/privacy" class="footer-bottom-link">Privacy Policy</a>
 							<a href="/terms" class="footer-bottom-link">Terms of Service</a>
@@ -191,8 +206,19 @@
 
 			<div class="mobile-drawer-footer">
 				<div class="mobile-user-actions">
-					<a href="/login" class="mobile-action-btn">Login</a>
-					<a href="/register" class="mobile-action-btn primary">Register</a>
+					{#if user}
+						<div class="mobile-user-info">
+							<span class="mobile-user-name">{user.firstName || user.username}</span>
+							<span class="mobile-user-email">{user.email}</span>
+						</div>
+						<a href="/account" class="mobile-action-btn">My Account</a>
+						<button on:click={handleLogout} class="mobile-action-btn" disabled={isLoggingOut}>
+							{isLoggingOut ? 'Logging out...' : 'Logout'}
+						</button>
+					{:else}
+						<a href="/login" class="mobile-action-btn">Login</a>
+						<a href="/register" class="mobile-action-btn primary">Register</a>
+					{/if}
 				</div>
 			</div>
 		</div>
@@ -482,6 +508,27 @@
 		gap: 0.75rem;
 	}
 
+	.mobile-user-info {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		padding: 0.75rem;
+		background-color: #f3f4f6;
+		border-radius: 0.375rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.mobile-user-name {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: #111827;
+	}
+
+	.mobile-user-email {
+		font-size: 0.75rem;
+		color: #6b7280;
+	}
+
 	.mobile-action-btn {
 		display: block;
 		width: 100%;
@@ -494,10 +541,18 @@
 		text-decoration: none;
 		color: #374151;
 		background-color: #f3f4f6;
+		border: none;
+		cursor: pointer;
+		font-family: inherit;
 	}
 
 	.mobile-action-btn:hover {
 		background-color: #e5e7eb;
+	}
+
+	.mobile-action-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 
 	.mobile-action-btn.primary {

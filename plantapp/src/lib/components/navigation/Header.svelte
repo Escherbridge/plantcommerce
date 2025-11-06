@@ -1,14 +1,37 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	
+	import { trpc } from '$lib/trpc/client';
+	import { browser } from '$app/environment';
+
 	// Theme switcher functionality
 	let currentTheme = 'light';
-	
+
 	function toggleTheme() {
 		const themes = ['light', 'dark', 'cupcake', 'forest', 'luxury', 'business'];
 		const currentIndex = themes.indexOf(currentTheme);
 		currentTheme = themes[(currentIndex + 1) % themes.length];
 		document.documentElement.setAttribute('data-theme', currentTheme);
+	}
+
+	// Get user from page data
+	$: user = $page.data.user;
+
+	// Logout function
+	let isLoggingOut = false;
+	async function handleLogout() {
+		if (isLoggingOut) return;
+		isLoggingOut = true;
+
+		try {
+			await trpc.auth.logout.mutate();
+			if (browser) {
+				window.location.href = '/';
+			}
+		} catch (error) {
+			console.error('Logout error:', error);
+		} finally {
+			isLoggingOut = false;
+		}
 	}
 
 	// Navigation structure based on app features
@@ -75,7 +98,7 @@
 		<!-- Logo/Brand -->
 		<a href="/" class="brand">
 			<span class="brand-icon">🌱</span>
-			<span class="brand-text">PlantCommerce</span>
+			<span class="brand-text">Aevani</span>
 		</a>
 		
 		<!-- Desktop navigation -->
@@ -130,14 +153,33 @@
 					</svg>
 				</button>
 				<div class="user-dropdown">
-					{#each userNavigation as item}
-						<a href={item.href} class="user-dropdown-link">
-							{item.label}
-						</a>
-					{/each}
-					<hr class="dropdown-divider" />
-					<a href="/login" class="user-dropdown-link">Login</a>
-					<a href="/register" class="user-dropdown-link">Register</a>
+					{#if user}
+						<!-- Logged in user menu -->
+						<div class="user-dropdown-header">
+							<span class="user-dropdown-name">
+								{user.firstName || user.username}
+							</span>
+							<span class="user-dropdown-email">{user.email}</span>
+						</div>
+						<hr class="dropdown-divider" />
+						{#each userNavigation as item}
+							<a href={item.href} class="user-dropdown-link">
+								{item.label}
+							</a>
+						{/each}
+						{#if user.role === 'admin'}
+							<hr class="dropdown-divider" />
+							<a href="/admin" class="user-dropdown-link">Admin Dashboard</a>
+						{/if}
+						<hr class="dropdown-divider" />
+						<button on:click={handleLogout} class="user-dropdown-link logout-btn" disabled={isLoggingOut}>
+							{isLoggingOut ? 'Logging out...' : 'Logout'}
+						</button>
+					{:else}
+						<!-- Guest user menu -->
+						<a href="/login" class="user-dropdown-link">Login</a>
+						<a href="/register" class="user-dropdown-link">Register</a>
+					{/if}
 				</div>
 			</div>
 			
@@ -415,17 +457,50 @@
 		transform: translateY(0);
 	}
 
+	.user-dropdown-header {
+		padding: 0.75rem 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.user-dropdown-name {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: #111827;
+	}
+
+	.user-dropdown-email {
+		font-size: 0.75rem;
+		color: #6b7280;
+	}
+
 	.user-dropdown-link {
 		display: block;
 		padding: 0.5rem 1rem;
 		font-size: 0.875rem;
 		color: #374151;
 		transition: all 0.15s;
+		text-decoration: none;
 	}
 
 	.user-dropdown-link:hover {
 		background-color: #f3f4f6;
 		color: #111827;
+	}
+
+	.logout-btn {
+		width: 100%;
+		text-align: left;
+		border: none;
+		background: none;
+		cursor: pointer;
+		font-family: inherit;
+	}
+
+	.logout-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 
 	.dropdown-divider {

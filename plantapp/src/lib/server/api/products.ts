@@ -101,9 +101,15 @@ export const productsRouter = router({
 				isFeatured: z.boolean().default(false)
 			})
 		)
-		.mutation(async ({ input }) => {
+import { AuditLogService } from '../services/auditLog';
+
+// ...
+
+		.mutation(async ({ ctx, input }) => {
 			try {
 				const product = await ProductService.createProduct(input);
+				// Audit log
+				await AuditLogService.log(ctx.user.id, 'create_product', { productId: product.id, productName: product.name });
 				return product;
 			} catch (error) {
 				throw new TRPCError({
@@ -144,10 +150,12 @@ export const productsRouter = router({
 				isActive: z.boolean().optional()
 			})
 		)
-		.mutation(async ({ input }) => {
+		.mutation(async ({ ctx, input }) => {
 			try {
 				const { id, ...updateData } = input;
 				const product = await ProductService.updateProduct(id, updateData);
+				// Audit log
+				await AuditLogService.log(ctx.user.id, 'update_product', { productId: product.id, productName: product.name });
 				return product;
 			} catch (error) {
 				throw new TRPCError({
@@ -162,9 +170,11 @@ export const productsRouter = router({
 	 */
 	deleteProduct: adminProcedure
 		.input(z.object({ id: z.number() }))
-		.mutation(async ({ input }) => {
+		.mutation(async ({ ctx, input }) => {
 			try {
 				await ProductService.deleteProduct(input.id);
+				// Audit log
+				await AuditLogService.log(ctx.user.id, 'delete_product', { productId: input.id });
 				return { success: true };
 			} catch (error) {
 				throw new TRPCError({

@@ -45,7 +45,7 @@ export interface FileWithUrl {
 
 export class FileService {
 	private static storage: Storage;
-	private static bucketName = process.env.GCS_BUCKET_NAME || 'plantcommerce-files';
+	private static bucketName = process.env.GCS_BUCKET_NAME || 'aevani-files';
 
 	/**
 	 * Initialize GCS Storage client

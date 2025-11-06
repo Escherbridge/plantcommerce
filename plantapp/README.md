@@ -1,10 +1,6 @@
-# PlantCommerce Application
+# Aevani Application
 
-> **Note**: This is the application-specific README. For the complete project overview, architecture, and documentation, see the [main README.md](../README.md) in the project root.
-
-## Quick Start
-
-This directory contains the main PlantCommerce application built with SvelteKit, Drizzle ORM, and tRPC.
+This directory contains the main Aevani application built with SvelteKit, Drizzle ORM, and tRPC.
 
 ### Setup
 ```bash

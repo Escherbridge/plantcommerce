@@ -20,12 +20,19 @@ export const authRouter = router({
 				guestSessionId: z.string().optional() // To transfer guest cart
 			})
 		)
+import { AuditLogService } from '../services/auditLog';
+
+// ...
+
 		.mutation(async ({ input }) => {
 			try {
 				const { guestSessionId, ...userData } = input;
 
 				// Create user
 				const user = await UserService.createUser(userData);
+
+				// Audit log
+				await AuditLogService.log(user.id, 'register', { email: user.email });
 
 				// Login the user to get session
 				const loginResult = await UserService.login({
@@ -72,6 +79,9 @@ export const authRouter = router({
 
 				const result = await UserService.login(loginData);
 
+				// Audit log
+				await AuditLogService.log(result.user.id, 'login_success');
+
 				// Transfer guest cart if provided
 				if (guestSessionId) {
 					try {
@@ -84,6 +94,9 @@ export const authRouter = router({
 
 				return result;
 			} catch (error) {
+				// Audit log
+				await AuditLogService.log(null, 'login_failure', { usernameOrEmail: input.usernameOrEmail });
+
 				throw new TRPCError({
 					code: 'UNAUTHORIZED',
 					message: error instanceof Error ? error.message : 'Login failed'
@@ -98,6 +111,8 @@ export const authRouter = router({
 		try {
 			if (ctx.session) {
 				await invalidateSession(ctx.session.id);
+				// Audit log
+				await AuditLogService.log(ctx.user.id, 'logout');
 			}
 			return { success: true };
 		} catch (error) {

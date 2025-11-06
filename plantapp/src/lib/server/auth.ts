@@ -28,36 +28,40 @@ export async function createSession(token: string, userId: string) {
 
 export async function validateSessionToken(token: string) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-	const [result] = await db
-		.select({
-			user: table.user,
-			session: table.session
-		})
-		.from(table.session)
-		.innerJoin(table.user, eq(table.session.userId, table.user.id))
-		.where(eq(table.session.id, sessionId));
 
-	if (!result) {
-		return { session: null, user: null };
-	}
-	const { session, user } = result;
+	return await db.transaction(async (tx) => {
+		const [result] = await tx
+			.select({
+				user: table.user,
+				session: table.session
+			})
+			.from(table.session)
+			.innerJoin(table.user, eq(table.session.userId, table.user.id))
+			.where(eq(table.session.id, sessionId))
+			.for('update');
 
-	const sessionExpired = Date.now() >= session.expiresAt.getTime();
-	if (sessionExpired) {
-		await db.delete(table.session).where(eq(table.session.id, session.id));
-		return { session: null, user: null };
-	}
+		if (!result) {
+			return { session: null, user: null };
+		}
+		const { session, user } = result;
 
-	const renewSession = Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * 15;
-	if (renewSession) {
-		session.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
-		await db
-			.update(table.session)
-			.set({ expiresAt: session.expiresAt })
-			.where(eq(table.session.id, session.id));
-	}
+		const sessionExpired = Date.now() >= session.expiresAt.getTime();
+		if (sessionExpired) {
+			await tx.delete(table.session).where(eq(table.session.id, session.id));
+			return { session: null, user: null };
+		}
 
-	return { session, user };
+		const renewSession = Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * 15;
+		if (renewSession) {
+			session.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
+			await tx
+				.update(table.session)
+				.set({ expiresAt: session.expiresAt })
+				.where(eq(table.session.id, session.id));
+		}
+
+		return { session, user };
+	});
 }
 
 export type SessionValidationResult = Awaited<ReturnType<typeof validateSessionToken>>;

@@ -62,6 +62,8 @@ export const product = pgTable('product', {
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 }, (table) => ({
+	nameIdx: index('product_name_idx').on(table.name),
+	skuIdx: index('product_sku_idx').on(table.sku),
 	categoryIdx: index('product_category_idx').on(table.categoryId),
 	activeIdx: index('product_active_idx').on(table.isActive),
 	featuredIdx: index('product_featured_idx').on(table.isFeatured)
@@ -215,7 +217,7 @@ export const file = pgTable('file', {
 	mimeType: text('mime_type').notNull(),
 	fileSize: integer('file_size').notNull(), // Size in bytes
 	bucketPath: text('bucket_path').notNull(), // Full GCS path
-	bucketName: text('bucket_name').notNull().default('plantcommerce-files'),
+	bucketName: text('bucket_name').notNull().default('aevani-files'),
 	entityType: text('entity_type', { enum: ['user', 'product', 'content', 'general'] }).notNull().default('general'),
 	entityId: text('entity_id'), // Foreign key to the related entity (user.id, product.id, etc.)
 	uploadedBy: text('uploaded_by').references(() => user.id),
@@ -257,7 +259,16 @@ export const contentPage = pgTable('content_page', {
 	publishedIdx: index('content_page_published_idx').on(table.publishedAt)
 }));
 
-// ======= RELATIONS =======
+// ======= AUDIT LOG =======
+export const auditLog = pgTable('audit_log', {
+	id: serial('id').primaryKey(),
+	timestamp: timestamp('timestamp', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+	userId: text('user_id').references(() => user.id),
+	action: text('action').notNull(),
+	details: text('details'), // JSON string for additional details
+});
+
+// ======= RELATIONS ========
 export const userRelations = relations(user, ({ many, one }) => ({
 	sessions: many(session),
 	affiliate: one(affiliate),

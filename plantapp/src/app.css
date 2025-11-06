@@ -36,3 +36,7 @@ pre {
 	font-weight: 400;
 	font-style: normal;
 }
+
+.card { 
+	@apply rounded-md p-4;
+}

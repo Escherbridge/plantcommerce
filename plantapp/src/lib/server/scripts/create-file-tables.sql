@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS "file" (
     "mime_type" text NOT NULL,
     "file_size" integer NOT NULL,
     "bucket_path" text NOT NULL,
-    "bucket_name" text NOT NULL DEFAULT 'plantcommerce-files',
+    "bucket_name" text NOT NULL DEFAULT 'aevani-files',
     "entity_type" text NOT NULL DEFAULT 'general',
     "entity_id" text,
     "uploaded_by" text,

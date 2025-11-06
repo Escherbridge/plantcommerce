@@ -1,10 +1,6 @@
-# PlantCommerce
+# Aevani
 
-A comprehensive sustainable agriculture e-commerce platform built with modern web technologies, featuring hydroponics, aquaponics, silvopasture, and agroforestry products with a robust affiliate marketing system.
-
-## 🌱 Overview
-
-PlantCommerce is a full-stack e-commerce application designed to promote and sell products related to sustainable agriculture practices. The platform combines a modern, user-friendly shopping experience with powerful backend management tools, comprehensive affiliate marketing capabilities, and educational content management.
+Aevani is a full-stack e-commerce application designed to promote and sell products related to sustainable agriculture practices. The platform combines a modern, user-friendly shopping experience with powerful backend management tools, comprehensive affiliate marketing capabilities, and educational content management.
 
 ### Mission
 To make sustainable agriculture accessible to everyone by providing high-quality products, comprehensive educational resources, and innovative affiliate marketing tools that support the growth of the sustainable farming community.

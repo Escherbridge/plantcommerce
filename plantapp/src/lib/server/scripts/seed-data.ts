@@ -82,7 +82,7 @@ export async function createDefaultAdmin() {
 		const adminUser: typeof table.user.$inferInsert = {
 			id: crypto.randomUUID(),
 			username: 'admin',
-			email: 'admin@plantcommerce.local',
+			email: 'admin@aevani.local',
 			passwordHash: '$argon2id$v=19$m=19456,t=2,p=1$placeholder', // Placeholder - use proper hashing
 			firstName: 'Plant',
 			lastName: 'Admin',
@@ -91,7 +91,7 @@ export async function createDefaultAdmin() {
 		};
 
 		await db.insert(table.user).values(adminUser);
-		console.log('✅ Created default admin user (username: admin, email: admin@plantcommerce.local)');
+		console.log('✅ Created default admin user (username: admin, email: admin@aevani.local)');
 		console.log('⚠️  IMPORTANT: Change the default password immediately!');
 
 	} catch (error) {

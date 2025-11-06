@@ -3,9 +3,8 @@
 </script>
 
 <svelte:head>
-	<title>PlantCommerce - Your Plant Marketplace</title>
-	<meta name="description" content="PlantCommerce - Your plant marketplace powered by DaisyUI and Tailwind CSS" />
-</svelte:head>
+	<title>Aevani - Your Plant Marketplace</title>
+	<meta name="description" content="Aevani - Your plant marketplace powered by DaisyUI and Tailwind CSS" /></svelte:head>
 
 <!-- Full-Width Asymmetric Hero Section -->
 <section class="min-h-screen bg-base-100 w-screen">
