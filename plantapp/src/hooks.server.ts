@@ -24,7 +24,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 		event.locals.user = user;
 		event.locals.session = session;
 	} catch (error) {
-		handleError(error, 'hooks.server.ts:handleAuth');
+		await handleError(error, 'hooks.server.ts:handleAuth');
 	}
 
 	return resolve(event);
@@ -38,7 +38,7 @@ const handleCSP: Handle = async ({ event, resolve }) => {
 		"default-src 'self'",
 		"script-src 'self' 'unsafe-inline'",
 		"style-src 'self' 'unsafe-inline'",
-		"img-src 'self' data:",
+		"img-src 'self' data: https:",
 		"font-src 'self'",
 		"object-src 'none'",
 		"base-uri 'self'",

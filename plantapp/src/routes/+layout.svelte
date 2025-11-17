@@ -7,7 +7,7 @@
 
 	let { children, data } = $props();
 
-	$: user = data.user;
+	const user = $derived(data.user);
 
 	// Logout function for mobile
 	let isLoggingOut = false;
@@ -29,30 +29,46 @@
 
 	// Mobile navigation structure
 	const mobileNavigation = [
-		{ label: 'Shop', href: '/products', children: [
-			{ label: 'Hydroponics', href: '/products/hydroponics' },
-			{ label: 'Aquaponics', href: '/products/aquaponics' },
-			{ label: 'Silvopasture', href: '/products/silvopasture' },
-			{ label: 'Agroforestry', href: '/products/agroforestry' }
-		]},
-		{ label: 'Learn', href: '/learn', children: [
-			{ label: 'Guides', href: '/guides' },
-			{ label: 'Blog', href: '/blog' },
-			{ label: 'FAQs', href: '/faq' },
-			{ label: 'Resources', href: '/resources' }
-		]},
-		{ label: 'Affiliate', href: '/affiliate', children: [
-			{ label: 'Join Program', href: '/affiliate/join' },
-			{ label: 'Dashboard', href: '/affiliate/dashboard' },
-			{ label: 'Earnings', href: '/affiliate/earnings' },
-			{ label: 'Links', href: '/affiliate/links' }
-		]},
-		{ label: 'Support', href: '/support', children: [
-			{ label: 'Contact', href: '/contact' },
-			{ label: 'Help Center', href: '/help' },
-			{ label: 'Shipping', href: '/shipping' },
-			{ label: 'Returns', href: '/returns' }
-		]}
+		{
+			label: 'Shop',
+			href: '/products',
+			children: [
+				{ label: 'Hydroponics', href: '/products/hydroponics' },
+				{ label: 'Aquaponics', href: '/products/aquaponics' },
+				{ label: 'Silvopasture', href: '/products/silvopasture' },
+				{ label: 'Agroforestry', href: '/products/agroforestry' }
+			]
+		},
+		{
+			label: 'Learn',
+			href: '/learn',
+			children: [
+				{ label: 'Guides', href: '/guides' },
+				{ label: 'Blog', href: '/blog' },
+				{ label: 'FAQs', href: '/faq' },
+				{ label: 'Resources', href: '/resources' }
+			]
+		},
+		{
+			label: 'Affiliate',
+			href: '/affiliate',
+			children: [
+				{ label: 'Join Program', href: '/affiliate/join' },
+				{ label: 'Dashboard', href: '/affiliate/dashboard' },
+				{ label: 'Earnings', href: '/affiliate/earnings' },
+				{ label: 'Links', href: '/affiliate/links' }
+			]
+		},
+		{
+			label: 'Support',
+			href: '/support',
+			children: [
+				{ label: 'Contact', href: '/contact' },
+				{ label: 'Help Center', href: '/help' },
+				{ label: 'Shipping', href: '/shipping' },
+				{ label: 'Returns', href: '/returns' }
+			]
+		}
 	];
 
 	const footerLinks = {
@@ -85,10 +101,10 @@
 
 <div class="swiss-layout">
 	<input id="drawer-toggle" type="checkbox" class="drawer-toggle" />
-	
+
 	<div class="layout-content">
 		<Header />
-		
+
 		<main class="main-content">
 			{@render children()}
 		</main>
@@ -101,72 +117,90 @@
 						<div class="brand">
 							<span class="brand-icon">🌱</span>
 							<span class="brand-text">Aevani</span>
-						<p class="brand-description">
-							Sustainable agriculture solutions for the future. 
-							Hydroponics, aquaponics, and agroforestry products 
-							to help you grow better.
-						</p>
-						<div class="social-links">
-							<a href="https://facebook.com/aevani" class="social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
-								<i class="fab fa-facebook-f"></i>
-							</a>
-							<a href="https://twitter.com/aevani" class="social-link" aria-label="Twitter" target="_blank" rel="noopener noreferrer">
-								<i class="fab fa-twitter"></i>
-							</a>
-							<a href="https://instagram.com/aevani" class="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-								<i class="fab fa-instagram"></i>
-							</a>
+							<p class="brand-description">
+								Sustainable agriculture solutions for the future. Hydroponics, aquaponics, and
+								agroforestry products to help you grow better.
+							</p>
+							<div class="social-links">
+								<a
+									href="https://facebook.com/aevani"
+									class="social-link"
+									aria-label="Facebook"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									<i class="fab fa-facebook-f"></i>
+								</a>
+								<a
+									href="https://twitter.com/aevani"
+									class="social-link"
+									aria-label="Twitter"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									<i class="fab fa-twitter"></i>
+								</a>
+								<a
+									href="https://instagram.com/aevani"
+									class="social-link"
+									aria-label="Instagram"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									<i class="fab fa-instagram"></i>
+								</a>
+							</div>
+						</div>
+
+						<!-- Shop links -->
+						<div class="footer-section">
+							<h3 class="footer-title">Shop</h3>
+							<ul class="footer-links">
+								{#each footerLinks.shop as link}
+									<li><a href={link.href} class="footer-link">{link.label}</a></li>
+								{/each}
+							</ul>
+						</div>
+
+						<!-- Learn links -->
+						<div class="footer-section">
+							<h3 class="footer-title">Learn</h3>
+							<ul class="footer-links">
+								{#each footerLinks.learn as link}
+									<li><a href={link.href} class="footer-link">{link.label}</a></li>
+								{/each}
+							</ul>
+						</div>
+
+						<!-- Company links -->
+						<div class="footer-section">
+							<h3 class="footer-title">Company</h3>
+							<ul class="footer-links">
+								{#each footerLinks.company as link}
+									<li><a href={link.href} class="footer-link">{link.label}</a></li>
+								{/each}
+							</ul>
+						</div>
+
+						<!-- Support links -->
+						<div class="footer-section">
+							<h3 class="footer-title">Support</h3>
+							<ul class="footer-links">
+								{#each footerLinks.support as link}
+									<li><a href={link.href} class="footer-link">{link.label}</a></li>
+								{/each}
+							</ul>
 						</div>
 					</div>
 
-					<!-- Shop links -->
-					<div class="footer-section">
-						<h3 class="footer-title">Shop</h3>
-						<ul class="footer-links">
-							{#each footerLinks.shop as link}
-								<li><a href={link.href} class="footer-link">{link.label}</a></li>
-							{/each}
-						</ul>
-					</div>
-
-					<!-- Learn links -->
-					<div class="footer-section">
-						<h3 class="footer-title">Learn</h3>
-						<ul class="footer-links">
-							{#each footerLinks.learn as link}
-								<li><a href={link.href} class="footer-link">{link.label}</a></li>
-							{/each}
-						</ul>
-					</div>
-
-					<!-- Company links -->
-					<div class="footer-section">
-						<h3 class="footer-title">Company</h3>
-						<ul class="footer-links">
-							{#each footerLinks.company as link}
-								<li><a href={link.href} class="footer-link">{link.label}</a></li>
-							{/each}
-						</ul>
-					</div>
-
-					<!-- Support links -->
-					<div class="footer-section">
-						<h3 class="footer-title">Support</h3>
-						<ul class="footer-links">
-							{#each footerLinks.support as link}
-								<li><a href={link.href} class="footer-link">{link.label}</a></li>
-							{/each}
-						</ul>
-					</div>
-				</div>
-
-				<div class="footer-bottom">
-					<div class="footer-bottom-content">
-						<p class="copyright">&copy; 2024 Aevani. All rights reserved.</p>
-						<div class="footer-bottom-links">
-							<a href="/privacy" class="footer-bottom-link">Privacy Policy</a>
-							<a href="/terms" class="footer-bottom-link">Terms of Service</a>
-							<a href="/cookies" class="footer-bottom-link">Cookie Policy</a>
+					<div class="footer-bottom">
+						<div class="footer-bottom-content">
+							<p class="copyright">&copy; 2024 Aevani. All rights reserved.</p>
+							<div class="footer-bottom-links">
+								<a href="/privacy" class="footer-bottom-link">Privacy Policy</a>
+								<a href="/terms" class="footer-bottom-link">Terms of Service</a>
+								<a href="/cookies" class="footer-bottom-link">Cookie Policy</a>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -184,7 +218,7 @@
 					<span class="brand-text">PlantCommerce</span>
 				</div>
 			</div>
-			
+
 			<nav class="mobile-nav">
 				{#each mobileNavigation as item}
 					<div class="mobile-nav-item">
@@ -570,11 +604,11 @@
 			grid-template-columns: 1fr;
 			gap: 1.5rem;
 		}
-		
+
 		.footer-brand {
 			text-align: center;
 		}
-		
+
 		.brand-description {
 			max-width: none;
 		}

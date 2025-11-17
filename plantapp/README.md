@@ -221,10 +221,16 @@ This is the main application for PlantCommerce, a sustainable agriculture e-comm
    ```
 
 3. **Set up environment variables**
-   Create a `.env` file with:
+   Create a `.env` file in the `plantapp` directory (copy from `.env.example` if it exists):
    ```
-   DATABASE_URL="postgresql://user:password@localhost:5432/plantcommerce"
+   DATABASE_URL="postgresql://plantcommerce:plantcommerce_dev_password@localhost:5432/plantcommerce"
    ```
+   
+   For local development with Docker Compose, the default values are:
+   - User: `plantcommerce`
+   - Password: `plantcommerce_dev_password`
+   - Database: `plantcommerce`
+   - Port: `5432`
 
 4. **Start PostgreSQL database**
    ```bash

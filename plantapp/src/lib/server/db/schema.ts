@@ -25,7 +25,7 @@ export const session = pgTable('session', {
 });
 
 // ======= PRODUCT CATALOG =======
-export const productCategory: any = pgTable('product_category', {
+export const productCategory = pgTable('product_category', {
 	id: serial('id').primaryKey(),
 	name: text('name').notNull().unique(),
 	slug: text('slug').notNull().unique(),

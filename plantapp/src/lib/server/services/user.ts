@@ -201,56 +201,49 @@ export class UserService {
 		};
 	}
 
-	/**
-	 * Update user profile
-	 */
+	static async isUsernameAvailable(username: string): Promise<boolean> {
+		const [existing] = await db
+			.select()
+			.from(table.user)
+			.where(eq(table.user.username, username))
+			.limit(1);
+		return !existing;
+	}
+
+	static async isEmailAvailable(email: string): Promise<boolean> {
+		const [existing] = await db
+			.select()
+			.from(table.user)
+			.where(eq(table.user.email, email))
+			.limit(1);
+		return !existing;
+	}
+
 	static async updateProfile(userId: string, params: UpdateUserParams): Promise<UserProfile> {
 		const { firstName, lastName, email, username } = params;
 
-		// Check if new email/username conflicts with existing users
 		if (email || username) {
 			const conditions = [];
 			if (email) conditions.push(eq(table.user.email, email));
 			if (username) conditions.push(eq(table.user.username, username));
 
-			const existingUser = await db
+			const [existing] = await db
 				.select()
 				.from(table.user)
-				.where(
-					and(
-						or(...conditions),
-						// Exclude current user from check
-						// Note: Using ne() from drizzle-orm would be better, but using != for now
-						// ne(table.user.id, userId)
-					)
-				)
+				.where(and(or(...conditions)))
 				.limit(1);
 
-			if (existingUser.length > 0 && existingUser[0].id !== userId) {
-				if (existingUser[0].email === email) {
-					throw new Error('Email already exists');
-				}
-				if (existingUser[0].username === username) {
-					throw new Error('Username already exists');
-				}
+			if (existing && existing.id !== userId) {
+				if (existing.email === email) throw new Error('Email already exists');
+				if (existing.username === username) throw new Error('Username already exists');
 			}
 		}
 
-		// Build update object
-		const updateData: Partial<typeof table.user.$inferInsert> = {
-			updatedAt: new Date()
-		};
-
+		const updateData: Partial<typeof table.user.$inferInsert> = { updatedAt: new Date() };
 		if (firstName !== undefined) updateData.firstName = firstName;
 		if (lastName !== undefined) updateData.lastName = lastName;
 		if (email !== undefined) updateData.email = email;
 		if (username !== undefined) updateData.username = username;
-
-		// Remove undefined values
-		Object.keys(updateData).forEach(key => 
-			updateData[key as keyof typeof updateData] === undefined && 
-			delete updateData[key as keyof typeof updateData]
-		);
 
 		const [updatedUser] = await db
 			.update(table.user)
@@ -258,9 +251,7 @@ export class UserService {
 			.where(eq(table.user.id, userId))
 			.returning();
 
-		if (!updatedUser) {
-			throw new Error('User not found');
-		}
+		if (!updatedUser) throw new Error('User not found');
 
 		return {
 			id: updatedUser.id,

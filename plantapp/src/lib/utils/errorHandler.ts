@@ -1,8 +1,3 @@
-/**
- * Centralized error handling utilities for Aevani.
- * Designed for minimal code duplication and easy logging integration.
- */
-
 export class AppError extends Error {
   constructor(
     public code: string,
@@ -12,8 +7,6 @@ export class AppError extends Error {
   ) {
     super(message);
     this.name = 'AppError';
-
-    // Maintains proper stack trace for where error was thrown
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, AppError);
     }
@@ -41,32 +34,39 @@ export class UnauthorizedError extends AppError {
   }
 }
 
-/**
- * Centralized error handler with logging placeholder.
- * Wraps errors in AppError for consistency and future logging integration.
- */
-export function handleError(error: unknown, context?: string): never {
-  // Centralized logger
-  const logError = (err: any, context?: string) => {
-    const logEntry = {
-      level: 'error',
-      timestamp: new Date().toISOString(),
-      context,
-      name: err.name,
-      message: err.message,
-      code: err.code,
-      statusCode: err.statusCode,
-      stack: err.stack,
-    };
-    console.error(JSON.stringify(logEntry, null, 2));
-  };
+export interface ErrorContext {
+  userId?: string;
+  requestId?: string;
+  url?: string;
+  method?: string;
+  userAgent?: string;
+  ip?: string;
+  [key: string]: any;
+}
 
+const logError = (err: AppError, ctx?: string | ErrorContext) => {
+  const contextStr = typeof ctx === 'string' ? ctx : JSON.stringify(ctx);
+  console.error(JSON.stringify({
+    level: 'error',
+    timestamp: new Date().toISOString(),
+    context: contextStr,
+    name: err.name,
+    message: err.message,
+    code: err.code,
+    statusCode: err.statusCode,
+    stack: err.stack,
+  }, null, 2));
+};
+
+export async function handleError(
+  error: unknown, 
+  context?: string | ErrorContext
+): Promise<void> {
   if (error instanceof AppError) {
     logError(error, context);
     throw error;
   }
 
-  // Wrap unexpected errors
   const wrappedError = new AppError(
     'INTERNAL_ERROR',
     error instanceof Error ? error.message : 'An unexpected error occurred',
@@ -77,10 +77,6 @@ export function handleError(error: unknown, context?: string): never {
   throw wrappedError;
 }
 
-/**
- * Async wrapper for try-catch with error handling.
- * Reduces boilerplate in service methods.
- */
 export async function withErrorHandling<T>(
   operation: () => Promise<T>,
   context?: string

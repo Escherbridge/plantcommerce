@@ -44,7 +44,7 @@ export const filesRouter = router({
 			}
 
 			// If file is private, require authentication
-			if (!file.isPublic && !ctx.userId) {
+			if (!file.isPublic && !ctx.user) {
 				throw new TRPCError({
 					code: 'UNAUTHORIZED',
 					message: 'Authentication required for private files'
@@ -52,7 +52,7 @@ export const filesRouter = router({
 			}
 
 			// If file is private and user is authenticated, generate signed URL
-			if (!file.isPublic && ctx.userId) {
+			if (!file.isPublic && ctx.user) {
 				try {
 					file.signedUrl = await FileService.generateSignedUrl(file.id);
 				} catch (error) {
