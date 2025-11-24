@@ -2,6 +2,7 @@ import { eq, and, like, or, desc, asc } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { FileService } from './file';
+import { sanitizeLike } from '$lib/utils/string';
 
 export interface ProductWithImages {
 	id: number;
@@ -610,10 +611,6 @@ export class ProductService {
 		if (categoryId) {
 			conditions.push(eq(table.product.categoryId, categoryId));
 		}
-
-import { sanitizeLike } from '$lib/utils/string';
-
-// ...
 
 		if (search) {
 			conditions.push(
