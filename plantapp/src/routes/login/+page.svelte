@@ -93,11 +93,11 @@
 							disabled={isLoading}
 							minlength="8"
 						/>
-						<label class="label">
+						<div class="label">
 							<a href="/forgot-password" class="label-text-alt link link-hover">
 								Forgot password?
 							</a>
-						</label>
+						</div>
 					</div>
 
 					<div class="form-control mt-6">

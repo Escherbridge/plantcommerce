@@ -3,7 +3,7 @@
 	import { Accordion } from '$lib/components/ui';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
 	const categories = [
 		{ name: 'General', slug: 'general' },

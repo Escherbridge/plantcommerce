@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { LayoutData } from './$types';
 
-	let { data }: { data: LayoutData } = $props();
+	let { data, children } = $props();
 </script>
 
 <div class="drawer lg:drawer-open">
@@ -32,7 +32,7 @@
 		</div>
 
 		<div class="p-6">
-			<slot />
+			{@render children()}
 		</div>
 	</div>
 

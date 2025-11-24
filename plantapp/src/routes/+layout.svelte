@@ -615,9 +615,6 @@
 	}
 
 	/* Clean spacing and typography */
-	.footer-container > * + * {
-		margin-top: 2rem;
-	}
 
 	.footer-section > * + * {
 		margin-top: 1rem;

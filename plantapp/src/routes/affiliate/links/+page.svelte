@@ -87,9 +87,9 @@
 
 				{#if generatedLink}
 					<div class="mt-6 p-4 bg-base-200 rounded-lg">
-						<label class="label">
+						<div class="label">
 							<span class="label-text font-semibold">Your Affiliate Link</span>
-						</label>
+						</div>
 						<div class="flex gap-2">
 							<input
 								type="text"

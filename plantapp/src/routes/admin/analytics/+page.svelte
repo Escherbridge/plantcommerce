@@ -37,7 +37,7 @@
 					<input id="date-to" type="date" class="input input-bordered" />
 				</div>
 				<div class="form-control">
-					<label class="label">&nbsp;</label>
+					<div class="label">&nbsp;</div>
 					<button class="btn btn-primary">Apply Filter</button>
 				</div>
 			</div>

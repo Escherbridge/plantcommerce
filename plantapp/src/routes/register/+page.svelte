@@ -146,9 +146,9 @@
 							minlength="3"
 							maxlength="50"
 						/>
-						<label class="label">
+						<div class="label">
 							<span class="label-text-alt">Must be 3-50 characters</span>
-						</label>
+						</div>
 					</div>
 
 					<div class="form-control">
@@ -181,15 +181,15 @@
 							minlength="8"
 						/>
 						{#if passwordErrors().length > 0 && password}
-							<label class="label">
+							<div class="label">
 								{#each passwordErrors() as error}
 									<span class="label-text-alt text-error">{error}</span>
 								{/each}
-							</label>
+							</div>
 						{:else}
-							<label class="label">
+							<div class="label">
 								<span class="label-text-alt">Must be at least 8 characters</span>
-							</label>
+							</div>
 						{/if}
 					</div>
 
