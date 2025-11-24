@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import { trpc } from '$lib/trpc/client';
 	
 	interface UploadedFile {
@@ -12,22 +11,31 @@
 		signedUrl?: string;
 	}
 
-	export let entityType: 'user' | 'product' | 'content' | 'general' = 'general';
-	export let entityId: string | undefined = undefined;
-	export let isPublic: boolean = false;
-	export let accept: string = 'image/*,application/pdf,.doc,.docx';
-	export let multiple: boolean = false;
-	export let maxFiles: number = 5;
-	export let maxSizeBytes: number = 10 * 1024 * 1024; // 10MB
-
-	const dispatch = createEventDispatcher<{
-		upload: UploadedFile[];
-		error: string;
-	}>();
+	let {
+		entityType = $bindable('general' as 'user' | 'product' | 'content' | 'general'),
+		entityId = $bindable(undefined as string | undefined),
+		isPublic = $bindable(false),
+		accept = 'image/*,application/pdf,.doc,.docx',
+		multiple = false,
+		maxFiles = 5,
+		maxSizeBytes = 10 * 1024 * 1024, // 10MB
+		onupload,
+		onerror
+	}: {
+		entityType?: 'user' | 'product' | 'content' | 'general';
+		entityId?: string | undefined;
+		isPublic?: boolean;
+		accept?: string;
+		multiple?: boolean;
+		maxFiles?: number;
+		maxSizeBytes?: number;
+		onupload?: (event: CustomEvent<UploadedFile[]>) => void;
+		onerror?: (event: CustomEvent<string>) => void;
+	} = $props();
 
 	let fileInput: HTMLInputElement;
-	let uploading = false;
-	let uploadProgress = 0;
+	let uploading = $state(false);
+	let uploadProgress = $state(0);
 
 	async function handleFileUpload(event: Event) {
 		const target = event.target as HTMLInputElement;
@@ -37,14 +45,14 @@
 
 		// Validate file count
 		if (files.length > maxFiles) {
-			dispatch('error', `Maximum ${maxFiles} files allowed`);
+			onerror?.({ detail: `Maximum ${maxFiles} files allowed` } as CustomEvent<string>);
 			return;
 		}
 
 		// Validate file sizes
 		for (const file of Array.from(files)) {
 			if (file.size > maxSizeBytes) {
-				dispatch('error', `File "${file.name}" is too large. Maximum ${Math.round(maxSizeBytes / 1024 / 1024)}MB allowed`);
+				onerror?.({ detail: `File "${file.name}" is too large. Maximum ${Math.round(maxSizeBytes / 1024 / 1024)}MB allowed` } as CustomEvent<string>);
 				return;
 			}
 		}
@@ -76,14 +84,14 @@
 			}
 
 			const result = await response.json();
-			dispatch('upload', result.files);
+			onupload?.({ detail: result.files } as CustomEvent<UploadedFile[]>);
 
 			// Clear the input
 			if (fileInput) fileInput.value = '';
 
 		} catch (error) {
 			console.error('Upload failed:', error);
-			dispatch('error', error instanceof Error ? error.message : 'Upload failed');
+			onerror?.({ detail: error instanceof Error ? error.message : 'Upload failed' } as CustomEvent<string>);
 		} finally {
 			uploading = false;
 			uploadProgress = 0;
@@ -106,7 +114,7 @@
 			type="file"
 			{accept}
 			{multiple}
-			on:change={handleFileUpload}
+			onchange={handleFileUpload}
 			disabled={uploading}
 			class="file-input"
 		/>

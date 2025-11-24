@@ -55,7 +55,7 @@
 								</div>
 								<button
 									class="btn btn-outline btn-sm"
-									on:click={() => navigator.clipboard.writeText(`${post.text}\n\n${post.hashtags}`)}
+									onclick={() => navigator.clipboard.writeText(`${post.text}\n\n${post.hashtags}`)}
 								>
 									📋 Copy
 								</button>

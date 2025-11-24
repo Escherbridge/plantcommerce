@@ -108,7 +108,7 @@
 								src={member.image}
 								alt={member.name}
 								class="object-cover w-full h-full"
-								on:error={(e) => {
+								onerror={(e) => {
 									e.currentTarget.src = '/placeholder-avatar.jpg';
 								}}
 							/>

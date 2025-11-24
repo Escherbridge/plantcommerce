@@ -2,15 +2,17 @@
 	import { Container, Section } from '$lib/components/layout';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
-	$: subtotal = data.cart?.items?.reduce(
-		(sum: number, item: any) => sum + parseFloat(item.price) * item.quantity,
-		0
-	) || 0;
-	$: shipping = subtotal > 100 ? 0 : 9.99;
-	$: tax = subtotal * 0.08; // 8% tax rate
-	$: total = subtotal + shipping + tax;
+	const subtotal = $derived(
+		data.cart?.items?.reduce(
+			(sum: number, item: any) => sum + parseFloat(item.price) * item.quantity,
+			0
+		) || 0
+	);
+	const shipping = $derived(subtotal > 100 ? 0 : 9.99);
+	const tax = $derived(subtotal * 0.08); // 8% tax rate
+	const total = $derived(subtotal + shipping + tax);
 
 	async function updateQuantity(itemId: number, quantity: number) {
 		// Implement update quantity logic
@@ -70,7 +72,7 @@
 									<div class="flex flex-col items-end gap-4">
 										<button
 											class="btn btn-ghost btn-sm btn-circle"
-											on:click={() => removeItem(item.id)}
+											onclick={() => removeItem(item.id)}
 											aria-label="Remove item"
 										>
 											❌
@@ -78,7 +80,7 @@
 										<div class="join">
 											<button
 												class="join-item btn btn-sm"
-												on:click={() => updateQuantity(item.id, item.quantity - 1)}
+												onclick={() => updateQuantity(item.id, item.quantity - 1)}
 												disabled={item.quantity <= 1}
 											>
 												-
@@ -88,7 +90,7 @@
 											</div>
 											<button
 												class="join-item btn btn-sm"
-												on:click={() => updateQuantity(item.id, item.quantity + 1)}
+												onclick={() => updateQuantity(item.id, item.quantity + 1)}
 											>
 												+
 											</button>

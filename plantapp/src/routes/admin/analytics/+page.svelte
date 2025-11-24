@@ -2,17 +2,19 @@
 	import { Grid } from '$lib/components/layout';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
-	$: analytics = data.analytics || {
-		totalRevenue: 0,
-		totalOrders: 0,
-		averageOrderValue: 0,
-		conversionRate: 0,
-		topProducts: [],
-		topCategories: [],
-		revenueByMonth: []
-	};
+	const analytics = $derived(
+		data.analytics || {
+			totalRevenue: 0,
+			totalOrders: 0,
+			averageOrderValue: 0,
+			conversionRate: 0,
+			topProducts: [],
+			topCategories: [],
+			revenueByMonth: []
+		}
+	);
 </script>
 
 <div class="space-y-6">

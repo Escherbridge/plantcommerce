@@ -3,14 +3,16 @@
 	import { Grid } from '$lib/components/layout';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
-	$: stats = data.stats || {
-		totalClicks: 0,
-		totalConversions: 0,
-		totalEarnings: 0,
-		conversionRate: 0
-	};
+	const stats = $derived(
+		data.stats || {
+			totalClicks: 0,
+			totalConversions: 0,
+			totalEarnings: 0,
+			conversionRate: 0
+		}
+	);
 </script>
 
 <Section>
@@ -77,7 +79,7 @@
 						</code>
 						<button
 							class="btn btn-square btn-outline"
-							on:click={() => navigator.clipboard.writeText(data.affiliate?.affiliateCode || '')}
+							onclick={() => navigator.clipboard.writeText(data.affiliate?.affiliateCode || '')}
 						>
 							📋
 						</button>

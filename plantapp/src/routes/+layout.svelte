@@ -10,7 +10,7 @@
 	const user = $derived(data.user);
 
 	// Logout function for mobile
-	let isLoggingOut = false;
+	let isLoggingOut = $state(false);
 	async function handleLogout() {
 		if (isLoggingOut) return;
 		isLoggingOut = true;
@@ -246,7 +246,7 @@
 							<span class="mobile-user-email">{user.email}</span>
 						</div>
 						<a href="/account" class="mobile-action-btn">My Account</a>
-						<button on:click={handleLogout} class="mobile-action-btn" disabled={isLoggingOut}>
+						<button onclick={handleLogout} class="mobile-action-btn" disabled={isLoggingOut}>
 							{isLoggingOut ? 'Logging out...' : 'Logout'}
 						</button>
 					{:else}

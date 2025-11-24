@@ -3,10 +3,10 @@
 	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
-	let searchQuery = data.searchQuery || '';
-	let selectedCategory = data.selectedCategory || '';
+	let searchQuery = $state(data.searchQuery || '');
+	let selectedCategory = $state(data.selectedCategory || '');
 
 	function handleSearch() {
 		const params = new URLSearchParams();
@@ -40,9 +40,9 @@
 						placeholder="Search products..."
 						class="input input-bordered join-item w-full"
 						bind:value={searchQuery}
-						on:keypress={(e) => e.key === 'Enter' && handleSearch()}
+						onkeypress={(e) => e.key === 'Enter' && handleSearch()}
 					/>
-					<button class="btn btn-primary join-item" on:click={handleSearch}>Search</button>
+					<button class="btn btn-primary join-item" onclick={handleSearch}>Search</button>
 				</div>
 			</div>
 
@@ -51,7 +51,7 @@
 				<select
 					class="select select-bordered w-full"
 					bind:value={selectedCategory}
-					on:change={handleSearch}
+					onchange={handleSearch}
 				>
 					<option value="">All Categories</option>
 					{#each data.categories as category}
@@ -135,7 +135,7 @@
 							{/if}
 						</p>
 						{#if data.searchQuery || data.selectedCategory}
-							<button class="btn btn-primary mt-4" on:click={() => goto('/products')}>
+							<button class="btn btn-primary mt-4" onclick={() => goto('/products')}>
 								Clear Filters
 							</button>
 						{/if}

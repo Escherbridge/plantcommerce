@@ -3,27 +3,27 @@
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
 
-	let username = '';
-	let email = '';
-	let password = '';
-	let confirmPassword = '';
-	let firstName = '';
-	let lastName = '';
-	let errorMessage = '';
-	let isLoading = false;
-	let passwordErrors: string[] = [];
-
-	$: {
-		passwordErrors = [];
+	let username = $state('');
+	let email = $state('');
+	let password = $state('');
+	let confirmPassword = $state('');
+	let firstName = $state('');
+	let lastName = $state('');
+	let errorMessage = $state('');
+	let isLoading = $state(false);
+	
+	const passwordErrors = $derived(() => {
+		const errors: string[] = [];
 		if (password) {
 			if (password.length < 8) {
-				passwordErrors.push('Password must be at least 8 characters');
+				errors.push('Password must be at least 8 characters');
 			}
 			if (confirmPassword && password !== confirmPassword) {
-				passwordErrors.push('Passwords do not match');
+				errors.push('Passwords do not match');
 			}
 		}
-	}
+		return errors;
+	});
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
@@ -100,7 +100,7 @@
 					</div>
 				{/if}
 
-				<form on:submit={handleSubmit} class="space-y-4">
+				<form onsubmit={handleSubmit} class="space-y-4">
 					<div class="grid grid-cols-2 gap-4">
 						<div class="form-control">
 							<label class="label" for="firstName">
@@ -180,9 +180,9 @@
 							disabled={isLoading}
 							minlength="8"
 						/>
-						{#if passwordErrors.length > 0 && password}
+						{#if passwordErrors().length > 0 && password}
 							<label class="label">
-								{#each passwordErrors as error}
+								{#each passwordErrors() as error}
 									<span class="label-text-alt text-error">{error}</span>
 								{/each}
 							</label>
