@@ -3,16 +3,6 @@
 	import { trpc } from '$lib/trpc/client';
 	import { browser } from '$app/environment';
 
-	// Theme switcher functionality
-	let currentTheme = $state('light');
-
-	function toggleTheme() {
-		const themes = ['light', 'dark', 'cupcake', 'forest', 'luxury', 'business'];
-		const currentIndex = themes.indexOf(currentTheme);
-		currentTheme = themes[(currentIndex + 1) % themes.length];
-		document.documentElement.setAttribute('data-theme', currentTheme);
-	}
-
 	// Get user from page data
 	const user = $derived($page.data.user);
 
@@ -34,49 +24,36 @@
 		}
 	}
 
-	// Navigation structure based on app features
+	// Navigation structure
 	const mainNavigation = [
-		{ label: 'Shop', href: '/products', children: [
-			{ label: 'Hydroponics', href: '/products/hydroponics' },
-			{ label: 'Aquaponics', href: '/products/aquaponics' },
-			{ label: 'Silvopasture', href: '/products/silvopasture' },
-			{ label: 'Agroforestry', href: '/products/agroforestry' }
-		]},
-		{ label: 'Learn', href: '/learn', children: [
-			{ label: 'Guides', href: '/guides' },
-			{ label: 'Blog', href: '/blog' },
-			{ label: 'FAQs', href: '/faq' },
-			{ label: 'Resources', href: '/resources' }
-		]},
-		{ label: 'Affiliate', href: '/affiliate', children: [
-			{ label: 'Join Program', href: '/affiliate/join' },
-			{ label: 'Dashboard', href: '/affiliate/dashboard' },
-			{ label: 'Earnings', href: '/affiliate/earnings' },
-			{ label: 'Links', href: '/affiliate/links' }
-		]},
-		{ label: 'Support', href: '/support', children: [
-			{ label: 'Contact', href: '/contact' },
-			{ label: 'Help Center', href: '/help' },
-			{ label: 'Shipping', href: '/shipping' },
-			{ label: 'Returns', href: '/returns' }
-		]}
+		{
+			label: 'Shop',
+			href: '/products',
+			children: [
+				{ label: 'Hydroponics', href: '/products/hydroponics' },
+				{ label: 'Aquaponics', href: '/products/aquaponics' },
+				{ label: 'Silvopasture', href: '/products/silvopasture' },
+				{ label: 'Agroforestry', href: '/products/agroforestry' }
+			]
+		},
+		{
+			label: 'Learn',
+			href: '/learn',
+			children: [
+				{ label: 'Guides', href: '/guides' },
+				{ label: 'Blog', href: '/blog' },
+				{ label: 'FAQs', href: '/faq' },
+				{ label: 'Resources', href: '/resources' }
+			]
+		},
+		{ label: 'Affiliate', href: '/affiliate' },
+		{ label: 'Support', href: '/support' }
 	];
 
 	const userNavigation = [
 		{ label: 'Account', href: '/account' },
 		{ label: 'Orders', href: '/orders' },
-		{ label: 'Cart', href: '/cart' },
 		{ label: 'Wishlist', href: '/wishlist' }
-	];
-
-	const adminNavigation = [
-		{ label: 'Admin', href: '/admin', children: [
-			{ label: 'Products', href: '/admin/products' },
-			{ label: 'Orders', href: '/admin/orders' },
-			{ label: 'Users', href: '/admin/users' },
-			{ label: 'Content', href: '/admin/content' },
-			{ label: 'Analytics', href: '/admin/analytics' }
-		]}
 	];
 
 	// Check if current path matches navigation item
@@ -86,30 +63,34 @@
 	}
 </script>
 
-<header class="swiss-header">
+<header class="enhanced-header">
 	<div class="header-container">
 		<!-- Mobile menu button -->
 		<label for="drawer-toggle" class="mobile-menu-btn">
-			<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+			<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2.5"
+					d="M4 6h16M4 12h16M4 18h16"
+				></path>
 			</svg>
 		</label>
-		
+
 		<!-- Logo/Brand -->
 		<a href="/" class="brand">
 			<span class="brand-icon">🌱</span>
-			<span class="brand-text">Aevani</span>
+			<div class="brand-text-container">
+				<span class="brand-text">AEVANI</span>
+				<span class="brand-tagline">Marketplace</span>
+			</div>
 		</a>
-		
+
 		<!-- Desktop navigation -->
 		<nav class="desktop-nav">
 			{#each mainNavigation as item}
 				<div class="nav-item">
-					<a 
-						href={item.href} 
-						class="nav-link" 
-						class:active={isActive(item.href)}
-					>
+					<a href={item.href} class="nav-link" class:active={isActive(item.href)}>
 						{item.label}
 					</a>
 					{#if item.children}
@@ -124,32 +105,32 @@
 				</div>
 			{/each}
 		</nav>
-		
+
 		<!-- Right side actions -->
 		<div class="header-actions">
-			<!-- Search -->
-			<div class="search-container">
-				<input type="text" placeholder="Search products..." class="search-input" />
-				<button class="search-btn" aria-label="Search">
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-					</svg>
-				</button>
-			</div>
-			
 			<!-- Cart -->
 			<a href="/cart" class="action-btn cart-btn">
-				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
+				<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+					></path>
 				</svg>
 				<span class="cart-count">0</span>
 			</a>
-			
+
 			<!-- User menu -->
 			<div class="user-menu">
 				<button class="action-btn user-btn" aria-label="User menu">
-					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+					<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+						></path>
 					</svg>
 				</button>
 				<div class="user-dropdown">
@@ -172,29 +153,18 @@
 							<a href="/admin" class="user-dropdown-link">Admin Dashboard</a>
 						{/if}
 						<hr class="dropdown-divider" />
-						<button onclick={handleLogout} class="user-dropdown-link logout-btn" disabled={isLoggingOut}>
+						<button
+							onclick={handleLogout}
+							class="user-dropdown-link logout-btn"
+							disabled={isLoggingOut}
+						>
 							{isLoggingOut ? 'Logging out...' : 'Logout'}
 						</button>
 					{:else}
 						<!-- Guest user menu -->
 						<a href="/login" class="user-dropdown-link">Login</a>
-						<a href="/register" class="user-dropdown-link">Register</a>
+						<a href="/register" class="user-dropdown-link primary-link">Register</a>
 					{/if}
-				</div>
-			</div>
-			
-			<!-- Theme selector -->
-			<div class="theme-selector">
-				<button class="action-btn theme-btn" aria-label="Theme selector">
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-					</svg>
-				</button>
-				<div class="theme-dropdown">
-					<button onclick={() => { currentTheme = 'light'; document.documentElement.setAttribute('data-theme', 'light'); }}>Light</button>
-					<button onclick={() => { currentTheme = 'dark'; document.documentElement.setAttribute('data-theme', 'dark'); }}>Dark</button>
-					<button onclick={() => { currentTheme = 'forest'; document.documentElement.setAttribute('data-theme', 'forest'); }}>Forest</button>
-					<button onclick={() => { currentTheme = 'business'; document.documentElement.setAttribute('data-theme', 'business'); }}>Business</button>
 				</div>
 			</div>
 		</div>
@@ -202,49 +172,49 @@
 </header>
 
 <style>
-	.swiss-header {
-		background-color: white;
-		border-bottom: 1px solid #e5e7eb;
+	.enhanced-header {
+		background: linear-gradient(to bottom, #ffffff 0%, #fafbfc 100%);
+		border-bottom: 2px solid #e5e7eb;
 		position: sticky;
 		top: 0;
 		z-index: 50;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+		box-shadow:
+			0 4px 6px -1px rgba(0, 0, 0, 0.05),
+			0 2px 4px -1px rgba(0, 0, 0, 0.03);
 		font-family: 'Helvetica Neue', Arial, sans-serif;
 	}
 
 	.header-container {
-		max-width: 80rem;
+		max-width: 1600px;
 		margin: 0 auto;
-		padding: 0 1rem;
+		padding: 0 2rem;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		height: 4rem;
+		height: 5rem;
+		gap: 3rem;
 	}
 
-	@media (min-width: 640px) {
+	@media (max-width: 1024px) {
 		.header-container {
 			padding: 0 1.5rem;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.header-container {
-			padding: 0 2rem;
+			height: 4.5rem;
+			gap: 1.5rem;
 		}
 	}
 
 	.mobile-menu-btn {
 		display: block;
-		padding: 0.5rem;
-		border-radius: 0.375rem;
-		color: #4b5563;
-		transition: all 0.2s;
+		padding: 0.75rem;
+		border-radius: 0.5rem;
+		color: #1d3557;
+		transition: all 0.3s;
+		cursor: pointer;
 	}
 
 	.mobile-menu-btn:hover {
-		color: #111827;
 		background-color: #f3f4f6;
+		transform: scale(1.05);
 	}
 
 	@media (min-width: 1024px) {
@@ -256,33 +226,54 @@
 	.brand {
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
-		font-size: 1.25rem;
-		font-weight: 700;
-		color: #111827;
+		gap: 1rem;
 		text-decoration: none;
-		font-family: 'Helvetica Neue', Arial, sans-serif;
-		letter-spacing: -0.025em;
+		transition: transform 0.3s;
+	}
+
+	.brand:hover {
+		transform: translateY(-2px);
 	}
 
 	.brand-icon {
-		font-size: 1.5rem;
+		font-size: 2.5rem;
 	}
 
-	.brand-text {
+	.brand-text-container {
 		display: none;
+		flex-direction: column;
+		gap: 0;
+		line-height: 1.1;
 	}
 
 	@media (min-width: 640px) {
-		.brand-text {
-			display: block;
+		.brand-text-container {
+			display: flex;
 		}
+	}
+
+	.brand-text {
+		font-size: 1.75rem;
+		font-weight: 800;
+		color: #1d3557;
+		letter-spacing: -0.05em;
+		font-family: 'Helvetica Neue', Arial, sans-serif;
+	}
+
+	.brand-tagline {
+		font-size: 0.75rem;
+		font-weight: 500;
+		color: #457b9d;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
 	}
 
 	.desktop-nav {
 		display: none;
 		align-items: center;
-		gap: 2rem;
+		gap: 0.5rem;
+		flex: 1;
+		justify-content: center;
 	}
 
 	@media (min-width: 1024px) {
@@ -296,40 +287,46 @@
 	}
 
 	.nav-link {
-		font-size: 0.875rem;
-		font-weight: 500;
-		color: #374151;
-		padding: 0.5rem 0.75rem;
-		border-radius: 0.375rem;
-		transition: all 0.2s;
+		font-size: 1rem;
+		font-weight: 600;
+		color: #1d3557;
+		padding: 0.875rem 1.5rem;
+		border-radius: 0.5rem;
+		transition: all 0.3s;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
+		text-decoration: none;
+		display: block;
 	}
 
 	.nav-link:hover {
-		color: #111827;
-		transform: translateY(-1px);
+		color: #e63946;
+		background-color: #f8f9fa;
+		transform: translateY(-2px);
 	}
 
 	.nav-link.active {
-		color: #111827;
-		background-color: #f3f4f6;
+		color: #e63946;
+		background-color: #fef2f2;
 	}
 
 	.nav-dropdown {
 		position: absolute;
 		top: 100%;
 		left: 0;
-		margin-top: 0.25rem;
-		width: 12rem;
+		margin-top: 0.5rem;
+		min-width: 14rem;
 		background-color: white;
-		border-radius: 0.375rem;
-		box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-		border: 1px solid #e5e7eb;
+		border-radius: 0.75rem;
+		box-shadow:
+			0 20px 25px -5px rgba(0, 0, 0, 0.1),
+			0 10px 10px -5px rgba(0, 0, 0, 0.04);
+		border: 2px solid #e5e7eb;
 		opacity: 0;
 		visibility: hidden;
-		transition: all 0.2s;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		transform: translateY(-10px);
+		padding: 0.5rem;
 	}
 
 	.nav-item:hover .nav-dropdown {
@@ -340,74 +337,42 @@
 
 	.nav-dropdown-link {
 		display: block;
-		padding: 0.5rem 1rem;
-		font-size: 0.875rem;
+		padding: 0.875rem 1.25rem;
+		font-size: 0.9375rem;
+		font-weight: 500;
 		color: #374151;
-		transition: all 0.15s;
+		transition: all 0.2s;
+		border-radius: 0.5rem;
+		text-decoration: none;
 	}
 
 	.nav-dropdown-link:hover {
 		background-color: #f3f4f6;
-		color: #111827;
+		color: #1d3557;
+		transform: translateX(4px);
 	}
 
 	.header-actions {
 		display: flex;
 		align-items: center;
-		gap: 1rem;
-	}
-
-	.search-container {
-		display: none;
-		align-items: center;
-		position: relative;
-	}
-
-	@media (min-width: 768px) {
-		.search-container {
-			display: flex;
-		}
-	}
-
-	.search-input {
-		width: 16rem;
-		padding: 0.5rem 1rem;
-		font-size: 0.875rem;
-		border: 1px solid #d1d5db;
-		border-radius: 0.375rem;
-		outline: none;
-		transition: all 0.2s;
-	}
-
-	.search-input:focus {
-		ring: 2px solid #10b981;
-		border-color: transparent;
-	}
-
-	.search-btn {
-		position: absolute;
-		right: 0.5rem;
-		padding: 0.25rem;
-		color: #9ca3af;
-		transition: color 0.2s;
-	}
-
-	.search-btn:hover {
-		color: #4b5563;
+		gap: 0.75rem;
 	}
 
 	.action-btn {
 		position: relative;
-		padding: 0.5rem;
-		color: #4b5563;
-		transition: all 0.2s;
-		border-radius: 0.375rem;
+		padding: 0.75rem;
+		color: #1d3557;
+		transition: all 0.3s;
+		border-radius: 0.5rem;
+		background: none;
+		border: none;
+		cursor: pointer;
 	}
 
 	.action-btn:hover {
-		color: #111827;
-		background-color: #f3f4f6;
-		transform: translateY(-1px);
+		color: #e63946;
+		background-color: #f8f9fa;
+		transform: translateY(-2px);
 	}
 
 	.cart-btn {
@@ -417,76 +382,96 @@
 
 	.cart-count {
 		position: absolute;
-		top: -0.25rem;
-		right: -0.25rem;
-		background-color: #059669;
+		top: 0.25rem;
+		right: 0.25rem;
+		background: linear-gradient(135deg, #e63946 0%, #d62839 100%);
 		color: white;
-		font-size: 0.75rem;
+		font-size: 0.6875rem;
+		font-weight: 700;
 		border-radius: 9999px;
-		height: 1.25rem;
-		width: 1.25rem;
+		height: 1.125rem;
+		min-width: 1.125rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		padding: 0 0.25rem;
+		box-shadow: 0 2px 4px rgba(230, 57, 70, 0.3);
 	}
 
-	.user-menu, .theme-selector {
+	.user-menu {
 		position: relative;
 	}
 
-	.user-dropdown, .theme-dropdown {
+	.user-dropdown {
 		position: absolute;
 		right: 0;
 		top: 100%;
-		margin-top: 0.25rem;
-		width: 12rem;
+		margin-top: 0.5rem;
+		min-width: 14rem;
 		background-color: white;
-		border-radius: 0.375rem;
-		box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-		border: 1px solid #e5e7eb;
+		border-radius: 0.75rem;
+		box-shadow:
+			0 20px 25px -5px rgba(0, 0, 0, 0.1),
+			0 10px 10px -5px rgba(0, 0, 0, 0.04);
+		border: 2px solid #e5e7eb;
 		opacity: 0;
 		visibility: hidden;
-		transition: all 0.2s;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		transform: translateY(-10px);
+		padding: 0.5rem;
 	}
 
-	.user-menu:hover .user-dropdown,
-	.theme-selector:hover .theme-dropdown {
+	.user-menu:hover .user-dropdown {
 		opacity: 1;
 		visibility: visible;
 		transform: translateY(0);
 	}
 
 	.user-dropdown-header {
-		padding: 0.75rem 1rem;
+		padding: 1rem 1.25rem;
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
 	}
 
 	.user-dropdown-name {
-		font-size: 0.875rem;
-		font-weight: 600;
-		color: #111827;
+		font-size: 0.9375rem;
+		font-weight: 700;
+		color: #1d3557;
 	}
 
 	.user-dropdown-email {
-		font-size: 0.75rem;
+		font-size: 0.8125rem;
 		color: #6b7280;
 	}
 
 	.user-dropdown-link {
 		display: block;
-		padding: 0.5rem 1rem;
-		font-size: 0.875rem;
+		padding: 0.875rem 1.25rem;
+		font-size: 0.9375rem;
+		font-weight: 500;
 		color: #374151;
-		transition: all 0.15s;
+		transition: all 0.2s;
 		text-decoration: none;
+		border-radius: 0.5rem;
 	}
 
 	.user-dropdown-link:hover {
 		background-color: #f3f4f6;
-		color: #111827;
+		color: #1d3557;
+		transform: translateX(4px);
+	}
+
+	.user-dropdown-link.primary-link {
+		background: linear-gradient(135deg, #e63946 0%, #d62839 100%);
+		color: white;
+		font-weight: 600;
+		margin-top: 0.5rem;
+	}
+
+	.user-dropdown-link.primary-link:hover {
+		transform: translateX(0) scale(1.02);
+		box-shadow: 0 4px 6px rgba(230, 57, 70, 0.2);
 	}
 
 	.logout-btn {
@@ -504,46 +489,7 @@
 	}
 
 	.dropdown-divider {
-		margin: 0.25rem 0;
+		margin: 0.5rem 0;
 		border-color: #e5e7eb;
-	}
-
-	.theme-dropdown button {
-		display: block;
-		width: 100%;
-		text-align: left;
-		padding: 0.5rem 1rem;
-		font-size: 0.875rem;
-		color: #374151;
-		transition: all 0.15s;
-		border: none;
-		background: none;
-		cursor: pointer;
-	}
-
-	.theme-dropdown button:hover {
-		background-color: #f3f4f6;
-		color: #111827;
-	}
-
-	/* Mobile responsive adjustments */
-	@media (max-width: 640px) {
-		.header-container {
-			padding: 0 0.75rem;
-		}
-		
-		.brand-text {
-			font-size: 1.125rem;
-		}
-	}
-
-	/* Swiss design principles */
-	.nav-link, .brand-text {
-		font-weight: 500;
-	}
-
-	/* Clean, minimal spacing */
-	.header-container > * + * {
-		margin-left: 1rem;
 	}
 </style>

@@ -112,95 +112,106 @@
 		<footer class="swiss-footer">
 			<div class="footer-container">
 				<div class="footer-grid">
-					<!-- Brand section -->
+					<!-- Brand & Newsletter section -->
 					<div class="footer-brand">
 						<div class="brand">
-							<span class="brand-icon">🌱</span>
-							<span class="brand-text">Aevani</span>
-							<p class="brand-description">
-								Sustainable agriculture solutions for the future. Hydroponics, aquaponics, and
-								agroforestry products to help you grow better.
-							</p>
-							<div class="social-links">
-								<a
-									href="https://facebook.com/aevani"
-									class="social-link"
-									aria-label="Facebook"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									<i class="fab fa-facebook-f"></i>
-								</a>
-								<a
-									href="https://twitter.com/aevani"
-									class="social-link"
-									aria-label="Twitter"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									<i class="fab fa-twitter"></i>
-								</a>
-								<a
-									href="https://instagram.com/aevani"
-									class="social-link"
-									aria-label="Instagram"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									<i class="fab fa-instagram"></i>
-								</a>
+							<span class="brand-icon text-2xl">🌱</span>
+							<span class="brand-text text-xl font-bold text-[#1D3557]">Aevani</span>
+						</div>
+						<p class="brand-description mb-6 max-w-sm text-[#457B9D]">
+							Sustainable hydroponics, aquaponics, and agroforestry products to help you grow
+							better.
+						</p>
+
+						<div class="newsletter-signup mb-8">
+							<h4 class="mb-3 text-sm font-bold uppercase tracking-wider text-[#1D3557]">
+								Join our community
+							</h4>
+							<div class="flex max-w-sm gap-2">
+								<input
+									type="email"
+									placeholder="Enter your email"
+									class="input input-bordered input-sm w-full border-[#A8DADC] focus:border-[#457B9D] focus:ring-1 focus:ring-[#457B9D]"
+								/>
+								<button class="btn btn-sm border-none bg-[#1D3557] text-white hover:bg-[#457B9D]">
+									Subscribe
+								</button>
 							</div>
 						</div>
 
-						<!-- Shop links -->
-						<div class="footer-section">
-							<h3 class="footer-title">Shop</h3>
-							<ul class="footer-links">
-								{#each footerLinks.shop as link}
-									<li><a href={link.href} class="footer-link">{link.label}</a></li>
-								{/each}
-							</ul>
-						</div>
-
-						<!-- Learn links -->
-						<div class="footer-section">
-							<h3 class="footer-title">Learn</h3>
-							<ul class="footer-links">
-								{#each footerLinks.learn as link}
-									<li><a href={link.href} class="footer-link">{link.label}</a></li>
-								{/each}
-							</ul>
-						</div>
-
-						<!-- Company links -->
-						<div class="footer-section">
-							<h3 class="footer-title">Company</h3>
-							<ul class="footer-links">
-								{#each footerLinks.company as link}
-									<li><a href={link.href} class="footer-link">{link.label}</a></li>
-								{/each}
-							</ul>
-						</div>
-
-						<!-- Support links -->
-						<div class="footer-section">
-							<h3 class="footer-title">Support</h3>
-							<ul class="footer-links">
-								{#each footerLinks.support as link}
-									<li><a href={link.href} class="footer-link">{link.label}</a></li>
-								{/each}
-							</ul>
+						<div class="social-links">
+							<a
+								href="https://facebook.com/aevani"
+								class="social-link transition-colors hover:text-[#E63946]"
+								aria-label="Facebook"
+							>
+								<i class="fab fa-facebook-f"></i>
+							</a>
+							<a
+								href="https://twitter.com/aevani"
+								class="social-link transition-colors hover:text-[#E63946]"
+								aria-label="Twitter"
+							>
+								<i class="fab fa-twitter"></i>
+							</a>
+							<a
+								href="https://instagram.com/aevani"
+								class="social-link transition-colors hover:text-[#E63946]"
+								aria-label="Instagram"
+							>
+								<i class="fab fa-instagram"></i>
+							</a>
 						</div>
 					</div>
 
-					<div class="footer-bottom">
-						<div class="footer-bottom-content">
-							<p class="copyright">&copy; 2024 Aevani. All rights reserved.</p>
-							<div class="footer-bottom-links">
-								<a href="/privacy" class="footer-bottom-link">Privacy Policy</a>
-								<a href="/terms" class="footer-bottom-link">Terms of Service</a>
-								<a href="/cookies" class="footer-bottom-link">Cookie Policy</a>
-							</div>
+					<!-- Shop links -->
+					<div class="footer-section">
+						<h3 class="footer-title">Shop</h3>
+						<ul class="footer-links">
+							{#each footerLinks.shop as link}
+								<li><a href={link.href} class="footer-link">{link.label}</a></li>
+							{/each}
+						</ul>
+					</div>
+
+					<!-- Learn links -->
+					<div class="footer-section">
+						<h3 class="footer-title">Learn</h3>
+						<ul class="footer-links">
+							{#each footerLinks.learn as link}
+								<li><a href={link.href} class="footer-link">{link.label}</a></li>
+							{/each}
+						</ul>
+					</div>
+
+					<!-- Company links -->
+					<div class="footer-section">
+						<h3 class="footer-title">Company</h3>
+						<ul class="footer-links">
+							{#each footerLinks.company as link}
+								<li><a href={link.href} class="footer-link">{link.label}</a></li>
+							{/each}
+						</ul>
+					</div>
+
+					<!-- Support links -->
+					<div class="footer-section">
+						<h3 class="footer-title">Support</h3>
+						<ul class="footer-links">
+							{#each footerLinks.support as link}
+								<li><a href={link.href} class="footer-link">{link.label}</a></li>
+							{/each}
+						</ul>
+					</div>
+				</div>
+
+				<div class="footer-bottom">
+					<div class="footer-bottom-content">
+						<p class="copyright">&copy; 2024 Aevani. All rights reserved.</p>
+						<div class="footer-bottom-links">
+							<a href="/privacy" class="footer-bottom-link">Privacy Policy</a>
+							<a href="/terms" class="footer-bottom-link">Terms of Service</a>
+							<a href="/cookies" class="footer-bottom-link">Cookie Policy</a>
 						</div>
 					</div>
 				</div>
@@ -267,6 +278,11 @@
 		line-height: 1.6;
 	}
 
+	/* Hide the drawer toggle checkbox */
+	.drawer-toggle {
+		display: none;
+	}
+
 	.layout-content {
 		display: flex;
 		flex-direction: column;
@@ -307,10 +323,11 @@
 	.footer-grid {
 		display: grid;
 		grid-template-columns: 1fr;
-		gap: 2rem;
+		gap: 3rem;
+		width: 100%;
 	}
 
-	@media (min-width: 768px) {
+	@media (min-width: 640px) {
 		.footer-grid {
 			grid-template-columns: repeat(2, 1fr);
 		}
@@ -318,7 +335,7 @@
 
 	@media (min-width: 1024px) {
 		.footer-grid {
-			grid-template-columns: repeat(5, 1fr);
+			grid-template-columns: 2fr repeat(4, 1fr);
 		}
 	}
 
@@ -326,9 +343,15 @@
 		grid-column: span 1;
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-width: 640px) {
 		.footer-brand {
 			grid-column: span 2;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.footer-brand {
+			grid-column: span 1;
 		}
 	}
 

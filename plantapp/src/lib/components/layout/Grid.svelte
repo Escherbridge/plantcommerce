@@ -1,80 +1,89 @@
 <script lang="ts">
-  interface Props {
-    columns?: number | { sm?: number; md?: number; lg?: number; xl?: number };
-    gap?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
-    align?: 'start' | 'center' | 'end' | 'stretch';
-    justify?: 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly';
-    className?: string;
-    class?: string;
-    title?: string;
-    children: any;
-  }
+	interface Props {
+		columns?: number | { sm?: number; md?: number; lg?: number; xl?: number };
+		gap?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
+		align?: 'start' | 'center' | 'end' | 'stretch';
+		justify?: 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly';
+		className?: string;
+		class?: string;
+		title?: string;
+		children: any;
+	}
 
-  let {
-    columns = 12,
-    gap = 'md',
-    align = 'start',
-    justify = 'start',
-    className = '',
-    class: classProp = '',
-    title,
-    children
-  }: Props = $props();
+	let {
+		columns = 12,
+		gap = 'md',
+		align = 'start',
+		justify = 'start',
+		className = '',
+		class: classProp = '',
+		title,
+		children
+	}: Props = $props();
 
-  const gridClasses = $derived(buildGridClasses());
-  
-  function buildGridClasses(): string {
-    let classes = ['grid'];
+	const gridClasses = $derived(buildGridClasses());
 
-    // Handle columns
-    if (typeof columns === 'number') {
-      classes.push(`grid-cols-${columns}`);
-    } else {
-      // Responsive columns
-      if (columns.sm) classes.push(`grid-cols-${columns.sm}`);
-      if (columns.md) classes.push(`md:grid-cols-${columns.md}`);
-      if (columns.lg) classes.push(`lg:grid-cols-${columns.lg}`);
-      if (columns.xl) classes.push(`xl:grid-cols-${columns.xl}`);
-    }
+	function buildGridClasses(): string {
+		let classes = ['grid'];
 
-    // Handle gap
-    if (typeof gap === 'number') {
-      classes.push(`gap-${gap}`);
-    } else {
-      const gapMap = {
-        xs: 'gap-1',
-        sm: 'gap-2',
-        md: 'gap-4',
-        lg: 'gap-6',
-        xl: 'gap-8'
-      };
-      classes.push(gapMap[gap]);
-    }
+		// Handle columns - make numeric columns responsive by default
+		if (typeof columns === 'number') {
+			// Default responsive behavior: 1 col mobile, 2 col tablet, specified number desktop
+			classes.push('grid-cols-1');
+			if (columns >= 2) {
+				classes.push('md:grid-cols-2');
+			}
+			if (columns >= 3) {
+				classes.push(`lg:grid-cols-${columns}`);
+			} else if (columns === 2) {
+				classes.push('lg:grid-cols-2');
+			}
+		} else {
+			// Responsive columns object
+			if (columns.sm) classes.push(`grid-cols-${columns.sm}`);
+			if (columns.md) classes.push(`md:grid-cols-${columns.md}`);
+			if (columns.lg) classes.push(`lg:grid-cols-${columns.lg}`);
+			if (columns.xl) classes.push(`xl:grid-cols-${columns.xl}`);
+		}
 
-    // Handle alignment
-    const alignMap = {
-      start: 'items-start',
-      center: 'items-center',
-      end: 'items-end',
-      stretch: 'items-stretch'
-    };
-    classes.push(alignMap[align]);
+		// Handle gap with better defaults
+		if (typeof gap === 'number') {
+			classes.push(`gap-${gap}`);
+		} else {
+			const gapMap = {
+				xs: 'gap-2',
+				sm: 'gap-4',
+				md: 'gap-6',
+				lg: 'gap-8',
+				xl: 'gap-10'
+			};
+			classes.push(gapMap[gap]);
+		}
 
-    // Handle justification
-    const justifyMap = {
-      start: 'justify-items-start',
-      center: 'justify-items-center',
-      end: 'justify-items-end',
-      between: 'justify-between',
-      around: 'justify-around',
-      evenly: 'justify-evenly'
-    };
-    classes.push(justifyMap[justify]);
+		// Handle alignment
+		const alignMap = {
+			start: 'items-start',
+			center: 'items-center',
+			end: 'items-end',
+			stretch: 'items-stretch'
+		};
+		classes.push(alignMap[align]);
 
-    return classes.join(' ');
-  }
+		// Handle justification
+		const justifyMap = {
+			start: 'justify-items-start',
+			center: 'justify-items-center',
+			end: 'justify-items-end',
+			between: 'justify-between',
+			around: 'justify-around',
+			evenly: 'justify-evenly'
+		};
+		classes.push(justifyMap[justify]);
+
+		return classes.join(' ');
+	}
 </script>
 
 <div class="{gridClasses} {className} {classProp}" {title}>
-  {@render children()}
+	{@render children()}
 </div>

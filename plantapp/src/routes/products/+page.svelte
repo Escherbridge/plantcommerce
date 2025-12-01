@@ -23,33 +23,40 @@
 
 <Section>
 	<Container>
-		<div class="mb-8">
-			<h1 class="text-4xl font-bold mb-2">All Products</h1>
-			<p class="text-lg text-base-content/70">
+		<!-- Enhanced Header -->
+		<div class="mb-12 space-y-4">
+			<h1 class="text-5xl font-bold tracking-tight lg:text-7xl">ALL PRODUCTS</h1>
+			<div class="bg-primary h-1 w-24"></div>
+			<p class="text-base-content/60 max-w-3xl text-xl font-light lg:text-2xl">
 				Browse our complete selection of sustainable agriculture products
 			</p>
 		</div>
 
-		<!-- Filters -->
-		<div class="mb-8 flex flex-col md:flex-row gap-4">
+		<!-- Enhanced Filters -->
+		<div class="mb-12 flex flex-col gap-6 md:flex-row">
 			<!-- Search -->
 			<div class="flex-1">
-				<div class="join w-full">
+				<div class="join w-full shadow-lg">
 					<input
 						type="text"
 						placeholder="Search products..."
-						class="input input-bordered join-item w-full"
+						class="input input-bordered input-lg join-item focus:outline-primary w-full"
 						bind:value={searchQuery}
 						onkeypress={(e) => e.key === 'Enter' && handleSearch()}
 					/>
-					<button class="btn btn-primary join-item" onclick={handleSearch}>Search</button>
+					<button
+						class="btn btn-primary join-item px-8 font-semibold tracking-wide"
+						onclick={handleSearch}
+					>
+						SEARCH
+					</button>
 				</div>
 			</div>
 
 			<!-- Category Filter -->
-			<div class="md:w-64">
+			<div class="md:w-72">
 				<select
-					class="select select-bordered w-full"
+					class="select select-bordered select-lg focus:outline-primary w-full shadow-lg"
 					bind:value={selectedCategory}
 					onchange={handleSearch}
 				>
@@ -61,18 +68,31 @@
 			</div>
 		</div>
 
-		<!-- Category Cards -->
+		<!-- Enhanced Category Cards -->
 		{#if !data.selectedCategory && !data.searchQuery}
-			<div class="mb-12">
-				<h2 class="text-2xl font-bold mb-6">Shop by Category</h2>
-				<Grid columns={4} gap={6}>
+			<div class="mb-16">
+				<h2 class="mb-8 text-3xl font-bold tracking-tight lg:text-4xl">SHOP BY CATEGORY</h2>
+				<Grid columns={4} gap={8}>
 					{#each data.categories as category}
-						<a href="/products/{category.slug}" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
-							<div class="card-body">
-								<h3 class="card-title">{category.name}</h3>
-								<p class="text-sm text-base-content/70">{category.description || 'Explore our selection'}</p>
-								<div class="card-actions justify-end">
-									<button class="btn btn-primary btn-sm">Browse</button>
+						<a
+							href="/products/{category.slug}"
+							class="card bg-base-100 hover:shadow-3xl border-base-200 group overflow-hidden rounded-2xl border shadow-xl transition-all duration-500 hover:-translate-y-2"
+						>
+							<div class="card-body space-y-4 p-8">
+								<h3
+									class="card-title group-hover:text-primary text-2xl font-bold transition-colors"
+								>
+									{category.name}
+								</h3>
+								<p class="text-base-content/70 text-base font-light leading-relaxed">
+									{category.description || 'Explore our selection'}
+								</p>
+								<div class="card-actions justify-end pt-4">
+									<span
+										class="btn btn-primary btn-sm font-semibold tracking-wide transition-transform group-hover:scale-110"
+									>
+										BROWSE
+									</span>
 								</div>
 							</div>
 						</a>
@@ -81,53 +101,71 @@
 			</div>
 		{/if}
 
-		<!-- Products Grid -->
+		<!-- Enhanced Products Grid -->
 		<div>
-			<h2 class="text-2xl font-bold mb-6">
+			<h2 class="mb-8 text-3xl font-bold tracking-tight lg:text-4xl">
 				{#if data.searchQuery}
-					Search Results for "{data.searchQuery}"
+					SEARCH RESULTS FOR "{data.searchQuery}"
 				{:else if data.selectedCategory}
-					Filtered Products
+					FILTERED PRODUCTS
 				{:else}
-					All Products
+					ALL PRODUCTS
 				{/if}
 			</h2>
 
-			<Grid columns={3} gap={6}>
+			<Grid columns={3} gap="sm">
 				{#if data.products && data.products.length > 0}
 					{#each data.products as product}
-						<a href="/products/{product.category?.slug || 'uncategorized'}/{product.slug}" class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
-							<figure class="h-48 bg-base-200">
+						<!-- All products redirect to mock detail page -->
+						<a
+							href="/products/mock-detail"
+							class="card bg-base-100 hover:shadow-3xl border-base-200 group overflow-hidden rounded-2xl border shadow-xl transition-all duration-500 hover:-translate-y-3"
+						>
+							<figure class="bg-base-200 relative h-64 overflow-hidden">
 								{#if product.images && product.images.length > 0}
 									<img
 										src={product.images[0].url || '/placeholder.png'}
 										alt={product.images[0].altText || product.name}
-										class="w-full h-full object-cover"
+										class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
 									/>
+									<!-- Overlay on hover -->
+									<div
+										class="bg-primary/0 group-hover:bg-primary/10 absolute inset-0 transition-colors duration-500"
+									></div>
 								{:else}
-									<div class="flex items-center justify-center h-full">
-										<span class="text-4xl">🌱</span>
+									<div class="flex h-full items-center justify-center">
+										<span class="text-6xl">🌱</span>
 									</div>
 								{/if}
 							</figure>
-							<div class="card-body">
-								<h3 class="card-title text-lg">{product.name}</h3>
-								<p class="text-sm text-base-content/70 line-clamp-2">
-									{product.description || 'No description available'}
+							<div class="card-body space-y-4 p-6">
+								<h3
+									class="card-title group-hover:text-primary text-2xl font-bold leading-tight transition-colors"
+								>
+									{product.name}
+								</h3>
+								<p class="text-base-content/70 line-clamp-2 text-base font-light leading-relaxed">
+									{product.shortDescription || product.description || 'No description available'}
 								</p>
-								<div class="card-actions justify-between items-center mt-4">
-									<div class="text-2xl font-bold text-primary">
+								<div
+									class="card-actions border-base-200 mt-6 items-center justify-between border-t pt-4"
+								>
+									<div class="text-primary text-4xl font-bold">
 										${parseFloat(product.price).toFixed(2)}
 									</div>
-									<button class="btn btn-primary btn-sm">View Details</button>
+									<span
+										class="btn btn-primary btn-sm font-semibold tracking-wide transition-transform group-hover:scale-110"
+									>
+										VIEW DETAILS
+									</span>
 								</div>
 							</div>
 						</a>
 					{/each}
 				{:else}
-					<div class="col-span-3 text-center py-12">
-						<div class="text-6xl mb-4">🔍</div>
-						<p class="text-xl text-base-content/70">
+					<div class="col-span-3 space-y-6 py-20 text-center">
+						<div class="text-8xl">🔍</div>
+						<p class="text-base-content/70 text-2xl font-light">
 							{#if data.searchQuery || data.selectedCategory}
 								No products found matching your criteria
 							{:else}
@@ -135,8 +173,11 @@
 							{/if}
 						</p>
 						{#if data.searchQuery || data.selectedCategory}
-							<button class="btn btn-primary mt-4" onclick={() => goto('/products')}>
-								Clear Filters
+							<button
+								class="btn btn-primary btn-lg font-semibold tracking-wide"
+								onclick={() => goto('/products')}
+							>
+								CLEAR FILTERS
 							</button>
 						{/if}
 					</div>

@@ -1,5 +1,6 @@
 import type { PageLoad } from './$types';
 import { trpc } from '$lib/trpc/client';
+import { getMockProducts, getMockCategories } from '$lib/utils/mockProducts';
 
 export const load: PageLoad = async (event) => {
 	const { url } = event;
@@ -24,10 +25,19 @@ export const load: PageLoad = async (event) => {
 			searchQuery: search
 		};
 	} catch (error) {
-		console.error('Error loading products:', error);
+		console.error('Error loading products from database, using mock data:', error);
+
+		// Fallback to mock data
+		const mockCategories = getMockCategories();
+		const mockProducts = getMockProducts({
+			search: search || undefined,
+			categoryId: category ? parseInt(category) : undefined,
+			limit: 50
+		});
+
 		return {
-			products: [],
-			categories: [],
+			products: mockProducts,
+			categories: mockCategories,
 			selectedCategory: category,
 			searchQuery: search
 		};

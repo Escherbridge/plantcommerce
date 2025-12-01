@@ -1,58 +1,52 @@
 <script lang="ts">
-  interface Props {
-    size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
-    padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
-    center?: boolean;
-    className?: string;
-    children: any;
-  }
+	interface Props {
+		size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+		padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
+		center?: boolean;
+		className?: string;
+		children: any;
+	}
 
-  let {
-    size = 'lg',
-    padding = 'md',
-    center = true,
-    className = '',
-    children
-  }: Props = $props();
+	let { size = 'lg', padding = 'md', center = true, className = '', children }: Props = $props();
 
-  const containerClasses = $derived(buildContainerClasses());
-  
-  function buildContainerClasses(): string {
-    let classes = [];
+	const containerClasses = $derived(buildContainerClasses());
 
-    // Container sizing (Swiss design principles - based on golden ratio and modular scale)
-    const sizeMap = {
-      sm: 'max-w-sm',      // 384px - ~24rem
-      md: 'max-w-2xl',     // 672px - ~42rem  
-      lg: 'max-w-4xl',     // 896px - ~56rem
-      xl: 'max-w-6xl',     // 1152px - ~72rem
-      full: 'max-w-full'
-    };
-    classes.push(sizeMap[size]);
+	function buildContainerClasses(): string {
+		let classes = [];
 
-    // Padding with Swiss design spacing
-    if (padding !== 'none') {
-      const paddingMap = {
-        sm: 'px-4 py-2',     // 16px horizontal, 8px vertical
-        md: 'px-6 py-4',     // 24px horizontal, 16px vertical
-        lg: 'px-8 py-6',     // 32px horizontal, 24px vertical
-        xl: 'px-12 py-8'     // 48px horizontal, 32px vertical
-      };
-      classes.push(paddingMap[padding]);
-    }
+		// Container sizing - wider for full-width layouts
+		const sizeMap = {
+			sm: 'max-w-3xl', // 768px - ~48rem
+			md: 'max-w-5xl', // 1024px - ~64rem
+			lg: 'max-w-7xl', // 1280px - ~80rem (default - much wider)
+			xl: 'max-w-[1600px]', // 1600px - extra wide
+			full: 'max-w-full'
+		};
+		classes.push(sizeMap[size]);
 
-    // Centering
-    if (center) {
-      classes.push('mx-auto');
-    }
+		// Padding with reduced side spacing
+		if (padding !== 'none') {
+			const paddingMap = {
+				sm: 'px-4 py-2', // 16px horizontal, 8px vertical
+				md: 'px-6 py-4', // 24px horizontal, 16px vertical
+				lg: 'px-8 py-6', // 32px horizontal, 24px vertical
+				xl: 'px-12 py-8' // 48px horizontal, 32px vertical
+			};
+			classes.push(paddingMap[padding]);
+		}
 
-    // Responsive padding
-    classes.push('sm:px-6 lg:px-8');
+		// Centering
+		if (center) {
+			classes.push('mx-auto');
+		}
 
-    return classes.join(' ');
-  }
+		// Responsive padding - reduced
+		classes.push('sm:px-6 lg:px-12');
+
+		return classes.join(' ');
+	}
 </script>
 
 <div class="{containerClasses} {className}">
-  {@render children()}
+	{@render children()}
 </div>

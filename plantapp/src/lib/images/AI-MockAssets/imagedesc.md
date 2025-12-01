@@ -65,7 +65,7 @@ Vertical Tower Garden System
 Prompt: Tall vertical hydroponic tower (6-8 feet) loaded with strawberries, herbs, and leafy greens at different levels. White or light gray tower material. Drip irrigation visible at top. Small patio or balcony setting showing space efficiency. Lush, abundant growth. Golden hour lighting.
 
 Hydroponic Grow Tent Kit
-Prompt: Interior view of a hydroponic grow tent. Reflective mylar walls, purple and white LED grow lights illuminating cannabis or tomato plants in various stages. Ventilation ducting, carbon filter, oscillating fan visible. Organized, professional home setup. Slightly moody lighting with plant focus.
+Prompt: Interior view of a hydroponic grow tent. Reflective mylar walls, purple and white LED grow lights illuminating cannabis or plants in various stages. Ventilation ducting, carbon filter, oscillating fan visible. Organized, professional home setup. Slightly moody lighting with plant focus.
 
 Hydroponic Nutrients Trio
 Prompt: Three bottles of hydroponic nutrients (Grow, Bloom, Micro) arranged on a clean white surface. Professional product photography. Labels clearly visible with botanical graphics. Measuring cup and pipette beside bottles. Water droplets on bottles. Clean, scientific aesthetic with natural plant elements in background.
