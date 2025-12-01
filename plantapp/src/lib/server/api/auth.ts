@@ -2,9 +2,10 @@ import { z } from 'zod';
 import { publicProcedure, protectedProcedure, router } from './trpc';
 import { UserService, type UserProfile } from '../services/user';
 import { CartService } from '../services/cart';
-import { invalidateSession } from '../auth';
+import { invalidateSession, generateEmailVerificationToken } from '../auth';
 import { AuditLogService } from '../services/auditLog';
 import type { Session } from '../db/schema';
+import { EmailService } from '../services/email';
 
 const transferCartSafely = async (sessionId: string, userId: string) => {
 	try {
@@ -45,9 +46,18 @@ export const authRouter = router({
 		.mutation(async ({ input }) => {
 			const { guestSessionId, ...userData } = input;
 			const user = await UserService.createUser(userData);
-			
+
 			await AuditLogService.log(user.id, 'register', { email: user.email });
-			
+
+			// Send verification email
+			try {
+				const token = await generateEmailVerificationToken(user.id, user.email);
+				await EmailService.sendVerificationEmail(user.email, token);
+			} catch (error) {
+				console.error('Failed to send verification email:', error);
+				// Don't fail registration if email fails, just log it
+			}
+
 			const loginResult = await UserService.login({
 				usernameOrEmail: user.email,
 				password: input.password
@@ -72,7 +82,7 @@ export const authRouter = router({
 		.mutation(async ({ input }) => {
 			const { guestSessionId, ...loginData } = input;
 			const result = await UserService.login(loginData);
-			
+
 			await AuditLogService.log(result.user.id, 'login_success');
 
 			if (guestSessionId) {
@@ -90,11 +100,11 @@ export const authRouter = router({
 		return { success: true };
 	}),
 
-	getSession: protectedProcedure.query(async ({ ctx }) => 
+	getSession: protectedProcedure.query(async ({ ctx }) =>
 		formatUserResponse(ctx.user, ctx.session)
 	),
 
-	refreshSession: protectedProcedure.mutation(async ({ ctx }) => 
+	refreshSession: protectedProcedure.mutation(async ({ ctx }) =>
 		formatUserResponse(ctx.user, ctx.session)
 	),
 

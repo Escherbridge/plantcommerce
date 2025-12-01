@@ -12,8 +12,18 @@ export const user = pgTable('user', {
 	avatarFileId: text('avatar_file_id'), // Reference to file table
 	role: text('role', { enum: ['admin', 'customer', 'affiliate'] }).notNull().default('customer'),
 	isActive: boolean('is_active').notNull().default(true),
+	emailVerified: boolean('email_verified').notNull().default(false),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+});
+
+export const emailVerificationToken = pgTable('email_verification_token', {
+	id: text('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => user.id),
+	email: text('email').notNull(),
+	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
 });
 
 export const session = pgTable('session', {
@@ -169,8 +179,8 @@ export const order = pgTable('order', {
 	orderNumber: text('order_number').notNull().unique(),
 	userId: text('user_id').references(() => user.id),
 	affiliateLinkId: integer('affiliate_link_id').references(() => affiliateLink.id), // Track affiliate attribution
-	status: text('status', { 
-		enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'] 
+	status: text('status', {
+		enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded']
 	}).notNull().default('pending'),
 	totalAmount: decimal('total_amount', { precision: 10, scale: 2 }).notNull(),
 	subtotalAmount: decimal('subtotal_amount', { precision: 10, scale: 2 }).notNull(),

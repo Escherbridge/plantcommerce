@@ -4,7 +4,10 @@ Based on code review analysis for scalability and maintainability improvements.
 
 ## High Priority
 
-- [ ] Implement email verifications on user registration
+- [x] Implement email verifications on user registration <!-- id: 7 -->
+- [x] Implement Checkout Flow (Route & Service)
+- [x] Wire up Cart Frontend with Server Actions
+- [x] Add Testing Infrastructure (Vitest) & Critical Path Tests
 - [x] Fix authentication race conditions in session management
 - [x] Implement proper file upload validation (MIME types, signatures, virus scanning)
 - [x] Add parameterized queries and input sanitization for database queries

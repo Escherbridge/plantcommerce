@@ -1,31 +1,17 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { Container, Section } from '$lib/components/layout';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 
 	$: subtotal = data.cart?.items?.reduce(
-		(sum: number, item: any) => sum + parseFloat(item.price) * item.quantity,
+		(sum: number, item: any) => sum + parseFloat(item.unitPrice) * item.quantity,
 		0
 	) || 0;
 	$: shipping = subtotal > 100 ? 0 : 9.99;
 	$: tax = subtotal * 0.08; // 8% tax rate
 	$: total = subtotal + shipping + tax;
-
-	async function updateQuantity(itemId: number, quantity: number) {
-		// Implement update quantity logic
-		console.log('Update quantity:', itemId, quantity);
-	}
-
-	async function removeItem(itemId: number) {
-		// Implement remove item logic
-		console.log('Remove item:', itemId);
-	}
-
-	async function applyPromoCode(code: string) {
-		// Implement promo code logic
-		console.log('Apply promo code:', code);
-	}
 </script>
 
 <Section>
@@ -49,7 +35,7 @@
 									<div class="avatar">
 										<div class="w-24 h-24 rounded">
 											<img
-												src={item.product?.image || '/placeholder-product.jpg'}
+												src={item.product?.images?.[0]?.url || '/placeholder-product.jpg'}
 												alt={item.product?.name}
 											/>
 										</div>
@@ -59,42 +45,48 @@
 									<div class="flex-1">
 										<h3 class="text-lg font-bold mb-1">{item.product?.name}</h3>
 										<p class="text-sm text-base-content/70 mb-2">
-											{item.product?.shortDescription}
+											{item.product?.shortDescription || ''}
 										</p>
 										<p class="text-xl font-bold text-primary">
-											${parseFloat(item.price).toFixed(2)}
+											${parseFloat(item.unitPrice).toFixed(2)}
 										</p>
 									</div>
 
 									<!-- Quantity Controls -->
 									<div class="flex flex-col items-end gap-4">
-										<button
-											class="btn btn-ghost btn-sm btn-circle"
-											on:click={() => removeItem(item.id)}
-											aria-label="Remove item"
-										>
-											❌
-										</button>
-										<div class="join">
+										<form action="?/removeItem" method="POST" use:enhance>
+											<input type="hidden" name="itemId" value={item.id} />
 											<button
-												class="join-item btn btn-sm"
-												on:click={() => updateQuantity(item.id, item.quantity - 1)}
-												disabled={item.quantity <= 1}
+												class="btn btn-ghost btn-sm btn-circle"
+												aria-label="Remove item"
 											>
-												-
+												❌
 											</button>
+										</form>
+										<div class="join">
+											<form action="?/updateQuantity" method="POST" use:enhance>
+												<input type="hidden" name="itemId" value={item.id} />
+												<input type="hidden" name="quantity" value={item.quantity - 1} />
+												<button
+													class="join-item btn btn-sm"
+													disabled={item.quantity <= 1}
+												>
+													-
+												</button>
+											</form>
 											<div class="join-item btn btn-sm no-animation">
 												{item.quantity}
 											</div>
-											<button
-												class="join-item btn btn-sm"
-												on:click={() => updateQuantity(item.id, item.quantity + 1)}
-											>
-												+
-											</button>
+											<form action="?/updateQuantity" method="POST" use:enhance>
+												<input type="hidden" name="itemId" value={item.id} />
+												<input type="hidden" name="quantity" value={item.quantity + 1} />
+												<button class="join-item btn btn-sm">
+													+
+												</button>
+											</form>
 										</div>
 										<p class="font-semibold">
-											${(parseFloat(item.price) * item.quantity).toFixed(2)}
+											${(parseFloat(item.unitPrice) * item.quantity).toFixed(2)}
 										</p>
 									</div>
 								</div>
@@ -103,7 +95,7 @@
 					{/each}
 
 					<!-- Continue Shopping -->
-					<a href="/products/hydroponics" class="btn btn-outline w-full">
+					<a href="/products" class="btn btn-outline w-full">
 						← Continue Shopping
 					</a>
 				</div>
@@ -115,20 +107,21 @@
 							<h2 class="card-title mb-4">Order Summary</h2>
 
 							<!-- Promo Code -->
-							<div class="form-control mb-4">
+							<form action="?/applyPromo" method="POST" use:enhance class="form-control mb-4">
 								<label class="label" for="promo-code">
 									<span class="label-text">Promo Code</span>
 								</label>
 								<div class="join">
 									<input
 										id="promo-code"
+										name="code"
 										type="text"
 										placeholder="Enter code"
 										class="input input-bordered join-item flex-1"
 									/>
 									<button class="btn btn-primary join-item">Apply</button>
 								</div>
-							</div>
+							</form>
 
 							<div class="divider"></div>
 
@@ -196,7 +189,7 @@
 				<p class="text-base-content/70 mb-6">
 					Looks like you haven't added anything to your cart yet.
 				</p>
-				<a href="/products/hydroponics" class="btn btn-primary">Start Shopping</a>
+				<a href="/products" class="btn btn-primary">Start Shopping</a>
 			</div>
 		{/if}
 
@@ -207,12 +200,12 @@
 				<div class="grid grid-cols-4 gap-4">
 					{#each data.recentlyViewed as product}
 						<a
-							href="/products/{product.categorySlug}/{product.slug}"
+							href="/products/{product.category?.slug || 'uncategorized'}/{product.slug}"
 							class="card bg-base-100 shadow hover:shadow-xl transition-shadow"
 						>
 							<figure class="aspect-square">
 								<img
-									src={product.image || '/placeholder-product.jpg'}
+									src={product.images?.[0]?.url || '/placeholder-product.jpg'}
 									alt={product.name}
 									class="object-cover w-full h-full"
 								/>

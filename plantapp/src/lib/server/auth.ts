@@ -82,3 +82,38 @@ export function deleteSessionTokenCookie(event: RequestEvent) {
 		path: '/'
 	});
 }
+
+export async function generateEmailVerificationToken(userId: string, email: string): Promise<string> {
+	const tokenId = encodeHexLowerCase(crypto.getRandomValues(new Uint8Array(32)));
+	const expiresAt = new Date(Date.now() + DAY_IN_MS * 2); // 2 days expiration
+
+	await db.insert(table.emailVerificationToken).values({
+		id: tokenId,
+		userId,
+		email,
+		expiresAt
+	});
+
+	return tokenId;
+}
+
+export async function validateEmailVerificationToken(token: string): Promise<string | null> {
+	const [storedToken] = await db
+		.select()
+		.from(table.emailVerificationToken)
+		.where(eq(table.emailVerificationToken.id, token));
+
+	if (!storedToken) {
+		return null;
+	}
+
+	const tokenExpired = Date.now() >= storedToken.expiresAt.getTime();
+	if (tokenExpired) {
+		await db.delete(table.emailVerificationToken).where(eq(table.emailVerificationToken.id, storedToken.id));
+		return null;
+	}
+
+	await db.delete(table.emailVerificationToken).where(eq(table.emailVerificationToken.userId, storedToken.userId));
+
+	return storedToken.userId;
+}
