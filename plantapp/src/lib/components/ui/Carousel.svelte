@@ -196,19 +196,21 @@
   const maxDotIndex = $derived(Math.max(0, items.length - currentSlidesToShow));
 </script>
 
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
   class="carousel-container relative overflow-hidden {className}"
   onmouseenter={stopAutoplay}
   onmouseleave={startAutoplay}
+  onkeydown={handleKeydown}
+  tabindex="0"
   role="region"
   aria-label="Image carousel"
+  aria-roledescription="carousel"
 >
   <div
-    onkeydown={handleKeydown}
-    tabindex="0"
     class="focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
-    aria-label="Carousel controls"
-    role="application"
+    role="group"
   >
   <!-- Main carousel track -->
   <div

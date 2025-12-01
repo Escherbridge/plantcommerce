@@ -4,7 +4,7 @@
 	import { browser } from '$app/environment';
 
 	// Theme switcher functionality
-	let currentTheme = 'light';
+	let currentTheme = $state('light');
 
 	function toggleTheme() {
 		const themes = ['light', 'dark', 'cupcake', 'forest', 'luxury', 'business'];
@@ -14,10 +14,10 @@
 	}
 
 	// Get user from page data
-	$: user = $page.data.user;
+	const user = $derived($page.data.user);
 
 	// Logout function
-	let isLoggingOut = false;
+	let isLoggingOut = $state(false);
 	async function handleLogout() {
 		if (isLoggingOut) return;
 		isLoggingOut = true;
@@ -172,7 +172,7 @@
 							<a href="/admin" class="user-dropdown-link">Admin Dashboard</a>
 						{/if}
 						<hr class="dropdown-divider" />
-						<button on:click={handleLogout} class="user-dropdown-link logout-btn" disabled={isLoggingOut}>
+						<button onclick={handleLogout} class="user-dropdown-link logout-btn" disabled={isLoggingOut}>
 							{isLoggingOut ? 'Logging out...' : 'Logout'}
 						</button>
 					{:else}
@@ -191,10 +191,10 @@
 					</svg>
 				</button>
 				<div class="theme-dropdown">
-					<button on:click={() => { currentTheme = 'light'; document.documentElement.setAttribute('data-theme', 'light'); }}>Light</button>
-					<button on:click={() => { currentTheme = 'dark'; document.documentElement.setAttribute('data-theme', 'dark'); }}>Dark</button>
-					<button on:click={() => { currentTheme = 'forest'; document.documentElement.setAttribute('data-theme', 'forest'); }}>Forest</button>
-					<button on:click={() => { currentTheme = 'business'; document.documentElement.setAttribute('data-theme', 'business'); }}>Business</button>
+					<button onclick={() => { currentTheme = 'light'; document.documentElement.setAttribute('data-theme', 'light'); }}>Light</button>
+					<button onclick={() => { currentTheme = 'dark'; document.documentElement.setAttribute('data-theme', 'dark'); }}>Dark</button>
+					<button onclick={() => { currentTheme = 'forest'; document.documentElement.setAttribute('data-theme', 'forest'); }}>Forest</button>
+					<button onclick={() => { currentTheme = 'business'; document.documentElement.setAttribute('data-theme', 'business'); }}>Business</button>
 				</div>
 			</div>
 		</div>

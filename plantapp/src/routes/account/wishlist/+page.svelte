@@ -3,7 +3,7 @@
 	import { Grid } from '$lib/components/layout';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
 	async function removeFromWishlist(productId: number) {
 		// Implement remove from wishlist logic
@@ -38,7 +38,7 @@
 							/>
 							<button
 								class="btn btn-circle btn-sm btn-ghost absolute top-2 right-2 bg-base-100/80"
-								on:click={() => removeFromWishlist(item.productId)}
+								onclick={() => removeFromWishlist(item.productId)}
 								aria-label="Remove from wishlist"
 							>
 								❌
@@ -66,7 +66,7 @@
 								</a>
 								<button
 									class="btn btn-primary btn-sm"
-									on:click={() => addToCart(item.productId)}
+									onclick={() => addToCart(item.productId)}
 									disabled={item.product?.stockQuantity === 0}
 								>
 									Add to Cart

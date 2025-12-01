@@ -3,37 +3,54 @@
 	import { Container, Section } from '$lib/components/layout';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
-	$: subtotal = data.cart?.items?.reduce(
-		(sum: number, item: any) => sum + parseFloat(item.unitPrice) * item.quantity,
-		0
-	) || 0;
-	$: shipping = subtotal > 100 ? 0 : 9.99;
-	$: tax = subtotal * 0.08; // 8% tax rate
-	$: total = subtotal + shipping + tax;
+	const subtotal = $derived(
+		data.cart?.items?.reduce(
+			(sum: number, item: any) => sum + parseFloat(item.price) * item.quantity,
+			0
+		) || 0
+	);
+	const shipping = $derived(subtotal > 100 ? 0 : 9.99);
+	const tax = $derived(subtotal * 0.08); // 8% tax rate
+	const total = $derived(subtotal + shipping + tax);
+
+	async function updateQuantity(itemId: number, quantity: number) {
+		// Implement update quantity logic
+		console.log('Update quantity:', itemId, quantity);
+	}
+
+	async function removeItem(itemId: number) {
+		// Implement remove item logic
+		console.log('Remove item:', itemId);
+	}
+
+	async function applyPromoCode(code: string) {
+		// Implement promo code logic
+		console.log('Apply promo code:', code);
+	}
 </script>
 
 <Section>
 	<Container>
 		<div class="mb-8">
-			<h1 class="text-4xl font-bold mb-2">Shopping Cart</h1>
-			<p class="text-lg text-base-content/70">
+			<h1 class="mb-2 text-4xl font-bold">Shopping Cart</h1>
+			<p class="text-base-content/70 text-lg">
 				{data.cart?.items?.length || 0} items in your cart
 			</p>
 		</div>
 
 		{#if data.cart?.items && data.cart.items.length > 0}
-			<div class="grid lg:grid-cols-3 gap-8">
+			<div class="grid gap-8 lg:grid-cols-3">
 				<!-- Cart Items -->
-				<div class="lg:col-span-2 space-y-4">
+				<div class="space-y-4 lg:col-span-2">
 					{#each data.cart.items as item}
 						<div class="card bg-base-100 shadow-xl">
 							<div class="card-body">
 								<div class="flex gap-4">
 									<!-- Product Image -->
 									<div class="avatar">
-										<div class="w-24 h-24 rounded">
+										<div class="h-24 w-24 rounded">
 											<img
 												src={item.product?.images?.[0]?.url || '/placeholder-product.jpg'}
 												alt={item.product?.name}
@@ -43,47 +60,41 @@
 
 									<!-- Product Details -->
 									<div class="flex-1">
-										<h3 class="text-lg font-bold mb-1">{item.product?.name}</h3>
-										<p class="text-sm text-base-content/70 mb-2">
+										<h3 class="mb-1 text-lg font-bold">{item.product?.name}</h3>
+										<p class="text-base-content/70 mb-2 text-sm">
 											{item.product?.shortDescription || ''}
 										</p>
-										<p class="text-xl font-bold text-primary">
+										<p class="text-primary text-xl font-bold">
 											${parseFloat(item.unitPrice).toFixed(2)}
 										</p>
 									</div>
 
 									<!-- Quantity Controls -->
 									<div class="flex flex-col items-end gap-4">
-										<form action="?/removeItem" method="POST" use:enhance>
-											<input type="hidden" name="itemId" value={item.id} />
-											<button
-												class="btn btn-ghost btn-sm btn-circle"
-												aria-label="Remove item"
-											>
-												❌
-											</button>
-										</form>
+										<button
+											class="btn btn-ghost btn-sm btn-circle"
+											onclick={() => removeItem(item.id)}
+											aria-label="Remove item"
+										>
+											❌
+										</button>
 										<div class="join">
-											<form action="?/updateQuantity" method="POST" use:enhance>
-												<input type="hidden" name="itemId" value={item.id} />
-												<input type="hidden" name="quantity" value={item.quantity - 1} />
-												<button
-													class="join-item btn btn-sm"
-													disabled={item.quantity <= 1}
-												>
-													-
-												</button>
-											</form>
+											<button
+												class="join-item btn btn-sm"
+												onclick={() => updateQuantity(item.id, item.quantity - 1)}
+												disabled={item.quantity <= 1}
+											>
+												-
+											</button>
 											<div class="join-item btn btn-sm no-animation">
 												{item.quantity}
 											</div>
-											<form action="?/updateQuantity" method="POST" use:enhance>
-												<input type="hidden" name="itemId" value={item.id} />
-												<input type="hidden" name="quantity" value={item.quantity + 1} />
-												<button class="join-item btn btn-sm">
-													+
-												</button>
-											</form>
+											<button
+												class="join-item btn btn-sm"
+												onclick={() => updateQuantity(item.id, item.quantity + 1)}
+											>
+												+
+											</button>
 										</div>
 										<p class="font-semibold">
 											${(parseFloat(item.unitPrice) * item.quantity).toFixed(2)}
@@ -95,14 +106,12 @@
 					{/each}
 
 					<!-- Continue Shopping -->
-					<a href="/products" class="btn btn-outline w-full">
-						← Continue Shopping
-					</a>
+					<a href="/products" class="btn btn-outline w-full"> ← Continue Shopping </a>
 				</div>
 
 				<!-- Order Summary -->
 				<div class="lg:col-span-1">
-					<div class="card bg-base-100 shadow-xl sticky top-4">
+					<div class="card bg-base-100 sticky top-4 shadow-xl">
 						<div class="card-body">
 							<h2 class="card-title mb-4">Order Summary</h2>
 
@@ -136,9 +145,9 @@
 									<span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
 								</div>
 								{#if shipping === 0}
-									<p class="text-xs text-success">Free shipping on orders over $100!</p>
+									<p class="text-success text-xs">Free shipping on orders over $100!</p>
 								{:else}
-									<p class="text-xs text-base-content/70">
+									<p class="text-base-content/70 text-xs">
 										Add ${(100 - subtotal).toFixed(2)} more for free shipping
 									</p>
 								{/if}
@@ -154,13 +163,13 @@
 							</div>
 
 							<!-- Checkout Button -->
-							<a href="/checkout" class="btn btn-primary btn-lg w-full mt-6">
+							<a href="/checkout" class="btn btn-primary btn-lg mt-6 w-full">
 								Proceed to Checkout
 							</a>
 
 							<!-- Payment Methods -->
 							<div class="mt-6">
-								<p class="text-xs text-center text-base-content/70 mb-2">We accept</p>
+								<p class="text-base-content/70 mb-2 text-center text-xs">We accept</p>
 								<div class="flex justify-center gap-2">
 									<div class="badge badge-outline">Visa</div>
 									<div class="badge badge-outline">Mastercard</div>
@@ -170,8 +179,8 @@
 							</div>
 
 							<!-- Trust Badges -->
-							<div class="mt-4 p-4 bg-base-200 rounded-lg">
-								<ul class="text-xs space-y-1 text-base-content/70">
+							<div class="bg-base-200 mt-4 rounded-lg p-4">
+								<ul class="text-base-content/70 space-y-1 text-xs">
 									<li>✓ Secure checkout</li>
 									<li>✓ 30-day money-back guarantee</li>
 									<li>✓ Free returns on all orders</li>
@@ -183,9 +192,9 @@
 			</div>
 		{:else}
 			<!-- Empty Cart -->
-			<div class="text-center py-16">
-				<div class="text-6xl mb-4">🛒</div>
-				<h3 class="text-2xl font-bold mb-2">Your Cart is Empty</h3>
+			<div class="py-16 text-center">
+				<div class="mb-4 text-6xl">🛒</div>
+				<h3 class="mb-2 text-2xl font-bold">Your Cart is Empty</h3>
 				<p class="text-base-content/70 mb-6">
 					Looks like you haven't added anything to your cart yet.
 				</p>
@@ -196,23 +205,23 @@
 		<!-- Recently Viewed -->
 		{#if data.recentlyViewed && data.recentlyViewed.length > 0}
 			<div class="mt-16">
-				<h2 class="text-2xl font-bold mb-6">Recently Viewed</h2>
+				<h2 class="mb-6 text-2xl font-bold">Recently Viewed</h2>
 				<div class="grid grid-cols-4 gap-4">
 					{#each data.recentlyViewed as product}
 						<a
 							href="/products/{product.category?.slug || 'uncategorized'}/{product.slug}"
-							class="card bg-base-100 shadow hover:shadow-xl transition-shadow"
+							class="card bg-base-100 shadow transition-shadow hover:shadow-xl"
 						>
 							<figure class="aspect-square">
 								<img
 									src={product.images?.[0]?.url || '/placeholder-product.jpg'}
 									alt={product.name}
-									class="object-cover w-full h-full"
+									class="h-full w-full object-cover"
 								/>
 							</figure>
 							<div class="card-body p-4">
-								<h3 class="font-semibold text-sm line-clamp-2">{product.name}</h3>
-								<p class="text-lg font-bold text-primary">${product.price}</p>
+								<h3 class="line-clamp-2 text-sm font-semibold">{product.name}</h3>
+								<p class="text-primary text-lg font-bold">${product.price}</p>
 							</div>
 						</a>
 					{/each}

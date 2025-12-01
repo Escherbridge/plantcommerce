@@ -2,16 +2,18 @@
 	import { Grid } from '$lib/components/layout';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
-	$: stats = data.stats || {
-		totalRevenue: 0,
-		totalOrders: 0,
-		totalUsers: 0,
-		totalProducts: 0,
-		recentOrders: 0,
-		lowStockProducts: 0
-	};
+	const stats = $derived(
+		data.stats || {
+			totalRevenue: 0,
+			totalOrders: 0,
+			totalUsers: 0,
+			totalProducts: 0,
+			recentOrders: 0,
+			lowStockProducts: 0
+		}
+	);
 </script>
 
 <div class="space-y-6">

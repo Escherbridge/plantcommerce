@@ -3,10 +3,10 @@
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
 
-	let usernameOrEmail = '';
-	let password = '';
-	let errorMessage = '';
-	let isLoading = false;
+	let usernameOrEmail = $state('');
+	let password = $state('');
+	let errorMessage = $state('');
+	let isLoading = $state(false);
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
@@ -63,7 +63,7 @@
 					</div>
 				{/if}
 
-				<form on:submit={handleSubmit} class="space-y-4">
+				<form onsubmit={handleSubmit} class="space-y-4">
 					<div class="form-control">
 						<label class="label" for="usernameOrEmail">
 							<span class="label-text">Username or Email</span>
@@ -93,11 +93,11 @@
 							disabled={isLoading}
 							minlength="8"
 						/>
-						<label class="label">
+						<div class="label">
 							<a href="/forgot-password" class="label-text-alt link link-hover">
 								Forgot password?
 							</a>
-						</label>
+						</div>
 					</div>
 
 					<div class="form-control mt-6">

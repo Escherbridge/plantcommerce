@@ -4,11 +4,11 @@
 	import type { PageData } from './$types';
 	import { trpc } from '$lib/trpc/client';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
-	let selectedProduct: any = null;
-	let generatedLink = '';
-	let customSlug = '';
+	let selectedProduct: any = $state(null);
+	let generatedLink = $state('');
+	let customSlug = $state('');
 
 	async function generateLink() {
 		if (!selectedProduct) return;
@@ -81,15 +81,15 @@
 					</div>
 				</div>
 
-				<button class="btn btn-primary mt-4" on:click={generateLink} disabled={!selectedProduct}>
+				<button class="btn btn-primary mt-4" onclick={generateLink} disabled={!selectedProduct}>
 					Generate Link
 				</button>
 
 				{#if generatedLink}
 					<div class="mt-6 p-4 bg-base-200 rounded-lg">
-						<label class="label">
+						<div class="label">
 							<span class="label-text font-semibold">Your Affiliate Link</span>
-						</label>
+						</div>
 						<div class="flex gap-2">
 							<input
 								type="text"
@@ -97,7 +97,7 @@
 								readonly
 								class="input input-bordered flex-1 font-mono text-sm"
 							/>
-							<button class="btn btn-square" on:click={() => copyLink(generatedLink)}>
+							<button class="btn btn-square" onclick={() => copyLink(generatedLink)}>
 								📋
 							</button>
 						</div>
@@ -149,7 +149,7 @@
 										<div class="flex gap-2">
 											<button
 												class="btn btn-xs btn-outline"
-												on:click={() => copyLink(link.url)}
+												onclick={() => copyLink(link.url)}
 											>
 												Copy
 											</button>

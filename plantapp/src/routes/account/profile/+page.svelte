@@ -2,10 +2,10 @@
 	import { Container, Section } from '$lib/components/layout';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
-	let editMode = false;
-	let formData = {
+	let editMode = $state(false);
+	let formData = $state({
 		firstName: data.user?.firstName || '',
 		lastName: data.user?.lastName || '',
 		email: data.user?.email || '',
@@ -16,7 +16,7 @@
 		state: '',
 		zipCode: '',
 		country: 'United States'
-	};
+	});
 </script>
 
 <Section>
@@ -51,7 +51,7 @@
 							<h2 class="card-title">Personal Information</h2>
 							<button
 								class="btn btn-sm btn-outline"
-								on:click={() => (editMode = !editMode)}
+								onclick={() => (editMode = !editMode)}
 							>
 								{editMode ? 'Cancel' : 'Edit'}
 							</button>

@@ -3,7 +3,7 @@
 	import { Grid } from '$lib/components/layout';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 </script>
 
 <Section>
@@ -55,7 +55,7 @@
 								</div>
 								<button
 									class="btn btn-outline btn-sm"
-									on:click={() => navigator.clipboard.writeText(`${post.text}\n\n${post.hashtags}`)}
+									onclick={() => navigator.clipboard.writeText(`${post.text}\n\n${post.hashtags}`)}
 								>
 									📋 Copy
 								</button>

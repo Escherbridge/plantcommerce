@@ -34,28 +34,24 @@
 
 	const milestones = [
 		{ year: '2018', event: 'Aevani founded with a mission to democratize sustainable agriculture' },
-							{ year: '2020', event: 'Expanded product line to include aquaponics and agroforestry' },
-							{ year: '2022', event: 'Launched affiliate program to empower community growth' },
-							{ year: '2024', event: 'Reached 100,000 members in our learning community' }
-						],
-						foundingDate: '2018-03-15',
-						team: [
-							{ name: 'Alex Chen', role: 'Founder & CEO', image: '/images/team/alex.jpg' },
-							{ name: 'Maria Garcia', role: 'Head of Horticulture', image: '/images/team/maria.jpg' },
-							{ name: 'David Lee', role: 'Lead Engineer', image: '/images/team/david.jpg' },
-							{ name: 'Sarah Kim', role: 'Community Manager', image: '/images/team/sarah.jpg' }
-						]
-					};
-		</script>
-		
+		{ year: '2020', event: 'Expanded product line to include aquaponics and agroforestry' },
+		{ year: '2022', event: 'Launched affiliate program to empower community growth' },
+		{ year: '2024', event: 'Reached 100,000 members in our learning community' }
+	];
+</script>
+
+<Section>
+	<Container>
 		<div class="about-page bg-base-200">
 			<section class="hero bg-primary text-primary-content text-center py-20">
 				<div class="container mx-auto">
-					<h1 class="text-5xl font-bold mb-6">About Aevani</h1>			<p class="text-xl text-base-content/70 max-w-3xl mx-auto">
-				We're on a mission to make sustainable agriculture accessible to everyone, from backyard
-				gardeners to professional farmers.
-			</p>
-		</div>
+					<h1 class="text-5xl font-bold mb-6">About Aevani</h1>
+					<p class="text-xl text-base-content/70 max-w-3xl mx-auto">
+						We're on a mission to make sustainable agriculture accessible to everyone, from backyard
+						gardeners to professional farmers.
+					</p>
+				</div>
+			</section>
 
 		<!-- Mission Statement -->
 		<div class="card bg-primary text-primary-content shadow-2xl mb-16">
@@ -112,7 +108,7 @@
 								src={member.image}
 								alt={member.name}
 								class="object-cover w-full h-full"
-								on:error={(e) => {
+								onerror={(e) => {
 									e.currentTarget.src = '/placeholder-avatar.jpg';
 								}}
 							/>
@@ -176,6 +172,7 @@
 				<a href="/products/hydroponics" class="btn btn-primary btn-lg">Start Growing</a>
 				<a href="/careers" class="btn btn-outline btn-lg">Join Our Team</a>
 			</div>
+		</div>
 		</div>
 	</Container>
 </Section>
