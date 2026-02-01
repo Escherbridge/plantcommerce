@@ -11,7 +11,7 @@
 	let lastName = $state('');
 	let errorMessage = $state('');
 	let isLoading = $state(false);
-	
+
 	const passwordErrors = $derived(() => {
 		const errors: string[] = [];
 		if (password) {
@@ -58,8 +58,15 @@
 
 			if (result.sessionToken) {
 				// Redirect to account page or home
-				if (browser) {
-					window.location.href = '/account';
+				if (result.sessionToken) {
+					// SET THE COOKIE
+					document.cookie = `auth-session=${result.sessionToken}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`;
+
+					setTimeout(() => {
+						if (browser) {
+							window.location.href = '/account/profile';
+						}
+					}, 100);
 				}
 			}
 		} catch (error: any) {

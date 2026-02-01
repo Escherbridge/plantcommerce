@@ -20,10 +20,15 @@
 			});
 
 			if (result.sessionToken) {
-				// Redirect to account page or home
-				if (browser) {
-					window.location.href = '/account';
-				}
+				// IMPORTANT: Set the cookie
+				document.cookie = `auth-session=${result.sessionToken}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`;
+
+				// Wait a bit for cookie to be set, then redirect
+				setTimeout(() => {
+					if (browser) {
+						window.location.href = '/account/profile';
+					}
+				}, 100);
 			}
 		} catch (error: any) {
 			console.error('Login error:', error);

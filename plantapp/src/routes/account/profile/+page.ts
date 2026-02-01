@@ -1,32 +1,22 @@
 import type { PageLoad } from './$types';
-import { requireAuth } from '$lib/loaders/protected';
-import { trpc } from '$lib/trpc/client';
+import { redirect } from '@sveltejs/kit';
 
 export const load: PageLoad = async (event) => {
-	const user = await requireAuth(event);
+    // Get user from parent (layout)
+    const parentData = await event.parent();
+    if (!parentData?.user) {
 
-	// Get account stats
-	const stats = {
-		totalOrders: 0,
-		wishlistItems: 0
-	};
+        throw redirect(303, `/login?redirect=${encodeURIComponent(event.url.pathname)}`);
+    }
 
-	try {
-		const orders = await trpc(event).orders.getMyOrders.query({ limit: 1000 });
-		stats.totalOrders = orders?.length || 0;
-	} catch (e) {
-		console.error('Error loading orders:', e);
-	}
+    // Get account stats
+    const stats = {
+        totalOrders: 0,
+        wishlistItems: 0
+    };
 
-	try {
-		const wishlist = await trpc(event).users.getWishlist.query();
-		stats.wishlistItems = wishlist?.length || 0;
-	} catch (e) {
-		console.error('Error loading wishlist:', e);
-	}
-
-	return {
-		user,
-		stats
-	};
+    return {
+        user: parentData.user,
+        stats
+    };
 };
