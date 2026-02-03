@@ -27,8 +27,13 @@
 	// Use $derived for runes mode
 	const safeTitle = $derived(title.length > 60 ? title.substring(0, 57) + '...' : title);
 	const safeDescription = $derived(description.length > 160 ? description.substring(0, 157) + '...' : description);
-	const absoluteUrl = $derived(url ? (url.startsWith('http') ? url : `${PUBLIC_BASE_URL}${url}`) : PUBLIC_BASE_URL);
-	const absoluteImage = $derived(image.startsWith('http') ? image : `${PUBLIC_BASE_URL}${image}`);
+	
+	const baseUrl = PUBLIC_BASE_URL.endsWith('/') ? PUBLIC_BASE_URL.slice(0, -1) : PUBLIC_BASE_URL;
+	const urlPath = url ? (url.startsWith('/') ? url : `/${url}`) : '';
+	const absoluteUrl = $derived(url ? (url.startsWith('http') ? url : `${baseUrl}${urlPath}`) : baseUrl);
+
+	const imagePath = image.startsWith('/') ? image : `/${image}`;
+	const absoluteImage = $derived(image.startsWith('http') ? image : `${baseUrl}${imagePath}`);
 </script>
 
 <!-- Primary Meta Tags -->
