@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { trpc } from '$lib/trpc/client';
-	import { goto } from '$app/navigation';
-	import { browser } from '$app/environment';
 
 	let username = $state('');
 	let email = $state('');
@@ -48,6 +46,7 @@
 		isLoading = true;
 
 		try {
+			// The server will set the httpOnly cookie automatically
 			const result = await trpc.auth.register.mutate({
 				username,
 				email,
@@ -56,18 +55,10 @@
 				lastName: lastName || undefined
 			});
 
-			if (result.sessionToken) {
-				// Redirect to account page or home
-				if (result.sessionToken) {
-					// SET THE COOKIE
-					document.cookie = `auth-session=${result.sessionToken}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`;
-
-					setTimeout(() => {
-						if (browser) {
-							window.location.href = '/account/profile';
-						}
-					}, 100);
-				}
+			if (result.user && result.sessionToken) {
+				// Server has already set the httpOnly cookie
+				// Redirect to account page
+				window.location.href = '/account/profile';
 			}
 		} catch (error: any) {
 			console.error('Registration error:', error);

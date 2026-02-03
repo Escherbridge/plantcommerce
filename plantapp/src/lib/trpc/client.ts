@@ -14,7 +14,7 @@ export const trpc = createTRPCClient<AppRouter>({
 			fetch(url, options) {
 				return fetch(url, {
 					...options,
-					credentials: 'include'
+					credentials: 'include' // This ensures cookies are sent
 				});
 			}
 		})

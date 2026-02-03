@@ -142,11 +142,6 @@
 			]
 		}}
 	/>
-
-	<!-- Structured Data (JSON-LD) -->
-	<script type="application/ld+json">
-		{JSON.stringify(structuredData)}
-	</script>
 </svelte:head>
 
 <!-- Product Detail Section with Full Width -->

@@ -1,5 +1,7 @@
 <script lang="ts">
 	// Use $props() instead of export let in runes mode
+	import { PUBLIC_BASE_URL } from '$env/static/public';
+	
 	const {
 		title = 'PlantCommerce | Sustainable Growing Tools & Supplies',
 		description = 'Discover sustainable growing tools, hydroponic systems, and educational resources for modern growers.',
@@ -25,8 +27,8 @@
 	// Use $derived for runes mode
 	const safeTitle = $derived(title.length > 60 ? title.substring(0, 57) + '...' : title);
 	const safeDescription = $derived(description.length > 160 ? description.substring(0, 157) + '...' : description);
-	const absoluteUrl = $derived(url ? (url.startsWith('http') ? url : `https://plantcommerce.com${url}`) : 'https://plantcommerce.com');
-	const absoluteImage = $derived(image.startsWith('http') ? image : `https://plantcommerce.com${image}`);
+	const absoluteUrl = $derived(url ? (url.startsWith('http') ? url : `${PUBLIC_BASE_URL}${url}`) : PUBLIC_BASE_URL);
+	const absoluteImage = $derived(image.startsWith('http') ? image : `${PUBLIC_BASE_URL}${image}`);
 </script>
 
 <!-- Primary Meta Tags -->
