@@ -1,6 +1,9 @@
 <script lang="ts">
+	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { Container, Section, Grid, GridItem, OptimizedImage } from '$lib/components';
 	import { getMockProducts } from '$lib/utils/mockProducts';
+
+	import CategoryNav from '$lib/components/navigation/CategoryNav.svelte';
 
 	// Get featured products for homepage
 	const featuredProducts = getMockProducts({ featured: true, limit: 6 });
@@ -11,6 +14,36 @@
 	<meta
 		name="description"
 		content="From monoculture to polyculture. Sustainable agriculture systems for a resilient future."
+	/>
+
+		<!-- Add this StructuredData component -->
+	<StructuredData
+		type="website"
+		data={{
+			name: 'PlantCommerce',
+			url: 'https://plantcommerce.com',
+			description: 'Sustainable growing tools, hydroponic systems, and educational resources for modern growers.',
+			potentialAction: {
+				'@type': 'SearchAction',
+				target: 'https://plantcommerce.com/search?q={search_term_string}',
+				'query-input': 'required name=search_term_string'
+			}
+		}}
+	/>
+
+	<!-- Also add Organization schema -->
+	<StructuredData
+		type="organization"
+		data={{
+			name: 'PlantCommerce',
+			url: 'https://plantcommerce.com',
+			logo: 'https://plantcommerce.com/images/AI-MockAssets/MAINHERO.png',
+			sameAs: [
+				'https://facebook.com/plantcommerce',
+				'https://twitter.com/plantcommerce',
+				'https://instagram.com/plantcommerce'
+			]
+		}}
 	/>
 </svelte:head>
 
@@ -74,6 +107,33 @@
 			</div>
 		</div>
 	</div>
+</section>
+
+<section class="bg-base-100 w-full py-16 md:py-24">
+	<Container>
+		<div class="mb-12 text-center">
+			<h2 class="mb-4 text-3xl font-bold text-gray-900 md:text-4xl lg:text-5xl">
+				Shop by Category
+			</h2>
+			<p class="mx-auto max-w-2xl text-lg text-gray-600 md:text-xl">
+				Browse our sustainable gardening collections
+			</p>
+		</div>
+
+		<CategoryNav showCounts={true} showIcons={true} compact={false} />
+
+		<div class="mt-12 text-center">
+			<a
+				href="/products"
+				class="inline-flex items-center text-lg font-medium text-primary hover:underline"
+			>
+				View all products
+				<svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+				</svg>
+			</a>
+		</div>
+	</Container>
 </section>
 
 <!-- Core Values Section with Enhanced Design -->

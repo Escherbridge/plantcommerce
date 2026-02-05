@@ -11,7 +11,7 @@ export const usersRouter = router({
 	getProfile: protectedProcedure.query(async ({ ctx }) => {
 		try {
 			const user = await UserService.getUserById(ctx.user.id);
-			
+
 			if (!user) {
 				throw new TRPCError({
 					code: 'NOT_FOUND',
@@ -142,7 +142,7 @@ export const usersRouter = router({
 		.query(async ({ input }) => {
 			try {
 				const user = await UserService.getUserById(input.userId);
-				
+
 				if (!user) {
 					throw new TRPCError({
 						code: 'NOT_FOUND',

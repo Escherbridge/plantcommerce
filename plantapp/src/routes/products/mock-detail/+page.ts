@@ -6,11 +6,21 @@ export const load: PageLoad = async () => {
     const products = getMockProducts({ featured: true, limit: 1 });
     const product = products[0];
 
-    // Get related products (other featured products)
+    // Get related products
     const relatedProducts = getMockProducts({ featured: true, limit: 4 }).filter(p => p.id !== product.id);
+
+    // Simple SEO data - no database queries
+    const seoData = {
+        title: `${product.name} | PlantCommerce`,
+        description: product.description || `Shop ${product.name} - premium ${product.category} product.`,
+        image: product.imageUrl || product.image || '/images/AI-MockAssets/HydroToolProduct-HydroponicGrowTentKit.png',
+        type: 'product' as const,
+        tags: [product.category]
+    };
 
     return {
         product,
-        relatedProducts
+        relatedProducts,
+        seo: seoData
     };
 };

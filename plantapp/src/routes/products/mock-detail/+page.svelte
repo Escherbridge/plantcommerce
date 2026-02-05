@@ -1,4 +1,9 @@
 <script lang="ts">
+	// ADD THESE IMPORTS
+	import StructuredData from '$lib/components/StructuredData.svelte';
+	import SEO from '$lib/components/SEO.svelte';
+	import { browser } from '$app/environment';
+
 	import { Container, Section, Grid } from '$lib/components/layout';
 	import { Carousel } from '$lib/components/ui';
 	import type { PageData } from './$types';
@@ -10,6 +15,23 @@
 	import trowelImg from '$lib/images/AI-MockAssets/ToolProduct-TROWL.png';
 
 	let { data }: { data: PageData } = $props();
+
+	// ADD STRUCTURED DATA
+	let structuredData = {
+		'@context': 'https://schema.org',
+		'@type': 'Product',
+		name: data.product.name,
+		description: data.product.description || data.product.shortDescription,
+		image: data.product.imageUrl || data.product.image,
+		offers: {
+			'@type': 'Offer',
+			price: data.product.price,
+			priceCurrency: 'USD',
+			availability: data.product.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+			url: browser ? window.location.href : 'https://plantcommerce.com/products/mock-detail'
+		},
+		category: data.product.category?.name || 'Gardening'
+	};
 
 	let quantity = $state(1);
 	let selectedThumbnail = $state(0);
@@ -51,6 +73,75 @@
 <svelte:head>
 	<title>{data.product.name} - Aevani Marketplace</title>
 	<meta name="description" content={data.product.shortDescription} />
+	<!-- Your existing SEO component -->
+	<SEO
+		title={data.seo?.title || `${data.product.name} | PlantCommerce`}
+		description={data.seo?.description || data.product.shortDescription}
+		image={data.seo?.image || '/images/AI-MockAssets/HydroToolProduct-HydroponicGrowTentKit.png'}
+		type={data.seo?.type || 'product'}
+		tags={data.seo?.tags || [data.product.category?.name || 'gardening']}
+	/>
+
+	<!-- PRODUCT Schema -->
+	<StructuredData
+		type="product"
+		data={{
+			name: data.product.name,
+			description: data.product.description || data.product.shortDescription,
+			image: data.product.imageUrl || data.product.image || '/images/AI-MockAssets/HydroToolProduct-HydroponicGrowTentKit.png',
+			brand: {
+				'@type': 'Brand',
+				name: 'PlantCommerce'
+			},
+			offers: {
+				'@type': 'Offer',
+				price: data.product.price,
+				priceCurrency: 'USD',
+				priceValidUntil: '2024-12-31',
+				availability: data.product.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+				url: `https://plantcommerce.com/products/mock-detail?product=${data.product.slug || data.product.id}`,
+				itemCondition: 'https://schema.org/NewCondition'
+			},
+			aggregateRating: {
+				'@type': 'AggregateRating',
+				ratingValue: '4.5',
+				reviewCount: '24'
+			}
+		}}
+	/>
+
+	<!-- BREADCRUMB Schema -->
+	<StructuredData
+		type="breadcrumb"
+		data={{
+			itemListElement: [
+				{
+					'@type': 'ListItem',
+					position: 1,
+					name: 'Home',
+					item: 'https://plantcommerce.com'
+				},
+				{
+					'@type': 'ListItem',
+					position: 2,
+					name: 'Products',
+					item: 'https://plantcommerce.com/products'
+				},
+				{
+					'@type': 'ListItem',
+					position: 3,
+					name: data.product.category?.name || 'Gardening',
+					item: `https://plantcommerce.com/products/${data.product.category?.slug || 'gardening'}`
+				},
+				{
+					'@type': 'ListItem',
+					position: 4,
+					name: data.product.name,
+					item: `https://plantcommerce.com/products/mock-detail?product=${data.product.slug || data.product.id}`
+				}
+			]
+		}}
+	/>
 </svelte:head>
 
 <!-- Product Detail Section with Full Width -->

@@ -3,6 +3,8 @@
 	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
 
+	import CategoryNav from '$lib/components/navigation/CategoryNav.svelte';
+
 	let { data }: { data: PageData } = $props();
 
 	let searchQuery = $state(data.searchQuery || '');
@@ -71,33 +73,19 @@
 		<!-- Enhanced Category Cards -->
 		{#if !data.selectedCategory && !data.searchQuery}
 			<div class="mb-16">
-				<h2 class="mb-8 text-3xl font-bold tracking-tight lg:text-4xl">SHOP BY CATEGORY</h2>
-				<Grid columns={4} gap={8}>
-					{#each data.categories as category}
-						<a
-							href="/products/{category.slug}"
-							class="card bg-base-100 hover:shadow-3xl border-base-200 group overflow-hidden rounded-2xl border shadow-xl transition-all duration-500 hover:-translate-y-2"
-						>
-							<div class="card-body space-y-4 p-8">
-								<h3
-									class="card-title group-hover:text-primary text-2xl font-bold transition-colors"
-								>
-									{category.name}
-								</h3>
-								<p class="text-base-content/70 text-base font-light leading-relaxed">
-									{category.description || 'Explore our selection'}
-								</p>
-								<div class="card-actions justify-end pt-4">
-									<span
-										class="btn btn-primary btn-sm font-semibold tracking-wide transition-transform group-hover:scale-110"
-									>
-										BROWSE
-									</span>
-								</div>
-							</div>
-						</a>
-					{/each}
-				</Grid>
+				<h2 class="mb-6 text-3xl font-bold tracking-tight lg:text-4xl">SHOP BY CATEGORY</h2>
+				<CategoryNav showCounts={true} showIcons={true} compact={true} />
+				<div class="mt-8 text-center">
+					<a
+						href="/products"
+						class="inline-flex items-center text-lg font-medium text-primary hover:underline"
+					>
+						View all categories
+						<svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+						</svg>
+					</a>
+				</div>
 			</div>
 		{/if}
 

@@ -6,10 +6,15 @@ declare global {
 			user: import('$lib/server/auth').SessionValidationResult['user'];
 			session: import('$lib/server/auth').SessionValidationResult['session'];
 		}
-	} // interface Error {}
+		// Add env variable types
+		interface PublicEnv {
+			PUBLIC_BASE_URL: string;
+		}
+	}
+	// interface Error {}
 	// interface Locals {}
-} // interface PageData {}
-// interface PageState {}
-
-// interface Platform {}
-export {};
+	// interface PageData {}
+	// interface PageState {}
+	// interface Platform {}
+	export {};
+}

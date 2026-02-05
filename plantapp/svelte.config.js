@@ -16,6 +16,9 @@ const config = {
 			// Disable automatic prerendering since the app requires authentication and dynamic data
 			handleMissingId: 'warn',
 			handleHttpError: 'warn'
+		},
+		env: {
+			publicPrefix: 'PUBLIC_'
 		}
 	},
 	extensions: ['.svelte', '.svx']

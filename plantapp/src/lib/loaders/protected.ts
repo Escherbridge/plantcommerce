@@ -6,23 +6,42 @@ import { trpc } from '$lib/trpc/client';
  * Check if user is authenticated and return user data
  * Redirects to signin if not authenticated
  */
+import type { LoadEvent } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
+
+/**
+ * Check if user is authenticated using event.locals
+ * Redirects to login if not authenticated
+ */
 export async function requireAuth(event: LoadEvent, redirectTo?: string) {
-	try {
-		const user = await trpc(event).users.getProfile.query();
+    // TRY BOTH: parent data and locals
+    try {
+        // Try to get user from parent data first
+        const parentData = await event.parent();
 
-		if (!user) {
-			const redirectPath = redirectTo || event.url.pathname;
-			throw redirect(303, `/auth/signin?redirect=${encodeURIComponent(redirectPath)}`);
-		}
+        if (parentData?.user) {
 
-		return user;
-	} catch (error) {
-		if (error instanceof Response) {
-			throw error;
-		}
-		const redirectPath = redirectTo || event.url.pathname;
-		throw redirect(303, `/auth/signin?redirect=${encodeURIComponent(redirectPath)}`);
-	}
+            return parentData.user;
+        }
+    } catch (error) {
+
+    }
+
+    // Fall back to checking locals
+
+    if (event.locals?.user) {
+
+        return event.locals.user;
+    }
+    const redirectPath = redirectTo || event.url.pathname;
+    throw redirect(303, `/login?redirect=${encodeURIComponent(redirectPath)}`);
+}
+
+/**
+ * Get user if authenticated, return null if not (no redirect)
+ */
+export async function getUser(event: LoadEvent) {
+    return event.locals?.user || null;
 }
 
 /**
@@ -51,16 +70,4 @@ export async function requireAffiliate(event: LoadEvent) {
 	}
 
 	return user;
-}
-
-/**
- * Get user if authenticated, return null if not (no redirect)
- */
-export async function getUser(event: LoadEvent) {
-	try {
-		const user = await trpc(event).users.getProfile.query();
-		return user || null;
-	} catch (error) {
-		return null;
-	}
 }
