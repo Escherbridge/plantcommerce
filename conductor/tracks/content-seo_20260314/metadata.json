@@ -1,0 +1,49 @@
+{
+  "id": "content-seo_20260314",
+  "title": "Content & SEO",
+  "description": "CMS-powered educational content, blog, and search engine optimization for long-term organic growth.",
+  "status": "ready",
+  "priority": 6,
+  "phase": "Phase 3: Grow",
+  "createdAt": "2026-03-14",
+  "updatedAt": "2026-03-14",
+  "projectType": "brownfield",
+  "coverageTarget": 70,
+  "commitStrategy": "manual",
+  "totalPhases": 7,
+  "totalTasks": 39,
+  "estimatedEffort": "3-4 weeks",
+  "dependencies": {
+    "tracks": ["discovery-trust_20260314"],
+    "notes": "Requires product catalog and category pages to be functional for content-product linking and category editorial content. Blog/guide/FAQ pages can proceed independently."
+  },
+  "tags": ["cms", "seo", "content", "blog", "guides", "faq", "sitemap", "structured-data", "image-optimization"],
+  "techStack": {
+    "newDependencies": ["quill", "dompurify", "@types/dompurify", "sharp"],
+    "existingLeverage": ["contentPage schema", "ContentService", "contentRouter", "file table + GCS", "mdsvex", "@tailwindcss/typography"]
+  },
+  "schemaChanges": {
+    "newTables": ["content_product_link"],
+    "modifiedTables": ["product_category (add editorialContent, editorialImageFileId, editorialContentPageId)"]
+  },
+  "routes": {
+    "new": [
+      "/blog/[slug]",
+      "/guides/[slug]",
+      "/tags/[tag]",
+      "/sitemap.xml",
+      "/robots.txt",
+      "/rss.xml",
+      "/admin/content/new",
+      "/admin/content/[id]",
+      "/admin/content/[id]/preview"
+    ],
+    "modified": [
+      "/blog",
+      "/guides",
+      "/faq",
+      "/learn",
+      "/admin/content"
+    ]
+  }
+}

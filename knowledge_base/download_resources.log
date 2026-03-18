@@ -1,0 +1,1024 @@
+2026-03-15 22:59:28 [INFO] Starting resource download...
+2026-03-15 22:59:28 [INFO] Manifest file: resources_manifest.json
+2026-03-15 22:59:28 [INFO] Loaded manifest with 10 categories
+2026-03-15 22:59:28 [INFO] 
+======================================================================
+2026-03-15 22:59:28 [INFO] Processing category: silvopasture_and_agroforestry
+2026-03-15 22:59:28 [INFO] Description: Guides and research on integrating trees with livestock and crops
+2026-03-15 22:59:28 [INFO] ======================================================================
+2026-03-15 22:59:28 [INFO] 
+[VERIFIED] 1/5: USDA Forest Service - Silvopasture An Agroforestry Practice
+2026-03-15 22:59:28 [DEBUG] Download attempt 1/3: https://www.fs.usda.gov/research/publications/an/silvopasture-an-agroforestry-practice-an8-final-508.pdf
+2026-03-15 22:59:32 [INFO] Successfully downloaded: downloads/silvopasture_and_agroforestry\USDA_FS_Silvopasture_An_Agroforestry_Practice.pdf (6,437,573 bytes)
+2026-03-15 22:59:32 [INFO] 
+[VERIFIED] 2/5: University of Minnesota Extension - Silvopasture Manual
+2026-03-15 22:59:32 [DEBUG] Download attempt 1/3: https://www.uwsp.edu/wp-content/uploads/2023/06/UM-Extension-Silvopasture-Manual-Episode-4.pdf
+2026-03-15 22:59:33 [INFO] Successfully downloaded: downloads/silvopasture_and_agroforestry\UMN_Extension_Silvopasture_Manual.pdf (3,249,912 bytes)
+2026-03-15 22:59:33 [INFO] 
+[VERIFIED] 3/5: Oregon State Extension - Silvopasture Guide
+2026-03-15 22:59:33 [DEBUG] Download attempt 1/3: https://extension.oregonstate.edu/sites/extd8/files/documents/em8989.pdf
+2026-03-15 22:59:34 [INFO] Successfully downloaded: downloads/silvopasture_and_agroforestry\Oregon_State_Extension_Silvopasture_Guide.pdf (2,094,439 bytes)
+2026-03-15 22:59:34 [INFO] 
+[VERIFIED] 4/5: USDA National Agroforestry Center - Research Funding Guide
+2026-03-15 22:59:34 [DEBUG] Download attempt 1/3: https://www.fs.usda.gov/nac/assets/documents/morepublications/usdaafresearchfunding.pdf
+2026-03-15 22:59:36 [INFO] Successfully downloaded: downloads/silvopasture_and_agroforestry\USDA_NAC_Agroforestry_Research_Funding.pdf (1,970,575 bytes)
+2026-03-15 22:59:36 [INFO] 
+[VERIFIED] 5/5: Grasslands Partnership - Climate Smart Silvopasture
+2026-03-15 22:59:36 [DEBUG] Download attempt 1/3: https://grasslandspartnership.org/wp-content/uploads/sites/278/2024/02/Silvopastures-Oct2023-5-GrasslandsPartnership.pdf
+2026-03-15 22:59:37 [INFO] Successfully downloaded: downloads/silvopasture_and_agroforestry\Grasslands_Partnership_Climate_Smart_Silvopasture.pdf (1,091,847 bytes)
+2026-03-15 22:59:37 [INFO] 
+Category summary: 5 succeeded, 0 failed
+2026-03-15 22:59:37 [INFO] 
+======================================================================
+2026-03-15 22:59:37 [INFO] Processing category: wildfire_prevention
+2026-03-15 22:59:37 [INFO] Description: Strategies and research on using grazing and land management for wildfire risk reduction
+2026-03-15 22:59:37 [INFO] ======================================================================
+2026-03-15 22:59:37 [INFO] 
+[VERIFIED] 1/3: UC Davis Rangelands - Prescribed Grazing Fire Brief
+2026-03-15 22:59:37 [DEBUG] Download attempt 1/3: https://rangelands.ucdavis.edu/sites/g/files/dgvnsk13956/files/media/documents/RxGrazing_fire_brief.pdf
+2026-03-15 22:59:38 [INFO] Successfully downloaded: downloads/wildfire_prevention\UC_Davis_Prescribed_Grazing_Fire_Brief.pdf (350,652 bytes)
+2026-03-15 22:59:38 [INFO] 
+[VERIFIED] 2/3: California Agriculture - Cattle Grazing Reduces Fuel and Fire Behavior
+2026-03-15 22:59:38 [DEBUG] Download attempt 1/3: https://californiaagriculture.org/article/108623-cattle-grazing-reduces-fuel-and-leads-to-more-manageable-fire-behavior/attachment/213558.pdf
+2026-03-15 22:59:39 [INFO] Successfully downloaded: downloads/wildfire_prevention\California_Ag_Cattle_Grazing_Reduces_Fuel.pdf (1,163,402 bytes)
+2026-03-15 22:59:39 [INFO] 
+[VERIFIED] 3/3: USDA Climate Hubs - Grazing and Fire Management
+2026-03-15 22:59:39 [DEBUG] Download attempt 1/3: https://www.climatehubs.usda.gov/hubs/southwest/topic/targeted-grazing-wildfire-risk-reduction
+2026-03-15 22:59:40 [INFO] 
+Category summary: 2 succeeded, 1 failed
+2026-03-15 22:59:40 [INFO] 
+======================================================================
+2026-03-15 22:59:40 [INFO] Processing category: biochar_and_carbon
+2026-03-15 22:59:40 [INFO] Description: Research on biochar production, soil carbon sequestration, and carbon credit methodologies
+2026-03-15 22:59:40 [INFO] ======================================================================
+2026-03-15 22:59:40 [INFO] 
+[VERIFIED] 1/4: RSB Soil Carbon Impact Indicator Methodology
+2026-03-15 22:59:40 [DEBUG] Download attempt 1/3: https://rsb.org/wp-content/uploads/2025/01/rsb-impact-indicator-methodology-soil-carbon_2024.pdf
+2026-03-15 22:59:41 [INFO] Successfully downloaded: downloads/biochar_and_carbon\RSB_Soil_Carbon_Methodology_2024.pdf (1,026,834 bytes)
+2026-03-15 22:59:41 [INFO] 
+[VERIFIED] 2/4: NRCS Conservation Innovation Grants - Funding Guide
+2026-03-15 22:59:41 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-15 23:00:12 [WARNING] Timeout (attempt 1/3)
+2026-03-15 23:00:14 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-15 23:00:44 [WARNING] Timeout (attempt 2/3)
+2026-03-15 23:00:46 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-15 23:01:16 [INFO] 
+[VERIFIED] 3/4: Frontiers in Soil Science - Biochar Applications
+2026-03-15 23:01:16 [DEBUG] Download attempt 1/3: https://www.frontiersin.org/articles/10.3389/fsoil.2023.1168328
+2026-03-15 23:01:18 [INFO] 
+[VERIFIED] 4/4: PubMed Central - Biochar for Sustainable Agriculture
+2026-03-15 23:01:18 [DEBUG] Download attempt 1/3: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8617050/
+2026-03-15 23:01:19 [INFO] 
+Category summary: 1 succeeded, 3 failed
+2026-03-15 23:01:19 [INFO] 
+======================================================================
+2026-03-15 23:01:19 [INFO] Processing category: aquaponics_and_hydroponics
+2026-03-15 23:01:19 [INFO] Description: Guides and research on aquaponic and hydroponic system design and management
+2026-03-15 23:01:19 [INFO] ======================================================================
+2026-03-15 23:01:19 [INFO] 
+[VERIFIED] 1/3: Sustainability Institute - Build Your Own Aquaponics System at Home
+2026-03-15 23:01:19 [DEBUG] Download attempt 1/3: https://susdev.sun.ac.za/files/2024/10/Build-your-own-Aquaponics-System-at-home.pdf
+2026-03-15 23:01:22 [INFO] Successfully downloaded: downloads/aquaponics_and_hydroponics\Sustainability_Institute_DIY_Aquaponics.pdf (845,223 bytes)
+2026-03-15 23:01:22 [INFO] 
+[UNVERIFIED] 2/3: Clemson University - Aquaponics System Layout and Design
+2026-03-15 23:01:22 [DEBUG] Download attempt 1/3: https://www.clemson.edu/public/press-releases/2023/04/clemson-aquaponics-research.pdf
+2026-03-15 23:01:23 [INFO] Successfully downloaded: downloads/aquaponics_and_hydroponics\Clemson_Aquaponics_System_Design.pdf (326,782 bytes)
+2026-03-15 23:01:23 [INFO] 
+[VERIFIED] 3/3: FAO - Aquaponics for Sustainable Food Systems
+2026-03-15 23:01:23 [DEBUG] Download attempt 1/3: https://www.fao.org/documents/card/en/c/ca7048en/
+2026-03-15 23:01:24 [INFO] Successfully downloaded: downloads/aquaponics_and_hydroponics\FAO_Aquaponics_Sustainable_Food.pdf (945 bytes)
+2026-03-15 23:01:24 [INFO] 
+Category summary: 3 succeeded, 0 failed
+2026-03-15 23:01:24 [INFO] 
+======================================================================
+2026-03-15 23:01:24 [INFO] Processing category: keyline_and_water_management
+2026-03-15 23:01:24 [INFO] Description: Water management, keyline design, and hydrological conservation techniques
+2026-03-15 23:01:24 [INFO] ======================================================================
+2026-03-15 23:01:24 [INFO] 
+[VERIFIED] 1/3: Oregon State Extension - Water Rights and Water Law
+2026-03-15 23:01:24 [DEBUG] Download attempt 1/3: https://extension.oregonstate.edu/sites/extd8/files/documents/donnelja/water-rights-and-water-law.pdf
+2026-03-15 23:01:25 [INFO] Successfully downloaded: downloads/keyline_and_water_management\Oregon_State_Water_Rights_and_Law.pdf (636,203 bytes)
+2026-03-15 23:01:25 [INFO] 
+[UNVERIFIED] 2/3: USDA Natural Resources Conservation Service - Water Management Practices
+2026-03-15 23:01:25 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/sites/default/files/2024-07/water-conservation-practices.pdf
+2026-03-15 23:01:48 [WARNING] Connection error: ('Connection aborted.', ConnectionResetError(10054 (attempt 1/3)
+2026-03-15 23:01:50 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/sites/default/files/2024-07/water-conservation-practices.pdf
+2026-03-15 23:02:20 [WARNING] Timeout (attempt 2/3)
+2026-03-15 23:02:22 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/sites/default/files/2024-07/water-conservation-practices.pdf
+2026-03-15 23:02:53 [INFO] 
+[UNVERIFIED] 3/3: Watershed Academy - Keyline and Water Harvesting
+2026-03-15 23:02:53 [DEBUG] Download attempt 1/3: https://www.watershedacademy.com/free-resources/keyline-design-guide.pdf
+2026-03-15 23:02:53 [INFO] 
+Category summary: 1 succeeded, 2 failed
+2026-03-15 23:02:53 [INFO] 
+======================================================================
+2026-03-15 23:02:53 [INFO] Processing category: iot_and_precision_agriculture
+2026-03-15 23:02:53 [INFO] Description: Internet of Things, sensor networks, and precision agriculture technologies
+2026-03-15 23:02:53 [INFO] ======================================================================
+2026-03-15 23:02:53 [INFO] 
+[VERIFIED] 1/4: Nature - IoT Sensors for Sustainable Agriculture
+2026-03-15 23:02:53 [DEBUG] Download attempt 1/3: https://www.nature.com/articles/s41598-024-80924-y
+2026-03-15 23:02:55 [INFO] Successfully downloaded: downloads/iot_and_precision_agriculture\Nature_IoT_Sensors_Agriculture.pdf (850,899 bytes)
+2026-03-15 23:02:55 [INFO] 
+[UNVERIFIED] 2/4: Frontiers in Sustainable Food Systems - Smart Sensors Integration
+2026-03-15 23:02:55 [DEBUG] Download attempt 1/3: https://www.frontiersin.org/articles/10.3389/fsufs.2023.1234567
+2026-03-15 23:02:57 [INFO] 
+[UNVERIFIED] 3/4: IEEE - Precision Agriculture IoT Networks
+2026-03-15 23:02:57 [DEBUG] Download attempt 1/3: https://ieeexplore.ieee.org/document/9999999
+2026-03-15 23:02:57 [INFO] Successfully downloaded: downloads/iot_and_precision_agriculture\IEEE_Precision_Agriculture_IoT.pdf (47,486 bytes)
+2026-03-15 23:02:57 [INFO] 
+[UNVERIFIED] 4/4: USDA - Digital Agriculture and Precision Tools
+2026-03-15 23:02:57 [DEBUG] Download attempt 1/3: https://www.usda.gov/sites/default/files/documents/digital-agriculture-toolbox.pdf
+2026-03-15 23:03:28 [WARNING] Timeout (attempt 1/3)
+2026-03-15 23:03:30 [DEBUG] Download attempt 2/3: https://www.usda.gov/sites/default/files/documents/digital-agriculture-toolbox.pdf
+2026-03-15 23:04:00 [WARNING] Timeout (attempt 2/3)
+2026-03-15 23:04:02 [DEBUG] Download attempt 3/3: https://www.usda.gov/sites/default/files/documents/digital-agriculture-toolbox.pdf
+2026-03-15 23:04:33 [INFO] 
+Category summary: 2 succeeded, 2 failed
+2026-03-15 23:04:33 [INFO] 
+======================================================================
+2026-03-15 23:04:33 [INFO] Processing category: grants_and_procurement
+2026-03-15 23:04:33 [INFO] Description: Agricultural grant programs, RFAs, and funding opportunities
+2026-03-15 23:04:33 [INFO] ======================================================================
+2026-03-15 23:04:33 [INFO] 
+[VERIFIED] 1/4: USDA AMS - Specialty Crop Block Grant Program 2024 RFA
+2026-03-15 23:04:33 [DEBUG] Download attempt 1/3: https://www.ams.usda.gov/sites/default/files/media/2024_SCBGP_RFA_FINAL.pdf
+2026-03-15 23:04:34 [INFO] Successfully downloaded: downloads/grants_and_procurement\USDA_SCBG_Program_2024_RFA.pdf (661,130 bytes)
+2026-03-15 23:04:34 [INFO] 
+[VERIFIED] 2/4: NRCS Conservation Innovation Grants 2024 Guide
+2026-03-15 23:04:34 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-15 23:05:04 [WARNING] Timeout (attempt 1/3)
+2026-03-15 23:05:06 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-15 23:05:26 [WARNING] Connection error: ('Connection aborted.', ConnectionResetError(10054 (attempt 2/3)
+2026-03-15 23:05:28 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-15 23:05:58 [INFO] 
+[VERIFIED] 3/4: USDA Natural Resources Conservation Service - Grant Opportunities
+2026-03-15 23:05:58 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/programs-initiatives/nrcs-grants-and-funding
+2026-03-15 23:06:29 [WARNING] Timeout (attempt 1/3)
+2026-03-15 23:06:31 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/programs-initiatives/nrcs-grants-and-funding
+2026-03-15 23:07:01 [WARNING] Timeout (attempt 2/3)
+2026-03-15 23:07:03 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/programs-initiatives/nrcs-grants-and-funding
+2026-03-15 23:07:34 [INFO] 
+[UNVERIFIED] 4/4: USDA Value-Added Producer Grants - 2024 RFA
+2026-03-15 23:07:34 [DEBUG] Download attempt 1/3: https://www.rd.usda.gov/sites/default/files/VAPG-2024-RFA.pdf
+2026-03-15 23:08:04 [WARNING] Timeout (attempt 1/3)
+2026-03-15 23:08:06 [DEBUG] Download attempt 2/3: https://www.rd.usda.gov/sites/default/files/VAPG-2024-RFA.pdf
+2026-03-15 23:08:37 [WARNING] Timeout (attempt 2/3)
+2026-03-15 23:08:39 [DEBUG] Download attempt 3/3: https://www.rd.usda.gov/sites/default/files/VAPG-2024-RFA.pdf
+2026-03-15 23:09:01 [INFO] 
+Category summary: 1 succeeded, 3 failed
+2026-03-15 23:09:01 [INFO] 
+======================================================================
+2026-03-15 23:09:01 [INFO] Processing category: fire_modeling_and_data
+2026-03-15 23:09:01 [INFO] Description: Wildfire modeling, data analysis, and research tools
+2026-03-15 23:09:01 [INFO] ======================================================================
+2026-03-15 23:09:01 [INFO] 
+[VERIFIED] 1/3: UC San Diego WIFIRE - Workshop Report
+2026-03-15 23:09:01 [DEBUG] Download attempt 1/3: https://wifire.ucsd.edu/files/pdf/WIFIRE_Wks_Report_FINAL.pdf
+2026-03-15 23:09:02 [INFO] 
+[VERIFIED] 2/3: USDA Forest Service - Fire Effects Information System
+2026-03-15 23:09:02 [DEBUG] Download attempt 1/3: https://www.fs.usda.gov/feis/
+2026-03-15 23:09:04 [INFO] 
+[UNVERIFIED] 3/3: National Interagency Fire Center - Incident Information System
+2026-03-15 23:09:04 [DEBUG] Download attempt 1/3: https://www.nifc.gov/
+2026-03-15 23:09:05 [INFO] Successfully downloaded: downloads/fire_modeling_and_data\NIFC_Incident_Information_System.pdf (253,323 bytes)
+2026-03-15 23:09:05 [INFO] 
+Category summary: 1 succeeded, 2 failed
+2026-03-15 23:09:05 [INFO] 
+======================================================================
+2026-03-15 23:09:05 [INFO] Processing category: carbon_credits_and_compliance
+2026-03-15 23:09:05 [INFO] Description: Carbon credit methodologies, protocols, and regulatory compliance frameworks
+2026-03-15 23:09:05 [INFO] ======================================================================
+2026-03-15 23:09:05 [INFO] 
+[VERIFIED] 1/3: Verified Carbon Standard - Agriculture, Forestry and Other Land Use
+2026-03-15 23:09:05 [DEBUG] Download attempt 1/3: https://verra.org/methodologies/afolu-methodologies/
+2026-03-15 23:09:07 [INFO] 
+[VERIFIED] 2/3: Gold Standard - Land Use and Forestry Guidance
+2026-03-15 23:09:07 [DEBUG] Download attempt 1/3: https://www.goldstandard.org/articles/land-use-and-forestry
+2026-03-15 23:09:08 [INFO] 
+[VERIFIED] 3/3: IPCC - Climate Change 2021 Agriculture, Forestry and Other Land Use
+2026-03-15 23:09:08 [DEBUG] Download attempt 1/3: https://www.ipcc.ch/report/ar6/wg1/chapter/5/
+2026-03-15 23:09:09 [INFO] 
+Category summary: 0 succeeded, 3 failed
+2026-03-15 23:09:09 [INFO] 
+======================================================================
+2026-03-15 23:09:09 [INFO] Processing category: regenerative_agriculture_overview
+2026-03-15 23:09:09 [INFO] Description: General resources and overview materials on regenerative agriculture practices
+2026-03-15 23:09:09 [INFO] ======================================================================
+2026-03-15 23:09:09 [INFO] 
+[VERIFIED] 1/4: SARE - Introduction to Regenerative Practices
+2026-03-15 23:09:09 [DEBUG] Download attempt 1/3: https://www.sare.org/learning-center/books/an-introduction-to-cover-crops/
+2026-03-15 23:09:10 [INFO] 
+[VERIFIED] 2/4: FAO - Regenerative Agriculture for Climate Resilience
+2026-03-15 23:09:10 [DEBUG] Download attempt 1/3: https://www.fao.org/documents/card/en/c/cb5383en/
+2026-03-15 23:09:12 [INFO] Successfully downloaded: downloads/regenerative_agriculture_overview\FAO_Regenerative_Agriculture_Climate.pdf (945 bytes)
+2026-03-15 23:09:12 [INFO] 
+[UNVERIFIED] 3/4: USDA NRCS - Soil Health Fundamentals
+2026-03-15 23:09:12 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/sites/default/files/2024-02/soil-health-fundamentals.pdf
+2026-03-15 23:09:42 [WARNING] Timeout (attempt 1/3)
+2026-03-15 23:09:44 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/sites/default/files/2024-02/soil-health-fundamentals.pdf
+2026-03-15 23:10:15 [WARNING] Timeout (attempt 2/3)
+2026-03-15 23:10:17 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/sites/default/files/2024-02/soil-health-fundamentals.pdf
+2026-03-15 23:10:47 [INFO] 
+[UNVERIFIED] 4/4: Rodale Institute - Regenerative Farming Practices
+2026-03-15 23:10:47 [DEBUG] Download attempt 1/3: https://rodaleinstitute.org/science/research-summaries/
+2026-03-15 23:10:49 [INFO] 
+Category summary: 1 succeeded, 3 failed
+2026-03-16 20:27:02 [INFO] Starting resource download...
+2026-03-16 20:27:02 [INFO] Manifest file: resources_manifest.json
+2026-03-16 20:27:02 [INFO] Loaded manifest with 10 categories
+2026-03-16 20:27:02 [INFO] 
+======================================================================
+2026-03-16 20:27:02 [INFO] Processing category: silvopasture_and_agroforestry
+2026-03-16 20:27:02 [INFO] Description: Guides and research on integrating trees with livestock and crops
+2026-03-16 20:27:02 [INFO] ======================================================================
+2026-03-16 20:27:02 [INFO] 
+[VERIFIED] 1/5: USDA Forest Service - Silvopasture: An Agroforestry Practice (AN-8)
+2026-03-16 20:27:02 [DEBUG] Download attempt 1/3: https://www.fs.usda.gov/research/publications/an/silvopasture-an-agroforestry-practice-an8-final-508.pdf
+2026-03-16 20:27:02 [WARNING] Connection error: HTTPSConnectionPool(host='www.fs.usda.gov', port=4 (attempt 1/3)
+2026-03-16 20:27:05 [DEBUG] Download attempt 2/3: https://www.fs.usda.gov/research/publications/an/silvopasture-an-agroforestry-practice-an8-final-508.pdf
+2026-03-16 20:27:05 [WARNING] Connection error: HTTPSConnectionPool(host='www.fs.usda.gov', port=4 (attempt 2/3)
+2026-03-16 20:27:08 [DEBUG] Download attempt 3/3: https://www.fs.usda.gov/research/publications/an/silvopasture-an-agroforestry-practice-an8-final-508.pdf
+2026-03-16 20:27:08 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='www.fs.usda.gov', port=4 (attempt 3/3)
+2026-03-16 20:27:08 [INFO] 
+[VERIFIED] 2/5: USDA Forest Service - Silvopasture Handbook
+2026-03-16 20:27:08 [DEBUG] Download attempt 1/3: https://www.fs.usda.gov/nac/assets/documents/morepublications/silvopasturehandbook.pdf
+2026-03-16 20:27:08 [WARNING] Connection error: HTTPSConnectionPool(host='www.fs.usda.gov', port=4 (attempt 1/3)
+2026-03-16 20:27:11 [DEBUG] Download attempt 2/3: https://www.fs.usda.gov/nac/assets/documents/morepublications/silvopasturehandbook.pdf
+2026-03-16 20:27:11 [WARNING] Connection error: HTTPSConnectionPool(host='www.fs.usda.gov', port=4 (attempt 2/3)
+2026-03-16 20:27:14 [DEBUG] Download attempt 3/3: https://www.fs.usda.gov/nac/assets/documents/morepublications/silvopasturehandbook.pdf
+2026-03-16 20:27:14 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='www.fs.usda.gov', port=4 (attempt 3/3)
+2026-03-16 20:27:14 [INFO] 
+[VERIFIED] 3/5: USDA Forest Service - Silvopasture in the USA (2022 Review)
+2026-03-16 20:27:14 [DEBUG] Download attempt 1/3: https://www.fs.usda.gov/research/publications/jrnl/wo_2022_smith_001.pdf
+2026-03-16 20:27:14 [WARNING] Connection error: HTTPSConnectionPool(host='www.fs.usda.gov', port=4 (attempt 1/3)
+2026-03-16 20:27:17 [DEBUG] Download attempt 2/3: https://www.fs.usda.gov/research/publications/jrnl/wo_2022_smith_001.pdf
+2026-03-16 20:27:17 [WARNING] Connection error: HTTPSConnectionPool(host='www.fs.usda.gov', port=4 (attempt 2/3)
+2026-03-16 20:27:20 [DEBUG] Download attempt 3/3: https://www.fs.usda.gov/research/publications/jrnl/wo_2022_smith_001.pdf
+2026-03-16 20:27:20 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='www.fs.usda.gov', port=4 (attempt 3/3)
+2026-03-16 20:27:20 [INFO] 
+[VERIFIED] 4/5: UMN Extension - Silvopasture Manual
+2026-03-16 20:27:20 [INFO] [UMN Extension - Silvopasture Manual] Already exists, skipping: downloads/silvopasture_and_agroforestry/UMN_Extension_Silvopasture_Manual.pdf
+2026-03-16 20:27:20 [INFO]   ✓ Already exists
+2026-03-16 20:27:20 [INFO] 
+[VERIFIED] 5/5: Grasslands Partnership - Climate Smart Silvopasture
+2026-03-16 20:27:20 [INFO] [Grasslands Partnership - Climate Smart Silvopasture] Already exists, skipping: downloads/silvopasture_and_agroforestry/Grasslands_Partnership_Climate_Smart_Silvopasture.pdf
+2026-03-16 20:27:20 [INFO]   ✓ Already exists
+2026-03-16 20:27:20 [INFO] 
+Category summary: 2 succeeded, 3 failed
+2026-03-16 20:27:20 [INFO] 
+======================================================================
+2026-03-16 20:27:20 [INFO] Processing category: wildfire_prevention
+2026-03-16 20:27:20 [INFO] Description: Strategies and research on using grazing and land management for wildfire risk reduction
+2026-03-16 20:27:20 [INFO] ======================================================================
+2026-03-16 20:27:20 [INFO] 
+[VERIFIED] 1/4: UC Davis - Expanding Prescribed Grazing for Wildfire Resilience
+2026-03-16 20:27:20 [INFO] [UC Davis - Expanding Prescribed Grazing for Wildfire Resilience] Already exists, skipping: downloads/wildfire_prevention/UC_Davis_Prescribed_Grazing_Fire_Brief.pdf
+2026-03-16 20:27:20 [INFO]   ✓ Already exists
+2026-03-16 20:27:20 [INFO] 
+[VERIFIED] 2/4: California Agriculture - Farming and Ranching Through Wildfire
+2026-03-16 20:27:20 [DEBUG] Download attempt 1/3: https://rangelands.ucdavis.edu/sites/g/files/dgvnsk13956/files/media/documents/CalAg_fire.pdf
+2026-03-16 20:27:20 [WARNING] Connection error: HTTPSConnectionPool(host='rangelands.ucdavis.edu', (attempt 1/3)
+2026-03-16 20:27:23 [DEBUG] Download attempt 2/3: https://rangelands.ucdavis.edu/sites/g/files/dgvnsk13956/files/media/documents/CalAg_fire.pdf
+2026-03-16 20:27:23 [WARNING] Connection error: HTTPSConnectionPool(host='rangelands.ucdavis.edu', (attempt 2/3)
+2026-03-16 20:27:26 [DEBUG] Download attempt 3/3: https://rangelands.ucdavis.edu/sites/g/files/dgvnsk13956/files/media/documents/CalAg_fire.pdf
+2026-03-16 20:27:26 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='rangelands.ucdavis.edu', (attempt 3/3)
+2026-03-16 20:27:26 [INFO] 
+[VERIFIED] 3/4: California Assembly - Impact of Wildfire on Agriculture Background
+2026-03-16 20:27:26 [DEBUG] Download attempt 1/3: https://agri.assembly.ca.gov/sites/agri.assembly.ca.gov/files/Impact%20of%20Wildfire%20on%20Agriculture%20Background.pdf
+2026-03-16 20:27:26 [WARNING] Connection error: HTTPSConnectionPool(host='agri.assembly.ca.gov', p (attempt 1/3)
+2026-03-16 20:27:29 [DEBUG] Download attempt 2/3: https://agri.assembly.ca.gov/sites/agri.assembly.ca.gov/files/Impact%20of%20Wildfire%20on%20Agriculture%20Background.pdf
+2026-03-16 20:27:29 [WARNING] Connection error: HTTPSConnectionPool(host='agri.assembly.ca.gov', p (attempt 2/3)
+2026-03-16 20:27:32 [DEBUG] Download attempt 3/3: https://agri.assembly.ca.gov/sites/agri.assembly.ca.gov/files/Impact%20of%20Wildfire%20on%20Agriculture%20Background.pdf
+2026-03-16 20:27:32 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='agri.assembly.ca.gov', p (attempt 3/3)
+2026-03-16 20:27:32 [INFO] 
+[VERIFIED] 4/4: California Assembly - Impact of Wildfires on Agriculture Hearing Report
+2026-03-16 20:27:32 [DEBUG] Download attempt 1/3: https://agri.assembly.ca.gov/sites/agri.assembly.ca.gov/files/The%20Impact%20of%20Wildfires%20on%20California%20Agriculture%20Informational%20Hearing%20Report.pdf
+2026-03-16 20:27:32 [WARNING] Connection error: HTTPSConnectionPool(host='agri.assembly.ca.gov', p (attempt 1/3)
+2026-03-16 20:27:35 [DEBUG] Download attempt 2/3: https://agri.assembly.ca.gov/sites/agri.assembly.ca.gov/files/The%20Impact%20of%20Wildfires%20on%20California%20Agriculture%20Informational%20Hearing%20Report.pdf
+2026-03-16 20:27:35 [WARNING] Connection error: HTTPSConnectionPool(host='agri.assembly.ca.gov', p (attempt 2/3)
+2026-03-16 20:27:38 [DEBUG] Download attempt 3/3: https://agri.assembly.ca.gov/sites/agri.assembly.ca.gov/files/The%20Impact%20of%20Wildfires%20on%20California%20Agriculture%20Informational%20Hearing%20Report.pdf
+2026-03-16 20:27:38 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='agri.assembly.ca.gov', p (attempt 3/3)
+2026-03-16 20:27:38 [INFO] 
+Category summary: 1 succeeded, 3 failed
+2026-03-16 20:27:38 [INFO] 
+======================================================================
+2026-03-16 20:27:38 [INFO] Processing category: biochar_and_carbon
+2026-03-16 20:27:38 [INFO] Description: Research on biochar production, soil carbon sequestration, and carbon credit methodologies
+2026-03-16 20:27:38 [INFO] ======================================================================
+2026-03-16 20:27:38 [INFO] 
+[VERIFIED] 1/6: USDA RMRS - Biochar and Climate Change
+2026-03-16 20:27:38 [DEBUG] Download attempt 1/3: https://research.fs.usda.gov/sites/default/files/2023-10/rmrs-aag-biochar_climatechange_09252023.pdf
+2026-03-16 20:27:38 [WARNING] Connection error: HTTPSConnectionPool(host='research.fs.usda.gov', p (attempt 1/3)
+2026-03-16 20:27:41 [DEBUG] Download attempt 2/3: https://research.fs.usda.gov/sites/default/files/2023-10/rmrs-aag-biochar_climatechange_09252023.pdf
+2026-03-16 20:27:41 [WARNING] Connection error: HTTPSConnectionPool(host='research.fs.usda.gov', p (attempt 2/3)
+2026-03-16 20:27:44 [DEBUG] Download attempt 3/3: https://research.fs.usda.gov/sites/default/files/2023-10/rmrs-aag-biochar_climatechange_09252023.pdf
+2026-03-16 20:27:44 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='research.fs.usda.gov', p (attempt 3/3)
+2026-03-16 20:27:44 [INFO] 
+[VERIFIED] 2/6: NRCS Conservation Practice Standard 336 - Soil Carbon Amendment
+2026-03-16 20:27:44 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/sites/default/files/2022-11/336-NHCP-CPS-Soil-Carbon-Amendment-2022.pdf
+2026-03-16 20:27:44 [WARNING] Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 1/3)
+2026-03-16 20:27:47 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/sites/default/files/2022-11/336-NHCP-CPS-Soil-Carbon-Amendment-2022.pdf
+2026-03-16 20:27:47 [WARNING] Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 2/3)
+2026-03-16 20:27:50 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/sites/default/files/2022-11/336-NHCP-CPS-Soil-Carbon-Amendment-2022.pdf
+2026-03-16 20:27:50 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 3/3)
+2026-03-16 20:27:50 [INFO] 
+[VERIFIED] 3/6: NREL - Biochar as Carbon Dioxide Removal Strategy
+2026-03-16 20:27:50 [DEBUG] Download attempt 1/3: https://docs.nrel.gov/docs/fy24osti/89438.pdf
+2026-03-16 20:27:50 [WARNING] Connection error: HTTPSConnectionPool(host='docs.nrel.gov', port=443 (attempt 1/3)
+2026-03-16 20:27:53 [DEBUG] Download attempt 2/3: https://docs.nrel.gov/docs/fy24osti/89438.pdf
+2026-03-16 20:27:53 [WARNING] Connection error: HTTPSConnectionPool(host='docs.nrel.gov', port=443 (attempt 2/3)
+2026-03-16 20:27:56 [DEBUG] Download attempt 3/3: https://docs.nrel.gov/docs/fy24osti/89438.pdf
+2026-03-16 20:27:56 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='docs.nrel.gov', port=443 (attempt 3/3)
+2026-03-16 20:27:56 [INFO] 
+[VERIFIED] 4/6: IBI - Curated Biochar Research Digest (Oct 2023)
+2026-03-16 20:27:56 [DEBUG] Download attempt 1/3: https://biochar-international.org/wp-content/uploads/2023/10/Research-List-October2023.pdf
+2026-03-16 20:27:56 [WARNING] Connection error: HTTPSConnectionPool(host='biochar-international.or (attempt 1/3)
+2026-03-16 20:27:59 [DEBUG] Download attempt 2/3: https://biochar-international.org/wp-content/uploads/2023/10/Research-List-October2023.pdf
+2026-03-16 20:27:59 [WARNING] Connection error: HTTPSConnectionPool(host='biochar-international.or (attempt 2/3)
+2026-03-16 20:28:02 [DEBUG] Download attempt 3/3: https://biochar-international.org/wp-content/uploads/2023/10/Research-List-October2023.pdf
+2026-03-16 20:28:02 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='biochar-international.or (attempt 3/3)
+2026-03-16 20:28:02 [INFO] 
+[VERIFIED] 5/6: IBI - Biochar Standards v2.1
+2026-03-16 20:28:02 [DEBUG] Download attempt 1/3: https://biochar-international.org/wp-content/uploads/2020/06/IBI_Biochar_Standards_V2.1_Final2.pdf
+2026-03-16 20:28:02 [WARNING] Connection error: HTTPSConnectionPool(host='biochar-international.or (attempt 1/3)
+2026-03-16 20:28:05 [DEBUG] Download attempt 2/3: https://biochar-international.org/wp-content/uploads/2020/06/IBI_Biochar_Standards_V2.1_Final2.pdf
+2026-03-16 20:28:05 [WARNING] Connection error: HTTPSConnectionPool(host='biochar-international.or (attempt 2/3)
+2026-03-16 20:28:08 [DEBUG] Download attempt 3/3: https://biochar-international.org/wp-content/uploads/2020/06/IBI_Biochar_Standards_V2.1_Final2.pdf
+2026-03-16 20:28:08 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='biochar-international.or (attempt 3/3)
+2026-03-16 20:28:08 [INFO] 
+[VERIFIED] 6/6: IBI - Biochar Field Studies Summary
+2026-03-16 20:28:08 [DEBUG] Download attempt 1/3: https://biochar-international.org/wp-content/uploads/2023/01/IBI_Field_Studies_Final_May_2013.pdf
+2026-03-16 20:28:08 [WARNING] Connection error: HTTPSConnectionPool(host='biochar-international.or (attempt 1/3)
+2026-03-16 20:28:11 [DEBUG] Download attempt 2/3: https://biochar-international.org/wp-content/uploads/2023/01/IBI_Field_Studies_Final_May_2013.pdf
+2026-03-16 20:28:11 [WARNING] Connection error: HTTPSConnectionPool(host='biochar-international.or (attempt 2/3)
+2026-03-16 20:28:14 [DEBUG] Download attempt 3/3: https://biochar-international.org/wp-content/uploads/2023/01/IBI_Field_Studies_Final_May_2013.pdf
+2026-03-16 20:28:14 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='biochar-international.or (attempt 3/3)
+2026-03-16 20:28:14 [INFO] 
+Category summary: 0 succeeded, 6 failed
+2026-03-16 20:28:14 [INFO] 
+======================================================================
+2026-03-16 20:28:14 [INFO] Processing category: aquaponics_and_hydroponics
+2026-03-16 20:28:14 [INFO] Description: Guides and research on aquaponic and hydroponic system design and management
+2026-03-16 20:28:14 [INFO] ======================================================================
+2026-03-16 20:28:14 [INFO] 
+[VERIFIED] 1/2: FAO Technical Paper 589 - Small-scale Aquaponic Food Production
+2026-03-16 20:28:14 [DEBUG] Download attempt 1/3: https://openknowledge.fao.org/server/api/core/bitstreams/22c77ec5-16e4-4d4e-a71f-55ff85a2492c/content
+2026-03-16 20:28:14 [WARNING] Connection error: HTTPSConnectionPool(host='openknowledge.fao.org',  (attempt 1/3)
+2026-03-16 20:28:17 [DEBUG] Download attempt 2/3: https://openknowledge.fao.org/server/api/core/bitstreams/22c77ec5-16e4-4d4e-a71f-55ff85a2492c/content
+2026-03-16 20:28:17 [WARNING] Connection error: HTTPSConnectionPool(host='openknowledge.fao.org',  (attempt 2/3)
+2026-03-16 20:28:20 [DEBUG] Download attempt 3/3: https://openknowledge.fao.org/server/api/core/bitstreams/22c77ec5-16e4-4d4e-a71f-55ff85a2492c/content
+2026-03-16 20:28:20 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='openknowledge.fao.org',  (attempt 3/3)
+2026-03-16 20:28:20 [INFO] 
+[VERIFIED] 2/2: Stellenbosch University - Build Your Own Aquaponics System at Home
+2026-03-16 20:28:20 [DEBUG] Download attempt 1/3: https://susdev.sun.ac.za/files/2024/10/Build-your-own-Aquaponics-System-at-home.pdf
+2026-03-16 20:28:20 [WARNING] Connection error: HTTPSConnectionPool(host='susdev.sun.ac.za', port= (attempt 1/3)
+2026-03-16 20:28:23 [DEBUG] Download attempt 2/3: https://susdev.sun.ac.za/files/2024/10/Build-your-own-Aquaponics-System-at-home.pdf
+2026-03-16 20:28:23 [WARNING] Connection error: HTTPSConnectionPool(host='susdev.sun.ac.za', port= (attempt 2/3)
+2026-03-16 20:28:26 [DEBUG] Download attempt 3/3: https://susdev.sun.ac.za/files/2024/10/Build-your-own-Aquaponics-System-at-home.pdf
+2026-03-16 20:28:26 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='susdev.sun.ac.za', port= (attempt 3/3)
+2026-03-16 20:28:26 [INFO] 
+Category summary: 0 succeeded, 2 failed
+2026-03-16 20:28:26 [INFO] 
+======================================================================
+2026-03-16 20:28:26 [INFO] Processing category: keyline_and_water_management
+2026-03-16 20:28:26 [INFO] Description: Water management, keyline design, and hydrological conservation techniques
+2026-03-16 20:28:26 [INFO] ======================================================================
+2026-03-16 20:28:26 [INFO] 
+[VERIFIED] 1/2: Keyline Design Article (Mark IV)
+2026-03-16 20:28:26 [DEBUG] Download attempt 1/3: https://agwaterstewards.org/wp-content/uploads/2016/08/KeylineArticle.pdf
+2026-03-16 20:28:26 [WARNING] Connection error: HTTPSConnectionPool(host='agwaterstewards.org', po (attempt 1/3)
+2026-03-16 20:28:29 [DEBUG] Download attempt 2/3: https://agwaterstewards.org/wp-content/uploads/2016/08/KeylineArticle.pdf
+2026-03-16 20:28:29 [WARNING] Connection error: HTTPSConnectionPool(host='agwaterstewards.org', po (attempt 2/3)
+2026-03-16 20:28:32 [DEBUG] Download attempt 3/3: https://agwaterstewards.org/wp-content/uploads/2016/08/KeylineArticle.pdf
+2026-03-16 20:28:32 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='agwaterstewards.org', po (attempt 3/3)
+2026-03-16 20:28:32 [INFO] 
+[VERIFIED] 2/2: Oregon Water Management & Conservation Plans Guidebook
+2026-03-16 20:28:32 [DEBUG] Download attempt 1/3: https://www.oregon.gov/OWRD/WRDPublications1/wmcp_guidebook.pdf
+2026-03-16 20:28:32 [WARNING] Connection error: HTTPSConnectionPool(host='www.oregon.gov', port=44 (attempt 1/3)
+2026-03-16 20:28:35 [DEBUG] Download attempt 2/3: https://www.oregon.gov/OWRD/WRDPublications1/wmcp_guidebook.pdf
+2026-03-16 20:28:35 [WARNING] Connection error: HTTPSConnectionPool(host='www.oregon.gov', port=44 (attempt 2/3)
+2026-03-16 20:28:38 [DEBUG] Download attempt 3/3: https://www.oregon.gov/OWRD/WRDPublications1/wmcp_guidebook.pdf
+2026-03-16 20:28:38 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='www.oregon.gov', port=44 (attempt 3/3)
+2026-03-16 20:28:38 [INFO] 
+Category summary: 0 succeeded, 2 failed
+2026-03-16 20:28:38 [INFO] 
+======================================================================
+2026-03-16 20:28:38 [INFO] Processing category: iot_and_precision_agriculture
+2026-03-16 20:28:38 [INFO] Description: Internet of Things, sensor networks, and precision agriculture technologies
+2026-03-16 20:28:38 [INFO] ======================================================================
+2026-03-16 20:28:38 [INFO] 
+[VERIFIED] 1/1: Center for Science & Agriculture - Advancing Technologies in Precision Agriculture
+2026-03-16 20:28:38 [DEBUG] Download attempt 1/3: https://c-sas.org/docs/A_Review_on_Advancing_Technologies_in_Precision_Agriculture.pdf
+2026-03-16 20:28:38 [WARNING] Connection error: HTTPSConnectionPool(host='c-sas.org', port=443): M (attempt 1/3)
+2026-03-16 20:28:41 [DEBUG] Download attempt 2/3: https://c-sas.org/docs/A_Review_on_Advancing_Technologies_in_Precision_Agriculture.pdf
+2026-03-16 20:28:41 [WARNING] Connection error: HTTPSConnectionPool(host='c-sas.org', port=443): M (attempt 2/3)
+2026-03-16 20:28:44 [DEBUG] Download attempt 3/3: https://c-sas.org/docs/A_Review_on_Advancing_Technologies_in_Precision_Agriculture.pdf
+2026-03-16 20:28:44 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='c-sas.org', port=443): M (attempt 3/3)
+2026-03-16 20:28:44 [INFO] 
+Category summary: 0 succeeded, 1 failed
+2026-03-16 20:28:44 [INFO] 
+======================================================================
+2026-03-16 20:28:44 [INFO] Processing category: grants_and_procurement
+2026-03-16 20:28:44 [INFO] Description: Agricultural grant programs, RFAs, and federal procurement guides
+2026-03-16 20:28:44 [INFO] ======================================================================
+2026-03-16 20:28:44 [INFO] 
+[VERIFIED] 1/6: USDA AMS - Specialty Crop Block Grant Program 2024 RFA
+2026-03-16 20:28:44 [DEBUG] Download attempt 1/3: https://www.ams.usda.gov/sites/default/files/media/2024_SCBGP_RFA_FINAL.pdf
+2026-03-16 20:28:44 [WARNING] Connection error: HTTPSConnectionPool(host='www.ams.usda.gov', port= (attempt 1/3)
+2026-03-16 20:28:47 [DEBUG] Download attempt 2/3: https://www.ams.usda.gov/sites/default/files/media/2024_SCBGP_RFA_FINAL.pdf
+2026-03-16 20:28:47 [WARNING] Connection error: HTTPSConnectionPool(host='www.ams.usda.gov', port= (attempt 2/3)
+2026-03-16 20:28:50 [DEBUG] Download attempt 3/3: https://www.ams.usda.gov/sites/default/files/media/2024_SCBGP_RFA_FINAL.pdf
+2026-03-16 20:28:50 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='www.ams.usda.gov', port= (attempt 3/3)
+2026-03-16 20:28:50 [INFO] 
+[VERIFIED] 2/6: NRCS CIG Grantee Guide (October 2024)
+2026-03-16 20:28:50 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-16 20:28:50 [WARNING] Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 1/3)
+2026-03-16 20:28:53 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-16 20:28:53 [WARNING] Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 2/3)
+2026-03-16 20:28:56 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-16 20:28:56 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 3/3)
+2026-03-16 20:28:56 [INFO] 
+[VERIFIED] 3/6: NRCS CIG Fact Sheet
+2026-03-16 20:28:56 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/sites/default/files/2024-06/NRCS-CIG_Factsheet.pdf
+2026-03-16 20:28:56 [WARNING] Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 1/3)
+2026-03-16 20:28:59 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/sites/default/files/2024-06/NRCS-CIG_Factsheet.pdf
+2026-03-16 20:28:59 [WARNING] Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 2/3)
+2026-03-16 20:29:02 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/sites/default/files/2024-06/NRCS-CIG_Factsheet.pdf
+2026-03-16 20:29:02 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 3/3)
+2026-03-16 20:29:02 [INFO] 
+[VERIFIED] 4/6: SAM.gov Registration Guide (USDA Hawaii)
+2026-03-16 20:29:02 [DEBUG] Download attempt 1/3: https://www.rd.usda.gov/files/HI-SAMGuide.pdf
+2026-03-16 20:29:02 [WARNING] Connection error: HTTPSConnectionPool(host='www.rd.usda.gov', port=4 (attempt 1/3)
+2026-03-16 20:29:05 [DEBUG] Download attempt 2/3: https://www.rd.usda.gov/files/HI-SAMGuide.pdf
+2026-03-16 20:29:05 [WARNING] Connection error: HTTPSConnectionPool(host='www.rd.usda.gov', port=4 (attempt 2/3)
+2026-03-16 20:29:08 [DEBUG] Download attempt 3/3: https://www.rd.usda.gov/files/HI-SAMGuide.pdf
+2026-03-16 20:29:08 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='www.rd.usda.gov', port=4 (attempt 3/3)
+2026-03-16 20:29:08 [INFO] 
+[VERIFIED] 5/6: DOE SAM Registration User Guide
+2026-03-16 20:29:08 [DEBUG] Download attempt 1/3: https://www.energy.gov/sites/prod/files/2020/06/f76/appendix-7-SAM-registration-user.pdf
+2026-03-16 20:29:08 [WARNING] Connection error: HTTPSConnectionPool(host='www.energy.gov', port=44 (attempt 1/3)
+2026-03-16 20:29:11 [DEBUG] Download attempt 2/3: https://www.energy.gov/sites/prod/files/2020/06/f76/appendix-7-SAM-registration-user.pdf
+2026-03-16 20:29:11 [WARNING] Connection error: HTTPSConnectionPool(host='www.energy.gov', port=44 (attempt 2/3)
+2026-03-16 20:29:14 [DEBUG] Download attempt 3/3: https://www.energy.gov/sites/prod/files/2020/06/f76/appendix-7-SAM-registration-user.pdf
+2026-03-16 20:29:15 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='www.energy.gov', port=44 (attempt 3/3)
+2026-03-16 20:29:15 [INFO] 
+[VERIFIED] 6/6: SAM.gov Step-by-Step First-Time Registrants Guide
+2026-03-16 20:29:15 [DEBUG] Download attempt 1/3: https://common.usembassy.gov/wp-content/uploads/sites/51/2024/02/Step-by-step-Guide-for-First-time-registrants.pdf
+2026-03-16 20:29:15 [WARNING] Connection error: HTTPSConnectionPool(host='common.usembassy.gov', p (attempt 1/3)
+2026-03-16 20:29:18 [DEBUG] Download attempt 2/3: https://common.usembassy.gov/wp-content/uploads/sites/51/2024/02/Step-by-step-Guide-for-First-time-registrants.pdf
+2026-03-16 20:29:18 [WARNING] Connection error: HTTPSConnectionPool(host='common.usembassy.gov', p (attempt 2/3)
+2026-03-16 20:29:21 [DEBUG] Download attempt 3/3: https://common.usembassy.gov/wp-content/uploads/sites/51/2024/02/Step-by-step-Guide-for-First-time-registrants.pdf
+2026-03-16 20:29:21 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='common.usembassy.gov', p (attempt 3/3)
+2026-03-16 20:29:21 [INFO] 
+Category summary: 0 succeeded, 6 failed
+2026-03-16 20:29:21 [INFO] 
+======================================================================
+2026-03-16 20:29:21 [INFO] Processing category: fire_modeling_and_data
+2026-03-16 20:29:21 [INFO] Description: Wildfire modeling, data analysis, and fire behavior research
+2026-03-16 20:29:21 [INFO] ======================================================================
+2026-03-16 20:29:21 [INFO] 
+[VERIFIED] 1/1: WIFIRE Workshop Report - Data-Driven Wildfire Spread Modeling
+2026-03-16 20:29:21 [DEBUG] Download attempt 1/3: https://wifire.ucsd.edu/files/pdf/WIFIRE_Wks_Report_FINAL.pdf
+2026-03-16 20:29:21 [WARNING] Connection error: HTTPSConnectionPool(host='wifire.ucsd.edu', port=4 (attempt 1/3)
+2026-03-16 20:29:24 [DEBUG] Download attempt 2/3: https://wifire.ucsd.edu/files/pdf/WIFIRE_Wks_Report_FINAL.pdf
+2026-03-16 20:29:24 [WARNING] Connection error: HTTPSConnectionPool(host='wifire.ucsd.edu', port=4 (attempt 2/3)
+2026-03-16 20:29:27 [DEBUG] Download attempt 3/3: https://wifire.ucsd.edu/files/pdf/WIFIRE_Wks_Report_FINAL.pdf
+2026-03-16 20:29:27 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='wifire.ucsd.edu', port=4 (attempt 3/3)
+2026-03-16 20:29:27 [INFO] 
+Category summary: 0 succeeded, 1 failed
+2026-03-16 20:29:27 [INFO] 
+======================================================================
+2026-03-16 20:29:27 [INFO] Processing category: carbon_credits_and_compliance
+2026-03-16 20:29:27 [INFO] Description: Carbon credit methodologies, standards, and compliance frameworks
+2026-03-16 20:29:27 [INFO] ======================================================================
+2026-03-16 20:29:27 [INFO] 
+[VERIFIED] 1/2: Verra VCS Standard v4.2
+2026-03-16 20:29:27 [DEBUG] Download attempt 1/3: https://verra.org/wp-content/uploads/2023/04/VCS-Standard_v4.2.pdf
+2026-03-16 20:29:27 [WARNING] Connection error: HTTPSConnectionPool(host='verra.org', port=443): M (attempt 1/3)
+2026-03-16 20:29:30 [DEBUG] Download attempt 2/3: https://verra.org/wp-content/uploads/2023/04/VCS-Standard_v4.2.pdf
+2026-03-16 20:29:30 [WARNING] Connection error: HTTPSConnectionPool(host='verra.org', port=443): M (attempt 2/3)
+2026-03-16 20:29:33 [DEBUG] Download attempt 3/3: https://verra.org/wp-content/uploads/2023/04/VCS-Standard_v4.2.pdf
+2026-03-16 20:29:33 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='verra.org', port=443): M (attempt 3/3)
+2026-03-16 20:29:33 [INFO] 
+[VERIFIED] 2/2: RSB Soil Carbon Impact Indicator Methodology 2024
+2026-03-16 20:29:33 [DEBUG] Download attempt 1/3: https://rsb.org/wp-content/uploads/2025/01/rsb-impact-indicator-methodology-soil-carbon_2024.pdf
+2026-03-16 20:29:33 [WARNING] Connection error: HTTPSConnectionPool(host='rsb.org', port=443): Max (attempt 1/3)
+2026-03-16 20:29:36 [DEBUG] Download attempt 2/3: https://rsb.org/wp-content/uploads/2025/01/rsb-impact-indicator-methodology-soil-carbon_2024.pdf
+2026-03-16 20:29:36 [WARNING] Connection error: HTTPSConnectionPool(host='rsb.org', port=443): Max (attempt 2/3)
+2026-03-16 20:29:39 [DEBUG] Download attempt 3/3: https://rsb.org/wp-content/uploads/2025/01/rsb-impact-indicator-methodology-soil-carbon_2024.pdf
+2026-03-16 20:29:39 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='rsb.org', port=443): Max (attempt 3/3)
+2026-03-16 20:29:39 [INFO] 
+Category summary: 0 succeeded, 2 failed
+2026-03-16 20:29:39 [INFO] 
+======================================================================
+2026-03-16 20:29:39 [INFO] Processing category: regenerative_agriculture_overview
+2026-03-16 20:29:39 [INFO] Description: Foundational resources on regenerative agriculture practices and soil health
+2026-03-16 20:29:39 [INFO] ======================================================================
+2026-03-16 20:29:39 [INFO] 
+[VERIFIED] 1/5: Rodale Institute - Farming Systems Trial 40-Year Report
+2026-03-16 20:29:39 [DEBUG] Download attempt 1/3: https://rodaleinstitute.org/wp-content/uploads/FST_40YearReport_RodaleInstitute-1.pdf
+2026-03-16 20:29:39 [WARNING] Connection error: HTTPSConnectionPool(host='rodaleinstitute.org', po (attempt 1/3)
+2026-03-16 20:29:42 [DEBUG] Download attempt 2/3: https://rodaleinstitute.org/wp-content/uploads/FST_40YearReport_RodaleInstitute-1.pdf
+2026-03-16 20:29:42 [WARNING] Connection error: HTTPSConnectionPool(host='rodaleinstitute.org', po (attempt 2/3)
+2026-03-16 20:29:45 [DEBUG] Download attempt 3/3: https://rodaleinstitute.org/wp-content/uploads/FST_40YearReport_RodaleInstitute-1.pdf
+2026-03-16 20:29:45 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='rodaleinstitute.org', po (attempt 3/3)
+2026-03-16 20:29:45 [INFO] 
+[VERIFIED] 2/5: Rodale Institute - Regenerative Agriculture & Climate White Paper
+2026-03-16 20:29:45 [DEBUG] Download attempt 1/3: https://rodaleinstitute.org/wp-content/uploads/rodale-white-paper.pdf
+2026-03-16 20:29:45 [WARNING] Connection error: HTTPSConnectionPool(host='rodaleinstitute.org', po (attempt 1/3)
+2026-03-16 20:29:48 [DEBUG] Download attempt 2/3: https://rodaleinstitute.org/wp-content/uploads/rodale-white-paper.pdf
+2026-03-16 20:29:48 [WARNING] Connection error: HTTPSConnectionPool(host='rodaleinstitute.org', po (attempt 2/3)
+2026-03-16 20:29:51 [DEBUG] Download attempt 3/3: https://rodaleinstitute.org/wp-content/uploads/rodale-white-paper.pdf
+2026-03-16 20:29:51 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='rodaleinstitute.org', po (attempt 3/3)
+2026-03-16 20:29:51 [INFO] 
+[VERIFIED] 3/5: Rodale Institute - Soil Carbon White Paper
+2026-03-16 20:29:51 [DEBUG] Download attempt 1/3: https://rodaleinstitute.org/wp-content/uploads/Rodale-Soil-Carbon-White-Paper_v8.pdf
+2026-03-16 20:29:51 [WARNING] Connection error: HTTPSConnectionPool(host='rodaleinstitute.org', po (attempt 1/3)
+2026-03-16 20:29:54 [DEBUG] Download attempt 2/3: https://rodaleinstitute.org/wp-content/uploads/Rodale-Soil-Carbon-White-Paper_v8.pdf
+2026-03-16 20:29:54 [WARNING] Connection error: HTTPSConnectionPool(host='rodaleinstitute.org', po (attempt 2/3)
+2026-03-16 20:29:57 [DEBUG] Download attempt 3/3: https://rodaleinstitute.org/wp-content/uploads/Rodale-Soil-Carbon-White-Paper_v8.pdf
+2026-03-16 20:29:57 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='rodaleinstitute.org', po (attempt 3/3)
+2026-03-16 20:29:57 [INFO] 
+[VERIFIED] 4/5: NRCS - Introduction to Soil Health v2.3
+2026-03-16 20:29:57 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/sites/default/files/2023-06/Intro%20to%20Soil%20Health%202.3.pdf
+2026-03-16 20:29:57 [WARNING] Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 1/3)
+2026-03-16 20:30:00 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/sites/default/files/2023-06/Intro%20to%20Soil%20Health%202.3.pdf
+2026-03-16 20:30:00 [WARNING] Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 2/3)
+2026-03-16 20:30:03 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/sites/default/files/2023-06/Intro%20to%20Soil%20Health%202.3.pdf
+2026-03-16 20:30:03 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 3/3)
+2026-03-16 20:30:03 [INFO] 
+[VERIFIED] 5/5: NRCS - Regenerative Agriculture Pilot Q&A
+2026-03-16 20:30:03 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/sites/default/files/2025-12/regenerative-agriculture-pilot-questions-answers.pdf
+2026-03-16 20:30:03 [WARNING] Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 1/3)
+2026-03-16 20:30:06 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/sites/default/files/2025-12/regenerative-agriculture-pilot-questions-answers.pdf
+2026-03-16 20:30:06 [WARNING] Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 2/3)
+2026-03-16 20:30:09 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/sites/default/files/2025-12/regenerative-agriculture-pilot-questions-answers.pdf
+2026-03-16 20:30:09 [ERROR]   ✗ Connection error: HTTPSConnectionPool(host='www.nrcs.usda.gov', port (attempt 3/3)
+2026-03-16 20:30:09 [INFO] 
+Category summary: 0 succeeded, 5 failed
+2026-03-16 21:01:11 [INFO] Starting resource download...
+2026-03-16 21:01:11 [INFO] Manifest file: resources_manifest.json
+2026-03-16 21:01:11 [INFO] Loaded manifest with 10 categories
+2026-03-16 21:01:11 [INFO] 
+======================================================================
+2026-03-16 21:01:11 [INFO] Processing category: silvopasture_and_agroforestry
+2026-03-16 21:01:11 [INFO] Description: Guides and research on integrating trees with livestock and crops
+2026-03-16 21:01:11 [INFO] ======================================================================
+2026-03-16 21:01:11 [INFO] 
+[VERIFIED] 1/5: USDA Forest Service - Silvopasture: An Agroforestry Practice (AN-8)
+2026-03-16 21:01:11 [DEBUG] Download attempt 1/3: https://www.fs.usda.gov/research/publications/an/silvopasture-an-agroforestry-practice-an8-final-508.pdf
+2026-03-16 21:01:17 [INFO] Successfully downloaded: downloads/silvopasture_and_agroforestry\USDA_FS_Silvopasture_Agroforestry_Practice_AN8.pdf (6,437,573 bytes)
+2026-03-16 21:01:17 [INFO] 
+[VERIFIED] 2/5: USDA Forest Service - Silvopasture Handbook
+2026-03-16 21:01:17 [DEBUG] Download attempt 1/3: https://www.fs.usda.gov/nac/assets/documents/morepublications/silvopasturehandbook.pdf
+2026-03-16 21:01:20 [INFO] Successfully downloaded: downloads/silvopasture_and_agroforestry\USDA_FS_Silvopasture_Handbook.pdf (2,982,378 bytes)
+2026-03-16 21:01:20 [INFO] 
+[VERIFIED] 3/5: USDA Forest Service - Silvopasture in the USA (2022 Review)
+2026-03-16 21:01:20 [DEBUG] Download attempt 1/3: https://www.fs.usda.gov/research/publications/jrnl/wo_2022_smith_001.pdf
+2026-03-16 21:01:25 [INFO] Successfully downloaded: downloads/silvopasture_and_agroforestry\USDA_FS_Silvopasture_USA_2022_Review.pdf (6,352,058 bytes)
+2026-03-16 21:01:25 [INFO] 
+[VERIFIED] 4/5: UMN Extension - Silvopasture Manual
+2026-03-16 21:01:25 [INFO] [UMN Extension - Silvopasture Manual] Already exists, skipping: downloads/silvopasture_and_agroforestry\UMN_Extension_Silvopasture_Manual.pdf
+2026-03-16 21:01:25 [INFO] 
+[VERIFIED] 5/5: Grasslands Partnership - Climate Smart Silvopasture
+2026-03-16 21:01:25 [INFO] [Grasslands Partnership - Climate Smart Silvopasture] Already exists, skipping: downloads/silvopasture_and_agroforestry\Grasslands_Partnership_Climate_Smart_Silvopasture.pdf
+2026-03-16 21:01:25 [INFO] 
+Category summary: 5 succeeded, 0 failed
+2026-03-16 21:01:25 [INFO] 
+======================================================================
+2026-03-16 21:01:25 [INFO] Processing category: wildfire_prevention
+2026-03-16 21:01:25 [INFO] Description: Strategies and research on using grazing and land management for wildfire risk reduction
+2026-03-16 21:01:25 [INFO] ======================================================================
+2026-03-16 21:01:25 [INFO] 
+[VERIFIED] 1/4: UC Davis - Expanding Prescribed Grazing for Wildfire Resilience
+2026-03-16 21:01:25 [INFO] [UC Davis - Expanding Prescribed Grazing for Wildfire Resilience] Already exists, skipping: downloads/wildfire_prevention\UC_Davis_Prescribed_Grazing_Fire_Brief.pdf
+2026-03-16 21:01:25 [INFO] 
+[VERIFIED] 2/4: California Agriculture - Farming and Ranching Through Wildfire
+2026-03-16 21:01:25 [DEBUG] Download attempt 1/3: https://rangelands.ucdavis.edu/sites/g/files/dgvnsk13956/files/media/documents/CalAg_fire.pdf
+2026-03-16 21:01:26 [INFO] Successfully downloaded: downloads/wildfire_prevention\CalAg_Farming_Ranching_Wildfire.pdf (3,382,152 bytes)
+2026-03-16 21:01:26 [INFO] 
+[VERIFIED] 3/4: California Assembly - Impact of Wildfire on Agriculture Background
+2026-03-16 21:01:26 [DEBUG] Download attempt 1/3: https://agri.assembly.ca.gov/sites/agri.assembly.ca.gov/files/Impact%20of%20Wildfire%20on%20Agriculture%20Background.pdf
+2026-03-16 21:01:28 [INFO] Successfully downloaded: downloads/wildfire_prevention\CA_Assembly_Wildfire_Agriculture_Background.pdf (823,871 bytes)
+2026-03-16 21:01:28 [INFO] 
+[VERIFIED] 4/4: California Assembly - Impact of Wildfires on Agriculture Hearing Report
+2026-03-16 21:01:28 [DEBUG] Download attempt 1/3: https://agri.assembly.ca.gov/sites/agri.assembly.ca.gov/files/The%20Impact%20of%20Wildfires%20on%20California%20Agriculture%20Informational%20Hearing%20Report.pdf
+2026-03-16 21:01:29 [INFO] Successfully downloaded: downloads/wildfire_prevention\CA_Assembly_Wildfire_Agriculture_Hearing_Report.pdf (235,949 bytes)
+2026-03-16 21:01:29 [INFO] 
+Category summary: 4 succeeded, 0 failed
+2026-03-16 21:01:29 [INFO] 
+======================================================================
+2026-03-16 21:01:29 [INFO] Processing category: biochar_and_carbon
+2026-03-16 21:01:29 [INFO] Description: Research on biochar production, soil carbon sequestration, and carbon credit methodologies
+2026-03-16 21:01:29 [INFO] ======================================================================
+2026-03-16 21:01:29 [INFO] 
+[VERIFIED] 1/6: USDA RMRS - Biochar and Climate Change
+2026-03-16 21:01:29 [DEBUG] Download attempt 1/3: https://research.fs.usda.gov/sites/default/files/2023-10/rmrs-aag-biochar_climatechange_09252023.pdf
+2026-03-16 21:01:31 [INFO] Successfully downloaded: downloads/biochar_and_carbon\USDA_RMRS_Biochar_Climate_Change.pdf (9,760,778 bytes)
+2026-03-16 21:01:31 [INFO] 
+[VERIFIED] 2/6: NRCS Conservation Practice Standard 336 - Soil Carbon Amendment
+2026-03-16 21:01:31 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/sites/default/files/2022-11/336-NHCP-CPS-Soil-Carbon-Amendment-2022.pdf
+2026-03-16 21:02:31 [WARNING] Timeout (attempt 1/3)
+2026-03-16 21:02:34 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/sites/default/files/2022-11/336-NHCP-CPS-Soil-Carbon-Amendment-2022.pdf
+2026-03-16 21:03:35 [WARNING] Timeout (attempt 2/3)
+2026-03-16 21:03:38 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/sites/default/files/2022-11/336-NHCP-CPS-Soil-Carbon-Amendment-2022.pdf
+2026-03-16 21:04:38 [INFO] 
+[VERIFIED] 3/6: NREL - Biochar as Carbon Dioxide Removal Strategy
+2026-03-16 21:04:38 [DEBUG] Download attempt 1/3: https://docs.nrel.gov/docs/fy24osti/89438.pdf
+2026-03-16 21:04:41 [INFO] Successfully downloaded: downloads/biochar_and_carbon\NREL_Biochar_CO2_Removal_Strategy.pdf (2,728,543 bytes)
+2026-03-16 21:04:41 [INFO] 
+[VERIFIED] 4/6: IBI - Curated Biochar Research Digest (Oct 2023)
+2026-03-16 21:04:41 [DEBUG] Download attempt 1/3: https://biochar-international.org/wp-content/uploads/2023/10/Research-List-October2023.pdf
+2026-03-16 21:04:42 [WARNING] HTTP error 429 (attempt 1/3)
+2026-03-16 21:04:45 [DEBUG] Download attempt 2/3: https://biochar-international.org/wp-content/uploads/2023/10/Research-List-October2023.pdf
+2026-03-16 21:04:45 [WARNING] HTTP error 429 (attempt 2/3)
+2026-03-16 21:04:48 [DEBUG] Download attempt 3/3: https://biochar-international.org/wp-content/uploads/2023/10/Research-List-October2023.pdf
+2026-03-16 21:04:49 [INFO] Successfully downloaded: downloads/biochar_and_carbon\IBI_Biochar_Research_Digest_Oct2023.pdf (4,944,976 bytes)
+2026-03-16 21:04:49 [INFO] 
+[VERIFIED] 5/6: IBI - Biochar Standards v2.1
+2026-03-16 21:04:49 [DEBUG] Download attempt 1/3: https://biochar-international.org/wp-content/uploads/2020/06/IBI_Biochar_Standards_V2.1_Final2.pdf
+2026-03-16 21:04:50 [WARNING] HTTP error 429 (attempt 1/3)
+2026-03-16 21:04:53 [DEBUG] Download attempt 2/3: https://biochar-international.org/wp-content/uploads/2020/06/IBI_Biochar_Standards_V2.1_Final2.pdf
+2026-03-16 21:04:53 [WARNING] HTTP error 429 (attempt 2/3)
+2026-03-16 21:04:56 [DEBUG] Download attempt 3/3: https://biochar-international.org/wp-content/uploads/2020/06/IBI_Biochar_Standards_V2.1_Final2.pdf
+2026-03-16 21:04:57 [INFO] 
+[VERIFIED] 6/6: IBI - Biochar Field Studies Summary
+2026-03-16 21:04:57 [DEBUG] Download attempt 1/3: https://biochar-international.org/wp-content/uploads/2023/01/IBI_Field_Studies_Final_May_2013.pdf
+2026-03-16 21:04:58 [WARNING] HTTP error 429 (attempt 1/3)
+2026-03-16 21:05:01 [DEBUG] Download attempt 2/3: https://biochar-international.org/wp-content/uploads/2023/01/IBI_Field_Studies_Final_May_2013.pdf
+2026-03-16 21:05:01 [WARNING] HTTP error 429 (attempt 2/3)
+2026-03-16 21:05:04 [DEBUG] Download attempt 3/3: https://biochar-international.org/wp-content/uploads/2023/01/IBI_Field_Studies_Final_May_2013.pdf
+2026-03-16 21:05:04 [INFO] 
+Category summary: 3 succeeded, 3 failed
+2026-03-16 21:05:04 [INFO] 
+======================================================================
+2026-03-16 21:05:04 [INFO] Processing category: aquaponics_and_hydroponics
+2026-03-16 21:05:04 [INFO] Description: Guides and research on aquaponic and hydroponic system design and management
+2026-03-16 21:05:04 [INFO] ======================================================================
+2026-03-16 21:05:04 [INFO] 
+[VERIFIED] 1/2: FAO Technical Paper 589 - Small-scale Aquaponic Food Production
+2026-03-16 21:05:04 [DEBUG] Download attempt 1/3: https://openknowledge.fao.org/server/api/core/bitstreams/22c77ec5-16e4-4d4e-a71f-55ff85a2492c/content
+2026-03-16 21:05:06 [INFO] Successfully downloaded: downloads/aquaponics_and_hydroponics\FAO_TP589_Small_Scale_Aquaponics.pdf (3,535,584 bytes)
+2026-03-16 21:05:06 [INFO] 
+[VERIFIED] 2/2: Stellenbosch University - Build Your Own Aquaponics System at Home
+2026-03-16 21:05:06 [DEBUG] Download attempt 1/3: https://susdev.sun.ac.za/files/2024/10/Build-your-own-Aquaponics-System-at-home.pdf
+2026-03-16 21:05:10 [INFO] Successfully downloaded: downloads/aquaponics_and_hydroponics\Stellenbosch_DIY_Aquaponics.pdf (845,223 bytes)
+2026-03-16 21:05:10 [INFO] 
+Category summary: 2 succeeded, 0 failed
+2026-03-16 21:05:10 [INFO] 
+======================================================================
+2026-03-16 21:05:10 [INFO] Processing category: keyline_and_water_management
+2026-03-16 21:05:10 [INFO] Description: Water management, keyline design, and hydrological conservation techniques
+2026-03-16 21:05:10 [INFO] ======================================================================
+2026-03-16 21:05:10 [INFO] 
+[VERIFIED] 1/2: Keyline Design Article (Mark IV)
+2026-03-16 21:05:10 [DEBUG] Download attempt 1/3: https://agwaterstewards.org/wp-content/uploads/2016/08/KeylineArticle.pdf
+2026-03-16 21:05:11 [INFO] Successfully downloaded: downloads/keyline_and_water_management\Keyline_Design_Mark_IV_Article.pdf (726,854 bytes)
+2026-03-16 21:05:11 [INFO] 
+[VERIFIED] 2/2: Oregon Water Management & Conservation Plans Guidebook
+2026-03-16 21:05:11 [DEBUG] Download attempt 1/3: https://www.oregon.gov/OWRD/WRDPublications1/wmcp_guidebook.pdf
+2026-03-16 21:05:18 [INFO] Successfully downloaded: downloads/keyline_and_water_management\Oregon_Water_Mgmt_Conservation_Guidebook.pdf (6,009,984 bytes)
+2026-03-16 21:05:18 [INFO] 
+Category summary: 2 succeeded, 0 failed
+2026-03-16 21:05:18 [INFO] 
+======================================================================
+2026-03-16 21:05:18 [INFO] Processing category: iot_and_precision_agriculture
+2026-03-16 21:05:18 [INFO] Description: Internet of Things, sensor networks, and precision agriculture technologies
+2026-03-16 21:05:18 [INFO] ======================================================================
+2026-03-16 21:05:18 [INFO] 
+[VERIFIED] 1/1: Center for Science & Agriculture - Advancing Technologies in Precision Agriculture
+2026-03-16 21:05:18 [DEBUG] Download attempt 1/3: https://c-sas.org/docs/A_Review_on_Advancing_Technologies_in_Precision_Agriculture.pdf
+2026-03-16 21:05:19 [INFO] Successfully downloaded: downloads/iot_and_precision_agriculture\CSAS_Advancing_Technologies_Precision_Agriculture.pdf (769,703 bytes)
+2026-03-16 21:05:19 [INFO] 
+Category summary: 1 succeeded, 0 failed
+2026-03-16 21:05:19 [INFO] 
+======================================================================
+2026-03-16 21:05:19 [INFO] Processing category: grants_and_procurement
+2026-03-16 21:05:19 [INFO] Description: Agricultural grant programs, RFAs, and federal procurement guides
+2026-03-16 21:05:19 [INFO] ======================================================================
+2026-03-16 21:05:19 [INFO] 
+[VERIFIED] 1/6: USDA AMS - Specialty Crop Block Grant Program 2024 RFA
+2026-03-16 21:05:19 [DEBUG] Download attempt 1/3: https://www.ams.usda.gov/sites/default/files/media/2024_SCBGP_RFA_FINAL.pdf
+2026-03-16 21:05:20 [INFO] Successfully downloaded: downloads/grants_and_procurement\USDA_AMS_SCBG_2024_RFA.pdf (661,130 bytes)
+2026-03-16 21:05:20 [INFO] 
+[VERIFIED] 2/6: NRCS CIG Grantee Guide (October 2024)
+2026-03-16 21:05:20 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-16 21:06:20 [WARNING] Timeout (attempt 1/3)
+2026-03-16 21:06:23 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-16 21:06:45 [WARNING] Connection error: ('Connection aborted.', ConnectionResetError(10054 (attempt 2/3)
+2026-03-16 21:06:48 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-16 21:07:49 [INFO] 
+[VERIFIED] 3/6: NRCS CIG Fact Sheet
+2026-03-16 21:07:49 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/sites/default/files/2024-06/NRCS-CIG_Factsheet.pdf
+2026-03-16 21:08:49 [WARNING] Timeout (attempt 1/3)
+2026-03-16 21:08:52 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/sites/default/files/2024-06/NRCS-CIG_Factsheet.pdf
+2026-03-16 21:09:12 [WARNING] Connection error: ('Connection aborted.', ConnectionResetError(10054 (attempt 2/3)
+2026-03-16 21:09:15 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/sites/default/files/2024-06/NRCS-CIG_Factsheet.pdf
+2026-03-16 21:09:35 [INFO] 
+[VERIFIED] 4/6: SAM.gov Registration Guide (USDA Hawaii)
+2026-03-16 21:09:35 [DEBUG] Download attempt 1/3: https://www.rd.usda.gov/files/HI-SAMGuide.pdf
+2026-03-16 21:10:35 [WARNING] Timeout (attempt 1/3)
+2026-03-16 21:10:38 [DEBUG] Download attempt 2/3: https://www.rd.usda.gov/files/HI-SAMGuide.pdf
+2026-03-16 21:11:39 [WARNING] Timeout (attempt 2/3)
+2026-03-16 21:11:42 [DEBUG] Download attempt 3/3: https://www.rd.usda.gov/files/HI-SAMGuide.pdf
+2026-03-16 21:12:42 [INFO] 
+[VERIFIED] 5/6: DOE SAM Registration User Guide
+2026-03-16 21:12:42 [DEBUG] Download attempt 1/3: https://www.energy.gov/sites/prod/files/2020/06/f76/appendix-7-SAM-registration-user.pdf
+2026-03-16 21:12:44 [INFO] Successfully downloaded: downloads/grants_and_procurement\DOE_SAM_Registration_User_Guide.pdf (2,123,033 bytes)
+2026-03-16 21:12:44 [INFO] 
+[VERIFIED] 6/6: SAM.gov Step-by-Step First-Time Registrants Guide
+2026-03-16 21:12:44 [DEBUG] Download attempt 1/3: https://common.usembassy.gov/wp-content/uploads/sites/51/2024/02/Step-by-step-Guide-for-First-time-registrants.pdf
+2026-03-16 21:12:45 [INFO] Successfully downloaded: downloads/grants_and_procurement\SAM_First_Time_Registrants_Guide.pdf (2,858,635 bytes)
+2026-03-16 21:12:45 [INFO] 
+Category summary: 3 succeeded, 3 failed
+2026-03-16 21:12:45 [INFO] 
+======================================================================
+2026-03-16 21:12:45 [INFO] Processing category: fire_modeling_and_data
+2026-03-16 21:12:45 [INFO] Description: Wildfire modeling, data analysis, and fire behavior research
+2026-03-16 21:12:45 [INFO] ======================================================================
+2026-03-16 21:12:45 [INFO] 
+[VERIFIED] 1/1: WIFIRE Workshop Report - Data-Driven Wildfire Spread Modeling
+2026-03-16 21:12:45 [DEBUG] Download attempt 1/3: https://wifire.ucsd.edu/files/pdf/WIFIRE_Wks_Report_FINAL.pdf
+2026-03-16 21:12:46 [INFO] 
+Category summary: 0 succeeded, 1 failed
+2026-03-16 21:12:46 [INFO] 
+======================================================================
+2026-03-16 21:12:46 [INFO] Processing category: carbon_credits_and_compliance
+2026-03-16 21:12:46 [INFO] Description: Carbon credit methodologies, standards, and compliance frameworks
+2026-03-16 21:12:46 [INFO] ======================================================================
+2026-03-16 21:12:46 [INFO] 
+[VERIFIED] 1/2: Verra VCS Standard v4.2
+2026-03-16 21:12:46 [DEBUG] Download attempt 1/3: https://verra.org/wp-content/uploads/2023/04/VCS-Standard_v4.2.pdf
+2026-03-16 21:12:48 [INFO] Successfully downloaded: downloads/carbon_credits_and_compliance\Verra_VCS_Standard_v4.2.pdf (2,221,308 bytes)
+2026-03-16 21:12:48 [INFO] 
+[VERIFIED] 2/2: RSB Soil Carbon Impact Indicator Methodology 2024
+2026-03-16 21:12:48 [DEBUG] Download attempt 1/3: https://rsb.org/wp-content/uploads/2025/01/rsb-impact-indicator-methodology-soil-carbon_2024.pdf
+2026-03-16 21:12:49 [INFO] Successfully downloaded: downloads/carbon_credits_and_compliance\RSB_Soil_Carbon_Methodology_2024.pdf (1,026,834 bytes)
+2026-03-16 21:12:49 [INFO] 
+Category summary: 2 succeeded, 0 failed
+2026-03-16 21:12:49 [INFO] 
+======================================================================
+2026-03-16 21:12:49 [INFO] Processing category: regenerative_agriculture_overview
+2026-03-16 21:12:49 [INFO] Description: Foundational resources on regenerative agriculture practices and soil health
+2026-03-16 21:12:49 [INFO] ======================================================================
+2026-03-16 21:12:49 [INFO] 
+[VERIFIED] 1/5: Rodale Institute - Farming Systems Trial 40-Year Report
+2026-03-16 21:12:49 [DEBUG] Download attempt 1/3: https://rodaleinstitute.org/wp-content/uploads/FST_40YearReport_RodaleInstitute-1.pdf
+2026-03-16 21:12:50 [INFO] Successfully downloaded: downloads/regenerative_agriculture_overview\Rodale_FST_40_Year_Report.pdf (8,380,612 bytes)
+2026-03-16 21:12:50 [INFO] 
+[VERIFIED] 2/5: Rodale Institute - Regenerative Agriculture & Climate White Paper
+2026-03-16 21:12:50 [DEBUG] Download attempt 1/3: https://rodaleinstitute.org/wp-content/uploads/rodale-white-paper.pdf
+2026-03-16 21:12:51 [INFO] Successfully downloaded: downloads/regenerative_agriculture_overview\Rodale_Regenerative_Climate_White_Paper.pdf (838,820 bytes)
+2026-03-16 21:12:51 [INFO] 
+[VERIFIED] 3/5: Rodale Institute - Soil Carbon White Paper
+2026-03-16 21:12:51 [DEBUG] Download attempt 1/3: https://rodaleinstitute.org/wp-content/uploads/Rodale-Soil-Carbon-White-Paper_v8.pdf
+2026-03-16 21:12:55 [INFO] Successfully downloaded: downloads/regenerative_agriculture_overview\Rodale_Soil_Carbon_White_Paper_v8.pdf (18,173,036 bytes)
+2026-03-16 21:12:55 [INFO] 
+[VERIFIED] 4/5: NRCS - Introduction to Soil Health v2.3
+2026-03-16 21:12:55 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/sites/default/files/2023-06/Intro%20to%20Soil%20Health%202.3.pdf
+2026-03-16 21:13:55 [WARNING] Timeout (attempt 1/3)
+2026-03-16 21:13:58 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/sites/default/files/2023-06/Intro%20to%20Soil%20Health%202.3.pdf
+2026-03-16 21:14:59 [WARNING] Timeout (attempt 2/3)
+2026-03-16 21:15:02 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/sites/default/files/2023-06/Intro%20to%20Soil%20Health%202.3.pdf
+2026-03-16 21:15:22 [INFO] 
+[VERIFIED] 5/5: NRCS - Regenerative Agriculture Pilot Q&A
+2026-03-16 21:15:22 [DEBUG] Download attempt 1/3: https://www.nrcs.usda.gov/sites/default/files/2025-12/regenerative-agriculture-pilot-questions-answers.pdf
+2026-03-16 21:16:22 [WARNING] Timeout (attempt 1/3)
+2026-03-16 21:16:25 [DEBUG] Download attempt 2/3: https://www.nrcs.usda.gov/sites/default/files/2025-12/regenerative-agriculture-pilot-questions-answers.pdf
+2026-03-16 21:17:25 [WARNING] Timeout (attempt 2/3)
+2026-03-16 21:17:28 [DEBUG] Download attempt 3/3: https://www.nrcs.usda.gov/sites/default/files/2025-12/regenerative-agriculture-pilot-questions-answers.pdf
+2026-03-16 21:18:29 [INFO] 
+Category summary: 3 succeeded, 2 failed
+2026-03-16 23:36:01 [INFO] Starting resource download...
+2026-03-16 23:36:01 [INFO] Manifest file: resources_manifest.json
+2026-03-16 23:36:01 [INFO] Loaded manifest with 10 categories
+2026-03-16 23:36:01 [INFO] 
+======================================================================
+2026-03-16 23:36:01 [INFO] Processing category: silvopasture_and_agroforestry
+2026-03-16 23:36:01 [INFO] Description: Guides and research on integrating trees with livestock and crops
+2026-03-16 23:36:01 [INFO] ======================================================================
+2026-03-16 23:36:01 [INFO] 
+[VERIFIED] 1/5: USDA Forest Service - Silvopasture: An Agroforestry Practice (AN-8)
+2026-03-16 23:36:01 [INFO] [USDA Forest Service - Silvopasture: An Agroforestry Practice (AN-8)] Already exists, skipping: downloads/silvopasture_and_agroforestry\USDA_FS_Silvopasture_Agroforestry_Practice_AN8.pdf
+2026-03-16 23:36:01 [INFO] 
+[VERIFIED] 2/5: USDA Forest Service - Silvopasture Handbook
+2026-03-16 23:36:01 [INFO] [USDA Forest Service - Silvopasture Handbook] Already exists, skipping: downloads/silvopasture_and_agroforestry\USDA_FS_Silvopasture_Handbook.pdf
+2026-03-16 23:36:01 [INFO] 
+[VERIFIED] 3/5: USDA Forest Service - Silvopasture in the USA (2022 Review)
+2026-03-16 23:36:01 [INFO] [USDA Forest Service - Silvopasture in the USA (2022 Review)] Already exists, skipping: downloads/silvopasture_and_agroforestry\USDA_FS_Silvopasture_USA_2022_Review.pdf
+2026-03-16 23:36:01 [INFO] 
+[VERIFIED] 4/5: UMN Extension - Silvopasture Manual
+2026-03-16 23:36:01 [INFO] [UMN Extension - Silvopasture Manual] Already exists, skipping: downloads/silvopasture_and_agroforestry\UMN_Extension_Silvopasture_Manual.pdf
+2026-03-16 23:36:01 [INFO] 
+[VERIFIED] 5/5: Grasslands Partnership - Climate Smart Silvopasture
+2026-03-16 23:36:01 [INFO] [Grasslands Partnership - Climate Smart Silvopasture] Already exists, skipping: downloads/silvopasture_and_agroforestry\Grasslands_Partnership_Climate_Smart_Silvopasture.pdf
+2026-03-16 23:36:01 [INFO] 
+Category summary: 5 succeeded, 0 failed
+2026-03-16 23:36:01 [INFO] 
+======================================================================
+2026-03-16 23:36:01 [INFO] Processing category: wildfire_prevention
+2026-03-16 23:36:01 [INFO] Description: Strategies and research on using grazing and land management for wildfire risk reduction
+2026-03-16 23:36:01 [INFO] ======================================================================
+2026-03-16 23:36:01 [INFO] 
+[VERIFIED] 1/4: UC Davis - Expanding Prescribed Grazing for Wildfire Resilience
+2026-03-16 23:36:01 [INFO] [UC Davis - Expanding Prescribed Grazing for Wildfire Resilience] Already exists, skipping: downloads/wildfire_prevention\UC_Davis_Prescribed_Grazing_Fire_Brief.pdf
+2026-03-16 23:36:01 [INFO] 
+[VERIFIED] 2/4: California Agriculture - Farming and Ranching Through Wildfire
+2026-03-16 23:36:01 [INFO] [California Agriculture - Farming and Ranching Through Wildfire] Already exists, skipping: downloads/wildfire_prevention\CalAg_Farming_Ranching_Wildfire.pdf
+2026-03-16 23:36:01 [INFO] 
+[VERIFIED] 3/4: California Assembly - Impact of Wildfire on Agriculture Background
+2026-03-16 23:36:01 [INFO] [California Assembly - Impact of Wildfire on Agriculture Background] Already exists, skipping: downloads/wildfire_prevention\CA_Assembly_Wildfire_Agriculture_Background.pdf
+2026-03-16 23:36:01 [INFO] 
+[VERIFIED] 4/4: California Assembly - Impact of Wildfires on Agriculture Hearing Report
+2026-03-16 23:36:01 [INFO] [California Assembly - Impact of Wildfires on Agriculture Hearing Report] Already exists, skipping: downloads/wildfire_prevention\CA_Assembly_Wildfire_Agriculture_Hearing_Report.pdf
+2026-03-16 23:36:01 [INFO] 
+Category summary: 4 succeeded, 0 failed
+2026-03-16 23:36:01 [INFO] 
+======================================================================
+2026-03-16 23:36:01 [INFO] Processing category: biochar_and_carbon
+2026-03-16 23:36:01 [INFO] Description: Research on biochar production, soil carbon sequestration, and carbon credit methodologies
+2026-03-16 23:36:01 [INFO] ======================================================================
+2026-03-16 23:36:01 [INFO] 
+[VERIFIED] 1/6: USDA RMRS - Biochar and Climate Change
+2026-03-16 23:36:01 [INFO] [USDA RMRS - Biochar and Climate Change] Already exists, skipping: downloads/biochar_and_carbon\USDA_RMRS_Biochar_Climate_Change.pdf
+2026-03-16 23:36:01 [INFO] 
+[VERIFIED] 2/6: NRCS Conservation Practice Standard 336 - Soil Carbon Amendment
+2026-03-16 23:36:01 [DEBUG] Using extended timeout (180s) for slow domain: www.nrcs.usda.gov
+2026-03-16 23:36:01 [DEBUG] Download attempt 1/4: https://www.nrcs.usda.gov/sites/default/files/2022-11/336-NHCP-CPS-Soil-Carbon-Amendment-2022.pdf
+2026-03-16 23:39:01 [WARNING] Timeout (attempt 1/4)
+2026-03-16 23:39:06 [DEBUG] Download attempt 2/4: https://www.nrcs.usda.gov/sites/default/files/2022-11/336-NHCP-CPS-Soil-Carbon-Amendment-2022.pdf
+2026-03-16 23:42:07 [WARNING] Timeout (attempt 2/4)
+2026-03-16 23:42:12 [DEBUG] Download attempt 3/4: https://www.nrcs.usda.gov/sites/default/files/2022-11/336-NHCP-CPS-Soil-Carbon-Amendment-2022.pdf
+2026-03-16 23:45:12 [WARNING] Timeout (attempt 3/4)
+2026-03-16 23:45:17 [DEBUG] Download attempt 4/4: https://www.nrcs.usda.gov/sites/default/files/2022-11/336-NHCP-CPS-Soil-Carbon-Amendment-2022.pdf
+2026-03-16 23:48:18 [INFO] 
+[VERIFIED] 3/6: NREL - Biochar as Carbon Dioxide Removal Strategy
+2026-03-16 23:48:18 [INFO] [NREL - Biochar as Carbon Dioxide Removal Strategy] Already exists, skipping: downloads/biochar_and_carbon\NREL_Biochar_CO2_Removal_Strategy.pdf
+2026-03-16 23:48:18 [INFO] 
+[VERIFIED] 4/6: IBI - Curated Biochar Research Digest (Oct 2023)
+2026-03-16 23:48:18 [INFO] [IBI - Curated Biochar Research Digest (Oct 2023)] Already exists, skipping: downloads/biochar_and_carbon\IBI_Biochar_Research_Digest_Oct2023.pdf
+2026-03-16 23:48:18 [INFO] 
+[VERIFIED] 5/6: IBI - Biochar Standards v2.1
+2026-03-16 23:48:18 [DEBUG] Download attempt 1/4: https://biochar-international.org/wp-content/uploads/2020/06/IBI_Biochar_Standards_V2.1_Final2.pdf
+2026-03-16 23:48:18 [WARNING] Rate limited (429), waiting 5s (attempt 1/4)
+2026-03-16 23:48:23 [DEBUG] Download attempt 2/4: https://biochar-international.org/wp-content/uploads/2020/06/IBI_Biochar_Standards_V2.1_Final2.pdf
+2026-03-16 23:48:24 [WARNING] Rate limited (429), waiting 10s (attempt 2/4)
+2026-03-16 23:48:34 [DEBUG] Download attempt 3/4: https://biochar-international.org/wp-content/uploads/2020/06/IBI_Biochar_Standards_V2.1_Final2.pdf
+2026-03-16 23:48:34 [WARNING] Rate limited (429), waiting 20s (attempt 3/4)
+2026-03-16 23:48:54 [DEBUG] Download attempt 4/4: https://biochar-international.org/wp-content/uploads/2020/06/IBI_Biochar_Standards_V2.1_Final2.pdf
+2026-03-16 23:48:55 [INFO] 
+[VERIFIED] 6/6: IBI - Biochar Field Studies Summary
+2026-03-16 23:48:55 [DEBUG] Download attempt 1/4: https://biochar-international.org/wp-content/uploads/2023/01/IBI_Field_Studies_Final_May_2013.pdf
+2026-03-16 23:48:55 [WARNING] Rate limited (429), waiting 5s (attempt 1/4)
+2026-03-16 23:49:00 [DEBUG] Download attempt 2/4: https://biochar-international.org/wp-content/uploads/2023/01/IBI_Field_Studies_Final_May_2013.pdf
+2026-03-16 23:49:01 [WARNING] Rate limited (429), waiting 10s (attempt 2/4)
+2026-03-16 23:49:11 [DEBUG] Download attempt 3/4: https://biochar-international.org/wp-content/uploads/2023/01/IBI_Field_Studies_Final_May_2013.pdf
+2026-03-16 23:49:11 [WARNING] Rate limited (429), waiting 20s (attempt 3/4)
+2026-03-16 23:49:31 [DEBUG] Download attempt 4/4: https://biochar-international.org/wp-content/uploads/2023/01/IBI_Field_Studies_Final_May_2013.pdf
+2026-03-16 23:49:32 [INFO] 
+Category summary: 3 succeeded, 3 failed
+2026-03-16 23:49:32 [INFO] 
+======================================================================
+2026-03-16 23:49:32 [INFO] Processing category: aquaponics_and_hydroponics
+2026-03-16 23:49:32 [INFO] Description: Guides and research on aquaponic and hydroponic system design and management
+2026-03-16 23:49:32 [INFO] ======================================================================
+2026-03-16 23:49:32 [INFO] 
+[VERIFIED] 1/2: FAO Technical Paper 589 - Small-scale Aquaponic Food Production
+2026-03-16 23:49:32 [INFO] [FAO Technical Paper 589 - Small-scale Aquaponic Food Production] Already exists, skipping: downloads/aquaponics_and_hydroponics\FAO_TP589_Small_Scale_Aquaponics.pdf
+2026-03-16 23:49:32 [INFO] 
+[VERIFIED] 2/2: Stellenbosch University - Build Your Own Aquaponics System at Home
+2026-03-16 23:49:32 [INFO] [Stellenbosch University - Build Your Own Aquaponics System at Home] Already exists, skipping: downloads/aquaponics_and_hydroponics\Stellenbosch_DIY_Aquaponics.pdf
+2026-03-16 23:49:32 [INFO] 
+Category summary: 2 succeeded, 0 failed
+2026-03-16 23:49:32 [INFO] 
+======================================================================
+2026-03-16 23:49:32 [INFO] Processing category: keyline_and_water_management
+2026-03-16 23:49:32 [INFO] Description: Water management, keyline design, and hydrological conservation techniques
+2026-03-16 23:49:32 [INFO] ======================================================================
+2026-03-16 23:49:32 [INFO] 
+[VERIFIED] 1/2: Keyline Design Article (Mark IV)
+2026-03-16 23:49:32 [INFO] [Keyline Design Article (Mark IV)] Already exists, skipping: downloads/keyline_and_water_management\Keyline_Design_Mark_IV_Article.pdf
+2026-03-16 23:49:32 [INFO] 
+[VERIFIED] 2/2: Oregon Water Management & Conservation Plans Guidebook
+2026-03-16 23:49:32 [INFO] [Oregon Water Management & Conservation Plans Guidebook] Already exists, skipping: downloads/keyline_and_water_management\Oregon_Water_Mgmt_Conservation_Guidebook.pdf
+2026-03-16 23:49:32 [INFO] 
+Category summary: 2 succeeded, 0 failed
+2026-03-16 23:49:32 [INFO] 
+======================================================================
+2026-03-16 23:49:32 [INFO] Processing category: iot_and_precision_agriculture
+2026-03-16 23:49:32 [INFO] Description: Internet of Things, sensor networks, and precision agriculture technologies
+2026-03-16 23:49:32 [INFO] ======================================================================
+2026-03-16 23:49:32 [INFO] 
+[VERIFIED] 1/1: Center for Science & Agriculture - Advancing Technologies in Precision Agriculture
+2026-03-16 23:49:32 [INFO] [Center for Science & Agriculture - Advancing Technologies in Precision Agriculture] Already exists, skipping: downloads/iot_and_precision_agriculture\CSAS_Advancing_Technologies_Precision_Agriculture.pdf
+2026-03-16 23:49:32 [INFO] 
+Category summary: 1 succeeded, 0 failed
+2026-03-16 23:49:32 [INFO] 
+======================================================================
+2026-03-16 23:49:32 [INFO] Processing category: grants_and_procurement
+2026-03-16 23:49:32 [INFO] Description: Agricultural grant programs, RFAs, and federal procurement guides
+2026-03-16 23:49:32 [INFO] ======================================================================
+2026-03-16 23:49:32 [INFO] 
+[VERIFIED] 1/6: USDA AMS - Specialty Crop Block Grant Program 2024 RFA
+2026-03-16 23:49:32 [INFO] [USDA AMS - Specialty Crop Block Grant Program 2024 RFA] Already exists, skipping: downloads/grants_and_procurement\USDA_AMS_SCBG_2024_RFA.pdf
+2026-03-16 23:49:32 [INFO] 
+[VERIFIED] 2/6: NRCS CIG Grantee Guide (October 2024)
+2026-03-16 23:49:32 [DEBUG] Using extended timeout (180s) for slow domain: www.nrcs.usda.gov
+2026-03-16 23:49:32 [DEBUG] Download attempt 1/4: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-16 23:52:32 [WARNING] Timeout (attempt 1/4)
+2026-03-16 23:52:37 [DEBUG] Download attempt 2/4: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-16 23:55:38 [WARNING] Timeout (attempt 2/4)
+2026-03-16 23:55:43 [DEBUG] Download attempt 3/4: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-16 23:58:43 [WARNING] Timeout (attempt 3/4)
+2026-03-16 23:58:48 [DEBUG] Download attempt 4/4: https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf
+2026-03-17 00:01:48 [INFO] 
+[VERIFIED] 3/6: NRCS CIG Fact Sheet
+2026-03-17 00:01:48 [DEBUG] Using extended timeout (180s) for slow domain: www.nrcs.usda.gov
+2026-03-17 00:01:48 [DEBUG] Download attempt 1/4: https://www.nrcs.usda.gov/sites/default/files/2024-06/NRCS-CIG_Factsheet.pdf
+2026-03-17 00:04:49 [WARNING] Timeout (attempt 1/4)
+2026-03-17 00:04:54 [DEBUG] Download attempt 2/4: https://www.nrcs.usda.gov/sites/default/files/2024-06/NRCS-CIG_Factsheet.pdf
+2026-03-17 00:07:54 [WARNING] Timeout (attempt 2/4)
+2026-03-17 00:07:59 [DEBUG] Download attempt 3/4: https://www.nrcs.usda.gov/sites/default/files/2024-06/NRCS-CIG_Factsheet.pdf
+2026-03-17 00:08:19 [WARNING] Connection error: ('Connection aborted.', ConnectionResetError(10054 (attempt 3/4)
+2026-03-17 00:08:24 [DEBUG] Download attempt 4/4: https://www.nrcs.usda.gov/sites/default/files/2024-06/NRCS-CIG_Factsheet.pdf
+2026-03-17 00:11:25 [INFO] 
+[VERIFIED] 4/6: SAM.gov Registration Guide (USDA Hawaii)
+2026-03-17 00:11:25 [DEBUG] Using extended timeout (180s) for slow domain: www.rd.usda.gov
+2026-03-17 00:11:25 [DEBUG] Download attempt 1/4: https://www.rd.usda.gov/files/HI-SAMGuide.pdf
+2026-03-17 00:14:25 [WARNING] Timeout (attempt 1/4)
+2026-03-17 00:14:30 [DEBUG] Download attempt 2/4: https://www.rd.usda.gov/files/HI-SAMGuide.pdf
+2026-03-17 00:17:31 [WARNING] Timeout (attempt 2/4)
+2026-03-17 00:17:36 [DEBUG] Download attempt 3/4: https://www.rd.usda.gov/files/HI-SAMGuide.pdf
+2026-03-17 00:20:36 [WARNING] Timeout (attempt 3/4)
+2026-03-17 00:20:41 [DEBUG] Download attempt 4/4: https://www.rd.usda.gov/files/HI-SAMGuide.pdf
+2026-03-17 00:21:03 [INFO] 
+[VERIFIED] 5/6: DOE SAM Registration User Guide
+2026-03-17 00:21:03 [INFO] [DOE SAM Registration User Guide] Already exists, skipping: downloads/grants_and_procurement\DOE_SAM_Registration_User_Guide.pdf
+2026-03-17 00:21:03 [INFO] 
+[VERIFIED] 6/6: SAM.gov Step-by-Step First-Time Registrants Guide
+2026-03-17 00:21:03 [INFO] [SAM.gov Step-by-Step First-Time Registrants Guide] Already exists, skipping: downloads/grants_and_procurement\SAM_First_Time_Registrants_Guide.pdf
+2026-03-17 00:21:03 [INFO] 
+Category summary: 3 succeeded, 3 failed
+2026-03-17 00:21:03 [INFO] 
+======================================================================
+2026-03-17 00:21:03 [INFO] Processing category: fire_modeling_and_data
+2026-03-17 00:21:03 [INFO] Description: Wildfire modeling, data analysis, and fire behavior research
+2026-03-17 00:21:03 [INFO] ======================================================================
+2026-03-17 00:21:03 [INFO] 
+[VERIFIED] 1/2: USDA Forest Service - Fire Behavior Field Reference Guide (PMS 437)
+2026-03-17 00:21:03 [DEBUG] Download attempt 1/4: https://www.nwcg.gov/sites/default/files/publications/pms437.pdf
+2026-03-17 00:21:04 [INFO] 
+[VERIFIED] 2/2: NWCG Smoke Management Guide for Prescribed Fire
+2026-03-17 00:21:04 [DEBUG] Download attempt 1/4: https://www.nwcg.gov/sites/default/files/publications/pms420-2.pdf
+2026-03-17 00:21:04 [INFO] 
+Category summary: 0 succeeded, 2 failed
+2026-03-17 00:21:04 [INFO] 
+======================================================================
+2026-03-17 00:21:04 [INFO] Processing category: carbon_credits_and_compliance
+2026-03-17 00:21:04 [INFO] Description: Carbon credit methodologies, standards, and compliance frameworks
+2026-03-17 00:21:04 [INFO] ======================================================================
+2026-03-17 00:21:04 [INFO] 
+[VERIFIED] 1/2: Verra VCS Standard v4.2
+2026-03-17 00:21:04 [INFO] [Verra VCS Standard v4.2] Already exists, skipping: downloads/carbon_credits_and_compliance\Verra_VCS_Standard_v4.2.pdf
+2026-03-17 00:21:04 [INFO] 
+[VERIFIED] 2/2: RSB Soil Carbon Impact Indicator Methodology 2024
+2026-03-17 00:21:04 [INFO] [RSB Soil Carbon Impact Indicator Methodology 2024] Already exists, skipping: downloads/carbon_credits_and_compliance\RSB_Soil_Carbon_Methodology_2024.pdf
+2026-03-17 00:21:04 [INFO] 
+Category summary: 2 succeeded, 0 failed
+2026-03-17 00:21:04 [INFO] 
+======================================================================
+2026-03-17 00:21:04 [INFO] Processing category: regenerative_agriculture_overview
+2026-03-17 00:21:04 [INFO] Description: Foundational resources on regenerative agriculture practices and soil health
+2026-03-17 00:21:04 [INFO] ======================================================================
+2026-03-17 00:21:04 [INFO] 
+[VERIFIED] 1/5: Rodale Institute - Farming Systems Trial 40-Year Report
+2026-03-17 00:21:04 [INFO] [Rodale Institute - Farming Systems Trial 40-Year Report] Already exists, skipping: downloads/regenerative_agriculture_overview\Rodale_FST_40_Year_Report.pdf
+2026-03-17 00:21:04 [INFO] 
+[VERIFIED] 2/5: Rodale Institute - Regenerative Agriculture & Climate White Paper
+2026-03-17 00:21:04 [INFO] [Rodale Institute - Regenerative Agriculture & Climate White Paper] Already exists, skipping: downloads/regenerative_agriculture_overview\Rodale_Regenerative_Climate_White_Paper.pdf
+2026-03-17 00:21:04 [INFO] 
+[VERIFIED] 3/5: Rodale Institute - Soil Carbon White Paper
+2026-03-17 00:21:04 [INFO] [Rodale Institute - Soil Carbon White Paper] Already exists, skipping: downloads/regenerative_agriculture_overview\Rodale_Soil_Carbon_White_Paper_v8.pdf
+2026-03-17 00:21:04 [INFO] 
+[VERIFIED] 4/5: NRCS - Introduction to Soil Health v2.3
+2026-03-17 00:21:04 [DEBUG] Using extended timeout (180s) for slow domain: www.nrcs.usda.gov
+2026-03-17 00:21:04 [DEBUG] Download attempt 1/4: https://www.nrcs.usda.gov/sites/default/files/2023-06/Intro%20to%20Soil%20Health%202.3.pdf
+2026-03-17 00:21:24 [WARNING] Connection error: ('Connection aborted.', ConnectionResetError(10054 (attempt 1/4)
+2026-03-17 00:21:29 [DEBUG] Download attempt 2/4: https://www.nrcs.usda.gov/sites/default/files/2023-06/Intro%20to%20Soil%20Health%202.3.pdf
+2026-03-17 00:24:29 [WARNING] Timeout (attempt 2/4)
+2026-03-17 00:24:34 [DEBUG] Download attempt 3/4: https://www.nrcs.usda.gov/sites/default/files/2023-06/Intro%20to%20Soil%20Health%202.3.pdf
+2026-03-17 00:27:35 [WARNING] Timeout (attempt 3/4)
+2026-03-17 00:27:40 [DEBUG] Download attempt 4/4: https://www.nrcs.usda.gov/sites/default/files/2023-06/Intro%20to%20Soil%20Health%202.3.pdf
+2026-03-17 00:30:41 [INFO] 
+[VERIFIED] 5/5: NRCS - Regenerative Agriculture Pilot Q&A
+2026-03-17 00:30:41 [DEBUG] Using extended timeout (180s) for slow domain: www.nrcs.usda.gov
+2026-03-17 00:30:41 [DEBUG] Download attempt 1/4: https://www.nrcs.usda.gov/sites/default/files/2025-12/regenerative-agriculture-pilot-questions-answers.pdf
+2026-03-17 00:33:41 [WARNING] Timeout (attempt 1/4)
+2026-03-17 00:33:46 [DEBUG] Download attempt 2/4: https://www.nrcs.usda.gov/sites/default/files/2025-12/regenerative-agriculture-pilot-questions-answers.pdf
+2026-03-17 00:36:47 [WARNING] Timeout (attempt 2/4)
+2026-03-17 00:36:52 [DEBUG] Download attempt 3/4: https://www.nrcs.usda.gov/sites/default/files/2025-12/regenerative-agriculture-pilot-questions-answers.pdf
+2026-03-17 00:39:52 [WARNING] Timeout (attempt 3/4)
+2026-03-17 00:39:57 [DEBUG] Download attempt 4/4: https://www.nrcs.usda.gov/sites/default/files/2025-12/regenerative-agriculture-pilot-questions-answers.pdf
+2026-03-17 00:40:17 [INFO] 
+Category summary: 3 succeeded, 2 failed

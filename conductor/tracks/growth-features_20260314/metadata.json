@@ -1,0 +1,122 @@
+{
+  "track_id": "growth-features_20260314",
+  "title": "Growth Features",
+  "description": "Post-launch features to increase LTV, repeat purchases, and customer engagement: reviews, subscriptions, wishlist, email marketing, loyalty program, analytics, recommendations, discount codes, abandoned cart recovery, social sharing, and newsletter.",
+  "status": "ready",
+  "priority": "medium",
+  "phase": "Phase 4: Scale",
+  "created_at": "2026-03-14",
+  "updated_at": "2026-03-14",
+  "spec_file": "spec.md",
+  "plan_file": "plan.md",
+  "coverage_target": "70%",
+  "commit_strategy": "manual",
+  "project_type": "brownfield",
+  "dependencies": [
+    "transaction-core_20260314",
+    "auth-accounts_20260314",
+    "discovery-trust_20260314",
+    "mobile-checkout_20260314",
+    "affiliate-system_20260314",
+    "content-seo_20260314"
+  ],
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Email Infrastructure and Newsletter",
+      "status": "pending",
+      "tasks": 6
+    },
+    {
+      "phase": 2,
+      "name": "Discount Codes and Promotions Engine",
+      "status": "pending",
+      "tasks": 6
+    },
+    {
+      "phase": 3,
+      "name": "Product Reviews and Ratings",
+      "status": "pending",
+      "tasks": 7
+    },
+    {
+      "phase": 4,
+      "name": "Wishlist Functionality",
+      "status": "pending",
+      "tasks": 4
+    },
+    {
+      "phase": 5,
+      "name": "Subscription and Recurring Orders",
+      "status": "pending",
+      "tasks": 6
+    },
+    {
+      "phase": 6,
+      "name": "Loyalty Program and Recently Viewed",
+      "status": "pending",
+      "tasks": 7
+    },
+    {
+      "phase": 7,
+      "name": "Product Recommendations and Abandoned Cart Recovery",
+      "status": "pending",
+      "tasks": 6
+    },
+    {
+      "phase": 8,
+      "name": "Social Sharing, Analytics Dashboard, and Final Integration",
+      "status": "pending",
+      "tasks": 8
+    }
+  ],
+  "functional_requirements": 12,
+  "non_functional_requirements": 4,
+  "estimated_hours": "86-103",
+  "new_db_tables": [
+    "review",
+    "review_helpful_vote",
+    "wishlist_item",
+    "loyalty_points_ledger",
+    "loyalty_settings",
+    "discount_code",
+    "discount_usage",
+    "newsletter_subscriber",
+    "recently_viewed",
+    "product_recommendation",
+    "subscription",
+    "abandoned_cart_email_log",
+    "email_log"
+  ],
+  "new_trpc_routers": [
+    "reviews",
+    "wishlist",
+    "loyalty",
+    "discounts",
+    "subscriptions",
+    "newsletter",
+    "recommendations",
+    "analytics"
+  ],
+  "new_services": [
+    "email (rewrite)",
+    "email-templates/*",
+    "newsletter",
+    "discount",
+    "review",
+    "wishlist",
+    "subscription",
+    "loyalty",
+    "recently-viewed",
+    "recommendation",
+    "abandoned-cart",
+    "analytics",
+    "posthog"
+  ],
+  "external_dependencies": [
+    "resend (new)",
+    "stripe (existing, Billing API)",
+    "posthog-node (existing)",
+    "chart.js or svelte-chartjs (new, for analytics)"
+  ]
+}

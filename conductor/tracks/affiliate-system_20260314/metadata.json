@@ -1,0 +1,14 @@
+{
+  "id": "affiliate-system_20260314",
+  "title": "Affiliate System",
+  "description": "Complete affiliate marketing system: registration with admin approval, referral link generation with coupon codes, click tracking with deduplication, tiered commissions (8%/12%/16%), affiliate dashboard, admin management, manual payouts, shareable assets, newsletter partner tier, and TOS page.",
+  "status": "planned",
+  "priority": "high",
+  "createdAt": "2026-03-14",
+  "updatedAt": "2026-03-14",
+  "phases": 7,
+  "coverageTarget": "70%",
+  "commitStrategy": "manual",
+  "dependencies": ["transaction-core_20260314"],
+  "tags": ["affiliate", "commission", "tracking", "admin", "payout"]
+}

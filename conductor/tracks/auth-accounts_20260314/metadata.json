@@ -1,0 +1,18 @@
+{
+  "id": "auth-accounts_20260314",
+  "title": "Auth & Accounts",
+  "description": "Complete all authentication and account management flows including registration, login with remember me, rate limiting, account lockout, password reset, profile management, order history, guest checkout, session security, and role-based access control.",
+  "status": "planned",
+  "priority": "high",
+  "phase": 1,
+  "createdAt": "2026-03-14",
+  "updatedAt": "2026-03-14",
+  "projectType": "brownfield",
+  "coverageTarget": 70,
+  "commitStrategy": "manual",
+  "totalPhases": 6,
+  "totalTasks": 34,
+  "estimatedHours": "40-60",
+  "dependencies": [],
+  "tags": ["auth", "security", "accounts", "sessions", "rate-limiting", "password-reset", "rbac"]
+}

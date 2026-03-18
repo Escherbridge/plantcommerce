@@ -31,8 +31,54 @@ export const session = pgTable('session', {
 	userId: text('user_id')
 		.notNull()
 		.references(() => user.id),
-	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
+	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull(),
+	rememberMe: boolean('remember_me').notNull().default(false),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+	lastAccessedAt: timestamp('last_accessed_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 });
+
+// ======= AUTHENTICATION SECURITY =======
+export const loginAttempts = pgTable('login_attempts', {
+	id: serial('id').primaryKey(),
+	identifier: text('identifier').notNull(), // IP address or user ID
+	identifierType: text('identifier_type', { enum: ['ip', 'user'] }).notNull(),
+	attempts: integer('attempts').notNull().default(1),
+	lastAttempt: timestamp('last_attempt', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+	blockedUntil: timestamp('blocked_until', { withTimezone: true, mode: 'date' }),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+}, (table) => ({
+	identifierIdx: index('login_attempts_identifier_idx').on(table.identifier, table.identifierType),
+	blockedIdx: index('login_attempts_blocked_idx').on(table.blockedUntil)
+}));
+
+export const accountLocks = pgTable('account_locks', {
+	id: serial('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => user.id),
+	reason: text('reason').notNull(), // 'failed_attempts', 'suspicious_activity'
+	lockedAt: timestamp('locked_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+	unlockToken: text('unlock_token'),
+	unlockedAt: timestamp('unlocked_at', { withTimezone: true, mode: 'date' })
+}, (table) => ({
+	userIdx: index('account_locks_user_idx').on(table.userId),
+	tokenIdx: index('account_locks_token_idx').on(table.unlockToken)
+}));
+
+export const socialAccounts = pgTable('social_accounts', {
+	id: serial('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => user.id),
+	provider: text('provider').notNull(), // 'google', 'facebook', etc.
+	providerUserId: text('provider_user_id').notNull(),
+	email: text('email'),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+}, (table) => ({
+	userIdx: index('social_accounts_user_idx').on(table.userId),
+	providerIdx: uniqueIndex('social_accounts_provider_idx').on(table.provider, table.providerUserId)
+}));
 
 // ======= PRODUCT CATALOG =======
 export const productCategory = pgTable('product_category', {
@@ -387,3 +433,6 @@ export type AffiliateLink = typeof affiliateLink.$inferSelect;
 export type Order = typeof order.$inferSelect;
 export type ContentPage = typeof contentPage.$inferSelect;
 export type File = typeof file.$inferSelect;
+export type LoginAttempt = typeof loginAttempts.$inferSelect;
+export type AccountLock = typeof accountLocks.$inferSelect;
+export type SocialAccount = typeof socialAccounts.$inferSelect;

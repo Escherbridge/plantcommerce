@@ -1,0 +1,17 @@
+{
+  "id": "transaction-core_20260314",
+  "title": "Transaction Core",
+  "status": "planning",
+  "priority": "P0",
+  "createdAt": "2026-03-14",
+  "updatedAt": "2026-03-14",
+  "phase": 1,
+  "totalPhases": 6,
+  "totalTasks": 30,
+  "completedTasks": 0,
+  "coverageTarget": 70,
+  "commitStrategy": "manual",
+  "dependencies": [],
+  "tags": ["stripe", "checkout", "orders", "products", "cart", "admin"],
+  "summary": "Wire real product data through tRPC, implement Stripe hosted Checkout, create orders from webhook, and build basic admin order management."
+}

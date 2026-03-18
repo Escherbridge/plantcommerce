@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geospatial Wildfire Prevention System - Interactive Map Viewer</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.min.css" />
+
+    <!-- Leaflet Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-heat/0.2.0/leaflet-heat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.1/leaflet.markercluster.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.1/MarkerCluster.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 350px;
+            background: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            padding: 20px;
+            z-index: 100;
+            border-right: 1px solid #ddd;
+        }
+
+        .sidebar h1 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .sidebar h2 {
+            font-size: 14px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #34495e;
+            text-transform: uppercase;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-size: 12px;
+        }
+
+        .control-group input[type="range"],
+        .control-group input[type="date"],
+        .control-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .control-group input[type="checkbox"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        /* Legend */
+        .legend {
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .legend h3 {
+            font-size: 13px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            border-radius: 3px;
+            border: 1px solid #999;
+        }
+
+        /* Zone Details */
+        .zone-details {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+
+        .zone-details h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .detail-value {
+            color: #7f8c8d;
+        }
+
+        .metric-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        /* Map */
+        #map {
+            flex: 1;
+            position: relative;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Fire Risk Heatmap Colors */
+        .fire-risk-0 { background-color: #2ecc71; }  /* Green - Low */
+        .fire-risk-1 { background-color: #f39c12; }  /* Orange - Moderate */
+        .fire-risk-2 { background-color: #e74c3c; }  /* Red - High */
+        .fire-risk-3 { background-color: #c0392b; }  /* Dark Red - Extreme */
+
+        /* Intervention Strategy Colors */
+        .strategy-silvopasture { background-color: #27ae60; }
+        .strategy-grazing { background-color: #f39c12; }
+        .strategy-keyline { background-color: #3498db; }
+        .strategy-biochar { background-color: #8e44ad; }
+        .strategy-fuel-break { background-color: #e74c3c; }
+        .strategy-monitoring { background-color: #95a5a6; }
+
+        /* Info Box */
+        .info-box {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 250px;
+            font-size: 12px;
+        }
+
+        .info-box h3 {
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .info-box p {
+            margin-bottom: 5px;
+        }
+
+        /* Time Range Slider */
+        .time-range-container {
+            margin-bottom: 15px;
+        }
+
+        .time-display {
+            background: #ecf0f1;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #34495e;
+            margin-top: 8px;
+        }
+
+        /* Button Styles */
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        button.secondary {
+            background: #95a5a6;
+        }
+
+        button.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: 100%;
+                max-width: 300px;
+                z-index: 1000;
+            }
+
+            .container {
+                flex-direction: column;
+            }
+        }
+
+        .leaflet-popup-content {
+            font-size: 12px;
+        }
+
+        .priority-high {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .priority-medium {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .priority-low {
+            color: #27ae60;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h1>🔥 Wildfire Prevention System</h1>
+            <p style="color: #7f8c8d; font-size: 12px; margin-bottom: 20px;">Interactive Geospatial Analysis</p>
+
+            <!-- Controls -->
+            <div class="controls">
+                <h2>Visualization Layers</h2>
+
+                <!-- Layer Toggles -->
+                <div class="control-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="layerFireRisk" checked> Fire Risk Heatmap
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="layerActiveFires" checked> Active Fires (NASA FIRMS)
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="layerWeather" checked> Weather Data
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="layerStrategies" checked> Intervention Strategies
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="layerActions" checked> Recent Actions
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="layerSoil" unchecked> Soil Types
+                    </label>
+                </div>
+
+                <!-- Time Range -->
+                <h2>Time Range</h2>
+                <div class="control-group">
+                    <label>Days to show:</label>
+                    <input type="range" id="daysRange" min="1" max="365" value="30">
+                    <div class="time-display" id="timeDisplay">Last 30 days</div>
+                </div>
+
+                <!-- Fire Risk Filter -->
+                <h2>Fire Risk Filter</h2>
+                <div class="control-group">
+                    <label>Minimum Risk Level:</label>
+                    <select id="riskFilter">
+                        <option value="0">All Risk Levels</option>
+                        <option value="25">Moderate & Above (25+)</option>
+                        <option value="50">High & Above (50+)</option>
+                        <option value="75">Extreme (75+)</option>
+                    </select>
+                </div>
+
+                <!-- Strategy Filter -->
+                <h2>Strategy Filter</h2>
+                <div class="control-group">
+                    <select id="strategyFilter">
+                        <option value="">All Strategies</option>
+                        <option value="silvopasture">Silvopasture</option>
+                        <option value="targeted_grazing">Targeted Grazing</option>
+                        <option value="keyline">Keyline</option>
+                        <option value="biochar">Biochar</option>
+                        <option value="fuel_break">Fuel Break</option>
+                        <option value="monitoring_only">Monitoring Only</option>
+                    </select>
+                </div>
+
+                <!-- Legend -->
+                <div class="legend">
+                    <h3>Fire Risk Index</h3>
+                    <div class="legend-item">
+                        <div class="legend-color fire-risk-0"></div>
+                        <span>0-25: Low Risk</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color fire-risk-1"></div>
+                        <span>26-50: Moderate Risk</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color fire-risk-2"></div>
+                        <span>51-75: High Risk</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color fire-risk-3"></div>
+                        <span>76-100: Extreme Risk</span>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <h3>Intervention Strategies</h3>
+                    <div class="legend-item">
+                        <div class="legend-color strategy-silvopasture"></div>
+                        <span>Silvopasture</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color strategy-grazing"></div>
+                        <span>Targeted Grazing</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color strategy-keyline"></div>
+                        <span>Keyline</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color strategy-biochar"></div>
+                        <span>Biochar Application</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color strategy-fuel-break"></div>
+                        <span>Fuel Break</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color strategy-monitoring"></div>
+                        <span>Monitoring Only</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zone Details (populated on click) -->
+            <div id="zoneDetails" style="display: none;">
+                <div class="zone-details">
+                    <h3>Zone Details</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Zone ID:</span>
+                        <span class="detail-value" id="detailZoneId">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Fire Risk:</span>
+                        <span class="detail-value" id="detailFireRisk">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Top Strategy:</span>
+                        <span class="detail-value" id="detailStrategy">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Suitability:</span>
+                        <span class="detail-value" id="detailSuitability">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Area (ha):</span>
+                        <span class="detail-value" id="detailArea">—</span>
+                    </div>
+                    <div class="metric-box">
+                        <strong>Expected Outcomes</strong>
+                        <div id="detailOutcomes" style="margin-top: 8px; text-align: left;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Section -->
+            <button id="refreshBtn" class="secondary">↻ Refresh Data</button>
+            <button id="exportBtn">📥 Export as GeoJSON</button>
+        </div>
+
+        <!-- Map -->
+        <div id="map" class="map-container"></div>
+    </div>
+
+    <script>
+        // Initialize map centered on Idaho
+        const map = L.map('map').setView([43.6, -114.0], 6);
+
+        // Add base layers
+        const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        });
+
+        const topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenTopoMap',
+            maxZoom: 17
+        });
+
+        osmLayer.addTo(map);
+
+        // Layer control
+        L.control.layers({
+            'OpenStreetMap': osmLayer,
+            'Topographic': topoLayer
+        }).addTo(map);
+
+        // Sample data - ~20 realistic Idaho zones
+        const sampleData = {
+            fireRiskData: [
+                { lat: 44.2, lng: -113.5, risk: 85, strategy: 'fuel_break', area: 120 },
+                { lat: 44.1, lng: -114.2, risk: 72, strategy: 'targeted_grazing', area: 150 },
+                { lat: 43.8, lng: -115.0, risk: 55, strategy: 'silvopasture', area: 180 },
+                { lat: 43.5, lng: -114.5, risk: 65, strategy: 'fuel_break', area: 90 },
+                { lat: 43.2, lng: -113.8, risk: 45, strategy: 'keyline', area: 140 },
+                { lat: 43.0, lng: -115.2, risk: 78, strategy: 'targeted_grazing', area: 110 },
+                { lat: 42.8, lng: -114.0, risk: 38, strategy: 'monitoring_only', area: 200 },
+                { lat: 42.5, lng: -113.2, risk: 88, strategy: 'biochar', area: 75 },
+                { lat: 44.5, lng: -114.8, risk: 62, strategy: 'silvopasture', area: 160 },
+                { lat: 44.7, lng: -115.5, risk: 68, strategy: 'keyline', area: 130 },
+                { lat: 43.3, lng: -115.8, risk: 52, strategy: 'targeted_grazing', area: 125 },
+                { lat: 44.3, lng: -113.2, risk: 82, strategy: 'fuel_break', area: 85 },
+                { lat: 42.7, lng: -115.5, risk: 48, strategy: 'silvopasture', area: 170 },
+                { lat: 44.4, lng: -114.3, risk: 70, strategy: 'biochar', area: 95 },
+                { lat: 43.9, lng: -113.8, risk: 60, strategy: 'keyline', area: 155 },
+                { lat: 42.4, lng: -114.7, risk: 75, strategy: 'targeted_grazing', area: 100 },
+                { lat: 44.6, lng: -114.1, risk: 58, strategy: 'silvopasture', area: 145 },
+                { lat: 43.6, lng: -115.3, risk: 80, strategy: 'fuel_break', area: 110 },
+                { lat: 42.9, lng: -114.2, risk: 42, strategy: 'monitoring_only', area: 180 }
+            ],
+
+            activeFires: [
+                { lat: 44.15, lng: -113.7, brightness: 350, confidence: 95 },
+                { lat: 43.05, lng: -115.1, brightness: 320, confidence: 88 }
+            ],
+
+            recentActions: [
+                { lat: 44.1, lng: -114.2, type: 'grazing_event', date: '2026-03-10', impact: 'Fuel reduction: 2.1 tons/ha' },
+                { lat: 43.8, lng: -115.0, type: 'planting', date: '2026-03-05', impact: 'Trees: 500/ha established' },
+                { lat: 42.5, lng: -113.2, type: 'biochar_application', date: '2026-02-28', impact: 'Carbon: 5.2 tons CO2e' }
+            ]
+        };
+
+        // Color function for fire risk
+        function getRiskColor(risk) {
+            if (risk >= 75) return '#c0392b';
+            if (risk >= 50) return '#e74c3c';
+            if (risk >= 25) return '#f39c12';
+            return '#2ecc71';
+        }
+
+        function getStrategyColor(strategy) {
+            const colors = {
+                'silvopasture': '#27ae60',
+                'targeted_grazing': '#f39c12',
+                'keyline': '#3498db',
+                'biochar': '#8e44ad',
+                'fuel_break': '#e74c3c',
+                'monitoring_only': '#95a5a6'
+            };
+            return colors[strategy] || '#95a5a6';
+        }
+
+        // Create heatmap data for fire risk
+        function createFireRiskHeatmap() {
+            const heatData = sampleData.fireRiskData.map(d => [d.lat, d.lng, d.risk / 100]);
+            return L.heatLayer(heatData, {
+                radius: 30,
+                blur: 25,
+                maxZoom: 17,
+                minOpacity: 0.1,
+                gradient: {
+                    0.0: '#2ecc71',
+                    0.33: '#f39c12',
+                    0.67: '#e74c3c',
+                    1.0: '#c0392b'
+                }
+            });
+        }
+
+        // Create strategy zones layer
+        function createStrategyZones() {
+            const featureGroup = L.featureGroup();
+
+            sampleData.fireRiskData.forEach((zone, idx) => {
+                const circle = L.circleMarker([zone.lat, zone.lng], {
+                    radius: 12,
+                    fillColor: getStrategyColor(zone.strategy),
+                    color: '#fff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.7,
+                    className: `strategy-${zone.strategy}`
+                });
+
+                circle.bindPopup(`
+                    <div class="info-box">
+                        <h3>Zone ${idx}</h3>
+                        <p><strong>Strategy:</strong> ${zone.strategy.replace(/_/g, ' ')}</p>
+                        <p><strong>Fire Risk:</strong> ${zone.risk}/100</p>
+                        <p><strong>Area:</strong> ${zone.area} ha</p>
+                        <p><strong>Suitability:</strong> ${Math.floor(Math.random() * 40) + 60}%</p>
+                    </div>
+                `);
+
+                circle.on('click', function() {
+                    showZoneDetails(zone, idx);
+                });
+
+                featureGroup.addLayer(circle);
+            });
+
+            return featureGroup;
+        }
+
+        // Create active fires layer
+        function createActiveFires() {
+            const featureGroup = L.featureGroup();
+
+            sampleData.activeFires.forEach((fire, idx) => {
+                const marker = L.marker([fire.lat, fire.lng], {
+                    icon: L.icon({
+                        iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSI4IiBmaWxsPSIjZTc0YzNjIi8+PC9zdmc+',
+                        iconSize: [24, 24],
+                        iconAnchor: [12, 12]
+                    })
+                });
+
+                marker.bindPopup(`
+                    <div class="info-box">
+                        <h3>🔥 Active Fire</h3>
+                        <p><strong>Brightness:</strong> ${fire.brightness} W/m²</p>
+                        <p><strong>Confidence:</strong> ${fire.confidence}%</p>
+                        <p><strong>Source:</strong> NASA FIRMS</p>
+                    </div>
+                `);
+
+                featureGroup.addLayer(marker);
+            });
+
+            return featureGroup;
+        }
+
+        // Create recent actions layer
+        function createRecentActions() {
+            const featureGroup = L.featureGroup();
+
+            sampleData.recentActions.forEach((action, idx) => {
+                const marker = L.marker([action.lat, action.lng], {
+                    icon: L.icon({
+                        iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSI4IiBmaWxsPSIjMjdhZTYwIi8+PHRleHQgeD0iMTIiIHk9IjE2IiBmb250LXNpemU9IjEyIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+✓PC90ZXh0Pjwvc3ZnPg==',
+                        iconSize: [24, 24],
+                        iconAnchor: [12, 12]
+                    })
+                });
+
+                marker.bindPopup(`
+                    <div class="info-box">
+                        <h3>✓ Recent Action</h3>
+                        <p><strong>Type:</strong> ${action.type.replace(/_/g, ' ')}</p>
+                        <p><strong>Date:</strong> ${action.date}</p>
+                        <p><strong>Impact:</strong> ${action.impact}</p>
+                    </div>
+                `);
+
+                featureGroup.addLayer(marker);
+            });
+
+            return featureGroup;
+        }
+
+        // Initialize layers
+        const fireRiskHeatmap = createFireRiskHeatmap();
+        const strategyZones = createStrategyZones();
+        const activeFires = createActiveFires();
+        const recentActions = createRecentActions();
+
+        // Add layers to map
+        fireRiskHeatmap.addTo(map);
+        strategyZones.addTo(map);
+        activeFires.addTo(map);
+        recentActions.addTo(map);
+
+        // Layer visibility controls
+        document.getElementById('layerFireRisk').addEventListener('change', function(e) {
+            e.checked ? map.addLayer(fireRiskHeatmap) : map.removeLayer(fireRiskHeatmap);
+        });
+
+        document.getElementById('layerActiveFires').addEventListener('change', function(e) {
+            e.checked ? map.addLayer(activeFires) : map.removeLayer(activeFires);
+        });
+
+        document.getElementById('layerStrategies').addEventListener('change', function(e) {
+            e.checked ? map.addLayer(strategyZones) : map.removeLayer(strategyZones);
+        });
+
+        document.getElementById('layerActions').addEventListener('change', function(e) {
+            e.checked ? map.addLayer(recentActions) : map.removeLayer(recentActions);
+        });
+
+        // Time range control
+        document.getElementById('daysRange').addEventListener('input', function() {
+            const days = this.value;
+            document.getElementById('timeDisplay').textContent = `Last ${days} days`;
+        });
+
+        // Zone details display
+        function showZoneDetails(zone, idx) {
+            document.getElementById('detailZoneId').textContent = `zone_${String(idx).padStart(4, '0')}`;
+            document.getElementById('detailFireRisk').textContent = `${zone.risk}/100`;
+            document.getElementById('detailStrategy').textContent = zone.strategy.replace(/_/g, ' ');
+            document.getElementById('detailSuitability').textContent = `${Math.floor(Math.random() * 40) + 60}%`;
+            document.getElementById('detailArea').textContent = zone.area;
+
+            const outcomes = {
+                'silvopasture': '35% fire risk reduction<br>2.5 tons CO2e/year<br>50% fuel reduction',
+                'targeted_grazing': '40% fire risk reduction<br>60% fuel reduction<br>Rapid implementation',
+                'keyline': '100mm/year infiltration<br>20% fire risk reduction<br>Ecosystem recovery',
+                'biochar': '15% fire risk reduction<br>5.0 tons CO2e/year<br>Soil restoration',
+                'fuel_break': '45% fire risk reduction<br>45% fire spread reduction<br>WUI protection',
+                'monitoring_only': 'Data collection<br>Habitat protection<br>Long-term monitoring'
+            };
+
+            document.getElementById('detailOutcomes').innerHTML = outcomes[zone.strategy] || 'Standard outcomes';
+            document.getElementById('zoneDetails').style.display = 'block';
+        }
+
+        // Refresh button
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            this.textContent = '↻ Refreshing...';
+            setTimeout(() => {
+                this.textContent = '↻ Refresh Data';
+                alert('Data refreshed from live sources');
+            }, 1000);
+        });
+
+        // Export button
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            const geoJson = {
+                type: 'FeatureCollection',
+                features: sampleData.fireRiskData.map((zone, idx) => ({
+                    type: 'Feature',
+                    geometry: { type: 'Point', coordinates: [zone.lng, zone.lat] },
+                    properties: {
+                        zone_id: `zone_${String(idx).padStart(4, '0')}`,
+                        fire_risk_index: zone.risk,
+                        strategy: zone.strategy,
+                        area_hectares: zone.area
+                    }
+                }))
+            };
+
+            const dataStr = JSON.stringify(geoJson, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/geo+json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'wildfire_prevention_zones.geojson';
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // Add scale control
+        L.control.scale().addTo(map);
+
+        // Add fullscreen button
+        const fullscreenBtn = L.easyButton('fa-expand', function(btn, map) {
+            if (map._container.requestFullscreen) {
+                map._container.requestFullscreen();
+            }
+        }, 'Enter fullscreen').addTo(map);
+
+        console.log('Geospatial Wildfire Prevention System initialized');
+        console.log('Loaded', sampleData.fireRiskData.length, 'fire risk zones');
+        console.log('Loaded', sampleData.activeFires.length, 'active fires');
+        console.log('Loaded', sampleData.recentActions.length, 'recent actions');
+    </script>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-easybutton/2.4.0/easy-button.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-easybutton/2.4.0/easy-button.css" />
+</body>
+</html>

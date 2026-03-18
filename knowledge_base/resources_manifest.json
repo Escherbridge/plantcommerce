@@ -1,0 +1,309 @@
+{
+  "categories": {
+    "silvopasture_and_agroforestry": {
+      "description": "Guides and research on integrating trees with livestock and crops",
+      "output_dir": "downloads/silvopasture_and_agroforestry",
+      "resources": [
+        {
+          "title": "USDA Forest Service - Silvopasture: An Agroforestry Practice (AN-8)",
+          "url": "https://www.fs.usda.gov/research/publications/an/silvopasture-an-agroforestry-practice-an8-final-508.pdf",
+          "filename": "USDA_FS_Silvopasture_Agroforestry_Practice_AN8.pdf",
+          "source": "USDA Forest Service NAC",
+          "verified": true
+        },
+        {
+          "title": "USDA Forest Service - Silvopasture Handbook",
+          "url": "https://www.fs.usda.gov/nac/assets/documents/morepublications/silvopasturehandbook.pdf",
+          "filename": "USDA_FS_Silvopasture_Handbook.pdf",
+          "source": "USDA Forest Service NAC",
+          "verified": true
+        },
+        {
+          "title": "USDA Forest Service - Silvopasture in the USA (2022 Review)",
+          "url": "https://www.fs.usda.gov/research/publications/jrnl/wo_2022_smith_001.pdf",
+          "filename": "USDA_FS_Silvopasture_USA_2022_Review.pdf",
+          "source": "USDA Forest Service R&D",
+          "verified": true
+        },
+        {
+          "title": "UMN Extension - Silvopasture Manual",
+          "url": "https://www.uwsp.edu/wp-content/uploads/2023/06/UM-Extension-Silvopasture-Manual-Episode-4.pdf",
+          "filename": "UMN_Extension_Silvopasture_Manual.pdf",
+          "source": "University of Minnesota Extension",
+          "verified": true
+        },
+        {
+          "title": "Grasslands Partnership - Climate Smart Silvopasture",
+          "url": "https://grasslandspartnership.org/wp-content/uploads/sites/278/2024/02/Silvopastures-Oct2023-5-GrasslandsPartnership.pdf",
+          "filename": "Grasslands_Partnership_Climate_Smart_Silvopasture.pdf",
+          "source": "Grasslands Partnership",
+          "verified": true
+        }
+      ]
+    },
+    "wildfire_prevention": {
+      "description": "Strategies and research on using grazing and land management for wildfire risk reduction",
+      "output_dir": "downloads/wildfire_prevention",
+      "resources": [
+        {
+          "title": "UC Davis - Expanding Prescribed Grazing for Wildfire Resilience",
+          "url": "https://rangelands.ucdavis.edu/sites/g/files/dgvnsk13956/files/media/documents/RxGrazing_fire_brief.pdf",
+          "filename": "UC_Davis_Prescribed_Grazing_Fire_Brief.pdf",
+          "source": "UC Davis Rangelands",
+          "verified": true
+        },
+        {
+          "title": "California Agriculture - Farming and Ranching Through Wildfire",
+          "url": "https://rangelands.ucdavis.edu/sites/g/files/dgvnsk13956/files/media/documents/CalAg_fire.pdf",
+          "filename": "CalAg_Farming_Ranching_Wildfire.pdf",
+          "source": "California Agriculture / UC Davis",
+          "verified": true
+        },
+        {
+          "title": "California Assembly - Impact of Wildfire on Agriculture Background",
+          "url": "https://agri.assembly.ca.gov/sites/agri.assembly.ca.gov/files/Impact%20of%20Wildfire%20on%20Agriculture%20Background.pdf",
+          "filename": "CA_Assembly_Wildfire_Agriculture_Background.pdf",
+          "source": "California Assembly Agriculture Committee",
+          "verified": true
+        },
+        {
+          "title": "California Assembly - Impact of Wildfires on Agriculture Hearing Report",
+          "url": "https://agri.assembly.ca.gov/sites/agri.assembly.ca.gov/files/The%20Impact%20of%20Wildfires%20on%20California%20Agriculture%20Informational%20Hearing%20Report.pdf",
+          "filename": "CA_Assembly_Wildfire_Agriculture_Hearing_Report.pdf",
+          "source": "California Assembly Agriculture Committee",
+          "verified": true
+        }
+      ]
+    },
+    "biochar_and_carbon": {
+      "description": "Research on biochar production, soil carbon sequestration, and carbon credit methodologies",
+      "output_dir": "downloads/biochar_and_carbon",
+      "resources": [
+        {
+          "title": "USDA RMRS - Biochar and Climate Change",
+          "url": "https://research.fs.usda.gov/sites/default/files/2023-10/rmrs-aag-biochar_climatechange_09252023.pdf",
+          "filename": "USDA_RMRS_Biochar_Climate_Change.pdf",
+          "source": "USDA Rocky Mountain Research Station",
+          "verified": true
+        },
+        {
+          "title": "NRCS Conservation Practice Standard 336 - Soil Carbon Amendment",
+          "url": "https://www.nrcs.usda.gov/sites/default/files/2022-11/336-NHCP-CPS-Soil-Carbon-Amendment-2022.pdf",
+          "filename": "NRCS_336_Soil_Carbon_Amendment_Standard.pdf",
+          "source": "USDA NRCS",
+          "verified": true
+        },
+        {
+          "title": "NREL - Biochar as Carbon Dioxide Removal Strategy",
+          "url": "https://docs.nrel.gov/docs/fy24osti/89438.pdf",
+          "filename": "NREL_Biochar_CO2_Removal_Strategy.pdf",
+          "source": "National Renewable Energy Laboratory",
+          "verified": true
+        },
+        {
+          "title": "IBI - Curated Biochar Research Digest (Oct 2023)",
+          "url": "https://biochar-international.org/wp-content/uploads/2023/10/Research-List-October2023.pdf",
+          "filename": "IBI_Biochar_Research_Digest_Oct2023.pdf",
+          "source": "International Biochar Initiative",
+          "verified": true
+        },
+        {
+          "title": "IBI - Biochar Standards v2.1",
+          "url": "https://biochar-international.org/wp-content/uploads/2020/06/IBI_Biochar_Standards_V2.1_Final2.pdf",
+          "filename": "IBI_Biochar_Standards_v2.1.pdf",
+          "source": "International Biochar Initiative",
+          "verified": true
+        },
+        {
+          "title": "IBI - Biochar Field Studies Summary",
+          "url": "https://biochar-international.org/wp-content/uploads/2023/01/IBI_Field_Studies_Final_May_2013.pdf",
+          "filename": "IBI_Biochar_Field_Studies.pdf",
+          "source": "International Biochar Initiative",
+          "verified": true
+        }
+      ]
+    },
+    "aquaponics_and_hydroponics": {
+      "description": "Guides and research on aquaponic and hydroponic system design and management",
+      "output_dir": "downloads/aquaponics_and_hydroponics",
+      "resources": [
+        {
+          "title": "FAO Technical Paper 589 - Small-scale Aquaponic Food Production",
+          "url": "https://openknowledge.fao.org/server/api/core/bitstreams/22c77ec5-16e4-4d4e-a71f-55ff85a2492c/content",
+          "filename": "FAO_TP589_Small_Scale_Aquaponics.pdf",
+          "source": "Food and Agriculture Organization (FAO)",
+          "verified": true
+        },
+        {
+          "title": "Stellenbosch University - Build Your Own Aquaponics System at Home",
+          "url": "https://susdev.sun.ac.za/files/2024/10/Build-your-own-Aquaponics-System-at-home.pdf",
+          "filename": "Stellenbosch_DIY_Aquaponics.pdf",
+          "source": "Stellenbosch University Sustainability Institute",
+          "verified": true
+        }
+      ]
+    },
+    "keyline_and_water_management": {
+      "description": "Water management, keyline design, and hydrological conservation techniques",
+      "output_dir": "downloads/keyline_and_water_management",
+      "resources": [
+        {
+          "title": "Keyline Design Article (Mark IV)",
+          "url": "https://agwaterstewards.org/wp-content/uploads/2016/08/KeylineArticle.pdf",
+          "filename": "Keyline_Design_Mark_IV_Article.pdf",
+          "source": "Agriculture Water Stewards",
+          "verified": true
+        },
+        {
+          "title": "Oregon Water Management & Conservation Plans Guidebook",
+          "url": "https://www.oregon.gov/OWRD/WRDPublications1/wmcp_guidebook.pdf",
+          "filename": "Oregon_Water_Mgmt_Conservation_Guidebook.pdf",
+          "source": "Oregon Department of Water Resources",
+          "verified": true
+        }
+      ]
+    },
+    "iot_and_precision_agriculture": {
+      "description": "Internet of Things, sensor networks, and precision agriculture technologies",
+      "output_dir": "downloads/iot_and_precision_agriculture",
+      "resources": [
+        {
+          "title": "Center for Science & Agriculture - Advancing Technologies in Precision Agriculture",
+          "url": "https://c-sas.org/docs/A_Review_on_Advancing_Technologies_in_Precision_Agriculture.pdf",
+          "filename": "CSAS_Advancing_Technologies_Precision_Agriculture.pdf",
+          "source": "Center for Science and Agriculture",
+          "verified": true
+        }
+      ]
+    },
+    "grants_and_procurement": {
+      "description": "Agricultural grant programs, RFAs, and federal procurement guides",
+      "output_dir": "downloads/grants_and_procurement",
+      "resources": [
+        {
+          "title": "USDA AMS - Specialty Crop Block Grant Program 2024 RFA",
+          "url": "https://www.ams.usda.gov/sites/default/files/media/2024_SCBGP_RFA_FINAL.pdf",
+          "filename": "USDA_AMS_SCBG_2024_RFA.pdf",
+          "source": "USDA Agricultural Marketing Service",
+          "verified": true
+        },
+        {
+          "title": "NRCS CIG Grantee Guide (October 2024)",
+          "url": "https://www.nrcs.usda.gov/sites/default/files/2024-10/nrcs-cig-grant-funding-guide-october-2024.pdf",
+          "filename": "NRCS_CIG_Grantee_Guide_Oct2024.pdf",
+          "source": "USDA NRCS",
+          "verified": true
+        },
+        {
+          "title": "NRCS CIG Fact Sheet",
+          "url": "https://www.nrcs.usda.gov/sites/default/files/2024-06/NRCS-CIG_Factsheet.pdf",
+          "filename": "NRCS_CIG_Factsheet.pdf",
+          "source": "USDA NRCS",
+          "verified": true
+        },
+        {
+          "title": "SAM.gov Registration Guide (USDA Hawaii)",
+          "url": "https://www.rd.usda.gov/files/HI-SAMGuide.pdf",
+          "filename": "USDA_SAM_Registration_Guide.pdf",
+          "source": "USDA Rural Development",
+          "verified": true
+        },
+        {
+          "title": "DOE SAM Registration User Guide",
+          "url": "https://www.energy.gov/sites/prod/files/2020/06/f76/appendix-7-SAM-registration-user.pdf",
+          "filename": "DOE_SAM_Registration_User_Guide.pdf",
+          "source": "US Department of Energy",
+          "verified": true
+        },
+        {
+          "title": "SAM.gov Step-by-Step First-Time Registrants Guide",
+          "url": "https://common.usembassy.gov/wp-content/uploads/sites/51/2024/02/Step-by-step-Guide-for-First-time-registrants.pdf",
+          "filename": "SAM_First_Time_Registrants_Guide.pdf",
+          "source": "US Embassy / State Dept",
+          "verified": true
+        }
+      ]
+    },
+    "fire_modeling_and_data": {
+      "description": "Wildfire modeling, data analysis, and fire behavior research",
+      "output_dir": "downloads/fire_modeling_and_data",
+      "resources": [
+        {
+          "title": "USDA Forest Service - Fire Behavior Field Reference Guide (PMS 437)",
+          "url": "https://www.nwcg.gov/sites/default/files/publications/pms437.pdf",
+          "filename": "NWCG_Fire_Behavior_Field_Reference_PMS437.pdf",
+          "source": "National Wildfire Coordinating Group (NWCG)",
+          "verified": true
+        },
+        {
+          "title": "NWCG Smoke Management Guide for Prescribed Fire",
+          "url": "https://www.nwcg.gov/sites/default/files/publications/pms420-2.pdf",
+          "filename": "NWCG_Smoke_Management_Guide_PMS420.pdf",
+          "source": "National Wildfire Coordinating Group (NWCG)",
+          "verified": true
+        }
+      ]
+    },
+    "carbon_credits_and_compliance": {
+      "description": "Carbon credit methodologies, standards, and compliance frameworks",
+      "output_dir": "downloads/carbon_credits_and_compliance",
+      "resources": [
+        {
+          "title": "Verra VCS Standard v4.2",
+          "url": "https://verra.org/wp-content/uploads/2023/04/VCS-Standard_v4.2.pdf",
+          "filename": "Verra_VCS_Standard_v4.2.pdf",
+          "source": "Verra (Verified Carbon Standard)",
+          "verified": true
+        },
+        {
+          "title": "RSB Soil Carbon Impact Indicator Methodology 2024",
+          "url": "https://rsb.org/wp-content/uploads/2025/01/rsb-impact-indicator-methodology-soil-carbon_2024.pdf",
+          "filename": "RSB_Soil_Carbon_Methodology_2024.pdf",
+          "source": "Roundtable on Sustainable Biomaterials",
+          "verified": true
+        }
+      ]
+    },
+    "regenerative_agriculture_overview": {
+      "description": "Foundational resources on regenerative agriculture practices and soil health",
+      "output_dir": "downloads/regenerative_agriculture_overview",
+      "resources": [
+        {
+          "title": "Rodale Institute - Farming Systems Trial 40-Year Report",
+          "url": "https://rodaleinstitute.org/wp-content/uploads/FST_40YearReport_RodaleInstitute-1.pdf",
+          "filename": "Rodale_FST_40_Year_Report.pdf",
+          "source": "Rodale Institute",
+          "verified": true
+        },
+        {
+          "title": "Rodale Institute - Regenerative Agriculture & Climate White Paper",
+          "url": "https://rodaleinstitute.org/wp-content/uploads/rodale-white-paper.pdf",
+          "filename": "Rodale_Regenerative_Climate_White_Paper.pdf",
+          "source": "Rodale Institute",
+          "verified": true
+        },
+        {
+          "title": "Rodale Institute - Soil Carbon White Paper",
+          "url": "https://rodaleinstitute.org/wp-content/uploads/Rodale-Soil-Carbon-White-Paper_v8.pdf",
+          "filename": "Rodale_Soil_Carbon_White_Paper_v8.pdf",
+          "source": "Rodale Institute",
+          "verified": true
+        },
+        {
+          "title": "NRCS - Introduction to Soil Health v2.3",
+          "url": "https://www.nrcs.usda.gov/sites/default/files/2023-06/Intro%20to%20Soil%20Health%202.3.pdf",
+          "filename": "NRCS_Intro_Soil_Health_v2.3.pdf",
+          "source": "USDA NRCS",
+          "verified": true
+        },
+        {
+          "title": "NRCS - Regenerative Agriculture Pilot Q&A",
+          "url": "https://www.nrcs.usda.gov/sites/default/files/2025-12/regenerative-agriculture-pilot-questions-answers.pdf",
+          "filename": "NRCS_Regenerative_Ag_Pilot_QA.pdf",
+          "source": "USDA NRCS",
+          "verified": true
+        }
+      ]
+    }
+  }
+}

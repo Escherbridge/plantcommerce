@@ -1,0 +1,62 @@
+{
+  "id": "mobile-checkout_20260314",
+  "title": "Mobile & Checkout Optimization",
+  "description": "Mobile-responsive shopping experience with Express Checkout (Apple Pay, Google Pay, Link), touch-optimized controls, progressive disclosure checkout, and DaisyUI theme configuration.",
+  "status": "planned",
+  "priority": "P1",
+  "phase": 2,
+  "phaseLabel": "Convert (Weeks 4-7)",
+  "trackNumber": 4,
+  "createdAt": "2026-03-14",
+  "updatedAt": "2026-03-14",
+  "dependencies": [
+    "transaction-core_20260314"
+  ],
+  "tags": [
+    "mobile",
+    "responsive",
+    "stripe",
+    "express-checkout",
+    "ux",
+    "checkout",
+    "daisyui"
+  ],
+  "estimatedPhases": 6,
+  "coverageTarget": 70,
+  "commitStrategy": "manual",
+  "keyFiles": {
+    "productDetail": "plantapp/src/routes/products/mock-detail/+page.svelte",
+    "cartPage": "plantapp/src/routes/cart/+page.svelte",
+    "checkoutPage": "plantapp/src/routes/checkout/+page.svelte",
+    "header": "plantapp/src/lib/components/navigation/Header.svelte",
+    "rootLayout": "plantapp/src/routes/+layout.svelte",
+    "carousel": "plantapp/src/lib/components/ui/Carousel.svelte",
+    "imageGallery": "plantapp/src/lib/components/images/ImageGallery.svelte",
+    "multiStepForm": "plantapp/src/lib/components/forms/MultiStepForm.svelte",
+    "schema": "plantapp/src/lib/server/db/schema.ts",
+    "appCss": "plantapp/src/app.css"
+  },
+  "newFiles": [
+    "plantapp/src/lib/stores/cart.svelte.ts",
+    "plantapp/src/lib/components/ui/ProductDetailSkeleton.svelte",
+    "plantapp/src/lib/components/ui/CartItemSkeleton.svelte",
+    "plantapp/src/lib/components/ui/TouchQuantityControl.svelte",
+    "plantapp/src/lib/components/ui/StickyAddToCart.svelte",
+    "plantapp/src/lib/components/checkout/CheckoutAccordion.svelte",
+    "plantapp/src/lib/components/checkout/ExpressCheckout.svelte",
+    "plantapp/src/lib/components/checkout/AddressAutocomplete.svelte",
+    "plantapp/src/lib/stripe/client.ts",
+    "plantapp/src/routes/api/create-payment-intent/+server.ts",
+    "plantapp/src/routes/api/confirm-express-order/+server.ts"
+  ],
+  "npmDependencies": {
+    "production": [
+      "@stripe/stripe-js"
+    ],
+    "development": []
+  },
+  "environmentVariables": [
+    "PUBLIC_STRIPE_PUBLISHABLE_KEY",
+    "PUBLIC_GOOGLE_PLACES_API_KEY"
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "trackId": "discovery-trust_20260314",
+  "title": "Discovery & Trust",
+  "description": "Product discovery, filtering, full-text search, certification badges, stock indicators, environmental impact, provenance, and optional product comparison to raise conversion rate.",
+  "status": "ready",
+  "priority": "high",
+  "phase": 2,
+  "phaseLabel": "Convert (Weeks 4-7)",
+  "projectType": "brownfield",
+  "createdAt": "2026-03-14",
+  "updatedAt": "2026-03-14",
+  "estimatedEffort": "8-12 days",
+  "coverageTarget": "70%",
+  "commitStrategy": "manual",
+  "dependencies": ["transaction-core_20260314"],
+  "phases": {
+    "total": 5,
+    "breakdown": [
+      {
+        "phase": 1,
+        "name": "Schema Extensions & Search Infrastructure",
+        "tasks": 5,
+        "status": "pending",
+        "estimatedEffort": "1-2 days"
+      },
+      {
+        "phase": 2,
+        "name": "Core Product Browsing & Filtering",
+        "tasks": 11,
+        "status": "pending",
+        "estimatedEffort": "3-4 days"
+      },
+      {
+        "phase": 3,
+        "name": "Product Detail Page",
+        "tasks": 5,
+        "status": "pending",
+        "estimatedEffort": "1-2 days"
+      },
+      {
+        "phase": 4,
+        "name": "Trust Signals",
+        "tasks": 8,
+        "status": "pending",
+        "estimatedEffort": "2-3 days"
+      },
+      {
+        "phase": 5,
+        "name": "Product Comparison (Optional)",
+        "tasks": 5,
+        "status": "pending",
+        "optional": true,
+        "estimatedEffort": "1-2 days"
+      }
+    ]
+  },
+  "schemaChanges": [
+    "product: +lowStockThreshold, +waterSavedLiters, +co2ReductionKg, +environmentalNotes, +originRegion, +originFarm, +provenanceDescription, +searchVector (tsvector)",
+    "certification: new table (id, name, slug, description, iconUrl, color, sortOrder, isActive)",
+    "productCertification: new junction table (productId, certificationId, assignedAt)"
+  ],
+  "newComponents": [
+    "ProductCard.svelte",
+    "ProductFilters.svelte",
+    "ProductSort.svelte",
+    "Pagination.svelte",
+    "StockIndicator.svelte",
+    "CertificationBadge.svelte",
+    "CertificationBadgeGroup.svelte",
+    "EnvironmentalImpact.svelte",
+    "ProvenanceInfo.svelte",
+    "ComparisonTray.svelte (optional)",
+    "ComparisonTable.svelte (optional)"
+  ],
+  "modifiedFiles": [
+    "plantapp/src/lib/server/db/schema.ts",
+    "plantapp/src/lib/server/services/product.ts",
+    "plantapp/src/lib/server/api/products.ts",
+    "plantapp/src/routes/products/+page.svelte",
+    "plantapp/src/routes/products/+page.ts",
+    "plantapp/src/lib/loaders/productCategory.ts"
+  ],
+  "newRoutes": [
+    "/products/[category] (dynamic, replaces 4 hardcoded routes)",
+    "/products/[category]/[slug] (product detail, replaces mock-detail)"
+  ]
+}
