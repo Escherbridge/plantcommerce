@@ -10,110 +10,116 @@ const DAY_IN_MS = 1000 * 60 * 60 * 24;
 export const sessionCookieName = 'auth-session';
 
 export function generateSessionToken() {
-	const bytes = crypto.getRandomValues(new Uint8Array(18));
-	const token = encodeBase64url(bytes);
-	return token;
+    const bytes = crypto.getRandomValues(new Uint8Array(18));
+    const token = encodeBase64url(bytes);
+    return token;
 }
 
 export async function createSession(token: string, userId: string) {
-	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-	const session: table.Session = {
-		id: sessionId,
-		userId,
-		expiresAt: new Date(Date.now() + DAY_IN_MS * 30)
-	};
-	await db.insert(table.session).values(session);
-	return session;
+    const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+    const session: table.Session = {
+        id: sessionId,
+        userId,
+        expiresAt: new Date(Date.now() + DAY_IN_MS * 30)
+    };
+    await db.insert(table.session).values(session);
+    return session;
 }
 
 export async function validateSessionToken(token: string) {
-	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 
-	return await db.transaction(async (tx) => {
-		const [result] = await tx
-			.select({
-				user: table.user,
-				session: table.session
-			})
-			.from(table.session)
-			.innerJoin(table.user, eq(table.session.userId, table.user.id))
-			.where(eq(table.session.id, sessionId))
-			.for('update');
+    const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 
-		if (!result) {
-			return { session: null, user: null };
-		}
-		const { session, user } = result;
+    return await db.transaction(async (tx) => {
+        const [result] = await tx
+            .select({
+                user: table.user,
+                session: table.session
+            })
+            .from(table.session)
+            .innerJoin(table.user, eq(table.session.userId, table.user.id))
+            .where(eq(table.session.id, sessionId))
+            .for('update');
 
-		const sessionExpired = Date.now() >= session.expiresAt.getTime();
-		if (sessionExpired) {
-			await tx.delete(table.session).where(eq(table.session.id, session.id));
-			return { session: null, user: null };
-		}
+        if (!result) {
 
-		const renewSession = Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * 15;
-		if (renewSession) {
-			session.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
-			await tx
-				.update(table.session)
-				.set({ expiresAt: session.expiresAt })
-				.where(eq(table.session.id, session.id));
-		}
+            return { session: null, user: null };
+        }
+        const { session, user } = result;
 
-		return { session, user };
-	});
+        const sessionExpired = Date.now() >= session.expiresAt.getTime();
+        if (sessionExpired) {
+
+            await tx.delete(table.session).where(eq(table.session.id, session.id));
+            return { session: null, user: null };
+        }
+
+        const renewSession = Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * 15;
+        if (renewSession) {
+
+            session.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
+            await tx
+                .update(table.session)
+                .set({ expiresAt: session.expiresAt })
+                .where(eq(table.session.id, session.id));
+        }
+
+        return { session, user };
+    });
 }
 
 export type SessionValidationResult = Awaited<ReturnType<typeof validateSessionToken>>;
 
 export async function invalidateSession(sessionId: string) {
-	await db.delete(table.session).where(eq(table.session.id, sessionId));
+    await db.delete(table.session).where(eq(table.session.id, sessionId));
 }
 
 export function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date) {
 	event.cookies.set(sessionCookieName, token, {
 		expires: expiresAt,
-		path: '/'
+		path: '/',
+		httpOnly: true,
+		sameSite: 'lax'
 	});
 }
 
 export function deleteSessionTokenCookie(event: RequestEvent) {
-	event.cookies.delete(sessionCookieName, {
-		path: '/'
-	});
+    event.cookies.delete(sessionCookieName, {
+        path: '/'
+    });
 }
 
 export async function generateEmailVerificationToken(userId: string, email: string): Promise<string> {
-	const tokenId = encodeHexLowerCase(crypto.getRandomValues(new Uint8Array(32)));
-	const expiresAt = new Date(Date.now() + DAY_IN_MS * 2); // 2 days expiration
+    const tokenId = encodeHexLowerCase(crypto.getRandomValues(new Uint8Array(32)));
+    const expiresAt = new Date(Date.now() + DAY_IN_MS * 2); // 2 days expiration
 
-	await db.insert(table.emailVerificationToken).values({
-		id: tokenId,
-		userId,
-		email,
-		expiresAt
-	});
+    await db.insert(table.emailVerificationToken).values({
+        id: tokenId,
+        userId,
+        email,
+        expiresAt
+    });
 
-	return tokenId;
+    return tokenId;
 }
 
 export async function validateEmailVerificationToken(token: string): Promise<string | null> {
-	const [storedToken] = await db
-		.select()
-		.from(table.emailVerificationToken)
-		.where(eq(table.emailVerificationToken.id, token));
+    const [storedToken] = await db
+        .select()
+        .from(table.emailVerificationToken)
+        .where(eq(table.emailVerificationToken.id, token));
 
-	if (!storedToken) {
-		return null;
-	}
+    if (!storedToken) {
+        return null;
+    }
 
-	const tokenExpired = Date.now() >= storedToken.expiresAt.getTime();
-	if (tokenExpired) {
-		await db.delete(table.emailVerificationToken).where(eq(table.emailVerificationToken.id, storedToken.id));
-		return null;
-	}
+    const tokenExpired = Date.now() >= storedToken.expiresAt.getTime();
+    if (tokenExpired) {
+        await db.delete(table.emailVerificationToken).where(eq(table.emailVerificationToken.id, storedToken.id));
+        return null;
+    }
 
-	await db.delete(table.emailVerificationToken).where(eq(table.emailVerificationToken.userId, storedToken.userId));
+    await db.delete(table.emailVerificationToken).where(eq(table.emailVerificationToken.userId, storedToken.userId));
 
-	return storedToken.userId;
+    return storedToken.userId;
 }

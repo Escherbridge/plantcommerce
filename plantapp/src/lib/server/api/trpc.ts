@@ -12,34 +12,22 @@ export interface Context {
 }
 
 export async function createContext(event: RequestEvent): Promise<Context> {
-	try {
-		const sessionToken = event.cookies.get('auth-session');
-
-		if (!sessionToken) {
-			return {
-				event,
-				user: null,
-				session: null
-			};
-		}
-
-		const result = await validateSessionToken(sessionToken);
-
-		return {
-			event,
-			user: result.user,
-			session: result.session
-		};
-	} catch (error) {
-		await handleError(error, {
-			userId: event.locals.user?.id,
-			url: event.url.pathname,
-			method: event.request.method,
-			userAgent: event.request.headers.get('user-agent'),
-			ip: event.getClientAddress(),
-		});
-		throw error;
-	}
+    try {
+        // Use the already validated user and session from hooks.server.ts
+        return {
+            event,
+            user: event.locals.user || null,
+            session: event.locals.session || null
+        };
+    } catch (error) {
+        console.error('🔐 createContext: Error:', error);
+        // Return empty context on error
+        return {
+            event,
+            user: null,
+            session: null
+        };
+    }
 }
 
 const t = initTRPC.context<Context>().create();

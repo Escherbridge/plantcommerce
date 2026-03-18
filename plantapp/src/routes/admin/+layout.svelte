@@ -53,6 +53,11 @@
 					</a>
 				</li>
 				<li>
+					<a href="/admin/seo" class="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 hover:bg-gray-100">
+						<span class="text-xl">SEO </span>
+					</a>
+				</li>
+				<li>
 					<a href="/admin/products" class="gap-3">
 						<span class="text-xl">📦</span>
 						Products

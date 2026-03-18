@@ -4,9 +4,12 @@
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/trpc/client';
 	import { browser } from '$app/environment';
+	import SEO from '$lib/components/SEO.svelte';
+
+	const currentUrl = $derived($page.url.pathname);
+	const absoluteUrl = $derived(`https://plantcommerce.com${currentUrl}`);
 
 	let { children, data } = $props();
-
 	const user = $derived(data.user);
 
 	// Logout function for mobile
@@ -98,6 +101,15 @@
 		]
 	};
 </script>
+
+<svelte:head>
+	<SEO
+		title="PlantCommerce | Sustainable Growing Tools & Supplies"
+		description="Discover sustainable growing tools, hydroponic systems, and educational resources for modern growers."
+		image="/images/AI-MockAssets/MAINHERO.png"
+		url={absoluteUrl}
+	/>
+</svelte:head>
 
 <div class="swiss-layout">
 	<input id="drawer-toggle" type="checkbox" class="drawer-toggle" />

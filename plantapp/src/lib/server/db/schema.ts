@@ -423,6 +423,46 @@ export const contentPageRelations = relations(contentPage, ({ one }) => ({
 	})
 }));
 
+// ======= CMS SEO FIELDS =======
+export const cmsSeoFields = pgTable('cms_seo_fields', {
+	id: uuid('id').defaultRandom().primaryKey(),
+	pageId: text('page_id').notNull().unique(),
+	pageType: text('page_type', {
+		enum: ['page', 'product', 'category', 'post', 'home']
+	}).notNull().default('page'),
+	metaTitle: text('meta_title'),
+	metaDescription: text('meta_description'),
+	ogTitle: text('og_title'),
+	ogDescription: text('og_description'),
+	ogImage: text('og_image'),
+	robots: text('robots').default('index, follow'),
+	canonicalUrl: text('canonical_url'),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
+	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull()
+}, (table) => ({
+	pageIdIdx: uniqueIndex('cms_seo_page_id_idx').on(table.pageId)
+}));
+
+export const cmsContent = pgTable('cms_content', {
+	id: uuid('id').defaultRandom().primaryKey(),
+	slug: text('slug').notNull().unique(),
+	title: text('title').notNull(),
+	content: text('content'),
+	excerpt: text('excerpt'),
+	status: text('status', {
+		enum: ['draft', 'published', 'archived']
+	}).notNull().default('draft'),
+	authorId: text('author_id').references(() => user.id), // ← FIXED: text not uuid
+	seoFieldsId: uuid('seo_fields_id').references(() => cmsSeoFields.id),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
+	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
+	publishedAt: timestamp('published_at', { withTimezone: true, mode: 'date' })
+}, (table) => ({
+	slugIdx: uniqueIndex('cms_content_slug_idx').on(table.slug),
+	statusIdx: index('cms_content_status_idx').on(table.status),
+	authorIdx: index('cms_content_author_idx').on(table.authorId)
+}));
+
 // ======= EXPORTED TYPES =======
 export type Session = typeof session.$inferSelect;
 export type User = typeof user.$inferSelect;

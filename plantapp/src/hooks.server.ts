@@ -4,30 +4,30 @@ import * as auth from '$lib/server/auth';
 import { handleError } from '$lib/utils/errorHandler';
 
 const handleAuth: Handle = async ({ event, resolve }) => {
-	const sessionToken = event.cookies.get(auth.sessionCookieName);
+    const sessionToken = event.cookies.get(auth.sessionCookieName);
+    if (!sessionToken) {
+        event.locals.user = null;
+        event.locals.session = null;
+        return resolve(event);
+    }
 
-	if (!sessionToken) {
-		event.locals.user = null;
-		event.locals.session = null;
-		return resolve(event);
-	}
+    try {
+        const { session, user } = await auth.validateSessionToken(sessionToken);
 
-	try {
-		const { session, user } = await auth.validateSessionToken(sessionToken);
+        if (session) {
+            auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+        } else {
+            auth.deleteSessionTokenCookie(event);
+        }
 
-		if (session) {
-			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
-		} else {
-			auth.deleteSessionTokenCookie(event);
-		}
+        event.locals.user = user;
+        event.locals.session = session;
+    } catch (error) {
+        console.error('🔐 hooks.server.ts: Error:', error);
+        await handleError(error, 'hooks.server.ts:handleAuth');
+    }
 
-		event.locals.user = user;
-		event.locals.session = session;
-	} catch (error) {
-		await handleError(error, 'hooks.server.ts:handleAuth');
-	}
-
-	return resolve(event);
+    return resolve(event);
 };
 
 const handleCSP: Handle = async ({ event, resolve }) => {
