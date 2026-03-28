@@ -220,6 +220,20 @@ export const cartItem = pgTable('cart_item', {
 	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 });
 
+export const wishlistItem = pgTable('wishlist_item', {
+	id: serial('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => user.id, { onDelete: 'cascade' }),
+	productId: integer('product_id')
+		.notNull()
+		.references(() => product.id, { onDelete: 'cascade' }),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+}, (table) => ({
+	userIdx: index('wishlist_item_user_idx').on(table.userId),
+	uniqueItem: uniqueIndex('wishlist_item_unique_idx').on(table.userId, table.productId)
+}));
+
 export const order = pgTable('order', {
 	id: serial('id').primaryKey(),
 	orderNumber: text('order_number').notNull().unique(),
@@ -272,8 +286,8 @@ export const file = pgTable('file', {
 	originalFilename: text('original_filename').notNull(),
 	mimeType: text('mime_type').notNull(),
 	fileSize: integer('file_size').notNull(), // Size in bytes
-	bucketPath: text('bucket_path').notNull(), // Full GCS path
-	bucketName: text('bucket_name').notNull().default('aevani-files'),
+	bucketPath: text('bucket_path').notNull(), // Full S3 object key
+	bucketName: text('bucket_name').notNull().default('aevani-assets'),
 	entityType: text('entity_type', { enum: ['user', 'product', 'content', 'general'] }).notNull().default('general'),
 	entityId: text('entity_id'), // Foreign key to the related entity (user.id, product.id, etc.)
 	uploadedBy: text('uploaded_by').references(() => user.id),

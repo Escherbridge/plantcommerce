@@ -220,7 +220,7 @@
 						</a>
 
 						<h1
-							class="text-4xl font-bold leading-tight tracking-tight text-[#1D3557] md:text-5xl lg:text-6xl"
+							class="text-4xl font-bold leading-tight tracking-tight text-primary md:text-5xl lg:text-6xl"
 						>
 							{data.product.name}
 						</h1>
@@ -233,7 +233,7 @@
 					<!-- Price & Stock -->
 					<div class="border-base-200 space-y-4 border-y py-6">
 						<div class="flex items-baseline gap-3">
-							<span class="text-4xl font-bold text-[#1D3557] md:text-5xl">
+							<span class="text-4xl font-bold text-primary md:text-5xl">
 								${parseFloat(data.product.price).toFixed(2)}
 							</span>
 							<span class="text-base-content/60 text-lg font-light">per unit</span>
@@ -300,13 +300,13 @@
 					</div>
 
 					<!-- Features -->
-					<div class="space-y-4 rounded-2xl bg-[#F1FAEE] p-6">
-						<h3 class="text-lg font-bold uppercase tracking-wide text-[#1D3557]">Key Features</h3>
+					<div class="space-y-4 rounded-2xl bg-base-200 p-6">
+						<h3 class="text-lg font-bold uppercase tracking-wide text-primary">Key Features</h3>
 						<ul class="grid gap-3">
 							<li class="flex items-start gap-3">
-								<div class="mt-1 rounded-full bg-[#A8DADC] p-1">
+								<div class="mt-1 rounded-full bg-info p-1">
 									<svg
-										class="h-4 w-4 text-[#1D3557]"
+										class="h-4 w-4 text-primary"
 										fill="none"
 										viewBox="0 0 24 24"
 										stroke="currentColor"
@@ -319,14 +319,14 @@
 										/>
 									</svg>
 								</div>
-								<span class="text-base text-[#1D3557]/80"
+								<span class="text-base text-primary/80"
 									>Premium quality sustainable materials</span
 								>
 							</li>
 							<li class="flex items-start gap-3">
-								<div class="mt-1 rounded-full bg-[#A8DADC] p-1">
+								<div class="mt-1 rounded-full bg-info p-1">
 									<svg
-										class="h-4 w-4 text-[#1D3557]"
+										class="h-4 w-4 text-primary"
 										fill="none"
 										viewBox="0 0 24 24"
 										stroke="currentColor"
@@ -339,12 +339,12 @@
 										/>
 									</svg>
 								</div>
-								<span class="text-base text-[#1D3557]/80">Eco-friendly production process</span>
+								<span class="text-base text-primary/80">Eco-friendly production process</span>
 							</li>
 							<li class="flex items-start gap-3">
-								<div class="mt-1 rounded-full bg-[#A8DADC] p-1">
+								<div class="mt-1 rounded-full bg-info p-1">
 									<svg
-										class="h-4 w-4 text-[#1D3557]"
+										class="h-4 w-4 text-primary"
 										fill="none"
 										viewBox="0 0 24 24"
 										stroke="currentColor"
@@ -357,7 +357,7 @@
 										/>
 									</svg>
 								</div>
-								<span class="text-base text-[#1D3557]/80">Expert support & 30-day guarantee</span>
+								<span class="text-base text-primary/80">Expert support & 30-day guarantee</span>
 							</li>
 						</ul>
 					</div>
@@ -372,7 +372,7 @@
 	<Container>
 		<div class="mb-20">
 			<div class="border-base-200 mx-auto border-t pt-12">
-				<h2 class="mb-6 text-3xl font-bold tracking-tight text-[#1D3557]">Description</h2>
+				<h2 class="mb-6 text-3xl font-bold tracking-tight text-primary">Description</h2>
 				<div class="prose prose-lg text-base-content/80 max-w-none font-light leading-relaxed">
 					<p>{data.product.description}</p>
 				</div>
@@ -385,7 +385,7 @@
 		<div class="bg-base-200/30 w-full py-16">
 			<Container>
 				<div class="mb-10 flex items-center justify-between">
-					<h2 class="text-3xl font-bold tracking-tight text-[#1D3557]">You May Also Like</h2>
+					<h2 class="text-3xl font-bold tracking-tight text-primary">You May Also Like</h2>
 					<a href="/products" class="btn btn-ghost hover:text-primary group hover:bg-transparent">
 						View All
 						<span class="transition-transform group-hover:translate-x-1">→</span>

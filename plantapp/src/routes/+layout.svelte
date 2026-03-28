@@ -1,6 +1,8 @@
 <script lang="ts">
 	import '../app.css';
 	import { Header } from '$lib/components/navigation';
+	import { RootSystem } from '$lib/components/patterns';
+	import MarqueeBar from '$lib/components/ui/MarqueeBar.svelte';
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/trpc/client';
 	import { browser } from '$app/environment';
@@ -29,6 +31,17 @@
 			isLoggingOut = false;
 		}
 	}
+
+	// Drawer open state (mirrors the checkbox)
+	let drawerOpen = $state(false);
+
+	function closeDrawer() { drawerOpen = false; }
+
+	// Close drawer on route change
+	$effect(() => {
+		currentUrl; // reactive dependency
+		drawerOpen = false;
+	});
 
 	// Mobile navigation structure
 	const mobileNavigation = [
@@ -100,6 +113,10 @@
 			{ label: 'Size Guide', href: '/size-guide' }
 		]
 	};
+
+	function scrollToTop() {
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	}
 </script>
 
 <svelte:head>
@@ -112,185 +129,247 @@
 </svelte:head>
 
 <div class="swiss-layout">
-	<input id="drawer-toggle" type="checkbox" class="drawer-toggle" />
+	<!-- Hidden checkbox for CSS-driven drawer fallback -->
+	<input
+		id="drawer-toggle"
+		type="checkbox"
+		class="drawer-toggle"
+		bind:checked={drawerOpen}
+	/>
 
-	<div class="layout-content">
+	<!-- Main content — scales/blurs when drawer is open -->
+	<div class="layout-content" class:drawer-active={drawerOpen}>
+		<MarqueeBar messages={["Free shipping on orders over $75", "New: Polyculture Starter Kits", "Join 10,000+ sustainable growers"]} />
 		<Header />
 
 		<main class="main-content">
 			{@render children()}
 		</main>
 
-		<footer class="swiss-footer">
-			<div class="footer-container">
+		<!-- ===== FOOTER ===== -->
+		<footer class="editorial-footer">
+			<!-- Root system SVG pattern overlay -->
+			<div class="footer-pattern" aria-hidden="true">
+				<RootSystem />
+			</div>
+
+			<div class="footer-inner">
+				<!-- Large wordmark -->
+				<div class="footer-wordmark-row">
+					<span class="footer-wordmark">AEVANI</span>
+				</div>
+
+				<!-- Grid: brand col + link cols -->
 				<div class="footer-grid">
-					<!-- Brand & Newsletter section -->
-					<div class="footer-brand">
-						<div class="brand">
-							<span class="brand-icon text-2xl">🌱</span>
-							<span class="brand-text text-xl font-bold text-[#1D3557]">Aevani</span>
-						</div>
-						<p class="brand-description mb-6 max-w-sm text-[#457B9D]">
+					<!-- Brand & newsletter -->
+					<div class="footer-brand-col">
+						<p class="footer-tagline">
 							Sustainable hydroponics, aquaponics, and agroforestry products to help you grow
 							better.
 						</p>
 
-						<div class="newsletter-signup mb-8">
-							<h4 class="mb-3 text-sm font-bold uppercase tracking-wider text-[#1D3557]">
-								Join our community
-							</h4>
-							<div class="flex max-w-sm gap-2">
+						<div class="newsletter-block">
+							<h4 class="newsletter-label">Join our community</h4>
+							<div class="newsletter-form">
 								<input
 									type="email"
-									placeholder="Enter your email"
-									class="input input-bordered input-sm w-full border-[#A8DADC] focus:border-[#457B9D] focus:ring-1 focus:ring-[#457B9D]"
+									placeholder="your@email.com"
+									class="newsletter-input"
 								/>
-								<button class="btn btn-sm border-none bg-[#1D3557] text-white hover:bg-[#457B9D]">
-									Subscribe
-								</button>
+								<button class="newsletter-btn">Subscribe</button>
 							</div>
 						</div>
 
-						<div class="social-links">
-							<a
-								href="https://facebook.com/aevani"
-								class="social-link transition-colors hover:text-[#E63946]"
-								aria-label="Facebook"
-							>
-								<i class="fab fa-facebook-f"></i>
+						<!-- Social icons (inline SVG) -->
+						<div class="social-row">
+							<a href="https://facebook.com/aevani" class="social-link" aria-label="Facebook">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+									<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+								</svg>
 							</a>
-							<a
-								href="https://twitter.com/aevani"
-								class="social-link transition-colors hover:text-[#E63946]"
-								aria-label="Twitter"
-							>
-								<i class="fab fa-twitter"></i>
+							<a href="https://twitter.com/aevani" class="social-link" aria-label="Twitter / X">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+									<path d="M4 4l16 16M4 20 20 4"/>
+								</svg>
 							</a>
-							<a
-								href="https://instagram.com/aevani"
-								class="social-link transition-colors hover:text-[#E63946]"
-								aria-label="Instagram"
-							>
-								<i class="fab fa-instagram"></i>
+							<a href="https://instagram.com/aevani" class="social-link" aria-label="Instagram">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+									<rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+									<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+									<line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+								</svg>
 							</a>
 						</div>
 					</div>
 
-					<!-- Shop links -->
-					<div class="footer-section">
-						<h3 class="footer-title">Shop</h3>
+					<!-- Link columns — mobile accordion via details/summary -->
+					<details class="footer-section" open>
+						<summary class="footer-title">Shop</summary>
 						<ul class="footer-links">
 							{#each footerLinks.shop as link}
 								<li><a href={link.href} class="footer-link">{link.label}</a></li>
 							{/each}
 						</ul>
-					</div>
+					</details>
 
-					<!-- Learn links -->
-					<div class="footer-section">
-						<h3 class="footer-title">Learn</h3>
+					<details class="footer-section" open>
+						<summary class="footer-title">Learn</summary>
 						<ul class="footer-links">
 							{#each footerLinks.learn as link}
 								<li><a href={link.href} class="footer-link">{link.label}</a></li>
 							{/each}
 						</ul>
-					</div>
+					</details>
 
-					<!-- Company links -->
-					<div class="footer-section">
-						<h3 class="footer-title">Company</h3>
+					<details class="footer-section" open>
+						<summary class="footer-title">Company</summary>
 						<ul class="footer-links">
 							{#each footerLinks.company as link}
 								<li><a href={link.href} class="footer-link">{link.label}</a></li>
 							{/each}
 						</ul>
-					</div>
+					</details>
 
-					<!-- Support links -->
-					<div class="footer-section">
-						<h3 class="footer-title">Support</h3>
+					<details class="footer-section" open>
+						<summary class="footer-title">Support</summary>
 						<ul class="footer-links">
 							{#each footerLinks.support as link}
 								<li><a href={link.href} class="footer-link">{link.label}</a></li>
 							{/each}
 						</ul>
-					</div>
+					</details>
 				</div>
 
+				<!-- Footer bottom bar -->
 				<div class="footer-bottom">
-					<div class="footer-bottom-content">
-						<p class="copyright">&copy; 2024 Aevani. All rights reserved.</p>
-						<div class="footer-bottom-links">
-							<a href="/privacy" class="footer-bottom-link">Privacy Policy</a>
-							<a href="/terms" class="footer-bottom-link">Terms of Service</a>
-							<a href="/cookies" class="footer-bottom-link">Cookie Policy</a>
-						</div>
+					<p class="copyright">&copy; 2024 Aevani. All rights reserved.</p>
+					<div class="footer-bottom-links">
+						<a href="/privacy" class="footer-bottom-link">Privacy Policy</a>
+						<a href="/terms" class="footer-bottom-link">Terms of Service</a>
+						<a href="/cookies" class="footer-bottom-link">Cookie Policy</a>
 					</div>
+					<button class="scroll-top-btn" onclick={scrollToTop} aria-label="Scroll to top">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<polyline points="18 15 12 9 6 15"></polyline>
+						</svg>
+					</button>
 				</div>
 			</div>
 		</footer>
 	</div>
 
-	<!-- Mobile drawer -->
-	<div class="drawer-side">
-		<label for="drawer-toggle" class="drawer-overlay"></label>
-		<div class="mobile-drawer">
-			<div class="mobile-drawer-header">
-				<div class="brand">
-					<span class="brand-icon">🌱</span>
-					<span class="brand-text">PlantCommerce</span>
-				</div>
-			</div>
+	<!-- ===== MOBILE DRAWER (full-screen overlay) ===== -->
+	<div class="drawer-overlay" class:open={drawerOpen} onclick={closeDrawer} aria-hidden="true"></div>
 
-			<nav class="mobile-nav">
-				{#each mobileNavigation as item}
-					<div class="mobile-nav-item">
-						<a href={item.href} class="mobile-nav-link">
-							{item.label}
-						</a>
-						{#if item.children}
-							<div class="mobile-nav-children">
-								{#each item.children as child}
-									<a href={child.href} class="mobile-nav-child">
+	<div class="mobile-drawer" class:open={drawerOpen} aria-modal="true" role="dialog">
+		<!-- SVG pattern background -->
+		<div class="drawer-pattern" aria-hidden="true">
+			<RootSystem />
+		</div>
+
+		<!-- Close button -->
+		<button class="drawer-close" onclick={closeDrawer} aria-label="Close menu">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+				<line x1="18" y1="6" x2="6" y2="18"/>
+				<line x1="6" y1="6" x2="18" y2="18"/>
+			</svg>
+		</button>
+
+		<!-- Wordmark -->
+		<a href="/" class="drawer-wordmark" onclick={closeDrawer}>AEVANI</a>
+
+		<!-- Primary nav -->
+		<nav class="drawer-nav">
+			{#each mobileNavigation as item, i}
+				<div
+					class="drawer-nav-item"
+					style="transition-delay: {drawerOpen ? i * 50 : 0}ms"
+				>
+					{#if item.children}
+						<details class="drawer-group">
+							<summary class="drawer-nav-link">{item.label}</summary>
+							<div class="drawer-sub-links">
+								{#each item.children as child, j}
+									<a
+										href={child.href}
+										class="drawer-sub-link"
+										style="transition-delay: {drawerOpen ? (i * 50 + j * 30) : 0}ms"
+										onclick={closeDrawer}
+									>
 										{child.label}
 									</a>
 								{/each}
 							</div>
-						{/if}
-					</div>
-				{/each}
-			</nav>
-
-			<div class="mobile-drawer-footer">
-				<div class="mobile-user-actions">
-					{#if user}
-						<div class="mobile-user-info">
-							<span class="mobile-user-name">{user.firstName || user.username}</span>
-							<span class="mobile-user-email">{user.email}</span>
-						</div>
-						<a href="/account" class="mobile-action-btn">My Account</a>
-						<button onclick={handleLogout} class="mobile-action-btn" disabled={isLoggingOut}>
-							{isLoggingOut ? 'Logging out...' : 'Logout'}
-						</button>
+						</details>
 					{:else}
-						<a href="/login" class="mobile-action-btn">Login</a>
-						<a href="/register" class="mobile-action-btn primary">Register</a>
+						<a href={item.href} class="drawer-nav-link" onclick={closeDrawer}>{item.label}</a>
 					{/if}
 				</div>
+			{/each}
+		</nav>
+
+		<!-- Drawer bottom: auth + social + newsletter -->
+		<div class="drawer-bottom">
+			<!-- User actions -->
+			<div class="drawer-user">
+				{#if user}
+					<div class="drawer-user-info">
+						<span class="drawer-user-name">{user.firstName || user.username}</span>
+						<span class="drawer-user-email">{user.email}</span>
+					</div>
+					<a href="/account" class="drawer-action-btn" onclick={closeDrawer}>My Account</a>
+					<button
+						onclick={() => { closeDrawer(); handleLogout(); }}
+						class="drawer-action-btn"
+						disabled={isLoggingOut}
+					>
+						{isLoggingOut ? 'Logging out...' : 'Logout'}
+					</button>
+				{:else}
+					<a href="/login" class="drawer-action-btn" onclick={closeDrawer}>Login</a>
+					<a href="/register" class="drawer-action-btn primary" onclick={closeDrawer}>Register</a>
+				{/if}
+			</div>
+
+			<!-- Newsletter -->
+			<div class="drawer-newsletter">
+				<input type="email" placeholder="your@email.com" class="drawer-email-input" />
+				<button class="drawer-subscribe-btn">Subscribe</button>
+			</div>
+
+			<!-- Social -->
+			<div class="drawer-social">
+				<a href="https://facebook.com/aevani" class="drawer-social-link" aria-label="Facebook">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+					</svg>
+				</a>
+				<a href="https://twitter.com/aevani" class="drawer-social-link" aria-label="Twitter / X">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M4 4l16 16M4 20 20 4"/>
+					</svg>
+				</a>
+				<a href="https://instagram.com/aevani" class="drawer-social-link" aria-label="Instagram">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+						<rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+						<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+						<line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+					</svg>
+				</a>
 			</div>
 		</div>
 	</div>
 </div>
 
 <style>
+	/* ===== Layout shell ===== */
 	.swiss-layout {
 		min-height: 100vh;
-		background-color: #f9fafb;
-		font-family: 'Helvetica Neue', Arial, sans-serif;
+		background-color: oklch(var(--b1));
+		font-family: var(--font-body);
 		line-height: 1.6;
 	}
 
-	/* Hide the drawer toggle checkbox */
 	.drawer-toggle {
 		display: none;
 	}
@@ -301,42 +380,87 @@
 		min-height: 100vh;
 		max-width: 100vw;
 		overflow-x: hidden;
+		transition:
+			transform 0.4s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+			filter 0.4s ease;
+	}
+
+	.layout-content.drawer-active {
+		transform: scale(0.95);
+		filter: blur(4px);
+		pointer-events: none;
 	}
 
 	.main-content {
 		flex: 1;
+		/* push content below fixed header */
+		padding-top: 4.5rem;
 	}
 
-	/* Swiss Footer */
-	.swiss-footer {
-		background-color: white;
-		border-top: 1px solid #e5e7eb;
-		margin-top: auto;
+	@media (max-width: 767px) {
+		.main-content {
+			padding-top: 3.5rem;
+		}
 	}
 
-	.footer-container {
+	/* ===== FOOTER ===== */
+	.editorial-footer {
+		background-color: oklch(var(--n));
+		color: oklch(var(--nc));
+		position: relative;
+		overflow: hidden;
+	}
+
+	.footer-pattern {
+		position: absolute;
+		inset: 0;
+		opacity: 0.05;
+		pointer-events: none;
+	}
+
+	.footer-inner {
+		position: relative;
+		z-index: 1;
 		max-width: 80rem;
 		margin: 0 auto;
-		padding: 3rem 1rem;
+		padding: 4rem 2rem 2rem;
 	}
 
-	@media (min-width: 640px) {
-		.footer-container {
-			padding: 3rem 1.5rem;
+	@media (max-width: 639px) {
+		.footer-inner {
+			padding: 3rem 1rem 2rem;
 		}
+	}
+
+	/* Large wordmark */
+	.footer-wordmark-row {
+		margin-bottom: 3rem;
+		border-bottom: 1px solid oklch(var(--nc) / 0.1);
+		padding-bottom: 2rem;
+	}
+
+	.footer-wordmark {
+		font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+		font-size: 3rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: oklch(var(--nc));
+		line-height: 1;
 	}
 
 	@media (min-width: 1024px) {
-		.footer-container {
-			padding: 3rem 2rem;
+		.footer-wordmark {
+			font-size: 5rem;
 		}
 	}
 
+	/* Footer grid */
 	.footer-grid {
 		display: grid;
 		grid-template-columns: 1fr;
-		gap: 3rem;
-		width: 100%;
+		gap: 2.5rem;
+		margin-bottom: 3rem;
 	}
 
 	@media (min-width: 640px) {
@@ -351,114 +475,224 @@
 		}
 	}
 
-	.footer-brand {
-		grid-column: span 1;
+	.footer-brand-col {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
 	}
 
 	@media (min-width: 640px) {
-		.footer-brand {
+		.footer-brand-col {
 			grid-column: span 2;
 		}
 	}
 
 	@media (min-width: 1024px) {
-		.footer-brand {
+		.footer-brand-col {
 			grid-column: span 1;
 		}
 	}
 
-	.brand {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-size: 1.25rem;
-		font-weight: 700;
-		color: #111827;
-		margin-bottom: 1rem;
-		letter-spacing: -0.025em;
-	}
-
-	.brand-icon {
-		font-size: 1.5rem;
-	}
-
-	.brand-description {
-		color: #4b5563;
+	.footer-tagline {
+		font-family: var(--font-sans, 'Inter', sans-serif);
 		font-size: 0.875rem;
-		line-height: 1.625;
-		margin-bottom: 1.5rem;
-		max-width: 24rem;
+		color: oklch(var(--nc) / 0.6);
+		line-height: 1.65;
+		max-width: 22rem;
 	}
 
-	.social-links {
-		display: flex;
-		gap: 1rem;
-	}
-
-	.social-link {
-		color: #9ca3af;
-		transition: color 0.2s;
-	}
-
-	.social-link:hover {
-		color: #4b5563;
-	}
-
-	.footer-section {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	.footer-title {
-		font-size: 0.875rem;
-		font-weight: 600;
-		color: #111827;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-	}
-
-	.footer-links {
+	/* Newsletter */
+	.newsletter-block {
 		display: flex;
 		flex-direction: column;
 		gap: 0.75rem;
 	}
 
-	.footer-link {
+	.newsletter-label {
+		font-family: var(--font-sans, 'Inter', sans-serif);
+		font-size: 0.75rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: oklch(var(--nc) / 0.5);
+	}
+
+	.newsletter-form {
+		display: flex;
+		gap: 0.75rem;
+		max-width: 22rem;
+	}
+
+	.newsletter-input {
+		flex: 1;
+		background: transparent;
+		border: none;
+		border-bottom: 2px solid oklch(var(--nc) / 0.3);
+		color: oklch(var(--nc));
+		font-family: var(--font-sans, 'Inter', sans-serif);
 		font-size: 0.875rem;
-		color: #4b5563;
+		padding: 0.5rem 0;
+		outline: none;
+		transition: border-color 0.2s;
+	}
+
+	.newsletter-input::placeholder {
+		color: oklch(var(--nc) / 0.35);
+	}
+
+	.newsletter-input:focus {
+		border-bottom-color: oklch(var(--nc));
+	}
+
+	.newsletter-btn {
+		font-family: var(--font-sans, 'Inter', sans-serif);
+		font-size: 0.75rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		padding: 0.5rem 1rem;
+		background-color: oklch(var(--nc));
+		color: oklch(var(--n));
+		border: none;
+		border-radius: 0.25rem;
+		cursor: pointer;
+		transition: opacity 0.2s;
+		flex-shrink: 0;
+	}
+
+	.newsletter-btn:hover {
+		opacity: 0.8;
+	}
+
+	/* Social icons */
+	.social-row {
+		display: flex;
+		gap: 1rem;
+	}
+
+	.social-link {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		color: oklch(var(--nc) / 0.4);
 		transition: color 0.2s;
+	}
+
+	.social-link:hover {
+		color: oklch(var(--nc));
+	}
+
+	.social-link svg {
+		width: 1.125rem;
+		height: 1.125rem;
+	}
+
+	/* Footer link columns */
+	.footer-section {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	/* Remove details/summary default arrow on desktop */
+	@media (min-width: 768px) {
+		.footer-section summary {
+			list-style: none;
+			cursor: default;
+			pointer-events: none;
+		}
+
+		.footer-section summary::-webkit-details-marker {
+			display: none;
+		}
+	}
+
+	/* On mobile, collapse by default, allow expand */
+	@media (max-width: 767px) {
+		.footer-section {
+			border-bottom: 1px solid oklch(var(--nc) / 0.08);
+			padding-bottom: 0.5rem;
+		}
+
+		/* Close sections by default on mobile */
+		.footer-section:not([open]) .footer-links {
+			display: none;
+		}
+
+		.footer-section summary {
+			cursor: pointer;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.footer-section summary::after {
+			content: '+';
+			font-size: 1rem;
+			color: oklch(var(--nc) / 0.4);
+			font-weight: 300;
+			transition: transform 0.2s;
+		}
+
+		.footer-section[open] summary::after {
+			content: '−';
+		}
+	}
+
+	.footer-title {
+		font-family: var(--font-sans, 'Inter', sans-serif);
+		font-size: 0.75rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: oklch(var(--nc) / 0.5);
+		padding: 0.5rem 0;
+	}
+
+	.footer-links {
+		display: flex;
+		flex-direction: column;
+		gap: 0.625rem;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.footer-link {
+		font-family: var(--font-mono, 'JetBrains Mono', monospace);
+		font-size: 0.8125rem;
+		color: oklch(var(--nc) / 0.55);
 		text-decoration: none;
+		transition: color 0.15s;
 	}
 
 	.footer-link:hover {
-		color: #111827;
+		color: oklch(var(--nc));
 	}
 
+	/* Footer bottom */
 	.footer-bottom {
-		border-top: 1px solid #e5e7eb;
-		margin-top: 3rem;
-		padding-top: 2rem;
-	}
-
-	.footer-bottom-content {
+		border-top: 1px solid oklch(var(--nc) / 0.1);
+		padding-top: 1.5rem;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
 		align-items: center;
 		gap: 1rem;
 	}
 
 	@media (min-width: 640px) {
-		.footer-bottom-content {
+		.footer-bottom {
 			flex-direction: row;
-			gap: 0;
+			justify-content: space-between;
 		}
 	}
 
 	.copyright {
-		font-size: 0.875rem;
-		color: #6b7280;
+		font-family: var(--font-mono, 'JetBrains Mono', monospace);
+		font-size: 0.75rem;
+		color: oklch(var(--nc) / 0.35);
 	}
 
 	.footer-bottom-links {
@@ -467,191 +701,352 @@
 	}
 
 	.footer-bottom-link {
-		font-size: 0.875rem;
-		color: #6b7280;
-		transition: color 0.2s;
+		font-family: var(--font-mono, 'JetBrains Mono', monospace);
+		font-size: 0.75rem;
+		color: oklch(var(--nc) / 0.35);
 		text-decoration: none;
+		transition: color 0.15s;
 	}
 
 	.footer-bottom-link:hover {
-		color: #374151;
+		color: oklch(var(--nc) / 0.7);
 	}
 
-	/* Mobile Drawer */
-	.drawer-side {
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		z-index: 50;
-		width: 20rem;
-		transform: translateX(-100%);
-		transition: transform 0.3s ease-in-out;
+	/* Scroll to top */
+	.scroll-top-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		background-color: oklch(var(--nc) / 0.08);
+		border: 1px solid oklch(var(--nc) / 0.15);
+		border-radius: 0.25rem;
+		color: oklch(var(--nc) / 0.5);
+		cursor: pointer;
+		transition:
+			background-color 0.2s,
+			color 0.2s;
+		flex-shrink: 0;
 	}
 
-	.drawer-toggle:checked ~ .drawer-side {
-		transform: translateX(0);
+	.scroll-top-btn:hover {
+		background-color: oklch(var(--nc) / 0.15);
+		color: oklch(var(--nc));
 	}
 
+	.scroll-top-btn svg {
+		width: 1rem;
+		height: 1rem;
+	}
+
+	/* ===== DRAWER OVERLAY ===== */
 	.drawer-overlay {
+		position: fixed;
+		inset: 0;
+		background-color: oklch(0% 0 0 / 0.6);
+		z-index: 90;
+		opacity: 0;
+		visibility: hidden;
+		transition:
+			opacity 0.35s ease,
+			visibility 0.35s ease;
+	}
+
+	.drawer-overlay.open {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	/* ===== MOBILE DRAWER ===== */
+	.mobile-drawer {
 		position: fixed;
 		top: 0;
 		right: 0;
 		bottom: 0;
 		left: 0;
-		background-color: rgba(0, 0, 0, 0.5);
-		z-index: 40;
-	}
-
-	.mobile-drawer {
-		width: 100%;
-		height: 100%;
-		background-color: white;
+		width: 100vw;
+		height: 100vh;
+		background-color: oklch(var(--n));
+		color: oklch(var(--nc));
+		z-index: 100;
 		display: flex;
 		flex-direction: column;
+		padding: 2rem 1.5rem;
+		overflow-y: auto;
+		transform: translateX(100%);
+		transition: transform 0.4s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
 	}
 
-	.mobile-drawer-header {
-		padding: 1.5rem;
-		border-bottom: 1px solid #e5e7eb;
+	.mobile-drawer.open {
+		transform: translateX(0);
 	}
 
-	.mobile-nav {
+	.drawer-pattern {
+		position: absolute;
+		inset: 0;
+		opacity: 0.04;
+		pointer-events: none;
+	}
+
+	.drawer-close {
+		position: absolute;
+		top: 1.25rem;
+		right: 1.25rem;
+		width: 2.5rem;
+		height: 2.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: none;
+		border: 1px solid oklch(var(--nc) / 0.15);
+		border-radius: 0.375rem;
+		color: oklch(var(--nc) / 0.7);
+		cursor: pointer;
+		transition: color 0.2s, border-color 0.2s;
+		z-index: 1;
+	}
+
+	.drawer-close:hover {
+		color: oklch(var(--nc));
+		border-color: oklch(var(--nc) / 0.35);
+	}
+
+	.drawer-close svg {
+		width: 1.125rem;
+		height: 1.125rem;
+	}
+
+	.drawer-wordmark {
+		font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+		font-size: 1.5rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: oklch(var(--nc));
+		text-decoration: none;
+		margin-bottom: 3rem;
+		display: block;
+		position: relative;
+		z-index: 1;
+	}
+
+	/* Drawer nav */
+	.drawer-nav {
 		flex: 1;
-		padding: 1.5rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-
-	.mobile-nav-item {
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
+		position: relative;
+		z-index: 1;
 	}
 
-	.mobile-nav-link {
-		display: block;
-		padding: 0.5rem 0.75rem;
-		font-size: 1rem;
-		font-weight: 500;
-		color: #111827;
-		transition: all 0.2s;
-		border-radius: 0.375rem;
+	.drawer-nav-item {
+		transform: translateX(30px);
+		opacity: 0;
+		transition:
+			transform 0.35s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+			opacity 0.3s ease;
+	}
+
+	.mobile-drawer.open .drawer-nav-item {
+		transform: translateX(0);
+		opacity: 1;
+	}
+
+	.drawer-group {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.drawer-nav-link {
+		font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+		font-size: 1.75rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: oklch(var(--nc));
 		text-decoration: none;
-	}
-
-	.mobile-nav-link:hover {
-		background-color: #f3f4f6;
-	}
-
-	.mobile-nav-children {
-		margin-left: 1rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-
-	.mobile-nav-child {
+		padding: 0.5rem 0;
 		display: block;
-		padding: 0.5rem 0.75rem;
-		font-size: 0.875rem;
-		color: #4b5563;
-		transition: all 0.2s;
-		border-radius: 0.375rem;
+		border-bottom: 1px solid oklch(var(--nc) / 0.06);
+		cursor: pointer;
+		list-style: none;
+		transition: color 0.15s;
+	}
+
+	.drawer-nav-link:hover {
+		color: oklch(var(--nc) / 0.7);
+	}
+
+	.drawer-nav-link::-webkit-details-marker {
+		display: none;
+	}
+
+	.drawer-sub-links {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		padding-left: 1rem;
+		padding-bottom: 0.5rem;
+	}
+
+	.drawer-sub-link {
+		font-family: var(--font-sans, 'Inter', sans-serif);
+		font-size: 0.9375rem;
+		color: oklch(var(--nc) / 0.55);
 		text-decoration: none;
+		padding: 0.375rem 0;
+		transition: color 0.15s;
 	}
 
-	.mobile-nav-child:hover {
-		background-color: #f3f4f6;
+	.drawer-sub-link:hover {
+		color: oklch(var(--nc));
 	}
 
-	.mobile-drawer-footer {
-		padding: 1.5rem;
-		border-top: 1px solid #e5e7eb;
-	}
-
-	.mobile-user-actions {
+	/* Drawer bottom */
+	.drawer-bottom {
+		margin-top: 2rem;
 		display: flex;
 		flex-direction: column;
-		gap: 0.75rem;
+		gap: 1.5rem;
+		position: relative;
+		z-index: 1;
+		border-top: 1px solid oklch(var(--nc) / 0.1);
+		padding-top: 1.5rem;
 	}
 
-	.mobile-user-info {
+	.drawer-user {
 		display: flex;
 		flex-direction: column;
-		gap: 0.25rem;
+		gap: 0.625rem;
+	}
+
+	.drawer-user-info {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
 		padding: 0.75rem;
-		background-color: #f3f4f6;
+		background-color: oklch(var(--nc) / 0.06);
 		border-radius: 0.375rem;
-		margin-bottom: 0.5rem;
 	}
 
-	.mobile-user-name {
+	.drawer-user-name {
 		font-size: 0.875rem;
 		font-weight: 600;
-		color: #111827;
+		color: oklch(var(--nc));
 	}
 
-	.mobile-user-email {
+	.drawer-user-email {
 		font-size: 0.75rem;
-		color: #6b7280;
+		color: oklch(var(--nc) / 0.45);
 	}
 
-	.mobile-action-btn {
+	.drawer-action-btn {
 		display: block;
 		width: 100%;
-		padding: 0.5rem 1rem;
+		padding: 0.625rem 1rem;
 		text-align: center;
+		font-family: var(--font-sans, 'Inter', sans-serif);
 		font-size: 0.875rem;
 		font-weight: 500;
 		border-radius: 0.375rem;
-		transition: all 0.2s;
 		text-decoration: none;
-		color: #374151;
-		background-color: #f3f4f6;
+		color: oklch(var(--nc) / 0.75);
+		background-color: oklch(var(--nc) / 0.07);
 		border: none;
 		cursor: pointer;
-		font-family: inherit;
+		transition: background-color 0.2s, color 0.2s;
 	}
 
-	.mobile-action-btn:hover {
-		background-color: #e5e7eb;
+	.drawer-action-btn:hover {
+		background-color: oklch(var(--nc) / 0.12);
+		color: oklch(var(--nc));
 	}
 
-	.mobile-action-btn:disabled {
-		opacity: 0.5;
+	.drawer-action-btn:disabled {
+		opacity: 0.4;
 		cursor: not-allowed;
 	}
 
-	.mobile-action-btn.primary {
-		color: white;
-		background-color: #059669;
+	.drawer-action-btn.primary {
+		background-color: oklch(var(--a));
+		color: oklch(var(--ac));
 	}
 
-	.mobile-action-btn.primary:hover {
-		background-color: #047857;
+	.drawer-action-btn.primary:hover {
+		background-color: oklch(var(--a) / 0.85);
 	}
 
-	/* Responsive adjustments */
-	@media (max-width: 768px) {
-		.footer-grid {
-			grid-template-columns: 1fr;
-			gap: 1.5rem;
-		}
-
-		.footer-brand {
-			text-align: center;
-		}
-
-		.brand-description {
-			max-width: none;
-		}
+	/* Drawer newsletter */
+	.drawer-newsletter {
+		display: flex;
+		gap: 0.75rem;
 	}
 
-	/* Clean spacing and typography */
+	.drawer-email-input {
+		flex: 1;
+		background: transparent;
+		border: none;
+		border-bottom: 2px solid oklch(var(--nc) / 0.25);
+		color: oklch(var(--nc));
+		font-family: var(--font-sans, 'Inter', sans-serif);
+		font-size: 0.875rem;
+		padding: 0.375rem 0;
+		outline: none;
+		transition: border-color 0.2s;
+	}
 
-	.footer-section > * + * {
-		margin-top: 1rem;
+	.drawer-email-input::placeholder {
+		color: oklch(var(--nc) / 0.3);
+	}
+
+	.drawer-email-input:focus {
+		border-bottom-color: oklch(var(--nc));
+	}
+
+	.drawer-subscribe-btn {
+		font-family: var(--font-sans, 'Inter', sans-serif);
+		font-size: 0.75rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		padding: 0.5rem 1rem;
+		background-color: oklch(var(--nc));
+		color: oklch(var(--n));
+		border: none;
+		border-radius: 0.25rem;
+		cursor: pointer;
+		transition: opacity 0.2s;
+		flex-shrink: 0;
+	}
+
+	.drawer-subscribe-btn:hover {
+		opacity: 0.8;
+	}
+
+	/* Drawer social */
+	.drawer-social {
+		display: flex;
+		gap: 1.25rem;
+	}
+
+	.drawer-social-link {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		color: oklch(var(--nc) / 0.35);
+		transition: color 0.2s;
+	}
+
+	.drawer-social-link:hover {
+		color: oklch(var(--nc));
+	}
+
+	.drawer-social-link svg {
+		width: 1.125rem;
+		height: 1.125rem;
 	}
 </style>

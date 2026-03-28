@@ -9,32 +9,32 @@
 		{
 			title: 'Competitive Commissions',
 			description: 'Earn up to 15% commission on all referred sales with our tiered system',
-			icon: '💰'
+			iconPath: 'M12 2a10 10 0 100 20 10 10 0 000-20zM12 6v4l2 2M8 14h8'
 		},
 		{
 			title: 'Marketing Materials',
 			description: 'Access professional banners, images, and content to promote our products',
-			icon: '📊'
+			iconPath: 'M4 4h16v12H4zM8 20h8M12 16v4M7 8h2M7 11h4M13 8h4v3h-4z'
 		},
 		{
 			title: 'Real-time Analytics',
 			description: 'Track clicks, conversions, and earnings with our comprehensive dashboard',
-			icon: '📈'
+			iconPath: 'M3 20h18M6 16v4M10 12v8M14 8v12M18 4v16'
 		},
 		{
 			title: 'Dedicated Support',
 			description: 'Get help from our affiliate team to maximize your earning potential',
-			icon: '🤝'
+			iconPath: 'M17 8a5 5 0 00-10 0c0 4 5 8 5 12 0-4 5-8 5-12zM12 20v2M8 22h8'
 		},
 		{
 			title: 'Cookie Duration',
 			description: '30-day cookie window ensures you get credit for all referred customers',
-			icon: '🍪'
+			iconPath: 'M12 2a10 10 0 100 20 10 10 0 000-20zM12 6v6l4 2M2 12h2M20 12h2M12 2v2M12 20v2'
 		},
 		{
 			title: 'Monthly Payouts',
 			description: 'Receive timely payments via PayPal, bank transfer, or check',
-			icon: '💳'
+			iconPath: 'M2 7h20v12a2 2 0 01-2 2H4a2 2 0 01-2-2V7zM22 7l-2-4H4L2 7M8 12h8M8 15h5'
 		}
 	];
 
@@ -49,30 +49,33 @@
 <Section>
 	<Container>
 		<!-- Hero Section -->
-		<div class="text-center mb-12">
-			<h1 class="text-5xl font-bold mb-4">Join Our Affiliate Program</h1>
-			<p class="text-xl text-base-content/70 max-w-3xl mx-auto">
+		<div class="text-center mb-16">
+			<span class="text-editorial text-secondary font-mono tracking-widest">PARTNER WITH US</span>
+			<h1 class="font-display text-5xl lg:text-7xl font-bold uppercase tracking-tight mt-3 mb-6">Join Our Affiliate Program</h1>
+			<p class="text-xl text-base-content/60 max-w-3xl mx-auto font-light leading-relaxed">
 				Partner with Aevani and earn commissions by promoting sustainable agriculture
 				products to your audience.
 			</p>
 		</div>
 
 		<!-- Benefits Grid -->
-		<Grid columns={3} gap={6} class="mb-16">
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
 			{#each benefits as benefit}
-				<div class="card bg-base-100 shadow-xl">
-					<div class="card-body items-center text-center">
-						<span class="text-5xl mb-4">{benefit.icon}</span>
-						<h3 class="card-title mb-2">{benefit.title}</h3>
-						<p class="text-base-content/70">{benefit.description}</p>
+				<div class="group rounded-3xl bg-base-100 border border-base-200/30 p-8 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/20">
+					<div class="mb-6">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-10 h-10 text-primary" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+							<path d={benefit.iconPath} />
+						</svg>
 					</div>
+					<h3 class="font-display text-xl font-bold uppercase tracking-tight mb-3">{benefit.title}</h3>
+					<p class="text-base-content/60 text-sm font-light leading-relaxed">{benefit.description}</p>
 				</div>
 			{/each}
-		</Grid>
+		</div>
 
 		<!-- Commission Structure -->
 		<div class="mb-16">
-			<h2 class="text-3xl font-bold text-center mb-8">Commission Structure</h2>
+			<h2 class="font-display text-3xl lg:text-4xl font-bold uppercase tracking-tight text-center mb-8">Commission Structure</h2>
 			<div class="overflow-x-auto">
 				<table class="table table-zebra">
 					<thead>
@@ -153,7 +156,7 @@
 							<button class="btn btn-primary btn-lg">Apply Now</button>
 						{/if}
 					{:else}
-						<a href="/auth/signin?redirect=/affiliate/join" class="btn btn-primary btn-lg">
+						<a href="/login?redirect=/affiliate/join" class="btn btn-primary btn-lg">
 							Sign In to Apply
 						</a>
 					{/if}

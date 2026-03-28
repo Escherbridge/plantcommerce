@@ -81,9 +81,66 @@
 - Admin content management with preview and autosave
 - RSS feed
 
-## Phase 4: Scale (Post-launch)
+## Phase 4: UI Refresh — Visual Evolution (Parallel Track)
 
-### Track 7: growth-features_20260314
+### Track 8: design-system-brand_20260328
+**Status:** ready
+**Goal:** Establish evolved design system with custom theme, typography, SVG patterns, and brand tokens
+**Spec:** [spec.md](tracks/design-system-brand_20260328/spec.md)
+**Plan:** [plan.md](tracks/design-system-brand_20260328/plan.md)
+- Custom "aevani" DaisyUI theme with evolved color palette
+- Three-tier typography system (display + body + mono)
+- CSS custom property design tokens (spacing, radius, shadows, timing)
+- SVG pattern library (6+ organic patterns: mycelium, roots, leaf venation, etc.)
+- PatternBackground wrapper component
+- Updated brand documentation
+- References: TLB (editorial mono), Readymag (bold grids), Chrome Industries (dark utilitarian)
+
+### Track 9: hero-landing-transform_20260328
+**Status:** ready (depends on Track 8)
+**Goal:** Transform homepage into an immersive editorial experience with scroll animations
+**Spec:** [spec.md](tracks/hero-landing-transform_20260328/spec.md)
+**Plan:** [plan.md](tracks/hero-landing-transform_20260328/plan.md)
+- Cinematic full-viewport hero with parallax and text-scramble reveal
+- Chrome Industries-style scrolling marquee announcement bar
+- ScrollReveal component with intersection observer animations
+- Editorial category showcase (asymmetric masonry grid)
+- Core values redesign with SVG illustrations replacing emoji
+- Featured products editorial grid
+- Newsletter section with organic SVG background
+- All animations respect prefers-reduced-motion
+
+### Track 10: component-library-refresh_20260328
+**Status:** ready (depends on Track 8)
+**Goal:** Restyle every UI component with editorial sophistication and micro-interactions
+**Spec:** [spec.md](tracks/component-library-refresh_20260328/spec.md)
+**Plan:** [plan.md](tracks/component-library-refresh_20260328/plan.md)
+- Header: transparent-to-dark scroll transition, wordmark logo, animated nav underlines
+- Mobile drawer: full-screen overlay with stagger animations
+- Footer: dark editorial with SVG pattern background
+- Button system: primary/secondary/ghost with hover micro-interactions
+- Card system: ProductCard, ContentCard, FeatureCard components
+- Editorial form fields: floating labels, bottom-border inputs
+- New utilities: Toast, Modal, Skeleton, Badge, Tooltip, Divider
+- Storybook updates for all components
+
+### Track 11: page-templates-mobile_20260328
+**Status:** ready (depends on Tracks 8, 9, 10)
+**Goal:** Apply design system to all pages with polished mobile experience
+**Spec:** [spec.md](tracks/page-templates-mobile_20260328/spec.md)
+**Plan:** [plan.md](tracks/page-templates-mobile_20260328/plan.md)
+- Reusable page layout templates (PageLayout, SplitLayout, ArticleLayout)
+- Product listing: editorial masonry + grid toggle, mobile filter bottom sheet
+- Product detail: immersive showcase with editorial typography
+- Content pages: blog, guides, learn with prose typography
+- Auth pages: split-screen editorial treatment
+- Page transitions via SvelteKit onNavigate + View Transitions API
+- Mobile polish: 320px+ tested, 44px touch targets, no overflow
+- All pages pass Lighthouse a11y > 95
+
+## Phase 5: Scale (Post-launch)
+
+### Track 12: growth-features_20260314
 **Status:** ready
 **Goal:** Increase LTV and repeat purchases
 **Spec:** [spec.md](tracks/growth-features_20260314/spec.md)

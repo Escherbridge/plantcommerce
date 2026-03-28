@@ -99,3 +99,45 @@ The brand's voice and tone should be:
 *   **Community-focused and collaborative,** but also professional and trustworthy.
 
 The brand should speak to its audience as a trusted friend and mentor, not as a faceless corporation. It should be a source of inspiration, education, and empowerment.
+
+## 8. Visual Evolution (March 2026)
+
+### 8.1. Design References
+
+The visual identity has been refined through study of three key reference brands:
+
+- **THE LOOKBACK** — Monospace editorial typography, text-reveal animations, and extreme whitespace. Their use of JetBrains Mono-style fonts as a primary editorial element (not just for code) inspired our mono tier's role as a design accent. The slow, purposeful text reveals and generous negative space align with Aevani's educational pacing.
+
+- **Readymag** — Bold editorial grids, Graphik typography, and vibrant accent usage. Their confidence in using large-scale type as layout structure influenced our section-heading approach with Barlow Condensed. The willingness to let a single typographic element carry an entire composition aligns with our polyculture content strategy.
+
+- **Chrome Industries** — Dark utilitarian headers, compressed font usage (ZoomPro), and scrolling marquee elements. The deep charcoal backgrounds with high-contrast reversed type directly influenced our Charcoal neutral and Dark section usage. Their functional-yet-designed aesthetic matches Aevani's blend of practical knowledge and brand aspirations.
+
+### 8.2. Color Evolution Rationale
+
+The original palette (`#1D3557`, `#F1FAEE`) was clean but lacked editorial warmth. The evolved palette introduces warmer cream tones, a deeper navy, and a growth green that connects to the sustainability mission.
+
+- **Deep Navy** (`#1B2D4A` from `#1D3557`): A few degrees warmer on the blue spectrum — less corporate, more human. Still authoritative but with soil-like warmth.
+- **Warm Cream** (`#F7F5F0` from `#F1FAEE`): The original cream read as slightly cold and clinical. The warmer version evokes aged paper, natural materials, and editorial print traditions.
+- **Growth Green** (`#0A4B3E`, new): A deep, almost black-green that connects directly to the polyculture mission. Inspired by Chrome Industries' dark teal accents, this color represents the rich, complex ecology of healthy soil.
+- **Charcoal** (`#1A1A1A`, new): Provides true dark-mode foundation for immersive hero sections without the harsh coldness of pure black.
+
+### 8.3. Typography Direction
+
+The shift from a single "Liter" font to a three-tier system creates visual hierarchy and editorial sophistication:
+
+- **Barlow Condensed** (Display) provides the bold uppercase impact seen in Chrome Industries. Its compressed width allows massive type sizes that don't overwhelm — a single word can fill a column at 200px without breaking the layout.
+- **Inter** (Body) brings professional readability across the full 400–900 weight range. As a variable font, it loads efficiently and adapts to any context from caption to callout.
+- **JetBrains Mono** (Mono) adds the editorial data aesthetic of THE LOOKBACK. Used for category labels and product codes, it signals precision and expertise without feeling cold — a key differentiator from generic sans-serif labels.
+
+### 8.4. SVG Pattern Library
+
+Six organic patterns replace generic grid patterns, connecting the visual language directly to the polyculture mission:
+
+1. **Mycelium Network** (`MyceliumNetwork.svelte`) — Branching filament paths with spore-body dots. Represents underground connectivity and nutrient exchange. Animate prop triggers 18s slow drift.
+2. **Polyculture Grid** (`PolycultureGrid.svelte`) — Irregular organic cells suggesting companion planting zones. Animate prop triggers 12s breathing pulse.
+3. **Leaf Venation** (`LeafVenation.svelte`) — Midrib with hierarchical secondary and tertiary vein branching. Animate prop triggers 4s opacity pulse.
+4. **Water Ripple** (`WaterRipple.svelte`) — Overlapping concentric organic rings from multiple centers. Animate prop triggers 3s expand cycle.
+5. **Root System** — (Planned) Downward-branching root architecture, mirror of Mycelium Network.
+6. **Growth Spiral** — (Planned) Fibonacci/logarithmic spiral representing natural growth patterns.
+
+All patterns share a consistent props API: `color`, `opacity`, `scale`, `animate`. They are composable via the `PatternBackground.svelte` wrapper component.

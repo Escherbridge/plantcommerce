@@ -40,7 +40,7 @@
 <Section>
 	<Container>
 		<div class="mb-8">
-			<h1 class="text-4xl font-bold mb-4">Shipping Information</h1>
+			<h1 class="text-4xl font-display uppercase tracking-tight mb-4">Shipping Information</h1>
 			<p class="text-lg text-base-content/70">
 				Fast, reliable shipping to get your sustainable agriculture products delivered safely.
 			</p>
@@ -48,19 +48,20 @@
 
 		<!-- Shipping Options -->
 		<div class="mb-12">
-			<h2 class="text-2xl font-bold mb-6">Domestic Shipping Options (US)</h2>
+			<h2 class="text-2xl font-display uppercase tracking-tight mb-6">Domestic Shipping Options (US)</h2>
 			<Grid columns={2} gap={6}>
 				{#each shippingOptions as option}
-					<div class="card bg-base-100 shadow-xl">
+					<div class="card bg-base-100 rounded-3xl border border-base-200/30 shadow-md">
 						<div class="card-body">
-							<h3 class="card-title">{option.name}</h3>
+							<p class="font-mono text-xs uppercase tracking-widest text-secondary mb-1">Shipping</p>
+							<h3 class="card-title font-display uppercase tracking-tight">{option.name}</h3>
 							<div class="flex justify-between items-center my-4">
 								<div>
-									<p class="text-sm text-base-content/70">Delivery Time</p>
+									<p class="font-mono text-xs uppercase tracking-widest text-secondary">Delivery Time</p>
 									<p class="font-semibold">{option.duration}</p>
 								</div>
 								<div class="text-right">
-									<p class="text-sm text-base-content/70">Cost</p>
+									<p class="font-mono text-xs uppercase tracking-widest text-secondary">Cost</p>
 									<p class="text-2xl font-bold text-primary">{option.cost}</p>
 								</div>
 							</div>
@@ -73,14 +74,14 @@
 
 		<!-- International Shipping -->
 		<div class="mb-12">
-			<h2 class="text-2xl font-bold mb-6">International Shipping</h2>
+			<h2 class="text-2xl font-display uppercase tracking-tight mb-6">International Shipping</h2>
 			<div class="overflow-x-auto">
 				<table class="table table-zebra">
 					<thead>
 						<tr>
-							<th>Region</th>
-							<th>Delivery Time</th>
-							<th>Shipping Cost</th>
+							<th class="font-mono text-xs uppercase tracking-widest">Region</th>
+							<th class="font-mono text-xs uppercase tracking-widest">Delivery Time</th>
+							<th class="font-mono text-xs uppercase tracking-widest">Shipping Cost</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -103,9 +104,10 @@
 		</div>
 
 		<!-- Order Tracking -->
-		<div class="card bg-base-100 shadow-xl mb-12">
+		<div class="card bg-base-100 rounded-3xl border border-base-200/30 shadow-md mb-12">
 			<div class="card-body">
-				<h2 class="card-title mb-4">Track Your Order</h2>
+				<p class="font-mono text-xs uppercase tracking-widest text-secondary mb-1">Tracking</p>
+				<h2 class="card-title font-display uppercase tracking-tight mb-4">Track Your Order</h2>
 				<p class="text-base-content/70 mb-4">
 					Enter your order number to track your shipment in real-time.
 				</p>
@@ -115,16 +117,17 @@
 						placeholder="Order Number (e.g., ORD-12345)"
 						class="input input-bordered flex-1"
 					/>
-					<button class="btn btn-primary">Track Order</button>
+					<button class="btn btn-primary font-display uppercase tracking-wider">Track Order</button>
 				</div>
 			</div>
 		</div>
 
 		<!-- Shipping Policies -->
 		<div class="grid md:grid-cols-2 gap-6 mb-12">
-			<div class="card bg-base-100 shadow-lg">
+			<div class="card bg-base-100 rounded-3xl border border-base-200/30 shadow-md">
 				<div class="card-body">
-					<h3 class="card-title">Processing Time</h3>
+					<p class="font-mono text-xs uppercase tracking-widest text-secondary mb-1">Policy</p>
+					<h3 class="card-title font-display uppercase tracking-tight">Processing Time</h3>
 					<ul class="space-y-2 text-base-content/70">
 						<li>→ Orders placed before 2 PM EST ship same day</li>
 						<li>→ Orders placed after 2 PM EST ship next business day</li>
@@ -134,9 +137,10 @@
 				</div>
 			</div>
 
-			<div class="card bg-base-100 shadow-lg">
+			<div class="card bg-base-100 rounded-3xl border border-base-200/30 shadow-md">
 				<div class="card-body">
-					<h3 class="card-title">Shipping Restrictions</h3>
+					<p class="font-mono text-xs uppercase tracking-widest text-secondary mb-1">Policy</p>
+					<h3 class="card-title font-display uppercase tracking-tight">Shipping Restrictions</h3>
 					<ul class="space-y-2 text-base-content/70">
 						<li>→ Live plants may have seasonal restrictions</li>
 						<li>→ Some items cannot ship to PO boxes</li>
@@ -148,26 +152,40 @@
 		</div>
 
 		<!-- Packaging & Handling -->
-		<div class="card bg-base-200">
+		<div class="card bg-base-200 rounded-3xl border border-base-200/30 shadow-md">
 			<div class="card-body">
-				<h2 class="card-title">Eco-Friendly Packaging</h2>
+				<p class="font-mono text-xs uppercase tracking-widest text-secondary mb-1">Sustainability</p>
+				<h2 class="card-title font-display uppercase tracking-tight">Eco-Friendly Packaging</h2>
 				<p class="text-base-content/70 mb-4">
 					We're committed to sustainability in every aspect of our business, including shipping:
 				</p>
 				<Grid columns={3} gap={4}>
 					<div class="text-center">
-						<span class="text-4xl mb-2 block">♻️</span>
-						<p class="font-semibold">Recyclable Materials</p>
+						<div class="flex justify-center mb-2">
+							<!-- Recycle icon -->
+							<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" class="w-10 h-10 text-primary">
+								<path d="M4 12l2-4h12l2 4M4 12l2 4h12l2-4M12 4v3M12 17v3M4 12h16"/>
+							</svg>
+						</div>
+						<p class="font-display uppercase tracking-tight font-semibold">Recyclable Materials</p>
 						<p class="text-sm text-base-content/60">100% recyclable packaging</p>
 					</div>
 					<div class="text-center">
-						<span class="text-4xl mb-2 block">🌿</span>
-						<p class="font-semibold">Biodegradable</p>
+						<div class="flex justify-center mb-2">
+							<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" class="w-10 h-10 text-primary">
+								<path d="M12 3c-4 4-8 9-8 14 0 3 2 5 5 5s5-2 5-5c0-5-4-10-8-14zM12 3v18"/>
+							</svg>
+						</div>
+						<p class="font-display uppercase tracking-tight font-semibold">Biodegradable</p>
 						<p class="text-sm text-base-content/60">Compostable packing peanuts</p>
 					</div>
 					<div class="text-center">
-						<span class="text-4xl mb-2 block">📦</span>
-						<p class="font-semibold">Minimal Packaging</p>
+						<div class="flex justify-center mb-2">
+							<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" class="w-10 h-10 text-primary">
+								<path d="M3 7l9-4 9 4v10l-9 4-9-4V7zM3 7l9 4M21 7l-9 4M12 22V11"/>
+							</svg>
+						</div>
+						<p class="font-display uppercase tracking-tight font-semibold">Minimal Packaging</p>
 						<p class="text-sm text-base-content/60">Reduced waste approach</p>
 					</div>
 				</Grid>
@@ -176,9 +194,9 @@
 
 		<!-- FAQs -->
 		<div class="mt-12">
-			<h2 class="text-2xl font-bold mb-6">Shipping FAQs</h2>
+			<h2 class="text-2xl font-display uppercase tracking-tight mb-6">Shipping FAQs</h2>
 			<div class="space-y-4">
-				<div class="collapse collapse-plus bg-base-100">
+				<div class="collapse collapse-plus bg-base-100 rounded-3xl border border-base-200/30 shadow-md">
 					<input type="checkbox" />
 					<div class="collapse-title font-semibold">
 						Can I change my shipping address after placing an order?
@@ -191,7 +209,7 @@
 					</div>
 				</div>
 
-				<div class="collapse collapse-plus bg-base-100">
+				<div class="collapse collapse-plus bg-base-100 rounded-3xl border border-base-200/30 shadow-md">
 					<input type="checkbox" />
 					<div class="collapse-title font-semibold">
 						What if my package is damaged during shipping?
@@ -204,7 +222,7 @@
 					</div>
 				</div>
 
-				<div class="collapse collapse-plus bg-base-100">
+				<div class="collapse collapse-plus bg-base-100 rounded-3xl border border-base-200/30 shadow-md">
 					<input type="checkbox" />
 					<div class="collapse-title font-semibold">Do you ship to APO/FPO addresses?</div>
 					<div class="collapse-content">

@@ -28,7 +28,7 @@
 	const safeTitle = $derived(title.length > 60 ? title.substring(0, 57) + '...' : title);
 	const safeDescription = $derived(description.length > 160 ? description.substring(0, 157) + '...' : description);
 	
-	const baseUrl = PUBLIC_BASE_URL.endsWith('/') ? PUBLIC_BASE_URL.slice(0, -1) : PUBLIC_BASE_URL;
+	const baseUrl = (PUBLIC_BASE_URL ?? '').endsWith('/') ? PUBLIC_BASE_URL.slice(0, -1) : (PUBLIC_BASE_URL ?? '');
 	const urlPath = url ? (url.startsWith('/') ? url : `/${url}`) : '';
 	const absoluteUrl = $derived(url ? (url.startsWith('http') ? url : `${baseUrl}${urlPath}`) : baseUrl);
 

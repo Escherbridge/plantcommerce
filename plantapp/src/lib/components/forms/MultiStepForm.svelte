@@ -88,20 +88,20 @@
 		<div class="mb-10">
 			<div class="mb-6 flex items-end justify-between">
 				<div>
-					<h2 class="mb-2 text-3xl font-bold text-[#1D3557]">
+					<h2 class="mb-2 text-3xl font-bold text-primary">
 						{currentStepConfig.title}
 					</h2>
 					{#if currentStepConfig.description}
-						<p class="text-lg text-[#457B9D]">
+						<p class="text-lg text-secondary">
 							{currentStepConfig.description}
 						</p>
 					{/if}
 				</div>
 				<div class="text-right">
-					<span class="text-3xl font-bold text-[#E63946]">
+					<span class="text-3xl font-bold text-accent">
 						{formState.currentStep + 1}
 					</span>
-					<span class="text-lg font-medium text-[#457B9D]">
+					<span class="text-lg font-medium text-secondary">
 						/ {config.steps.length}
 					</span>
 				</div>
@@ -111,12 +111,12 @@
 			<div class="relative pb-2 pt-4">
 				<!-- Background Line -->
 				<div
-					class="absolute left-0 top-1/2 h-1 w-full -translate-y-1/2 rounded-full bg-[#A8DADC]/30"
+					class="absolute left-0 top-1/2 h-1 w-full -translate-y-1/2 rounded-full bg-info/30"
 				></div>
 
 				<!-- Active Progress Line -->
 				<div
-					class="absolute left-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-[#1D3557] transition-all duration-500 ease-out"
+					class="absolute left-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-primary transition-all duration-500 ease-out"
 					style="width: {progressPercentage}%"
 				></div>
 
@@ -130,9 +130,9 @@
 							<!-- Circle Indicator -->
 							<div
 								class="z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 bg-white transition-all duration-300
-                  {isActive ? 'border-[#1D3557]' : 'border-[#A8DADC]'}
-                  {isCurrent ? 'scale-125 shadow-lg ring-4 ring-[#1D3557]/10' : ''}
-                  {isActive && !isCurrent ? 'bg-[#1D3557]' : ''}"
+                  {isActive ? 'border-primary' : 'border-info'}
+                  {isCurrent ? 'scale-125 shadow-lg ring-4 ring-primary/10' : ''}
+                  {isActive && !isCurrent ? 'bg-primary' : ''}"
 							>
 								{#if isActive && !isCurrent}
 									<svg
@@ -149,14 +149,14 @@
 										/>
 									</svg>
 								{:else if isCurrent}
-									<div class="h-2.5 w-2.5 rounded-full bg-[#E63946]"></div>
+									<div class="h-2.5 w-2.5 rounded-full bg-accent"></div>
 								{/if}
 							</div>
 
 							<!-- Step Title -->
 							<span
 								class="absolute top-10 whitespace-nowrap text-xs font-semibold tracking-wide transition-colors duration-300
-                {isCurrent ? 'text-[#1D3557]' : 'text-[#457B9D]/70'}"
+                {isCurrent ? 'text-primary' : 'text-secondary/70'}"
 							>
 								{step.title}
 							</span>

@@ -9,9 +9,9 @@ export const load: PageLoad = async (event) => {
 	await requireAuth(event);
 
 	try {
-		const orders = await trpc(event).orders.getMyOrders.query({
-			status: status || undefined,
-			limit: 50
+		const orders = await trpc(event).orders.getUserOrders.query({
+			limit: 50,
+			offset: 0
 		});
 
 		return {

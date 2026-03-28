@@ -50,6 +50,6 @@ export const actions: Actions = {
         // TODO: Implement promo code logic
         console.log('Apply promo code:', code);
 
-        return fail(501, { message: 'Promo codes are not yet implemented' });
+        return { success: false, message: 'Promo codes coming soon! Stay tuned.' };
     }
 };

@@ -34,7 +34,7 @@
 <Section>
 	<Container>
 		<div class="mb-8">
-			<h1 class="mb-2 text-4xl font-bold">Shopping Cart</h1>
+			<h1 class="mb-2 text-4xl font-display uppercase tracking-tight">Shopping Cart</h1>
 			<p class="text-base-content/70 text-lg">
 				{data.cart?.items?.length || 0} items in your cart
 			</p>
@@ -45,7 +45,7 @@
 				<!-- Cart Items -->
 				<div class="space-y-4 lg:col-span-2">
 					{#each data.cart.items as item}
-						<div class="card bg-base-100 shadow-xl">
+						<div class="card bg-base-100 shadow-md rounded-3xl border border-base-200/30">
 							<div class="card-body">
 								<div class="flex gap-4">
 									<!-- Product Image -->
@@ -76,7 +76,9 @@
 											onclick={() => removeItem(item.id)}
 											aria-label="Remove item"
 										>
-											❌
+											<svg viewBox="0 0 24 24" class="w-4 h-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												<path d="M18 6L6 18M6 6l12 12"/>
+											</svg>
 										</button>
 										<div class="join">
 											<button
@@ -106,14 +108,19 @@
 					{/each}
 
 					<!-- Continue Shopping -->
-					<a href="/products" class="btn btn-outline w-full"> ← Continue Shopping </a>
+					<a href="/products" class="btn btn-outline w-full font-display uppercase tracking-wider">
+						<svg viewBox="0 0 24 24" class="w-5 h-5 mr-1" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M19 12H5M12 5l-7 7 7 7"/>
+						</svg>
+						Continue Shopping
+					</a>
 				</div>
 
 				<!-- Order Summary -->
 				<div class="lg:col-span-1">
-					<div class="card bg-base-100 sticky top-4 shadow-xl">
+					<div class="card bg-base-100 sticky top-4 shadow-md rounded-3xl border border-base-200/30">
 						<div class="card-body">
-							<h2 class="card-title mb-4">Order Summary</h2>
+							<h2 class="card-title font-display uppercase tracking-tight mb-4">Order Summary</h2>
 
 							<!-- Promo Code -->
 							<form action="?/applyPromo" method="POST" use:enhance class="form-control mb-4">
@@ -128,7 +135,7 @@
 										placeholder="Enter code"
 										class="input input-bordered join-item flex-1"
 									/>
-									<button class="btn btn-primary join-item">Apply</button>
+									<button class="btn btn-primary join-item font-display uppercase tracking-wider">Apply</button>
 								</div>
 							</form>
 
@@ -163,7 +170,7 @@
 							</div>
 
 							<!-- Checkout Button -->
-							<a href="/checkout" class="btn btn-primary btn-lg mt-6 w-full">
+							<a href="/checkout" class="btn btn-primary btn-lg mt-6 w-full font-display uppercase tracking-wider">
 								Proceed to Checkout
 							</a>
 
@@ -179,11 +186,11 @@
 							</div>
 
 							<!-- Trust Badges -->
-							<div class="bg-base-200 mt-4 rounded-lg p-4">
+							<div class="bg-base-200 mt-4 rounded-3xl p-4">
 								<ul class="text-base-content/70 space-y-1 text-xs">
-									<li>✓ Secure checkout</li>
-									<li>✓ 30-day money-back guarantee</li>
-									<li>✓ Free returns on all orders</li>
+									<li>&#10003; Secure checkout</li>
+									<li>&#10003; 30-day money-back guarantee</li>
+									<li>&#10003; Free returns on all orders</li>
 								</ul>
 							</div>
 						</div>
@@ -193,24 +200,28 @@
 		{:else}
 			<!-- Empty Cart -->
 			<div class="py-16 text-center">
-				<div class="mb-4 text-6xl">🛒</div>
-				<h3 class="mb-2 text-2xl font-bold">Your Cart is Empty</h3>
+				<div class="flex justify-center mb-4">
+					<svg viewBox="0 0 24 24" class="w-16 h-16 text-base-content/30" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M3 3h2l3 12h10l3-9H6M8 21a1 1 0 100-2 1 1 0 000 2zM18 21a1 1 0 100-2 1 1 0 000 2z"/>
+					</svg>
+				</div>
+				<h3 class="mb-2 text-2xl font-display uppercase tracking-tight">Your Cart is Empty</h3>
 				<p class="text-base-content/70 mb-6">
 					Looks like you haven't added anything to your cart yet.
 				</p>
-				<a href="/products" class="btn btn-primary">Start Shopping</a>
+				<a href="/products" class="btn btn-primary font-display uppercase tracking-wider">Start Shopping</a>
 			</div>
 		{/if}
 
 		<!-- Recently Viewed -->
 		{#if data.recentlyViewed && data.recentlyViewed.length > 0}
 			<div class="mt-16">
-				<h2 class="mb-6 text-2xl font-bold">Recently Viewed</h2>
+				<h2 class="mb-6 text-2xl font-display uppercase tracking-tight">Recently Viewed</h2>
 				<div class="grid grid-cols-4 gap-4">
 					{#each data.recentlyViewed as product}
 						<a
 							href="/products/{product.category?.slug || 'uncategorized'}/{product.slug}"
-							class="card bg-base-100 shadow transition-shadow hover:shadow-xl"
+							class="card bg-base-100 shadow-md rounded-3xl border border-base-200/30 transition-shadow hover:shadow-xl"
 						>
 							<figure class="aspect-square">
 								<img

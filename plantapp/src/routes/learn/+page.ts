@@ -9,25 +9,25 @@ export const load: PageLoad = async (event) => {
 	let resources = [];
 
 	try {
-		guides = await trpc(event).content.getByType.query({ type: 'guide', limit: 3 });
+		guides = await trpc(event).content.getPublishedPages.query({ type: 'guide', limit: 3 });
 	} catch (e) {
 		console.error('Error loading guides:', e);
 	}
 
 	try {
-		blog = await trpc(event).content.getByType.query({ type: 'blog', limit: 3 });
+		blog = await trpc(event).content.getPublishedPages.query({ type: 'blog_post', limit: 3 });
 	} catch (e) {
 		console.error('Error loading blog:', e);
 	}
 
 	try {
-		faqs = await trpc(event).content.getByType.query({ type: 'faq', limit: 6 });
+		faqs = await trpc(event).content.getPublishedPages.query({ type: 'faq', limit: 6 });
 	} catch (e) {
 		console.error('Error loading faqs:', e);
 	}
 
 	try {
-		resources = await trpc(event).content.getByType.query({ type: 'resource', limit: 3 });
+		resources = await trpc(event).content.getPublishedPages.query({ type: 'page', limit: 3 });
 	} catch (e) {
 		console.error('Error loading resources:', e);
 	}

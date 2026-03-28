@@ -1,0 +1,15 @@
+{
+  "active": true,
+  "mode": "ultrapilot",
+  "tracks": ["hero-landing-transform_20260328", "component-library-refresh_20260328"],
+  "phase": "parallel_execution",
+  "workers": [
+    {"id": "w1", "status": "running", "task": "T9: Animation Components", "files": ["ui/ScrollReveal.svelte", "ui/TextReveal.svelte", "ui/ParallaxHero.svelte", "ui/MarqueeBar.svelte"]},
+    {"id": "w2", "status": "running", "task": "T9: Homepage Rewrite", "files": ["routes/+page.svelte"]},
+    {"id": "w3", "status": "running", "task": "T10: Header + Layout", "files": ["navigation/Header.svelte", "routes/+layout.svelte"]},
+    {"id": "w4", "status": "running", "task": "T10: Button + Cards + Forms", "files": ["ui/Button.svelte", "cards/*.svelte", "cards/index.ts", "forms/BaseField.svelte"]},
+    {"id": "w5", "status": "running", "task": "T10: Utility Components", "files": ["ui/Toast.svelte", "ui/Modal.svelte", "ui/Skeleton.svelte", "ui/Badge.svelte", "ui/Tooltip.svelte", "ui/Divider.svelte", "stores/toast.ts"]}
+  ],
+  "shared_files": ["ui/index.ts", "+layout.svelte (marquee integration)"],
+  "started_at": "2026-03-28T01:20:00Z"
+}

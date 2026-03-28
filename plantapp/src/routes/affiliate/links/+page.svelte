@@ -34,7 +34,7 @@
 <Section>
 	<Container>
 		<div class="mb-8">
-			<h1 class="text-4xl font-bold mb-2">Affiliate Links</h1>
+			<h1 class="text-4xl font-display uppercase tracking-tight mb-2">Affiliate Links</h1>
 			<p class="text-lg text-base-content/70">
 				Generate and manage your affiliate links for products. Track performance and optimize your
 				campaigns.
@@ -42,15 +42,15 @@
 		</div>
 
 		<!-- Link Generator -->
-		<div class="card bg-base-100 shadow-xl mb-12">
+		<div class="card bg-base-100 shadow-xl rounded-3xl border border-base-200/30 mb-12">
 			<div class="card-body">
-				<h2 class="card-title mb-4">Generate New Link</h2>
+				<h2 class="card-title font-display uppercase tracking-tight mb-4">Generate New Link</h2>
 
 				<div class="grid md:grid-cols-2 gap-6">
 					<!-- Product Selection -->
 					<div class="form-control">
 						<label class="label" for="product-select">
-							<span class="label-text">Select Product</span>
+							<span class="label-text font-mono text-xs uppercase tracking-widest">Select Product</span>
 						</label>
 						<select
 							id="product-select"
@@ -69,7 +69,7 @@
 					<!-- Custom Slug (Optional) -->
 					<div class="form-control">
 						<label class="label" for="custom-slug">
-							<span class="label-text">Custom Identifier (Optional)</span>
+							<span class="label-text font-mono text-xs uppercase tracking-widest">Custom Identifier (Optional)</span>
 						</label>
 						<input
 							id="custom-slug"
@@ -81,14 +81,14 @@
 					</div>
 				</div>
 
-				<button class="btn btn-primary mt-4" onclick={generateLink} disabled={!selectedProduct}>
+				<button class="btn btn-primary mt-4 font-display uppercase tracking-wider" onclick={generateLink} disabled={!selectedProduct}>
 					Generate Link
 				</button>
 
 				{#if generatedLink}
-					<div class="mt-6 p-4 bg-base-200 rounded-lg">
+					<div class="mt-6 p-4 bg-base-200 rounded-3xl border border-base-200/30">
 						<div class="label">
-							<span class="label-text font-semibold">Your Affiliate Link</span>
+							<span class="label-text font-mono text-xs uppercase tracking-widest">Your Affiliate Link</span>
 						</div>
 						<div class="flex gap-2">
 							<input
@@ -98,7 +98,10 @@
 								class="input input-bordered flex-1 font-mono text-sm"
 							/>
 							<button class="btn btn-square" onclick={() => copyLink(generatedLink)}>
-								📋
+								<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+									<rect x="8" y="2" width="8" height="2" rx="1"/>
+									<rect x="4" y="4" width="16" height="16" rx="2"/>
+								</svg>
 							</button>
 						</div>
 					</div>
@@ -108,18 +111,18 @@
 
 		<!-- Existing Links -->
 		<div>
-			<h2 class="text-2xl font-bold mb-4">Your Links</h2>
+			<h2 class="text-2xl font-display uppercase tracking-tight mb-4">Your Links</h2>
 			{#if data.links && data.links.length > 0}
 				<div class="overflow-x-auto">
 					<table class="table table-zebra">
 						<thead>
 							<tr>
-								<th>Product</th>
-								<th>Link</th>
-								<th>Clicks</th>
-								<th>Conversions</th>
-								<th>Earnings</th>
-								<th>Actions</th>
+								<th class="font-mono text-xs uppercase tracking-widest">Product</th>
+								<th class="font-mono text-xs uppercase tracking-widest">Link</th>
+								<th class="font-mono text-xs uppercase tracking-widest">Clicks</th>
+								<th class="font-mono text-xs uppercase tracking-widest">Conversions</th>
+								<th class="font-mono text-xs uppercase tracking-widest">Earnings</th>
+								<th class="font-mono text-xs uppercase tracking-widest">Actions</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -148,12 +151,12 @@
 									<td>
 										<div class="flex gap-2">
 											<button
-												class="btn btn-xs btn-outline"
+												class="btn btn-xs btn-outline font-display uppercase tracking-wider"
 												onclick={() => copyLink(link.url)}
 											>
 												Copy
 											</button>
-											<a href="/affiliate/links/{link.id}" class="btn btn-xs btn-outline">
+											<a href="/affiliate/links/{link.id}" class="btn btn-xs btn-outline font-display uppercase tracking-wider">
 												Stats
 											</a>
 										</div>
@@ -164,7 +167,7 @@
 					</table>
 				</div>
 			{:else}
-				<div class="text-center py-12 bg-base-200 rounded-lg">
+				<div class="text-center py-12 bg-base-200 rounded-3xl border border-base-200/30">
 					<p class="text-xl text-base-content/70 mb-4">No links generated yet.</p>
 					<p class="text-base-content/60">Create your first affiliate link above to get started!</p>
 				</div>
@@ -172,9 +175,9 @@
 		</div>
 
 		<!-- Link Best Practices -->
-		<div class="mt-12 card bg-base-200">
+		<div class="mt-12 card bg-base-200 rounded-3xl border border-base-200/30">
 			<div class="card-body">
-				<h3 class="card-title">Link Best Practices</h3>
+				<h3 class="card-title font-display uppercase tracking-tight">Link Best Practices</h3>
 				<ul class="list-disc list-inside space-y-2 text-base-content/70">
 					<li>Use custom identifiers to track different campaigns or platforms</li>
 					<li>Test your links before sharing to ensure they work correctly</li>

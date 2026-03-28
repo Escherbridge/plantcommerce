@@ -18,18 +18,18 @@ Welcome to the Aevani brand guide. This guide provides a framework for represent
 
 ## 3. Color Palette
 
-Our color palette is clean, minimal, and has a natural, earthy feel. The blues and greens are calming and trustworthy, while the red provides a pop of energy.
+Our evolved palette is warm, editorial, and grounded in the natural world. Deep navy and warm cream anchor the brand, while growth green connects to our sustainability mission. The palette balances trustworthiness with organic warmth.
 
 ### 3.1. Primary Colors
 
-- **Deep Blue:**
-    - HEX: `#1D3557`
-    - RGB: `29, 53, 87`
-    - CMYK: `67, 39, 0, 66`
-- **Light Cream:**
-    - HEX: `#F1FAEE`
-    - RGB: `241, 250, 238`
-    - CMYK: `4, 0, 5, 2`
+- **Deep Navy:**
+    - HEX: `#1B2D4A`
+    - RGB: `27, 45, 74`
+    - Note: Evolved from `#1D3557` — slightly warmer, richer depth
+- **Warm Cream:**
+    - HEX: `#F7F5F0`
+    - RGB: `247, 245, 240`
+    - Note: Evolved from `#F1FAEE` — warmer, more editorial
 
 ### 3.2. Secondary Colors
 
@@ -37,10 +37,10 @@ Our color palette is clean, minimal, and has a natural, earthy feel. The blues a
     - HEX: `#457B9D`
     - RGB: `69, 123, 157`
     - CMYK: `56, 22, 0, 38`
-- **Light Blue-Green:**
-    - HEX: `#A8DADC`
-    - RGB: `168, 218, 220`
-    - CMYK: `24, 1, 0, 14`
+- **Growth Green:**
+    - HEX: `#0A4B3E`
+    - RGB: `10, 75, 62`
+    - Note: New — inspired by Chrome Industries' deep teal; represents sustainability
 
 ### 3.3. Accent Color
 
@@ -49,9 +49,44 @@ Our color palette is clean, minimal, and has a natural, earthy feel. The blues a
     - RGB: `230, 57, 70`
     - CMYK: `0, 75, 69, 10`
 
+### 3.4. Neutrals
+
+- **Charcoal:**
+    - HEX: `#1A1A1A`
+    - Usage: Dark sections, inspired by Chrome Industries' utilitarian headers
+- **Warm Gray:**
+    - HEX: `#6B7064`
+    - Usage: Muted text, secondary labels
+- **Light Cream:**
+    - HEX: `#FDFCF9`
+    - Usage: Lightest background, maximum breathing room
+- **Border Light:**
+    - HEX: `#E8E5DE`
+    - Usage: Subtle borders and dividers
+
 ## 4. Typography
 
-(...)
+Our three-tier typography system creates visual hierarchy and editorial sophistication. Each font has a distinct role — display for impact, body for readability, mono for editorial data aesthetics.
+
+### 4.1. Display Font: Barlow Condensed
+
+- **Weights:** 400–900
+- **Usage:** Hero headings, section titles, CTAs, navigation labels
+- **Style:** Bold, condensed, uppercase
+- **Inspiration:** Chrome Industries' ZoomPro compressed typography — commanding, utilitarian impact
+
+### 4.2. Body Font: Inter
+
+- **Weights:** 400 (Regular), 500 (Medium), 600 (SemiBold), 700 (Bold), 900 (Black)
+- **Usage:** Body text, UI elements, product descriptions, form labels
+- **Technical:** Variable font for optimal performance
+- **Style:** Professional, highly readable, versatile
+
+### 4.3. Mono Font: JetBrains Mono
+
+- **Weights:** 400, 500, 700
+- **Usage:** Category labels, timestamps, product codes, editorial accents, data displays
+- **Inspiration:** THE LOOKBACK's monospace editorial aesthetic — adds precision and editorial character
 
 ## 5. Brand Voice and Tone
 

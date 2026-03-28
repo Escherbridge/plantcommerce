@@ -3,13 +3,6 @@ import { redirect } from '@sveltejs/kit';
 import { trpc } from '$lib/trpc/client';
 
 /**
- * Check if user is authenticated and return user data
- * Redirects to signin if not authenticated
- */
-import type { LoadEvent } from '@sveltejs/kit';
-import { redirect } from '@sveltejs/kit';
-
-/**
  * Check if user is authenticated using event.locals
  * Redirects to login if not authenticated
  */

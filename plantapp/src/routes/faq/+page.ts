@@ -6,9 +6,9 @@ export const load: PageLoad = async (event) => {
 	const category = url.searchParams.get('category');
 
 	try {
-		const faqs = await trpc(event).content.getByType.query({
+		const faqs = await trpc(event).content.getPublishedPages.query({
 			type: 'faq',
-			category: category || undefined
+			search: category || undefined
 		});
 
 		return {

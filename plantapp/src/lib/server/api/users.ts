@@ -104,6 +104,54 @@ export const usersRouter = router({
 		}),
 
 	/**
+	 * Get user's wishlist (protected)
+	 */
+	getWishlist: protectedProcedure.query(async ({ ctx }) => {
+		try {
+			return await UserService.getWishlist(ctx.user.id);
+		} catch (error) {
+			throw new TRPCError({
+				code: 'INTERNAL_SERVER_ERROR',
+				message: 'Failed to retrieve wishlist'
+			});
+		}
+	}),
+
+	/**
+	 * Add product to wishlist (protected)
+	 */
+	addToWishlist: protectedProcedure
+		.input(z.object({ productId: z.number() }))
+		.mutation(async ({ ctx, input }) => {
+			try {
+				const item = await UserService.addToWishlist(ctx.user.id, input.productId);
+				return { success: true, item };
+			} catch (error) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: error instanceof Error ? error.message : 'Failed to add to wishlist'
+				});
+			}
+		}),
+
+	/**
+	 * Remove product from wishlist (protected)
+	 */
+	removeFromWishlist: protectedProcedure
+		.input(z.object({ productId: z.number() }))
+		.mutation(async ({ ctx, input }) => {
+			try {
+				await UserService.removeFromWishlist(ctx.user.id, input.productId);
+				return { success: true };
+			} catch (error) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: error instanceof Error ? error.message : 'Failed to remove from wishlist'
+				});
+			}
+		}),
+
+	/**
 	 * Get all users for admin management (admin only)
 	 */
 	getAllUsers: adminProcedure

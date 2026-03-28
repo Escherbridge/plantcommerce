@@ -399,6 +399,61 @@ export class UserService {
 	}
 
 	/**
+	 * Get user's wishlist items with product details
+	 */
+	static async getWishlist(userId: string) {
+		const items = await db
+			.select({
+				id: table.wishlistItem.id,
+				productId: table.wishlistItem.productId,
+				createdAt: table.wishlistItem.createdAt,
+				product: {
+					id: table.product.id,
+					name: table.product.name,
+					slug: table.product.slug,
+					price: table.product.price,
+					comparePrice: table.product.comparePrice,
+					shortDescription: table.product.shortDescription,
+					categoryId: table.product.categoryId,
+					isActive: table.product.isActive
+				}
+			})
+			.from(table.wishlistItem)
+			.innerJoin(table.product, eq(table.wishlistItem.productId, table.product.id))
+			.where(eq(table.wishlistItem.userId, userId))
+			.orderBy(desc(table.wishlistItem.createdAt));
+
+		return items;
+	}
+
+	/**
+	 * Add product to wishlist
+	 */
+	static async addToWishlist(userId: string, productId: number) {
+		const [item] = await db
+			.insert(table.wishlistItem)
+			.values({ userId, productId })
+			.onConflictDoNothing()
+			.returning();
+
+		return item || null;
+	}
+
+	/**
+	 * Remove product from wishlist
+	 */
+	static async removeFromWishlist(userId: string, productId: number) {
+		await db
+			.delete(table.wishlistItem)
+			.where(
+				and(
+					eq(table.wishlistItem.userId, userId),
+					eq(table.wishlistItem.productId, productId)
+				)
+			);
+	}
+
+	/**
 	 * Get user statistics for admin dashboard
 	 */
 	static async getUserStats(): Promise<{

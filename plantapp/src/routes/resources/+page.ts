@@ -6,9 +6,9 @@ export const load: PageLoad = async (event) => {
 	const type = url.searchParams.get('type');
 
 	try {
-		const resources = await trpc(event).content.getByType.query({
-			type: type || 'resource',
-			category: undefined
+		const resources = await trpc(event).content.getPublishedPages.query({
+			type: 'page',
+			search: undefined
 		});
 
 		return {

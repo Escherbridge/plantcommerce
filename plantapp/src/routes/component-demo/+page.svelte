@@ -232,32 +232,32 @@
 
 	<!-- Typography Demo -->
 	<Section spacing="lg">
-		<h2 class="mb-8 text-center text-3xl font-bold">Typography with Liter Font</h2>
+		<h2 class="mb-8 text-center text-3xl font-bold">Typography System</h2>
 		<div class="bg-base-200 rounded-2xl p-8">
 			<div class="space-y-6">
 				<div>
-					<h1 class="font-liter mb-2 text-4xl font-bold">Heading 1 - Liter Font</h1>
-					<p class="text-base-content/70 text-sm">font-liter class applied</p>
+					<h1 class="font-display mb-2 text-4xl font-bold uppercase tracking-tight">Display — Barlow Condensed</h1>
+					<p class="text-base-content/70 text-sm">font-display class — for hero headings, section titles, CTAs</p>
 				</div>
 				<div>
-					<h2 class="mb-2 text-3xl font-semibold">Heading 2 - Default Font</h2>
-					<p class="text-base-content/70 text-sm">Default font family (Liter is now the base)</p>
+					<h2 class="font-sans mb-2 text-3xl font-semibold">Body — Inter</h2>
+					<p class="text-base-content/70 text-sm">font-sans class (default) — for body text, UI elements, descriptions</p>
 				</div>
 				<div>
-					<h3 class="liter-regular mb-2 text-2xl font-medium">Heading 3 - Custom Class</h3>
-					<p class="text-base-content/70 text-sm">liter-regular class applied</p>
+					<h3 class="font-mono mb-2 text-2xl font-medium">Mono — JetBrains Mono</h3>
+					<p class="text-base-content/70 text-sm">font-mono class — for editorial accents, category labels, data</p>
 				</div>
 				<div>
 					<p class="text-lg leading-relaxed">
-						This is a sample paragraph demonstrating the Liter font family. The font provides
-						excellent readability and a modern, clean appearance that works well for both headings
-						and body text. It's now configured as the default font throughout the application.
+						This is a sample paragraph demonstrating the Inter font family. The variable font provides
+						excellent readability and a modern, clean appearance that works well for body text
+						and UI elements. It's configured as the default font throughout the application.
 					</p>
 				</div>
 				<div class="flex gap-4">
-					<span class="badge badge-primary font-liter">Primary Badge</span>
-					<span class="badge badge-secondary">Secondary Badge</span>
-					<span class="badge badge-accent liter-regular">Accent Badge</span>
+					<span class="badge badge-primary font-display uppercase tracking-wide">Display Badge</span>
+					<span class="badge badge-secondary">Body Badge</span>
+					<span class="badge badge-accent font-mono">Mono Badge</span>
 				</div>
 			</div>
 		</div>
@@ -647,28 +647,28 @@
 					<!-- Sidebar -->
 					<GridItem span={{ sm: 1, md: 1, lg: 1 }}>
 						<div class="bg-base-200 h-full rounded-xl p-6 shadow-sm">
-							<h5 class="mb-6 text-lg font-bold text-[#1D3557]">Navigation</h5>
+							<h5 class="mb-6 text-lg font-bold text-primary">Navigation</h5>
 							<div class="space-y-3">
 								<div
-									class="flex cursor-pointer items-center gap-3 rounded-lg bg-[#1D3557] p-3 text-white shadow-md transition-transform hover:scale-105"
+									class="flex cursor-pointer items-center gap-3 rounded-lg bg-primary p-3 text-primary-content shadow-md transition-transform hover:scale-105"
 								>
 									<span>📊</span>
 									<span class="text-sm font-medium">Dashboard</span>
 								</div>
 								<div
-									class="hover:bg-base-300 flex cursor-pointer items-center gap-3 rounded-lg p-3 text-[#457B9D] transition-colors"
+									class="hover:bg-base-300 flex cursor-pointer items-center gap-3 rounded-lg p-3 text-secondary transition-colors"
 								>
 									<span>👥</span>
 									<span class="text-sm font-medium">Users</span>
 								</div>
 								<div
-									class="hover:bg-base-300 flex cursor-pointer items-center gap-3 rounded-lg p-3 text-[#457B9D] transition-colors"
+									class="hover:bg-base-300 flex cursor-pointer items-center gap-3 rounded-lg p-3 text-secondary transition-colors"
 								>
 									<span>📈</span>
 									<span class="text-sm font-medium">Analytics</span>
 								</div>
 								<div
-									class="hover:bg-base-300 flex cursor-pointer items-center gap-3 rounded-lg p-3 text-[#457B9D] transition-colors"
+									class="hover:bg-base-300 flex cursor-pointer items-center gap-3 rounded-lg p-3 text-secondary transition-colors"
 								>
 									<span>⚙️</span>
 									<span class="text-sm font-medium">Settings</span>
@@ -682,16 +682,16 @@
 						<div class="space-y-6">
 							<!-- Header -->
 							<div
-								class="border-base-200 flex items-center justify-between rounded-xl border bg-white p-6 shadow-sm"
+								class="border-base-200 flex items-center justify-between rounded-xl border bg-base-100 p-6 shadow-sm"
 							>
-								<h3 class="text-2xl font-bold text-[#1D3557]">Dashboard Overview</h3>
+								<h3 class="text-2xl font-bold text-primary">Dashboard Overview</h3>
 								<div class="flex gap-3">
 									<button
-										class="btn btn-sm btn-outline border-[#457B9D] text-[#457B9D] hover:bg-[#457B9D] hover:text-white"
+										class="btn btn-sm btn-outline border-secondary text-secondary hover:bg-secondary hover:text-secondary-content"
 										>Export</button
 									>
 									<button
-										class="btn btn-sm border-[#E63946] bg-[#E63946] text-white hover:bg-[#E63946]/90"
+										class="btn btn-sm border-accent bg-accent text-accent-content hover:bg-accent/90"
 										>Add New</button
 									>
 								</div>

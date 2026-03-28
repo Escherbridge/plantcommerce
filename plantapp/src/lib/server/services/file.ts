@@ -1,8 +1,10 @@
-import { Storage } from '@google-cloud/storage';
-import { eq, and, desc, asc } from 'drizzle-orm';
+import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { eq, and, desc } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { randomUUID } from 'crypto';
+import { env } from '$env/dynamic/private';
 
 interface UploadFileParams {
 	buffer: Buffer;
@@ -44,20 +46,25 @@ export interface FileWithUrl {
 }
 
 export class FileService {
-	private static storage: Storage;
-	private static bucketName = process.env.GCS_BUCKET_NAME || 'aevani-files';
+	private static s3Client: S3Client;
+	private static bucketName = env.S3_BUCKET_NAME || 'aevani-assets';
 
 	/**
-	 * Initialize GCS Storage client
+	 * Initialize S3-compatible client (Railway Object Storage)
 	 */
-	private static getStorage(): Storage {
-		if (!this.storage) {
-			this.storage = new Storage({
-				projectId: process.env.GCS_PROJECT_ID,
-				keyFilename: process.env.GCS_KEY_FILE,
+	private static getS3Client(): S3Client {
+		if (!this.s3Client) {
+			this.s3Client = new S3Client({
+				region: env.S3_REGION || 'us-east-1',
+				endpoint: env.S3_ENDPOINT,
+				credentials: {
+					accessKeyId: env.S3_ACCESS_KEY_ID || '',
+					secretAccessKey: env.S3_SECRET_ACCESS_KEY || ''
+				},
+				forcePathStyle: true // Required for Railway and most S3-compatible providers
 			});
 		}
-		return this.storage;
+		return this.s3Client;
 	}
 
 	/**
@@ -71,13 +78,13 @@ export class FileService {
 		const date = new Date();
 		const year = date.getFullYear();
 		const month = String(date.getMonth() + 1).padStart(2, '0');
-		
+
 		let basePath = `${entityType}/${year}/${month}`;
-		
+
 		if (entityId) {
 			basePath += `/${entityId}`;
 		}
-		
+
 		return `${basePath}/${filename}`;
 	}
 
@@ -88,21 +95,20 @@ export class FileService {
 		const uuid = randomUUID();
 		const extension = originalFilename.split('.').pop();
 		const nameWithoutExt = originalFilename.replace(/\.[^/.]+$/, '');
-		
-		// Sanitize filename
+
 		const sanitizedName = nameWithoutExt
 			.toLowerCase()
 			.replace(/[^a-z0-9]/g, '-')
 			.replace(/-+/g, '-')
 			.replace(/^-|-$/g, '');
-		
-		return extension 
+
+		return extension
 			? `${sanitizedName}-${uuid.substring(0, 8)}.${extension}`
 			: `${sanitizedName}-${uuid.substring(0, 8)}`;
 	}
 
 	/**
-	 * Upload file to GCS and store metadata in database
+	 * Upload file to S3-compatible storage and store metadata in database
 	 */
 	static async uploadFile(params: UploadFileParams): Promise<FileWithUrl> {
 		const {
@@ -120,27 +126,23 @@ export class FileService {
 		const uniqueFilename = this.generateUniqueFilename(originalFilename);
 		const bucketPath = this.generateBucketPath(entityType, entityId, uniqueFilename);
 
-		const storage = this.getStorage();
-		const bucket = storage.bucket(this.bucketName);
-		const file = bucket.file(bucketPath);
+		const s3 = this.getS3Client();
 
 		try {
-			// Upload file to GCS
-			await file.save(buffer, {
-				metadata: {
-					contentType: mimeType,
-					cacheControl: 'public, max-age=31536000', // 1 year
-					metadata: {
-						originalFilename,
-						entityType,
-						entityId: entityId || '',
-						uploadedBy: uploadedBy || ''
-					}
-				},
-				public: isPublic
-			});
+			await s3.send(new PutObjectCommand({
+				Bucket: this.bucketName,
+				Key: bucketPath,
+				Body: buffer,
+				ContentType: mimeType,
+				CacheControl: 'max-age=31536000',
+				Metadata: {
+					originalFilename,
+					entityType,
+					entityId: entityId || '',
+					uploadedBy: uploadedBy || ''
+				}
+			}));
 
-			// Store file metadata in database
 			const fileData: typeof table.file.$inferInsert = {
 				id: fileId,
 				filename: uniqueFilename,
@@ -162,7 +164,10 @@ export class FileService {
 		} catch (error) {
 			// Clean up uploaded file if database operation fails
 			try {
-				await file.delete();
+				await s3.send(new DeleteObjectCommand({
+					Bucket: this.bucketName,
+					Key: bucketPath
+				}));
 			} catch (deleteError) {
 				console.error('Failed to clean up uploaded file:', deleteError);
 			}
@@ -211,7 +216,7 @@ export class FileService {
 	}
 
 	/**
-	 * Delete file from both GCS and database
+	 * Delete file from both S3 and database
 	 */
 	static async deleteFile(fileId: string): Promise<void> {
 		const fileResult = await db
@@ -225,19 +230,17 @@ export class FileService {
 		}
 
 		const fileRecord = fileResult[0];
-		const storage = this.getStorage();
-		const bucket = storage.bucket(fileRecord.bucketName);
-		const file = bucket.file(fileRecord.bucketPath);
+		const s3 = this.getS3Client();
 
 		try {
-			// Delete from GCS
-			await file.delete();
+			await s3.send(new DeleteObjectCommand({
+				Bucket: fileRecord.bucketName,
+				Key: fileRecord.bucketPath
+			}));
 		} catch (error) {
-			// Log error but continue with database deletion
-			console.error('Failed to delete file from GCS:', error);
+			console.error('Failed to delete file from S3:', error);
 		}
 
-		// Delete from database
 		await db.delete(table.file).where(eq(table.file.id, fileId));
 	}
 
@@ -246,7 +249,7 @@ export class FileService {
 	 */
 	static async generateSignedUrl(
 		fileId: string,
-		expiresIn: number = 3600 // 1 hour in seconds
+		expiresIn: number = 3600
 	): Promise<string> {
 		const fileResult = await db
 			.select()
@@ -259,16 +262,14 @@ export class FileService {
 		}
 
 		const fileRecord = fileResult[0];
-		const storage = this.getStorage();
-		const bucket = storage.bucket(fileRecord.bucketName);
-		const file = bucket.file(fileRecord.bucketPath);
+		const s3 = this.getS3Client();
 
-		const [signedUrl] = await file.getSignedUrl({
-			action: 'read',
-			expires: Date.now() + expiresIn * 1000,
+		const command = new GetObjectCommand({
+			Bucket: fileRecord.bucketName,
+			Key: fileRecord.bucketPath
 		});
 
-		return signedUrl;
+		return getSignedUrl(s3, command, { expiresIn });
 	}
 
 	/**
@@ -291,26 +292,8 @@ export class FileService {
 
 		if (updates.isPublic !== undefined) {
 			updateData.isPublic = updates.isPublic;
-
-			// Update GCS file visibility
-			const fileResult = await db
-				.select()
-				.from(table.file)
-				.where(eq(table.file.id, fileId))
-				.limit(1);
-
-			if (fileResult.length > 0) {
-				const fileRecord = fileResult[0];
-				const storage = this.getStorage();
-				const bucket = storage.bucket(fileRecord.bucketName);
-				const file = bucket.file(fileRecord.bucketPath);
-
-				if (updates.isPublic) {
-					await file.makePublic();
-				} else {
-					await file.makePrivate();
-				}
-			}
+			// Railway S3 uses signed URLs only - isPublic flag is tracked in DB
+			// for application-level access control (no S3 ACL changes needed)
 		}
 
 		const [updatedFile] = await db
@@ -327,20 +310,19 @@ export class FileService {
 	}
 
 	/**
-	 * Get files by type (images, documents, etc.)
+	 * Get files by MIME type pattern
 	 */
 	static async getFilesByMimeType(
 		mimeTypePattern: string,
 		limit: number = 50
 	): Promise<FileWithUrl[]> {
-		// This is a simplified approach - in production you might want to use a proper LIKE query
 		const files = await db
 			.select()
 			.from(table.file)
 			.orderBy(desc(table.file.createdAt))
 			.limit(limit);
 
-		const filteredFiles = files.filter(file => 
+		const filteredFiles = files.filter(file =>
 			file.mimeType.includes(mimeTypePattern)
 		);
 
@@ -348,23 +330,25 @@ export class FileService {
 	}
 
 	/**
-	 * Generate public URL for a file path (static helper)
+	 * Generate a signed URL for a file path (Railway S3 has no public access)
 	 */
-	static generatePublicUrl(bucketPath: string, isPublic: boolean = true): string {
-		if (!isPublic) return '';
-		const baseUrl = process.env.GCS_BASE_URL || `https://storage.googleapis.com/${this.bucketName}`;
-		return `${baseUrl}/${bucketPath}`;
+	static async generateSignedUrlForPath(
+		bucketPath: string,
+		expiresIn: number = 3600
+	): Promise<string> {
+		const s3 = this.getS3Client();
+		const command = new GetObjectCommand({
+			Bucket: this.bucketName,
+			Key: bucketPath
+		});
+		return getSignedUrl(s3, command, { expiresIn });
 	}
 
 	/**
 	 * Convert database file record to FileWithUrl
+	 * Note: publicUrl is empty - use generateSignedUrl() for access
 	 */
 	private static fileWithUrl(file: table.File): FileWithUrl {
-		const baseUrl = process.env.GCS_BASE_URL || `https://storage.googleapis.com/${this.bucketName}`;
-		const publicUrl = file.isPublic 
-			? `${baseUrl}/${file.bucketPath}`
-			: '';
-
 		return {
 			id: file.id,
 			filename: file.filename,
@@ -380,8 +364,8 @@ export class FileService {
 			metadata: file.metadata ? JSON.parse(file.metadata) : null,
 			createdAt: file.createdAt,
 			updatedAt: file.updatedAt,
-			publicUrl,
-			signedUrl: undefined // Will be populated separately if needed
+			publicUrl: '', // Railway S3 requires signed URLs
+			signedUrl: undefined
 		};
 	}
 }
