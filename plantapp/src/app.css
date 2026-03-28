@@ -58,6 +58,35 @@
 	--duration-slow: 600ms;
 	--duration-reveal: 1200ms;
 
+	/* ── Frutiger Aero ── */
+	/* Glass / translucency */
+	--glass-bg: rgba(255, 255, 255, 0.55);
+	--glass-bg-strong: rgba(255, 255, 255, 0.72);
+	--glass-border: rgba(255, 255, 255, 0.45);
+	--glass-blur: 12px;
+	--glass-blur-strong: 20px;
+
+	/* Luminous shadows (warm, nature-tinted) */
+	--shadow-glow-sm: 0 1px 3px rgba(69, 123, 157, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+	--shadow-glow-md: 0 4px 12px rgba(69, 123, 157, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.45) inset;
+	--shadow-glow-lg: 0 8px 24px rgba(69, 123, 157, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+	--shadow-glow-focus: 0 0 0 3px rgba(69, 123, 157, 0.18), 0 0 12px rgba(69, 123, 157, 0.08);
+
+	/* Nature-inspired gradients */
+	--gradient-sky: linear-gradient(135deg, rgba(107, 154, 196, 0.08) 0%, rgba(69, 123, 157, 0.04) 100%);
+	--gradient-leaf: linear-gradient(135deg, rgba(45, 106, 79, 0.06) 0%, rgba(10, 75, 62, 0.03) 100%);
+	--gradient-warm: linear-gradient(135deg, rgba(247, 245, 240, 0.9) 0%, rgba(237, 233, 225, 0.7) 100%);
+	--gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.4) 100%);
+
+	/* Input-specific tokens */
+	--input-bg: rgba(255, 255, 255, 0.6);
+	--input-border: rgba(27, 45, 74, 0.12);
+	--input-border-hover: rgba(69, 123, 157, 0.35);
+	--input-border-focus: rgba(69, 123, 157, 0.55);
+	--input-radius: 10px;
+	--input-padding-x: 0.875rem;
+	--input-padding-y: 0.75rem;
+
 	/* ── Legacy support ── */
 	--column-width: 42rem;
 	--column-margin-top: 4rem;
@@ -134,6 +163,219 @@ pre, code {
 
 .visually-hidden {
 	@apply sr-only;
+}
+
+/* ── Dark mode Frutiger Aero overrides ── */
+[data-theme="aevani-dark"] {
+	--glass-bg: rgba(42, 42, 42, 0.55);
+	--glass-bg-strong: rgba(42, 42, 42, 0.72);
+	--glass-border: rgba(255, 255, 255, 0.08);
+	--shadow-glow-sm: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+	--shadow-glow-md: 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+	--shadow-glow-lg: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+	--shadow-glow-focus: 0 0 0 3px rgba(107, 154, 196, 0.25), 0 0 12px rgba(107, 154, 196, 0.1);
+	--gradient-sky: linear-gradient(135deg, rgba(107, 154, 196, 0.1) 0%, rgba(69, 123, 157, 0.05) 100%);
+	--gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+	--input-bg: rgba(255, 255, 255, 0.06);
+	--input-border: rgba(255, 255, 255, 0.1);
+	--input-border-hover: rgba(107, 154, 196, 0.3);
+	--input-border-focus: rgba(107, 154, 196, 0.5);
+}
+
+/* ══════════════════════════════════════════
+   Frutiger Aero Global Input System
+   Uses !important to override @tailwindcss/forms
+   and daisyUI base input styles
+   ══════════════════════════════════════════ */
+
+/* ── ALL text inputs, selects, textareas (daisyUI .input, .select, .textarea) ── */
+.input,
+.select,
+.textarea,
+input[type="text"].input-bordered,
+input[type="email"].input-bordered,
+input[type="password"].input-bordered,
+input[type="tel"].input-bordered,
+input[type="url"].input-bordered,
+input[type="number"].input-bordered,
+input[type="date"].input-bordered,
+select.select-bordered,
+textarea.textarea-bordered {
+	background: var(--input-bg) !important;
+	border: 1.5px solid var(--input-border) !important;
+	border-radius: var(--input-radius) !important;
+	padding: var(--input-padding-y) var(--input-padding-x) !important;
+	backdrop-filter: blur(var(--glass-blur));
+	-webkit-backdrop-filter: blur(var(--glass-blur));
+	box-shadow: var(--shadow-glow-sm) !important;
+	font-family: var(--font-body) !important;
+	color: oklch(var(--bc)) !important;
+	transition:
+		border-color 250ms var(--ease-out-expo),
+		box-shadow 250ms var(--ease-out-expo),
+		background 250ms ease !important;
+}
+
+.input:hover,
+.select:hover,
+.textarea:hover {
+	border-color: var(--input-border-hover) !important;
+	box-shadow: var(--shadow-glow-md) !important;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+	border-color: var(--input-border-focus) !important;
+	box-shadow: var(--shadow-glow-focus) !important;
+	outline: none !important;
+	outline-offset: 0 !important;
+	background: var(--glass-bg-strong) !important;
+}
+
+.input:disabled,
+.select:disabled,
+.textarea:disabled {
+	opacity: 0.5 !important;
+	cursor: not-allowed !important;
+	backdrop-filter: none;
+}
+
+/* ── Checkbox & Radio & Toggle ── */
+.checkbox,
+.radio,
+.toggle {
+	border-radius: 5px !important;
+	transition:
+		border-color 200ms ease,
+		background-color 200ms ease,
+		box-shadow 200ms ease !important;
+}
+
+.radio {
+	border-radius: 50% !important;
+}
+
+.checkbox:focus-visible,
+.radio:focus-visible,
+.toggle:focus-visible {
+	box-shadow: var(--shadow-glow-focus) !important;
+}
+
+/* ── Form control spacing ── */
+.form-control + .form-control {
+	margin-top: 0.25rem;
+}
+
+/* ── Labels ── */
+.form-control .label {
+	padding-bottom: 0.375rem;
+}
+
+.form-control .label .label-text {
+	font-weight: 500;
+	font-size: 0.8125rem;
+	letter-spacing: 0.01em;
+}
+
+/* ── Error states ── */
+.input-error,
+.input.input-error,
+.select-error,
+.select.select-error,
+.textarea-error,
+.textarea.textarea-error {
+	border-color: oklch(var(--er)) !important;
+	box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1) !important;
+}
+
+/* ── Glass card utility ── */
+.glass-card {
+	background: var(--glass-bg) !important;
+	backdrop-filter: blur(var(--glass-blur));
+	-webkit-backdrop-filter: blur(var(--glass-blur));
+	border: 1px solid var(--glass-border) !important;
+	box-shadow: var(--shadow-glow-md) !important;
+	border-radius: var(--radius-lg) !important;
+}
+
+.glass-card-strong {
+	background: var(--glass-bg-strong) !important;
+	backdrop-filter: blur(var(--glass-blur-strong));
+	-webkit-backdrop-filter: blur(var(--glass-blur-strong));
+	border: 1px solid var(--glass-border) !important;
+	box-shadow: var(--shadow-glow-lg) !important;
+	border-radius: var(--radius-lg) !important;
+}
+
+/* ── DaisyUI .card gets Frutiger Aero treatment ── */
+.card {
+	border-radius: var(--radius-lg) !important;
+	border: 1px solid var(--input-border) !important;
+	box-shadow: var(--shadow-glow-sm) !important;
+	overflow: hidden;
+}
+
+.card:hover {
+	box-shadow: var(--shadow-glow-md) !important;
+}
+
+/* ── DaisyUI .btn gets consistent radius ── */
+.btn {
+	border-radius: var(--input-radius) !important;
+}
+
+/* ── Select / Dropdown ── */
+select,
+.select {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23457B9D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+	background-repeat: no-repeat !important;
+	background-position: right 0.75rem center !important;
+	background-size: 1rem !important;
+	padding-right: 2.5rem !important;
+	appearance: none !important;
+	-webkit-appearance: none !important;
+}
+
+select option,
+.select option {
+	background-color: oklch(var(--b1));
+	color: oklch(var(--bc));
+	padding: 0.5rem 0.75rem;
+	font-family: var(--font-body);
+	font-size: 0.9375rem;
+}
+
+select option:checked,
+.select option:checked {
+	background: oklch(var(--p) / 0.12);
+	color: oklch(var(--p));
+}
+
+/* DaisyUI dropdown menus, popovers */
+.dropdown-content,
+.menu.dropdown-content {
+	background: var(--glass-bg-strong) !important;
+	backdrop-filter: blur(var(--glass-blur-strong));
+	-webkit-backdrop-filter: blur(var(--glass-blur-strong));
+	border: 1px solid var(--glass-border) !important;
+	border-radius: var(--input-radius) !important;
+	box-shadow: var(--shadow-glow-lg) !important;
+}
+
+.dropdown-content li > a,
+.dropdown-content li > button,
+.menu.dropdown-content li > a,
+.menu.dropdown-content li > button {
+	border-radius: calc(var(--input-radius) - 4px);
+	transition: background-color 200ms ease;
+}
+
+.dropdown-content li > a:hover,
+.dropdown-content li > button:hover,
+.menu.dropdown-content li > a:hover,
+.menu.dropdown-content li > button:hover {
+	background: oklch(var(--p) / 0.06);
 }
 
 /* ── Reduced Motion ── */

@@ -165,8 +165,8 @@
   ));
 </script>
 
-<form 
-  class="space-y-6 {className}" 
+<form
+  class="space-y-7 {className}"
   onsubmit={handleSubmit}
   novalidate
 >

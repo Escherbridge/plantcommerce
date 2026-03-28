@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Container, Section } from '$lib/components/layout';
+	import { Select } from '$lib/components/ui';
 	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
 
@@ -44,7 +45,7 @@
 				<div class="flex items-end gap-3">
 					<div class="relative flex-1">
 						<svg
-							class="text-base-content/30 pointer-events-none absolute bottom-3 left-0 h-5 w-5"
+							class="text-base-content/40 pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5"
 							fill="none"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
@@ -56,13 +57,13 @@
 						<input
 							type="text"
 							placeholder="Search products..."
-							class="border-base-content/20 focus:border-primary bg-transparent w-full rounded-none border-b-2 pb-3 pl-7 pr-3 pt-1 text-lg outline-none transition-colors duration-200 placeholder:text-base-content/30"
+							class="input input-bordered w-full pl-10 text-lg"
 							bind:value={searchQuery}
 							onkeypress={(e) => e.key === 'Enter' && handleSearch()}
 						/>
 					</div>
 					<button
-						class="btn btn-primary shrink-0 rounded-none px-8 font-display text-sm uppercase tracking-wider"
+						class="btn btn-primary shrink-0 px-8 font-display text-sm uppercase tracking-wider"
 						onclick={handleSearch}
 					>
 						Search
@@ -75,16 +76,15 @@
 				<label class="text-base-content/40 font-display mb-2 block text-xs uppercase tracking-widest">
 					Category
 				</label>
-				<select
-					class="border-base-content/20 focus:border-primary bg-transparent w-full rounded-none border-b-2 pb-3 pr-8 pt-1 text-lg outline-none transition-colors duration-200 appearance-none cursor-pointer"
+				<Select
+					options={[
+						{ value: '', label: 'All Categories' },
+						...data.categories.map(c => ({ value: c.id, label: c.name }))
+					]}
 					bind:value={selectedCategory}
-					onchange={handleSearch}
-				>
-					<option value="">All Categories</option>
-					{#each data.categories as category}
-						<option value={category.id}>{category.name}</option>
-					{/each}
-				</select>
+					placeholder="All Categories"
+					onchange={() => handleSearch()}
+				/>
 			</div>
 		</div>
 

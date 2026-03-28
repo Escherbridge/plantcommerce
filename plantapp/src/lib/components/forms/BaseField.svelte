@@ -74,25 +74,26 @@
 	/* ── Floating label ── */
 	.field-label {
 		position: absolute;
-		left: 0;
+		left: var(--input-padding-x, 0.875rem);
 		top: 50%;
 		transform: translateY(-50%);
 		font-family: var(--font-sans, 'Inter', sans-serif);
-		font-size: 1rem;
-		font-weight: 600;
-		color: oklch(var(--p));
+		font-size: 0.9375rem;
+		font-weight: 500;
+		color: oklch(var(--bc) / 0.5);
 		pointer-events: none;
 		transition:
-			transform 200ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)),
-			font-size 200ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)),
-			color 200ms ease;
+			transform 250ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)),
+			font-size 250ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)),
+			color 250ms ease;
 	}
 
 	.field-label--float {
-		transform: translateY(-2rem) scale(0.8);
+		transform: translateY(-2.25rem) scale(0.8);
 		transform-origin: left top;
-		font-size: 0.875rem;
-		color: oklch(var(--p) / 0.7);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: oklch(var(--p) / 0.8);
 	}
 
 	.field-label--error {
@@ -101,59 +102,73 @@
 
 	/* Textarea label starts at top, not middle */
 	.field-label--textarea {
-		top: 1rem;
+		top: var(--input-padding-y, 0.75rem);
 		transform: translateY(0);
 	}
 
 	.field-label--textarea.field-label--float {
-		transform: translateY(-1.5rem) scale(0.8);
+		transform: translateY(-2rem) scale(0.8);
 	}
 
-	/* ── Bottom-border input ── */
+	/* ── Glass-panel input (Frutiger Aero) ── */
 	.field-input {
 		display: block;
 		width: 100%;
-		min-height: 44px;
-		background: transparent;
-		border: none;
-		border-bottom: 2px solid oklch(var(--b3));
-		border-radius: 0;
-		padding: 0.5rem 0 0.375rem 0;
+		min-height: 48px;
+		background: var(--input-bg);
+		border: 1.5px solid var(--input-border);
+		border-radius: var(--input-radius, 10px);
+		padding: var(--input-padding-y, 0.75rem) var(--input-padding-x, 0.875rem);
 		font-family: var(--font-sans, 'Inter', sans-serif);
 		font-size: 1rem;
 		color: oklch(var(--bc));
 		outline: none;
-		transition: border-color 200ms ease;
+		backdrop-filter: blur(var(--glass-blur, 12px));
+		-webkit-backdrop-filter: blur(var(--glass-blur, 12px));
+		box-shadow: var(--shadow-glow-sm);
+		transition:
+			border-color 250ms var(--ease-out-expo),
+			box-shadow 250ms var(--ease-out-expo),
+			background 250ms ease;
+	}
+
+	.field-input:hover {
+		border-color: var(--input-border-hover);
+		box-shadow: var(--shadow-glow-md);
 	}
 
 	.field-input:focus {
-		border-bottom-color: oklch(var(--p));
+		border-color: var(--input-border-focus);
+		box-shadow: var(--shadow-glow-focus);
+		background: var(--glass-bg-strong, rgba(255, 255, 255, 0.72));
 	}
 
 	.field-input--error {
-		border-bottom-color: oklch(var(--er));
+		border-color: oklch(var(--er)) !important;
+		box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1) !important;
 		animation: field-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 	}
 
 	.field-input:disabled {
 		cursor: not-allowed;
 		opacity: 0.5;
+		backdrop-filter: none;
 	}
 
 	/* Textarea specifics */
 	.field-input--textarea {
 		resize: vertical;
-		min-height: 96px;
-		padding-top: 0.75rem;
+		min-height: 110px;
+		padding-top: var(--input-padding-y, 0.75rem);
 	}
 
 	/* ── Select ── */
 	.field-select {
 		appearance: none;
-		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23457B9D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 		background-repeat: no-repeat;
-		background-position: right 0.25rem center;
-		padding-right: 1.75rem;
+		background-position: right 0.75rem center;
+		padding-right: 2.25rem;
 		cursor: pointer;
 	}
 
@@ -172,14 +187,17 @@
 		width: 1.25rem;
 		height: 1.25rem;
 		min-width: 1.25rem;
-		border: 2px solid oklch(var(--p) / 0.5);
-		border-radius: var(--radius-sm, 0.25rem);
-		background: transparent;
+		border: 1.5px solid var(--input-border);
+		border-radius: 5px;
+		background: var(--input-bg);
+		backdrop-filter: blur(8px);
 		cursor: pointer;
 		position: relative;
+		box-shadow: var(--shadow-glow-sm);
 		transition:
-			border-color 200ms ease,
-			background-color 200ms ease;
+			border-color 250ms var(--ease-out-expo),
+			background-color 250ms var(--ease-out-expo),
+			box-shadow 250ms var(--ease-out-expo);
 	}
 
 	.field-radio {
@@ -258,12 +276,12 @@
 
 	/* ── Outer container spacing for float label ── */
 	.field-outer {
-		padding-top: 1.5rem;
+		padding-top: 1.75rem;
 		width: 100%;
 	}
 
 	.field-outer--inline {
-		padding-top: 0;
+		padding-top: 0.25rem;
 	}
 </style>
 

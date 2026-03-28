@@ -2,6 +2,7 @@
 	import { Container, Section } from '$lib/components/layout';
 	import { Grid } from '$lib/components/layout';
 	import { BaseForm } from '$lib/components/forms';
+	import { Select } from '$lib/components/ui';
 
 	let formData = {
 		name: '',
@@ -74,16 +75,16 @@
 			<!-- Contact Form -->
 			<div>
 				<h2 class="text-2xl font-display uppercase tracking-tight mb-6">Send us a Message</h2>
-				<form class="space-y-4">
+				<form class="contact-form">
 					<div class="form-control">
 						<label class="label" for="name">
-							<span class="label-text font-mono text-xs uppercase tracking-widest text-secondary">Name</span>
+							<span class="label-text">Name</span>
 						</label>
 						<input
 							id="name"
 							type="text"
 							placeholder="Your name"
-							class="input input-bordered"
+							class="input input-bordered w-full"
 							bind:value={formData.name}
 							required
 						/>
@@ -91,13 +92,13 @@
 
 					<div class="form-control">
 						<label class="label" for="email">
-							<span class="label-text font-mono text-xs uppercase tracking-widest text-secondary">Email</span>
+							<span class="label-text">Email</span>
 						</label>
 						<input
 							id="email"
 							type="email"
 							placeholder="your@email.com"
-							class="input input-bordered"
+							class="input input-bordered w-full"
 							bind:value={formData.email}
 							required
 						/>
@@ -105,25 +106,31 @@
 
 					<div class="form-control">
 						<label class="label" for="subject">
-							<span class="label-text font-mono text-xs uppercase tracking-widest text-secondary">Subject</span>
+							<span class="label-text">Subject</span>
 						</label>
-						<select id="subject" class="select select-bordered" bind:value={formData.subject}>
-							<option value="">Choose a subject...</option>
-							<option value="general">General Inquiry</option>
-							<option value="product">Product Question</option>
-							<option value="order">Order Support</option>
-							<option value="technical">Technical Issue</option>
-							<option value="partnership">Partnership Opportunity</option>
-						</select>
+						<Select
+							id="subject"
+							name="subject"
+							bind:value={formData.subject}
+							placeholder="Choose a subject..."
+							options={[
+								{ value: 'general', label: 'General Inquiry' },
+								{ value: 'product', label: 'Product Question' },
+								{ value: 'order', label: 'Order Support' },
+								{ value: 'technical', label: 'Technical Issue' },
+								{ value: 'partnership', label: 'Partnership Opportunity' }
+							]}
+						/>
 					</div>
 
 					<div class="form-control">
 						<label class="label" for="message">
-							<span class="label-text font-mono text-xs uppercase tracking-widest text-secondary">Message</span>
+							<span class="label-text">Message</span>
 						</label>
 						<textarea
 							id="message"
-							class="textarea textarea-bordered h-32"
+							class="textarea textarea-bordered w-full"
+							rows="5"
 							placeholder="How can we help you?"
 							bind:value={formData.message}
 							required
@@ -187,3 +194,11 @@
 		</div>
 	</Container>
 </Section>
+
+<style>
+	.contact-form {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+</style>

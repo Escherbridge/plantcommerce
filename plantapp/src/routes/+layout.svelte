@@ -146,6 +146,46 @@
 			{@render children()}
 		</main>
 
+		<!-- ===== LOGGED-IN USER BOTTOM BAR ===== -->
+		{#if user}
+			<div class="user-bottom-bar">
+				<div class="user-bottom-bar__inner">
+					<div class="user-bottom-bar__greeting">
+						<span class="user-bottom-bar__avatar">
+							{(user.firstName || user.username || 'U').charAt(0).toUpperCase()}
+						</span>
+						<span class="user-bottom-bar__name">{user.firstName || user.username}</span>
+					</div>
+
+					<nav class="user-bottom-bar__nav">
+						<a href="/account/profile" class="user-bottom-bar__link">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+							Profile
+						</a>
+						<a href="/account/orders" class="user-bottom-bar__link">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+							Orders
+						</a>
+						<a href="/account/wishlist" class="user-bottom-bar__link">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"/></svg>
+							Wishlist
+						</a>
+						<a href="/cart" class="user-bottom-bar__link">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>
+							Cart
+						</a>
+					</nav>
+
+					<div class="user-bottom-bar__actions">
+						<a href="/affiliate/join" class="user-bottom-bar__affiliate">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.8-6.3-3.3-6.3 3.3 1.2-6.8-5-4.9 7-1z"/></svg>
+							Become an Affiliate
+						</a>
+					</div>
+				</div>
+			</div>
+		{/if}
+
 		<!-- ===== FOOTER ===== -->
 		<footer class="editorial-footer">
 			<!-- Root system SVG pattern overlay -->
@@ -1048,5 +1088,161 @@
 	.drawer-social-link svg {
 		width: 1.125rem;
 		height: 1.125rem;
+	}
+
+	/* ===== USER BOTTOM BAR ===== */
+	.user-bottom-bar {
+		background: oklch(var(--b1));
+		border-top: 1.5px solid var(--input-border, rgba(27, 45, 74, 0.12));
+		box-shadow: 0 -2px 12px rgba(27, 45, 74, 0.06);
+		position: sticky;
+		bottom: 0;
+		z-index: 40;
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+	}
+
+	.user-bottom-bar__inner {
+		max-width: 80rem;
+		margin: 0 auto;
+		padding: 0.625rem 1.5rem;
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+	}
+
+	@media (max-width: 767px) {
+		.user-bottom-bar__inner {
+			padding: 0.5rem 1rem;
+			gap: 0.5rem;
+		}
+	}
+
+	/* Greeting / avatar */
+	.user-bottom-bar__greeting {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		flex-shrink: 0;
+	}
+
+	.user-bottom-bar__avatar {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 50%;
+		background: oklch(var(--p));
+		color: oklch(var(--pc));
+		font-family: var(--font-display);
+		font-size: 0.8125rem;
+		font-weight: 700;
+		text-transform: uppercase;
+	}
+
+	.user-bottom-bar__name {
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: oklch(var(--bc));
+	}
+
+	@media (max-width: 639px) {
+		.user-bottom-bar__name {
+			display: none;
+		}
+	}
+
+	/* Nav links */
+	.user-bottom-bar__nav {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		flex: 1;
+		justify-content: center;
+	}
+
+	.user-bottom-bar__link {
+		display: flex;
+		align-items: center;
+		gap: 0.375rem;
+		padding: 0.5rem 0.75rem;
+		font-size: 0.8125rem;
+		font-weight: 500;
+		color: oklch(var(--bc) / 0.6);
+		text-decoration: none;
+		border-radius: var(--input-radius, 10px);
+		transition: background-color 150ms ease, color 150ms ease;
+	}
+
+	.user-bottom-bar__link:hover {
+		background: oklch(var(--p) / 0.06);
+		color: oklch(var(--bc));
+	}
+
+	.user-bottom-bar__link svg {
+		width: 1.125rem;
+		height: 1.125rem;
+		flex-shrink: 0;
+	}
+
+	@media (max-width: 639px) {
+		.user-bottom-bar__link {
+			flex-direction: column;
+			gap: 0.125rem;
+			padding: 0.375rem 0.5rem;
+			font-size: 0.625rem;
+		}
+
+		.user-bottom-bar__link svg {
+			width: 1.25rem;
+			height: 1.25rem;
+		}
+	}
+
+	/* Affiliate CTA */
+	.user-bottom-bar__actions {
+		flex-shrink: 0;
+	}
+
+	.user-bottom-bar__affiliate {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		font-family: var(--font-display);
+		font-size: 0.75rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: oklch(var(--pc));
+		background: linear-gradient(135deg, oklch(var(--s)) 0%, oklch(var(--p)) 100%);
+		border-radius: var(--input-radius, 10px);
+		text-decoration: none;
+		transition: opacity 200ms ease, transform 200ms var(--ease-out-expo);
+		box-shadow: 0 2px 8px rgba(69, 123, 157, 0.2);
+	}
+
+	.user-bottom-bar__affiliate:hover {
+		opacity: 0.9;
+		transform: scale(1.02);
+	}
+
+	.user-bottom-bar__affiliate svg {
+		width: 1rem;
+		height: 1rem;
+		flex-shrink: 0;
+	}
+
+	@media (max-width: 639px) {
+		.user-bottom-bar__affiliate {
+			padding: 0.5rem;
+			font-size: 0;
+		}
+
+		.user-bottom-bar__affiliate svg {
+			width: 1.25rem;
+			height: 1.25rem;
+		}
 	}
 </style>

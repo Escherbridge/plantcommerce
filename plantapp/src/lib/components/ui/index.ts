@@ -3,6 +3,7 @@ export { default as Accordion } from './Accordion.svelte';
 export { default as Badge } from './Badge.svelte';
 export { default as Button } from './Button.svelte';
 export { default as Carousel } from './Carousel.svelte';
+export { default as Select } from './Select.svelte';
 export { default as Divider } from './Divider.svelte';
 export { default as MarqueeBar } from './MarqueeBar.svelte';
 export { default as Modal } from './Modal.svelte';

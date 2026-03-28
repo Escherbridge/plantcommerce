@@ -53,37 +53,54 @@
 </script>
 
 <style>
-	/* Primary variant */
+	/* Primary variant — Frutiger Aero glass-tinted */
 	.btn-plant--primary {
-		background-color: oklch(var(--p));
+		background: linear-gradient(
+			180deg,
+			oklch(var(--p) / 0.92) 0%,
+			oklch(var(--p)) 100%
+		);
 		color: oklch(var(--pc));
-		border: none;
-		border-radius: var(--radius-md, 0.5rem);
-		box-shadow: var(--shadow-sm);
+		border: 1px solid oklch(var(--p) / 0.7);
+		border-radius: var(--input-radius, 10px);
+		box-shadow:
+			var(--shadow-glow-sm),
+			0 1px 0 oklch(var(--pc) / 0.1) inset;
 		transform: translateY(0) scale(1);
 		transition:
-			transform 200ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)),
-			box-shadow 200ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1));
+			transform 250ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)),
+			box-shadow 250ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)),
+			background 250ms ease;
 	}
 
 	.btn-plant--primary:not(:disabled):hover {
 		transform: scale(1.02);
-		box-shadow: var(--shadow-lg);
+		box-shadow: var(--shadow-glow-md), 0 1px 0 oklch(var(--pc) / 0.15) inset;
+		background: linear-gradient(
+			180deg,
+			oklch(var(--p) / 0.85) 0%,
+			oklch(var(--p) / 0.95) 100%
+		);
 	}
 
 	.btn-plant--primary:not(:disabled):active {
-		transform: scale(0.99);
+		transform: scale(0.98);
 	}
 
-	/* Secondary variant */
+	/* Secondary variant — glass outline */
 	.btn-plant--secondary {
-		background-color: transparent;
+		background: var(--input-bg);
 		color: oklch(var(--p));
-		border: 2px solid oklch(var(--p));
-		border-radius: var(--radius-md, 0.5rem);
+		border: 1.5px solid var(--input-border-hover);
+		border-radius: var(--input-radius, 10px);
 		position: relative;
 		overflow: hidden;
-		transition: color 300ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1));
+		backdrop-filter: blur(var(--glass-blur));
+		-webkit-backdrop-filter: blur(var(--glass-blur));
+		box-shadow: var(--shadow-glow-sm);
+		transition:
+			color 300ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)),
+			box-shadow 250ms var(--ease-out-expo);
 	}
 
 	.btn-plant--secondary::before {
@@ -115,7 +132,7 @@
 		background-color: transparent;
 		color: oklch(var(--p));
 		border: none;
-		border-radius: var(--radius-md, 0.5rem);
+		border-radius: var(--input-radius, 10px);
 		position: relative;
 		padding-bottom: calc(var(--spacing, 0.25rem) * 2 + 2px);
 	}

@@ -16,16 +16,16 @@
 
 <Section>
 	<Container>
-		<h1 class="text-3xl font-bold mb-8">Checkout</h1>
+		<h1 class="text-3xl font-display uppercase tracking-tight mb-8">Checkout</h1>
 
 		<div class="grid lg:grid-cols-3 gap-8">
 			<!-- Checkout Form -->
 			<div class="lg:col-span-2">
-				<form method="POST" use:enhance class="space-y-8">
+				<form method="POST" use:enhance class="space-y-6">
 					<!-- Contact Info -->
-					<div class="card bg-base-100 shadow-xl">
+					<div class="card bg-base-100 shadow-md rounded-2xl border border-base-200/30">
 						<div class="card-body">
-							<h2 class="card-title mb-4">Contact Information</h2>
+							<h2 class="card-title font-display uppercase tracking-tight mb-4">Contact Information</h2>
 							<div class="form-control w-full">
 								<label class="label" for="email">
 									<span class="label-text">Email Address</span>
@@ -48,10 +48,10 @@
 					</div>
 
 					<!-- Shipping Address -->
-					<div class="card bg-base-100 shadow-xl">
+					<div class="card bg-base-100 shadow-md rounded-2xl border border-base-200/30">
 						<div class="card-body">
-							<h2 class="card-title mb-4">Shipping Address</h2>
-							<div class="grid grid-cols-2 gap-4">
+							<h2 class="card-title font-display uppercase tracking-tight mb-4">Shipping Address</h2>
+							<div class="grid grid-cols-2 gap-x-4 gap-y-3">
 								<div class="form-control">
 									<label class="label" for="firstName">
 										<span class="label-text">First Name</span>
@@ -181,9 +181,9 @@
 					</div>
 
 					<!-- Billing Address -->
-					<div class="card bg-base-100 shadow-xl">
+					<div class="card bg-base-100 shadow-md rounded-2xl border border-base-200/30">
 						<div class="card-body">
-							<h2 class="card-title mb-4">Billing Address</h2>
+							<h2 class="card-title font-display uppercase tracking-tight mb-4">Billing Address</h2>
 							<div class="form-control">
 								<label class="label cursor-pointer justify-start gap-4">
 									<input
@@ -198,7 +198,7 @@
 							</div>
 
 							{#if !sameAsShipping}
-								<div class="grid grid-cols-2 gap-4 mt-4">
+								<div class="grid grid-cols-2 gap-x-4 gap-y-3 mt-4">
 									<!-- Billing fields similar to shipping -->
 									<div class="form-control">
 										<label class="label" for="billingFirstName">First Name</label>
@@ -242,9 +242,9 @@
 					</div>
 
 					<!-- Payment (Placeholder) -->
-					<div class="card bg-base-100 shadow-xl">
+					<div class="card bg-base-100 shadow-md rounded-2xl border border-base-200/30">
 						<div class="card-body">
-							<h2 class="card-title mb-4">Payment Method</h2>
+							<h2 class="card-title font-display uppercase tracking-tight mb-4">Payment Method</h2>
 							<div class="alert alert-info">
 								<span>Payment integration is currently in sandbox mode. No actual charge will be made.</span>
 							</div>
@@ -257,7 +257,7 @@
 						</div>
 					</div>
 
-					<button type="submit" class="btn btn-primary btn-lg w-full">
+					<button type="submit" class="btn btn-primary btn-lg w-full font-display uppercase tracking-wider">
 						Place Order
 					</button>
 				</form>
@@ -265,7 +265,7 @@
 
 			<!-- Order Summary -->
 			<div class="lg:col-span-1">
-				<div class="card bg-base-100 shadow-xl sticky top-4">
+				<div class="card bg-base-100 shadow-md rounded-2xl border border-base-200/30 sticky top-4">
 					<div class="card-body">
 						<h2 class="card-title mb-4">Order Summary</h2>
 						
