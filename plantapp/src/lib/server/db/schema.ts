@@ -10,7 +10,7 @@ export const user = pgTable('user', {
 	firstName: text('first_name'),
 	lastName: text('last_name'),
 	avatarFileId: text('avatar_file_id'), // Reference to file table
-	role: text('role', { enum: ['admin', 'customer', 'affiliate'] }).notNull().default('customer'),
+	role: text('role', { enum: ['admin', 'customer', 'affiliate', 'instructor'] }).notNull().default('customer'),
 	isActive: boolean('is_active').notNull().default(true),
 	emailVerified: boolean('email_verified').notNull().default(false),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
@@ -338,6 +338,21 @@ export const auditLog = pgTable('audit_log', {
 	details: text('details'), // JSON string for additional details
 });
 
+// ======= NOTIFICATIONS =======
+export const notification = pgTable('notification', {
+	id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+	userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+	type: text('type', { enum: ['order_update', 'affiliate_earning', 'affiliate_conversion', 'admin_alert', 'system'] }).notNull(),
+	title: text('title').notNull(),
+	message: text('message').notNull(),
+	isRead: boolean('is_read').notNull().default(false),
+	link: text('link'),
+	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => ({
+	userReadIdx: index('notification_user_read_idx').on(table.userId, table.isRead),
+	createdIdx: index('notification_created_idx').on(table.createdAt),
+}));
+
 // ======= RELATIONS ========
 export const userRelations = relations(user, ({ many, one }) => ({
 	sessions: many(session),
@@ -349,7 +364,8 @@ export const userRelations = relations(user, ({ many, one }) => ({
 		fields: [user.avatarFileId],
 		references: [file.id],
 		relationName: 'user_avatar_file'
-	})
+	}),
+	notifications: many(notification)
 }));
 
 export const affiliateRelations = relations(affiliate, ({ one, many }) => ({
@@ -490,3 +506,11 @@ export type File = typeof file.$inferSelect;
 export type LoginAttempt = typeof loginAttempts.$inferSelect;
 export type AccountLock = typeof accountLocks.$inferSelect;
 export type SocialAccount = typeof socialAccounts.$inferSelect;
+export type Notification = typeof notification.$inferSelect;
+
+export const notificationRelations = relations(notification, ({ one }) => ({
+	user: one(user, {
+		fields: [notification.userId],
+		references: [user.id]
+	})
+}));

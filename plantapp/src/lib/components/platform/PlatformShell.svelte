@@ -3,6 +3,8 @@
 	import type { NavigationConfig, PlatformUser } from './types';
 	import PlatformSidebar from './PlatformSidebar.svelte';
 	import PlatformBreadcrumbs from './PlatformBreadcrumbs.svelte';
+	import NotificationBell from './NotificationBell.svelte';
+	import CommandPalette from './CommandPalette.svelte';
 
 	interface Props {
 		navigation: NavigationConfig;
@@ -56,6 +58,11 @@
 			</button>
 
 			<PlatformBreadcrumbs path={currentPath} overrides={breadcrumbOverrides} />
+
+			<div class="topbar-actions">
+				<span class="kbd-hint">Ctrl+K</span>
+				<NotificationBell />
+			</div>
 		</header>
 
 		<!-- Page content -->
@@ -63,6 +70,8 @@
 			{@render children()}
 		</div>
 	</main>
+
+	<CommandPalette userRole={user.role} />
 </div>
 
 <style>
@@ -115,6 +124,31 @@
 	.platform-mobile-toggle:focus-visible {
 		outline: none;
 		box-shadow: var(--shadow-glow-focus);
+	}
+
+	.topbar-actions {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		margin-left: auto;
+	}
+
+	.kbd-hint {
+		display: none;
+		font-size: 0.6875rem;
+		font-weight: 500;
+		padding: 0.125rem 0.5rem;
+		border: 1px solid oklch(var(--bc) / 0.15);
+		border-radius: 6px;
+		background: oklch(var(--bc) / 0.04);
+		color: oklch(var(--bc) / 0.4);
+		white-space: nowrap;
+	}
+
+	@media (min-width: 768px) {
+		.kbd-hint {
+			display: inline-block;
+		}
 	}
 
 	/* Hide mobile toggle on desktop */

@@ -8,6 +8,8 @@ import { usersRouter } from './users';
 import { authRouter } from './auth';
 import { filesRouter } from './files';
 import { adminRouter } from './admin';
+import { lmsRouter } from './lms';
+import { notificationRouter } from './notification';
 
 export const appRouter = router({
 	affiliate: affiliateRouter,
@@ -18,7 +20,9 @@ export const appRouter = router({
 	users: usersRouter,
 	auth: authRouter,
 	files: filesRouter,
-	admin: adminRouter
+	admin: adminRouter,
+	lms: lmsRouter,
+	notification: notificationRouter
 });
 
 export type AppRouter = typeof appRouter;
