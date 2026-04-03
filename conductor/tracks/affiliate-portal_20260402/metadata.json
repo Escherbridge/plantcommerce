@@ -1,0 +1,13 @@
+{
+  "trackId": "affiliate-portal_20260402",
+  "title": "Affiliate Portal Layout & Enhancement",
+  "type": "feature",
+  "status": "ready",
+  "priority": "high",
+  "dependencies": ["platform-shell_20260402"],
+  "estimatedDuration": "5-6 weeks",
+  "phases": 6,
+  "tasks": 35,
+  "createdAt": "2026-04-02",
+  "updatedAt": "2026-04-02"
+}

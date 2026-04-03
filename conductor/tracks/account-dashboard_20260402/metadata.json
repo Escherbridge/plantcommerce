@@ -1,0 +1,13 @@
+{
+  "trackId": "account-dashboard_20260402",
+  "title": "Account Dashboard & Customer Portal",
+  "type": "feature",
+  "status": "ready",
+  "priority": "high",
+  "dependencies": ["platform-shell_20260402"],
+  "estimatedDuration": "3-4 weeks",
+  "phases": 5,
+  "tasks": 32,
+  "createdAt": "2026-04-02",
+  "updatedAt": "2026-04-02"
+}

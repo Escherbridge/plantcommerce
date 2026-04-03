@@ -1,0 +1,12 @@
+{
+  "trackId": "admin-enhancement_20260402",
+  "title": "Admin Dashboard Enhancement",
+  "type": "feature",
+  "status": "ready",
+  "priority": "P1",
+  "dependencies": ["platform-shell_20260402"],
+  "createdAt": "2026-04-02",
+  "estimatedDuration": "4-5 weeks",
+  "phases": 6,
+  "tasks": 35
+}

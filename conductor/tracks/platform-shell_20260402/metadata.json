@@ -1,0 +1,14 @@
+{
+  "trackId": "platform-shell_20260402",
+  "title": "Platform Shell & Sidebar Component",
+  "type": "feature",
+  "status": "ready",
+  "priority": "P0",
+  "createdAt": "2026-04-02",
+  "estimatedHours": "8-12",
+  "phases": 4,
+  "tasks": 16,
+  "dependencies": ["design-system-brand_20260328"],
+  "dependents": ["Account layout migration", "Affiliate layout migration", "Admin layout migration"],
+  "tags": ["layout", "components", "platform", "sidebar", "navigation"]
+}

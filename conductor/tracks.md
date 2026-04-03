@@ -155,3 +155,95 @@
 - Abandoned cart recovery emails
 - Social sharing
 - Admin analytics dashboard (PostHog)
+
+## Phase 6: Internal Platform UI
+
+### Track 14: platform-shell_20260402
+**Status:** ready
+**Goal:** Build reusable PlatformSidebar and PlatformShell layout components for all internal pages
+**Spec:** [spec.md](tracks/platform-shell_20260402/spec.md)
+**Plan:** [plan.md](tracks/platform-shell_20260402/plan.md)
+**Dependencies:** Track 8 (design-system-brand)
+**Phases:** 4 | **Tasks:** 16
+- Reusable PlatformSidebar: collapsible, role-aware nav, user widget, mobile overlay
+- PlatformShell wrapper: sidebar + content area + breadcrumbs
+- Navigation configs for account, affiliate, and admin (TypeScript, SVG icons)
+- Generalized design tokens from profile page patterns (.platform-card, .platform-stat)
+- Dark theme support, accessibility pass, localStorage collapse persistence
+
+### Track 15: account-dashboard_20260402
+**Status:** ready (depends on Track 14)
+**Goal:** Unified customer portal with shared layout and enhanced account pages
+**Spec:** [spec.md](tracks/account-dashboard_20260402/spec.md)
+**Plan:** [plan.md](tracks/account-dashboard_20260402/plan.md)
+**Dependencies:** platform-shell_20260402
+**Phases:** 5 | **Tasks:** 32
+- Account layout using PlatformShell with shared sidebar navigation
+- Account overview dashboard with stats, recent orders, quick actions
+- Enhanced profile page (refactored from standalone), orders with status filters, wishlist with cart actions
+- New settings page (email prefs, notifications, theme toggle, delete account)
+- New addresses page with CRUD and default address selection
+
+### Track 16: affiliate-portal_20260402
+**Status:** ready (depends on Track 14)
+**Goal:** Comprehensive affiliate portal with shared layout and richer analytics
+**Spec:** [spec.md](tracks/affiliate-portal_20260402/spec.md)
+**Plan:** [plan.md](tracks/affiliate-portal_20260402/plan.md)
+**Dependencies:** platform-shell_20260402
+**Phases:** 6 | **Tasks:** 35
+- Affiliate layout with PlatformShell, mini-stats sidebar widget, centralized auth
+- Enhanced dashboard: period selector, CSS sparklines, top links, commission tier progress
+- Enhanced links: sortable columns, search/filter, copy-with-toast, status toggles
+- Enhanced earnings: date range filter, summary cards, CSV export
+- Enhanced materials: tabbed categories, product-specific promotional content
+- Affiliate settings: payment preferences, notification toggles, profile fields
+
+### Track 17: admin-enhancement_20260402
+**Status:** ready (depends on Track 14)
+**Goal:** Polished admin dashboard with better data viz and management UX
+**Spec:** [spec.md](tracks/admin-enhancement_20260402/spec.md)
+**Plan:** [plan.md](tracks/admin-enhancement_20260402/plan.md)
+**Dependencies:** platform-shell_20260402
+**Phases:** 6 | **Tasks:** 35
+- Admin layout migration to PlatformShell with badge counts
+- Enhanced dashboard: KPI cards, recent orders with inline status, activity feed
+- Enhanced products: inline edit, search/filter, bulk actions, stock indicators
+- Enhanced orders: status tabs, expandable rows, affiliate attribution, CSV export
+- Enhanced users: role badges, search/filter, inline role change, detail view
+- Admin settings page with store config, audit log viewer
+
+### Track 18: cross-role-nav_20260402
+**Status:** ready (depends on Tracks 14-17)
+**Goal:** Unified cross-portal experience with role switching, notifications, and command palette
+**Spec:** [spec.md](tracks/cross-role-nav_20260402/spec.md)
+**Plan:** [plan.md](tracks/cross-role-nav_20260402/plan.md)
+**Dependencies:** platform-shell_20260402, account-dashboard_20260402, affiliate-portal_20260402, admin-enhancement_20260402
+**Phases:** 6 | **Tasks:** 20
+- Role-aware header integration with portal quick links
+- Portal switcher component in sidebar footer
+- Notification bell with unread count, dropdown panel, mark-as-read
+- Notifications infrastructure: DB table, tRPC router, service
+- Activity feed component (role-filtered: audit log, clicks, orders)
+- Command palette (Ctrl+K): fuzzy search across pages/products/orders/users
+- Enhanced breadcrumb system (portal > section > page)
+
+## Phase 7: Education & Community
+
+### Track 19: lms-system_20260402
+**Status:** ready
+**Goal:** Comprehensive multimodal LMS with admin-configurable courses, quizzes, certificates, and progress tracking
+**Spec:** [spec.md](tracks/lms-system_20260402/spec.md)
+**Plan:** [plan.md](tracks/lms-system_20260402/plan.md)
+**Dependencies:** Tracks 1, 2, 6
+**Estimated Duration:** 12-14 weeks (9 phases, 75 tasks)
+- Hierarchical curriculum: Programs → Courses → Modules → Lessons → Content Blocks
+- Four course types: self-paced, instructor-led, blended, cohort-based
+- 8 multimodal content types (video, text, slides, audio, downloads, embeds, code, images)
+- Assessment engine: 8 question types, question banks, auto/manual grading
+- Progress tracking with learner and admin analytics dashboards
+- PDF certificates with public verification, achievement badges
+- Course pricing via Stripe (free, one-time purchase)
+- Enrollment management: open, approval, invite-only, capacity limits
+- New Instructor role with scoped permissions
+- Discussion forums, course reviews, bookmarks, and notes
+- Deep integration with affiliate system, product catalog, and existing CMS

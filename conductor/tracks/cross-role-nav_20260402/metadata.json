@@ -1,0 +1,16 @@
+{
+  "trackId": "cross-role-nav_20260402",
+  "title": "Cross-Role Navigation & Unified Experience",
+  "type": "feature",
+  "status": "ready",
+  "priority": "P0",
+  "createdAt": "2026-04-02",
+  "dependencies": [
+    "platform-shell_20260402",
+    "account-dashboard_20260402",
+    "affiliate-portal_20260402",
+    "admin-enhancement_20260402"
+  ],
+  "phases": 6,
+  "estimatedDuration": "5-7 days"
+}
