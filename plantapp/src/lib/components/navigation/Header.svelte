@@ -50,11 +50,21 @@
 		{ label: 'Support', href: '/support' }
 	];
 
-	const userNavigation = [
-		{ label: 'Account', href: '/account' },
-		{ label: 'Orders', href: '/orders' },
-		{ label: 'Wishlist', href: '/wishlist' }
-	];
+	const userNavigation = $derived.by(() => {
+		const base = [
+			{ label: 'Account', href: '/account' },
+			{ label: 'Orders', href: '/account/orders' },
+			{ label: 'Wishlist', href: '/account/wishlist' }
+		];
+		const role = user?.role;
+		if (role === 'affiliate' || role === 'admin') {
+			base.push({ label: 'Affiliate Portal', href: '/affiliate/dashboard' });
+		}
+		if (role === 'admin') {
+			base.push({ label: 'Admin Panel', href: '/admin' });
+		}
+		return base;
+	});
 
 	// Check if current path matches navigation item
 	function isActive(href: string): boolean {
@@ -187,10 +197,6 @@
 								{item.label}
 							</a>
 						{/each}
-						{#if user.role === 'admin'}
-							<hr class="dropdown-divider" />
-							<a href="/admin" class="user-dropdown-link">Admin Dashboard</a>
-						{/if}
 						<hr class="dropdown-divider" />
 						<button
 							onclick={handleLogout}

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { NavigationConfig, PlatformUser } from './types';
+	import PortalSwitcher from './PortalSwitcher.svelte';
 
 	interface Props {
 		navigation: NavigationConfig;
@@ -185,6 +186,7 @@
 
 	<!-- Footer -->
 	<div class="sidebar-footer">
+		<PortalSwitcher role={user.role} {currentPath} {collapsed} />
 		<div class="sidebar-divider"></div>
 		<a
 			href="/"
@@ -336,6 +338,7 @@
 
 	<!-- Footer -->
 	<div class="sidebar-footer">
+		<PortalSwitcher role={user.role} {currentPath} collapsed={false} />
 		<div class="sidebar-divider"></div>
 		<a href="/" class="sidebar-footer-item" onclick={closeMobile}>
 			<svg

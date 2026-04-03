@@ -14,7 +14,7 @@
 	const platformUser: PlatformUser = $derived({
 		name: `${data.user?.firstName || ''} ${data.user?.lastName || ''}`.trim() || 'Admin',
 		email: data.user?.email || '',
-		role: 'admin',
+		role: (data.user?.role || 'admin') as PlatformUser['role'],
 		avatarUrl: undefined
 	});
 
