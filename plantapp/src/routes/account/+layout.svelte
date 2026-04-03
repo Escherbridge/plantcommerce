@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { browser } from '$app/environment';
-	import { PlatformShell, adminNavigation } from '$lib/components/platform';
+	import { PlatformShell, accountNavigation } from '$lib/components/platform';
 	import type { PlatformUser } from '$lib/components/platform';
-	import '$lib/components/platform/platform.css';
 	import { trpc } from '$lib/trpc/client';
 	import type { LayoutData } from './$types';
 
@@ -12,9 +11,9 @@
 	const currentPath = $derived($page.url.pathname);
 
 	const platformUser: PlatformUser = $derived({
-		name: `${data.user?.firstName || ''} ${data.user?.lastName || ''}`.trim() || 'Admin',
+		name: `${data.user?.firstName || ''} ${data.user?.lastName || ''}`.trim() || 'Account',
 		email: data.user?.email || '',
-		role: 'admin',
+		role: data.user?.role || 'customer',
 		avatarUrl: undefined
 	});
 
@@ -51,6 +50,6 @@
 	});
 </script>
 
-<PlatformShell navigation={adminNavigation} user={platformUser} {currentPath}>
+<PlatformShell navigation={accountNavigation} user={platformUser} {currentPath}>
 	{@render children()}
 </PlatformShell>

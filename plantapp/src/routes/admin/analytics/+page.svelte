@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { Grid } from '$lib/components/layout';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -17,135 +16,216 @@
 	);
 </script>
 
-<div class="space-y-6">
-	<h1 class="text-3xl font-bold">Analytics & Reports</h1>
+<div class="platform-content">
+	<div class="platform-header">
+		<h1 class="platform-header__title">Analytics</h1>
+		<p class="platform-header__subtitle">Insights and performance metrics for your store</p>
+	</div>
 
-	<!-- Date Range Selector -->
-	<div class="card bg-base-100 shadow-xl">
-		<div class="card-body">
-			<div class="flex gap-4">
-				<div class="form-control">
-					<label class="label" for="date-from">
-						<span class="label-text">From</span>
-					</label>
-					<input id="date-from" type="date" class="input input-bordered" />
-				</div>
-				<div class="form-control">
-					<label class="label" for="date-to">
-						<span class="label-text">To</span>
-					</label>
-					<input id="date-to" type="date" class="input input-bordered" />
-				</div>
-				<div class="form-control">
-					<div class="label">&nbsp;</div>
-					<button class="btn btn-primary">Apply Filter</button>
-				</div>
+	<!-- KPI Stats -->
+	<div class="admin-analytics-grid">
+		<div class="platform-stat">
+			<span class="platform-stat__label">Total Revenue</span>
+			<span class="platform-stat__value" style="color: oklch(var(--su))">
+				${analytics.totalRevenue.toLocaleString()}
+			</span>
+		</div>
+
+		<div class="platform-stat">
+			<span class="platform-stat__label">Total Orders</span>
+			<span class="platform-stat__value">{analytics.totalOrders.toLocaleString()}</span>
+		</div>
+
+		<div class="platform-stat">
+			<span class="platform-stat__label">Avg Order Value</span>
+			<span class="platform-stat__value">${analytics.averageOrderValue.toFixed(2)}</span>
+		</div>
+
+		<div class="platform-stat">
+			<span class="platform-stat__label">Conversion Rate</span>
+			<span class="platform-stat__value">{analytics.conversionRate.toFixed(1)}%</span>
+		</div>
+	</div>
+
+	<!-- Charts Placeholder -->
+	<div class="admin-charts-row">
+		<div class="platform-card">
+			<div class="platform-card__header">
+				<h2 class="platform-card__title">Revenue Trend</h2>
+			</div>
+			<div class="admin-chart-placeholder">
+				<svg viewBox="0 0 24 24" class="w-8 h-8" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: oklch(var(--bc) / 0.2)">
+					<path d="M3 17l6-6 4 4 8-8"/>
+					<path d="M14 7h7v7"/>
+				</svg>
+				<p>Revenue chart will be rendered here</p>
+			</div>
+		</div>
+
+		<div class="platform-card">
+			<div class="platform-card__header">
+				<h2 class="platform-card__title">Orders by Status</h2>
+			</div>
+			<div class="admin-chart-placeholder">
+				<svg viewBox="0 0 24 24" class="w-8 h-8" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: oklch(var(--bc) / 0.2)">
+					<path d="M4 20h16M8 16V8M12 16V4M16 16v-6"/>
+				</svg>
+				<p>Status distribution chart will be rendered here</p>
 			</div>
 		</div>
 	</div>
 
-	<!-- Key Metrics -->
-	<Grid columns={4} gap={4}>
-		<div class="stat bg-base-100 shadow-xl rounded-lg">
-			<div class="stat-title">Total Revenue</div>
-			<div class="stat-value text-primary">${analytics.totalRevenue.toLocaleString()}</div>
-			<div class="stat-desc">↗︎ 14% increase from last period</div>
-		</div>
-
-		<div class="stat bg-base-100 shadow-xl rounded-lg">
-			<div class="stat-title">Total Orders</div>
-			<div class="stat-value text-secondary">{analytics.totalOrders.toLocaleString()}</div>
-			<div class="stat-desc">↗︎ 8% increase from last period</div>
-		</div>
-
-		<div class="stat bg-base-100 shadow-xl rounded-lg">
-			<div class="stat-title">Avg Order Value</div>
-			<div class="stat-value text-accent">${analytics.averageOrderValue.toFixed(2)}</div>
-			<div class="stat-desc">↗︎ 5% increase from last period</div>
-		</div>
-
-		<div class="stat bg-base-100 shadow-xl rounded-lg">
-			<div class="stat-title">Conversion Rate</div>
-			<div class="stat-value text-warning">{analytics.conversionRate.toFixed(1)}%</div>
-			<div class="stat-desc">↘︎ 2% decrease from last period</div>
-		</div>
-	</Grid>
-
-	<!-- Charts -->
-	<Grid columns={2} gap={6}>
-		<div class="card bg-base-100 shadow-xl">
-			<div class="card-body">
-				<h2 class="card-title">Revenue Trend</h2>
-				<div class="h-64 bg-base-200 rounded-lg flex items-center justify-center">
-					<p class="text-base-content/50">Revenue chart will be rendered here</p>
+	<!-- Top Products -->
+	<div class="admin-charts-row">
+		<div class="platform-card">
+			<div class="platform-card__header">
+				<h2 class="platform-card__title">Top Products</h2>
+			</div>
+			{#if analytics.topProducts && analytics.topProducts.length > 0}
+				<div class="admin-ranking-list">
+					{#each analytics.topProducts as product, index}
+						<div class="admin-ranking-item">
+							<div class="admin-ranking-position">{index + 1}</div>
+							<span class="admin-ranking-name">{product.name}</span>
+							<span class="platform-badge platform-badge--primary">{product.sales} sales</span>
+						</div>
+					{/each}
 				</div>
-			</div>
-		</div>
-
-		<div class="card bg-base-100 shadow-xl">
-			<div class="card-body">
-				<h2 class="card-title">Orders by Status</h2>
-				<div class="h-64 bg-base-200 rounded-lg flex items-center justify-center">
-					<p class="text-base-content/50">Status distribution chart will be rendered here</p>
+			{:else}
+				<div class="platform-empty">
+					<p class="platform-empty__text">No data available</p>
 				</div>
-			</div>
-		</div>
-	</Grid>
-
-	<!-- Top Products & Categories -->
-	<Grid columns={2} gap={6}>
-		<div class="card bg-base-100 shadow-xl">
-			<div class="card-body">
-				<h2 class="card-title mb-4">Top Products</h2>
-				{#if analytics.topProducts && analytics.topProducts.length > 0}
-					<div class="space-y-2">
-						{#each analytics.topProducts as product, index}
-							<div class="flex justify-between items-center p-2 bg-base-200 rounded">
-								<div class="flex items-center gap-3">
-									<span class="font-bold text-lg">{index + 1}</span>
-									<span>{product.name}</span>
-								</div>
-								<span class="badge badge-primary">{product.sales} sales</span>
-							</div>
-						{/each}
-					</div>
-				{:else}
-					<p class="text-center py-8 text-base-content/70">No data available</p>
-				{/if}
-			</div>
+			{/if}
 		</div>
 
-		<div class="card bg-base-100 shadow-xl">
-			<div class="card-body">
-				<h2 class="card-title mb-4">Top Categories</h2>
-				{#if analytics.topCategories && analytics.topCategories.length > 0}
-					<div class="space-y-2">
-						{#each analytics.topCategories as category, index}
-							<div class="flex justify-between items-center p-2 bg-base-200 rounded">
-								<div class="flex items-center gap-3">
-									<span class="font-bold text-lg">{index + 1}</span>
-									<span>{category.name}</span>
-								</div>
-								<span class="badge badge-secondary">${category.revenue.toLocaleString()}</span>
-							</div>
-						{/each}
-					</div>
-				{:else}
-					<p class="text-center py-8 text-base-content/70">No data available</p>
-				{/if}
+		<div class="platform-card">
+			<div class="platform-card__header">
+				<h2 class="platform-card__title">Top Categories</h2>
 			</div>
+			{#if analytics.topCategories && analytics.topCategories.length > 0}
+				<div class="admin-ranking-list">
+					{#each analytics.topCategories as category, index}
+						<div class="admin-ranking-item">
+							<div class="admin-ranking-position">{index + 1}</div>
+							<span class="admin-ranking-name">{category.name}</span>
+							<span class="platform-badge platform-badge--secondary">${category.revenue.toLocaleString()}</span>
+						</div>
+					{/each}
+				</div>
+			{:else}
+				<div class="platform-empty">
+					<p class="platform-empty__text">No data available</p>
+				</div>
+			{/if}
 		</div>
-	</Grid>
+	</div>
 
-	<!-- Export Reports -->
-	<div class="card bg-base-100 shadow-xl">
-		<div class="card-body">
-			<h2 class="card-title mb-4">Export Reports</h2>
-			<div class="flex gap-4">
-				<button class="btn btn-outline">Export as CSV</button>
-				<button class="btn btn-outline">Export as PDF</button>
-				<button class="btn btn-outline">Export as Excel</button>
-			</div>
+	<!-- Export -->
+	<div class="platform-card">
+		<div class="platform-card__header">
+			<h2 class="platform-card__title">Export Reports</h2>
+		</div>
+		<div class="admin-export-actions">
+			<button class="platform-action-btn">
+				<svg viewBox="0 0 24 24" class="w-4 h-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+					<polyline points="7 10 12 15 17 10"/>
+					<line x1="12" y1="15" x2="12" y2="3"/>
+				</svg>
+				Export as CSV
+			</button>
+			<button class="platform-action-btn">
+				<svg viewBox="0 0 24 24" class="w-4 h-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+					<polyline points="14 2 14 8 20 8"/>
+				</svg>
+				Export as PDF
+			</button>
 		</div>
 	</div>
 </div>
+
+<style>
+	.admin-analytics-grid {
+		display: grid;
+		grid-template-columns: repeat(1, 1fr);
+		gap: 1rem;
+	}
+
+	@media (min-width: 640px) {
+		.admin-analytics-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.admin-analytics-grid {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+
+	.admin-charts-row {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+
+	@media (min-width: 768px) {
+		.admin-charts-row {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	.admin-chart-placeholder {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 16rem;
+		background: oklch(var(--b2));
+		border-radius: calc(var(--radius-lg, 16px) - 8px);
+		border: 1px dashed var(--input-border);
+		gap: 0.75rem;
+	}
+
+	.admin-chart-placeholder p {
+		font-size: 0.8125rem;
+		color: oklch(var(--bc) / 0.35);
+		margin: 0;
+	}
+
+	.admin-ranking-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.admin-ranking-item {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.5rem 0.75rem;
+		background: oklch(var(--b2));
+		border-radius: 8px;
+	}
+
+	.admin-ranking-position {
+		font-family: var(--font-display);
+		font-size: 0.875rem;
+		font-weight: 700;
+		color: oklch(var(--bc) / 0.4);
+		min-width: 1.5rem;
+	}
+
+	.admin-ranking-name {
+		flex: 1;
+		font-size: 0.875rem;
+		color: oklch(var(--bc) / 0.85);
+	}
+
+	.admin-export-actions {
+		display: flex;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+</style>

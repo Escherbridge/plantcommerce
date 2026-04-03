@@ -1,12 +1,11 @@
 import type { PageLoad } from './$types';
-import { requireAuth } from '$lib/loaders/protected';
 import { trpc } from '$lib/trpc/client';
 
 export const load: PageLoad = async (event) => {
 	const { url } = event;
 	const status = url.searchParams.get('status');
 
-	await requireAuth(event);
+	// Auth is handled by the account layout
 
 	try {
 		const orders = await trpc(event).orders.getUserOrders.query({

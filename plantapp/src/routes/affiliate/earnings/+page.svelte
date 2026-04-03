@@ -1,167 +1,275 @@
 <script lang="ts">
-	import { Container, Section } from '$lib/components/layout';
+	import '$lib/components/platform/platform.css';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 
-	const months = [
-		'January',
-		'February',
-		'March',
-		'April',
-		'May',
-		'June',
-		'July',
-		'August',
-		'September',
-		'October',
-		'November',
-		'December'
-	];
+	let dateFrom = $state('');
+	let dateTo = $state('');
+
+	const thisMonth = $derived(data.currentMonthEarnings || 0);
+	const lastMonth = $derived(0); // placeholder
+	const allTime = $derived(data.totalEarnings || 0);
+	const pendingPayout = $derived(data.pendingPayout || 0);
+
+	function exportCsv() {
+		const history = data.earningsHistory || [];
+		if (history.length === 0) {
+			alert('No earnings data to export.');
+			return;
+		}
+
+		const headers = ['Date', 'Order ID', 'Product', 'Sale Amount', 'Commission Rate', 'Commission Earned', 'Status'];
+		const rows = history.map((e: any) => [
+			new Date(e.date).toLocaleDateString(),
+			e.orderId,
+			e.productName,
+			e.saleAmount.toFixed(2),
+			(e.commissionRate * 100).toFixed(1) + '%',
+			e.commission.toFixed(2),
+			e.status
+		]);
+
+		const csv = [headers.join(','), ...rows.map((r: string[]) => r.join(','))].join('\n');
+		const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `affiliate-earnings-${new Date().toISOString().slice(0, 10)}.csv`;
+		a.click();
+		URL.revokeObjectURL(url);
+	}
 </script>
 
-<Section>
-	<Container>
-		<div class="mb-8">
-			<h1 class="text-4xl font-display uppercase tracking-tight mb-2">Earnings</h1>
-			<p class="text-lg text-base-content/70">
-				Track your commission history, payment schedules, and performance analytics.
+<div class="platform-content">
+	<div class="platform-header">
+		<h1 class="platform-header__title">Earnings</h1>
+		<p class="platform-header__subtitle">
+			Track your commission history, payment schedules, and performance analytics.
+		</p>
+	</div>
+
+	<!-- Summary Stats -->
+	<div class="platform-stats">
+		<div class="platform-stat">
+			<span class="platform-stat__label">This Month</span>
+			<span class="platform-stat__value">${thisMonth.toFixed(2)}</span>
+		</div>
+		<div class="platform-stat">
+			<span class="platform-stat__label">Last Month</span>
+			<span class="platform-stat__value">${lastMonth.toFixed(2)}</span>
+		</div>
+		<div class="platform-stat">
+			<span class="platform-stat__label">All Time</span>
+			<span class="platform-stat__value">${allTime.toFixed(2)}</span>
+		</div>
+		<div class="platform-stat">
+			<span class="platform-stat__label">Pending Payout</span>
+			<span class="platform-stat__value">${pendingPayout.toFixed(2)}</span>
+		</div>
+	</div>
+
+	<!-- Date Range + Export -->
+	<div class="filter-row">
+		<div class="date-range">
+			<div class="field">
+				<label for="date-from" class="field-label">From</label>
+				<input id="date-from" type="date" class="field-input" bind:value={dateFrom} />
+			</div>
+			<div class="field">
+				<label for="date-to" class="field-label">To</label>
+				<input id="date-to" type="date" class="field-input" bind:value={dateTo} />
+			</div>
+		</div>
+		<button class="export-btn" onclick={exportCsv}>
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+				<path d="M12 3v12M7 14l5 5 5-5M3 19h18"/>
+			</svg>
+			Export CSV
+		</button>
+	</div>
+
+	<!-- Earnings History -->
+	<div class="platform-card">
+		<div class="platform-card__header">
+			<h2 class="platform-card__title">Commission History</h2>
+		</div>
+		{#if data.earningsHistory && data.earningsHistory.length > 0}
+			<div class="platform-table-wrapper" style="border:none;">
+				<table class="platform-table">
+					<thead>
+						<tr>
+							<th>Date</th>
+							<th>Order ID</th>
+							<th>Product</th>
+							<th>Sale Amount</th>
+							<th>Commission Rate</th>
+							<th>Commission Earned</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each data.earningsHistory as earning}
+							<tr>
+								<td>{new Date(earning.date).toLocaleDateString()}</td>
+								<td class="mono-cell">{earning.orderId}</td>
+								<td>{earning.productName}</td>
+								<td>${earning.saleAmount.toFixed(2)}</td>
+								<td>{(earning.commissionRate * 100).toFixed(1)}%</td>
+								<td class="earnings-cell">${earning.commission.toFixed(2)}</td>
+								<td>
+									{#if earning.status === 'paid'}
+										<span class="platform-badge platform-badge--success">Paid</span>
+									{:else if earning.status === 'pending'}
+										<span class="platform-badge platform-badge--warning">Pending</span>
+									{:else}
+										<span class="platform-badge platform-badge--ghost">Processing</span>
+									{/if}
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
+		{:else}
+			<div class="platform-empty">
+				<p class="platform-empty__title">No earnings yet</p>
+				<p class="platform-empty__text">Start promoting your links to earn commissions.</p>
+			</div>
+		{/if}
+	</div>
+
+	<!-- Payment Schedule -->
+	<div class="platform-card">
+		<div class="platform-card__header">
+			<h2 class="platform-card__title">Payment Schedule</h2>
+		</div>
+		<div class="schedule-list">
+			<div class="schedule-item">
+				<span class="platform-badge platform-badge--primary">Monthly</span>
+				<p>Payments are processed on the 15th of each month</p>
+			</div>
+			<div class="schedule-item">
+				<span class="platform-badge platform-badge--secondary">Minimum</span>
+				<p>$50 minimum payout threshold</p>
+			</div>
+			<div class="schedule-item">
+				<span class="platform-badge platform-badge--warning">Processing</span>
+				<p>Payments typically arrive within 3-5 business days</p>
+			</div>
+		</div>
+		<div class="schedule-footer">
+			<p>
+				<strong>Next Payout Date:</strong>
+				{new Date(new Date().getFullYear(), new Date().getMonth() + 1, 15).toLocaleDateString()}
 			</p>
 		</div>
+	</div>
+</div>
 
-		<!-- Earnings Summary -->
-		<div class="grid md:grid-cols-3 gap-6 mb-12">
-			<div class="stat bg-base-100 shadow-xl rounded-3xl border border-base-200/30">
-				<div class="stat-title font-mono text-xs uppercase tracking-widest">Total Earnings</div>
-				<div class="stat-value text-success">
-					${data.totalEarnings?.toFixed(2) || '0.00'}
-				</div>
-				<div class="stat-desc">All time commission</div>
-			</div>
-			<div class="stat bg-base-100 shadow-xl rounded-3xl border border-base-200/30">
-				<div class="stat-title font-mono text-xs uppercase tracking-widest">Pending Payout</div>
-				<div class="stat-value text-warning">
-					${data.pendingPayout?.toFixed(2) || '0.00'}
-				</div>
-				<div class="stat-desc">Next payment cycle</div>
-			</div>
-			<div class="stat bg-base-100 shadow-xl rounded-3xl border border-base-200/30">
-				<div class="stat-title font-mono text-xs uppercase tracking-widest">This Month</div>
-				<div class="stat-value text-primary">
-					${data.currentMonthEarnings?.toFixed(2) || '0.00'}
-				</div>
-				<div class="stat-desc">Current month earnings</div>
-			</div>
-		</div>
+<style>
+	.filter-row {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
 
-		<!-- Payment Methods -->
-		<div class="card bg-base-100 shadow-xl rounded-3xl border border-base-200/30 mb-12">
-			<div class="card-body">
-				<h2 class="card-title font-display uppercase tracking-tight mb-4">Payment Method</h2>
-				{#if data.paymentMethod}
-					<div class="flex items-center justify-between">
-						<div>
-							<p class="font-semibold">{data.paymentMethod.type}</p>
-							<p class="text-sm text-base-content/70">{data.paymentMethod.details}</p>
-						</div>
-						<button class="btn btn-outline btn-sm font-display uppercase tracking-wider">Update</button>
-					</div>
-				{:else}
-					<div class="alert alert-warning">
-						<span>No payment method configured. Please add one to receive payouts.</span>
-						<button class="btn btn-sm btn-primary font-display uppercase tracking-wider">Add Payment Method</button>
-					</div>
-				{/if}
-			</div>
-		</div>
+	.date-range {
+		display: flex;
+		gap: 0.75rem;
+	}
 
-		<!-- Earnings History -->
-		<div class="mb-12">
-			<h2 class="text-2xl font-display uppercase tracking-tight mb-4">Commission History</h2>
-			{#if data.earningsHistory && data.earningsHistory.length > 0}
-				<div class="overflow-x-auto">
-					<table class="table table-zebra">
-						<thead>
-							<tr>
-								<th class="font-mono text-xs uppercase tracking-widest">Date</th>
-								<th class="font-mono text-xs uppercase tracking-widest">Order ID</th>
-								<th class="font-mono text-xs uppercase tracking-widest">Product</th>
-								<th class="font-mono text-xs uppercase tracking-widest">Sale Amount</th>
-								<th class="font-mono text-xs uppercase tracking-widest">Commission Rate</th>
-								<th class="font-mono text-xs uppercase tracking-widest">Commission Earned</th>
-								<th class="font-mono text-xs uppercase tracking-widest">Status</th>
-							</tr>
-						</thead>
-						<tbody>
-							{#each data.earningsHistory as earning}
-								<tr>
-									<td>
-										{new Date(earning.date).toLocaleDateString()}
-									</td>
-									<td class="font-mono text-sm">{earning.orderId}</td>
-									<td>{earning.productName}</td>
-									<td>${earning.saleAmount.toFixed(2)}</td>
-									<td>{(earning.commissionRate * 100).toFixed(1)}%</td>
-									<td class="font-semibold text-success">
-										${earning.commission.toFixed(2)}
-									</td>
-									<td>
-										{#if earning.status === 'paid'}
-											<span class="badge badge-success">Paid</span>
-										{:else if earning.status === 'pending'}
-											<span class="badge badge-warning">Pending</span>
-										{:else}
-											<span class="badge badge-ghost">Processing</span>
-										{/if}
-									</td>
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-				</div>
-			{:else}
-				<div class="text-center py-12 bg-base-200 rounded-3xl border border-base-200/30">
-					<p class="text-xl text-base-content/70">No earnings yet. Start promoting your links!</p>
-				</div>
-			{/if}
-		</div>
+	.field {
+		display: flex;
+		flex-direction: column;
+		gap: 0.375rem;
+	}
 
-		<!-- Payment Schedule -->
-		<div class="card bg-base-100 shadow-xl rounded-3xl border border-base-200/30">
-			<div class="card-body">
-				<h2 class="card-title font-display uppercase tracking-tight mb-4">Payment Schedule</h2>
-				<div class="space-y-4">
-					<div class="flex items-center gap-4">
-						<div class="badge badge-primary">Monthly</div>
-						<p>Payments are processed on the 15th of each month</p>
-					</div>
-					<div class="flex items-center gap-4">
-						<div class="badge badge-secondary">Minimum</div>
-						<p>$50 minimum payout threshold</p>
-					</div>
-					<div class="flex items-center gap-4">
-						<div class="badge badge-accent">Processing</div>
-						<p>Payments typically arrive within 3-5 business days</p>
-					</div>
-				</div>
-				<div class="divider"></div>
-				<div class="text-sm text-base-content/70">
-					<p class="mb-2">
-						<strong>Next Payout Date:</strong>
-						{new Date(
-							new Date().getFullYear(),
-							new Date().getMonth() + 1,
-							15
-						).toLocaleDateString()}
-					</p>
-					<p>
-						<strong>Tax Documents:</strong>
-						<a href="/affiliate/tax-documents" class="link link-primary ml-2">
-							View 1099 Forms
-						</a>
-					</p>
-				</div>
-			</div>
-		</div>
-	</Container>
-</Section>
+	.field-label {
+		font-family: var(--font-display);
+		font-size: 0.6875rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: oklch(var(--bc) / 0.5);
+	}
+
+	.field-input {
+		padding: 0.5rem 0.75rem;
+		border: 1.5px solid var(--input-border);
+		border-radius: var(--input-radius, 10px);
+		background: oklch(var(--b1));
+		color: oklch(var(--bc));
+		font-size: 0.8125rem;
+		font-family: var(--font-body);
+	}
+
+	.field-input:focus {
+		outline: none;
+		border-color: oklch(var(--p));
+	}
+
+	.export-btn {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.625rem 1.25rem;
+		background: oklch(var(--p));
+		color: oklch(var(--pc));
+		border: none;
+		border-radius: var(--input-radius, 10px);
+		font-family: var(--font-display);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		cursor: pointer;
+		transition: opacity 150ms ease;
+	}
+
+	.export-btn:hover {
+		opacity: 0.9;
+	}
+
+	.btn-icon {
+		width: 1rem;
+		height: 1rem;
+	}
+
+	.mono-cell {
+		font-family: var(--font-mono, monospace);
+		font-size: 0.8125rem;
+	}
+
+	.earnings-cell {
+		font-weight: 600;
+		color: oklch(var(--su));
+	}
+
+	.schedule-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.875rem;
+	}
+
+	.schedule-item {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.schedule-item p {
+		font-size: 0.875rem;
+		color: oklch(var(--bc) / 0.7);
+	}
+
+	.schedule-footer {
+		margin-top: 1.25rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--input-border);
+		font-size: 0.875rem;
+		color: oklch(var(--bc) / 0.6);
+	}
+</style>

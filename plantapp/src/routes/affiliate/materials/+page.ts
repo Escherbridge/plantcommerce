@@ -1,9 +1,6 @@
 import type { PageLoad } from './$types';
-import { requireAffiliate } from '$lib/loaders/protected';
-import { redirect } from '@sveltejs/kit';
 
 export const load: PageLoad = async (event) => {
-	await requireAffiliate(event);
 
 	// Marketing materials would typically include:
 	// - Downloadable images/banners

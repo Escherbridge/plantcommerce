@@ -1,0 +1,253 @@
+/* ── Platform Card ── */
+.platform-card {
+  background: oklch(var(--b1));
+  border: 1.5px solid var(--input-border);
+  border-radius: var(--radius-lg, 16px);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-glow-sm);
+}
+
+.platform-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.platform-card__title {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: oklch(var(--bc));
+}
+
+.platform-card__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.25rem;
+}
+
+/* ── Platform Stats ── */
+.platform-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 1rem;
+}
+
+.platform-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.25rem;
+  background: oklch(var(--b2));
+  border-radius: calc(var(--radius-lg, 16px) - 4px);
+  border: 1px solid var(--input-border);
+}
+
+.platform-stat__label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: oklch(var(--bc) / 0.5);
+}
+
+.platform-stat__value {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  line-height: 1;
+}
+
+/* ── Platform Form Layouts ── */
+.platform-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .platform-form-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem 1rem;
+  }
+}
+
+.platform-form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Platform Action Buttons ── */
+.platform-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 1.5px solid var(--input-border);
+  border-radius: var(--input-radius, 10px);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: oklch(var(--bc) / 0.7);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.platform-action-btn:hover {
+  border-color: var(--input-border-hover);
+  background: oklch(var(--p) / 0.04);
+  color: oklch(var(--bc));
+}
+
+.platform-action-btn--danger {
+  color: oklch(var(--er) / 0.7);
+}
+
+.platform-action-btn--danger:hover {
+  border-color: oklch(var(--er) / 0.3);
+  background: oklch(var(--er) / 0.04);
+  color: oklch(var(--er));
+}
+
+/* ── Platform Content Layout ── */
+.platform-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.platform-header {
+  margin-bottom: 0.5rem;
+}
+
+.platform-header__title {
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: oklch(var(--bc));
+  line-height: 1.1;
+}
+
+.platform-header__subtitle {
+  font-size: 1rem;
+  color: oklch(var(--bc) / 0.7);
+  margin-top: 0.25rem;
+}
+
+/* ── Platform Table ── */
+.platform-table-wrapper {
+  overflow-x: auto;
+  border: 1.5px solid var(--input-border);
+  border-radius: var(--radius-lg, 16px);
+}
+
+.platform-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.platform-table th {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: oklch(var(--bc) / 0.5);
+  padding: 0.875rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--input-border);
+  background: oklch(var(--b2));
+}
+
+.platform-table td {
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  color: oklch(var(--bc) / 0.85);
+  border-bottom: 1px solid oklch(var(--bc) / 0.05);
+}
+
+.platform-table tr:last-child td {
+  border-bottom: none;
+}
+
+.platform-table tr:hover td {
+  background: oklch(var(--p) / 0.02);
+}
+
+/* ── Platform Empty State ── */
+.platform-empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background: oklch(var(--b2));
+  border-radius: var(--radius-lg, 16px);
+  border: 1.5px dashed var(--input-border);
+}
+
+.platform-empty__title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: oklch(var(--bc) / 0.7);
+  margin-bottom: 0.5rem;
+}
+
+.platform-empty__text {
+  font-size: 0.875rem;
+  color: oklch(var(--bc) / 0.5);
+}
+
+/* ── Platform Badge ── */
+.platform-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 9999px;
+}
+
+.platform-badge--primary {
+  background: oklch(var(--p) / 0.12);
+  color: oklch(var(--p));
+}
+
+.platform-badge--secondary {
+  background: oklch(var(--s) / 0.12);
+  color: oklch(var(--s));
+}
+
+.platform-badge--success {
+  background: oklch(var(--su) / 0.12);
+  color: oklch(var(--su));
+}
+
+.platform-badge--warning {
+  background: oklch(var(--wa) / 0.12);
+  color: oklch(var(--wa));
+}
+
+.platform-badge--error {
+  background: oklch(var(--er) / 0.12);
+  color: oklch(var(--er));
+}
+
+.platform-badge--ghost {
+  background: oklch(var(--bc) / 0.06);
+  color: oklch(var(--bc) / 0.6);
+}

@@ -1,11 +1,8 @@
 import type { PageLoad } from './$types';
-import { requireAffiliate } from '$lib/loaders/protected';
 import { trpc } from '$lib/trpc/client';
 import { redirect } from '@sveltejs/kit';
 
 export const load: PageLoad = async (event) => {
-	await requireAffiliate(event);
-
 	try {
 		const affiliate = await trpc(event).affiliate.getMyAffiliate.query();
 

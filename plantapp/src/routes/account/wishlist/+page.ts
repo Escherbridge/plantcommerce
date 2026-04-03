@@ -1,14 +1,12 @@
 import type { PageLoad } from './$types';
-import { requireAuth } from '$lib/loaders/protected';
 import { trpc } from '$lib/trpc/client';
 
 export const load: PageLoad = async (event) => {
-	await requireAuth(event);
+	// Auth is handled by the account layout
 
 	try {
 		const wishlist = await trpc(event).users.getWishlist.query();
 
-		// Get product recommendations
 		let recommendations = [];
 		try {
 			recommendations = await trpc(event).products.getProducts.query({

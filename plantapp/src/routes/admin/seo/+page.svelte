@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { trpc } from '$lib/trpc/client';
 
 	let seoFields = $state<any[]>([]);
 	let loading = $state(true);
@@ -9,7 +8,6 @@
 	onMount(async () => {
 		try {
 			loading = true;
-			// This would call your API - for now, we'll mock it
 			seoFields = [
 				{
 					id: '1',
@@ -44,70 +42,68 @@
 
 	function handleSave(field: any) {
 		console.log('Saving SEO field:', field);
-		// Implement save logic here
-		alert(`SEO fields for "${field.pageId}" saved!`);
 	}
 </script>
 
-<div class="p-6">
-	<h1 class="mb-6 text-2xl font-bold text-gray-900">CMS SEO Fields</h1>
+<div class="platform-content">
+	<div class="platform-header">
+		<h1 class="platform-header__title">SEO Management</h1>
+		<p class="platform-header__subtitle">Manage meta tags and Open Graph data for all pages</p>
+	</div>
 
 	{#if loading}
-		<div class="flex justify-center p-8">
-			<div class="loading loading-spinner loading-lg"></div>
+		<div class="platform-empty">
+			<p class="platform-empty__text">Loading SEO fields...</p>
 		</div>
 	{:else if error}
-		<div class="alert alert-error">
-			<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-			</svg>
-			<span>{error}</span>
+		<div class="platform-card" style="border-color: oklch(var(--er) / 0.3)">
+			<p style="color: oklch(var(--er)); font-size: 0.875rem">{error}</p>
 		</div>
 	{:else}
-		<div class="overflow-x-auto rounded-lg border border-gray-200 bg-white">
-			<table class="min-w-full divide-y divide-gray-200">
-				<thead class="bg-gray-50">
+		<div class="platform-table-wrapper">
+			<table class="platform-table">
+				<thead>
 					<tr>
-						<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Page</th>
-						<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Meta Title</th>
-						<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Meta Description</th>
-						<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Last Updated</th>
-						<th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Actions</th>
+						<th>Page</th>
+						<th>Meta Title</th>
+						<th>Meta Description</th>
+						<th>Last Updated</th>
+						<th>Actions</th>
 					</tr>
 				</thead>
-				<tbody class="divide-y divide-gray-200 bg-white">
+				<tbody>
 					{#each seoFields as field}
-						<tr class="hover:bg-gray-50">
-							<td class="whitespace-nowrap px-6 py-4">
-								<div class="font-medium text-gray-900">{field.pageId}</div>
-								<div class="text-sm text-gray-500">{field.pageType}</div>
+						<tr>
+							<td>
+								<div class="font-semibold">{field.pageId}</div>
+								<div style="font-size: 0.75rem; color: oklch(var(--bc) / 0.45)">{field.pageType}</div>
 							</td>
-							<td class="px-6 py-4">
-								<div class="max-w-xs truncate text-sm text-gray-900" title={field.metaTitle}>
+							<td>
+								<div class="admin-seo-truncate" title={field.metaTitle}>
 									{field.metaTitle}
 								</div>
 							</td>
-							<td class="px-6 py-4">
-								<div class="max-w-xs truncate text-sm text-gray-500" title={field.metaDescription}>
+							<td>
+								<div class="admin-seo-truncate" title={field.metaDescription}>
 									{field.metaDescription}
 								</div>
 							</td>
-							<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-								{new Date(field.updatedAt).toLocaleDateString()}
-							</td>
-							<td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
-								<button
-									onclick={() => handleSave(field)}
-									class="text-primary hover:text-primary/80 mr-4"
-								>
-									Edit
-								</button>
-								<button
-									onclick={() => console.log('Preview:', field)}
-									class="text-gray-600 hover:text-gray-900"
-								>
-									Preview
-								</button>
+							<td>{new Date(field.updatedAt).toLocaleDateString()}</td>
+							<td>
+								<div class="admin-action-group">
+									<button
+										class="platform-action-btn admin-table-btn"
+										onclick={() => handleSave(field)}
+									>
+										Edit
+									</button>
+									<button
+										class="platform-action-btn admin-table-btn"
+										onclick={() => console.log('Preview:', field)}
+									>
+										Preview
+									</button>
+								</div>
 							</td>
 						</tr>
 					{/each}
@@ -115,27 +111,90 @@
 			</table>
 		</div>
 
-		<div class="mt-8 rounded-lg border border-gray-200 bg-gray-50 p-6">
-			<h2 class="mb-4 text-lg font-semibold text-gray-900">About CMS SEO Fields</h2>
-			<p class="text-gray-600">
-				This is your content management system for SEO meta tags. Edit meta titles, descriptions,
-				and Open Graph tags for each page. Changes here will affect how your pages appear in
-				search results and social media shares.
+		<!-- Info Cards -->
+		<div class="platform-card">
+			<div class="platform-card__header">
+				<h2 class="platform-card__title">About SEO Fields</h2>
+			</div>
+			<p class="admin-seo-info-text">
+				Edit meta titles, descriptions, and Open Graph tags for each page.
+				Changes here affect how your pages appear in search results and social media shares.
 			</p>
-			<div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-				<div class="rounded-lg bg-white p-4">
-					<h3 class="font-medium text-gray-900">Meta Title</h3>
-					<p class="mt-1 text-sm text-gray-500">Appears in browser tabs and search results (50-60 chars)</p>
+			<div class="admin-seo-info-grid">
+				<div class="admin-seo-info-card">
+					<h3 class="admin-seo-info-title">Meta Title</h3>
+					<p class="admin-seo-info-desc">Appears in browser tabs and search results (50-60 chars)</p>
 				</div>
-				<div class="rounded-lg bg-white p-4">
-					<h3 class="font-medium text-gray-900">Meta Description</h3>
-					<p class="mt-1 text-sm text-gray-500">Search result snippets (150-160 chars)</p>
+				<div class="admin-seo-info-card">
+					<h3 class="admin-seo-info-title">Meta Description</h3>
+					<p class="admin-seo-info-desc">Search result snippets (150-160 chars)</p>
 				</div>
-				<div class="rounded-lg bg-white p-4">
-					<h3 class="font-medium text-gray-900">Open Graph</h3>
-					<p class="mt-1 text-sm text-gray-500">Controls how pages look when shared on social media</p>
+				<div class="admin-seo-info-card">
+					<h3 class="admin-seo-info-title">Open Graph</h3>
+					<p class="admin-seo-info-desc">Controls how pages look when shared on social media</p>
 				</div>
 			</div>
 		</div>
 	{/if}
 </div>
+
+<style>
+	.admin-seo-truncate {
+		max-width: 16rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		font-size: 0.8125rem;
+	}
+
+	.admin-action-group {
+		display: flex;
+		gap: 0.5rem;
+	}
+
+	.admin-table-btn {
+		width: auto;
+		padding: 0.375rem 0.75rem;
+		font-size: 0.75rem;
+	}
+
+	.admin-seo-info-text {
+		font-size: 0.875rem;
+		color: oklch(var(--bc) / 0.6);
+		margin: 0 0 1rem;
+	}
+
+	.admin-seo-info-grid {
+		display: grid;
+		grid-template-columns: repeat(1, 1fr);
+		gap: 1rem;
+	}
+
+	@media (min-width: 768px) {
+		.admin-seo-info-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	.admin-seo-info-card {
+		padding: 1rem;
+		background: oklch(var(--b2));
+		border-radius: 8px;
+	}
+
+	.admin-seo-info-title {
+		font-family: var(--font-display);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+		color: oklch(var(--bc) / 0.85);
+		margin: 0 0 0.25rem;
+	}
+
+	.admin-seo-info-desc {
+		font-size: 0.8125rem;
+		color: oklch(var(--bc) / 0.5);
+		margin: 0;
+	}
+</style>
