@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { Container, Section } from '$lib/components/layout';
+	import { cart } from '$lib/stores/cart';
+	import { invalidateAll } from '$app/navigation';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 
 	const subtotal = $derived(
 		data.cart?.items?.reduce(
-			(sum: number, item: any) => sum + parseFloat(item.price) * item.quantity,
+			(sum: number, item: any) => sum + parseFloat(item.unitPrice) * item.quantity,
 			0
 		) || 0
 	);
@@ -16,17 +18,54 @@
 	const total = $derived(subtotal + shipping + tax);
 
 	async function updateQuantity(itemId: number, quantity: number) {
-		// Implement update quantity logic
-		console.log('Update quantity:', itemId, quantity);
+		if (quantity <= 0) {
+			await removeItem(itemId);
+			return;
+		}
+		await cart.updateItemQuantity(itemId, quantity);
+		await invalidateAll();
 	}
 
 	async function removeItem(itemId: number) {
-		// Implement remove item logic
-		console.log('Remove item:', itemId);
+		await cart.removeItem(itemId);
+		await invalidateAll();
+	}
+
+	let checkingOut = $state(false);
+	let checkoutError = $state('');
+
+	async function proceedToCheckout() {
+		checkingOut = true;
+		checkoutError = '';
+
+		try {
+			const response = await fetch('/api/checkout', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					sessionId: data.cart?.sessionId || undefined
+				})
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json().catch(() => ({ message: 'Checkout failed' }));
+				throw new Error(errorData.message || 'Failed to create checkout session');
+			}
+
+			const { url } = await response.json();
+			if (url) {
+				window.location.href = url;
+			} else {
+				throw new Error('No checkout URL returned');
+			}
+		} catch (err: any) {
+			checkoutError = err.message || 'Something went wrong. Please try again.';
+			checkingOut = false;
+		}
 	}
 
 	async function applyPromoCode(code: string) {
-		// Implement promo code logic
+		// Promo codes coming soon
 		console.log('Apply promo code:', code);
 	}
 </script>
@@ -170,9 +209,23 @@
 							</div>
 
 							<!-- Checkout Button -->
-							<a href="/checkout" class="btn btn-primary btn-lg mt-6 w-full font-display uppercase tracking-wider">
-								Proceed to Checkout
-							</a>
+							{#if checkoutError}
+								<div class="alert alert-error mt-4 text-sm">
+									<span>{checkoutError}</span>
+								</div>
+							{/if}
+							<button
+								onclick={proceedToCheckout}
+								class="btn btn-primary btn-lg mt-6 w-full font-display uppercase tracking-wider"
+								disabled={checkingOut}
+							>
+								{#if checkingOut}
+									<span class="loading loading-spinner loading-sm"></span>
+									Redirecting to Payment...
+								{:else}
+									Proceed to Checkout
+								{/if}
+							</button>
 
 							<!-- Payment Methods -->
 							<div class="mt-6">

@@ -42,12 +42,12 @@
 </svelte:head>
 
 <!-- Hero Section -->
-<section class="bg-neutral w-full py-24 lg:py-32">
+<section class="bg-primary text-primary-content w-full py-24 lg:py-32">
 	<Container>
 		<div class="text-center space-y-6">
 			<span class="text-editorial text-secondary font-mono tracking-widest">KNOWLEDGE HUB</span>
 			<h1 class="text-display font-display uppercase tracking-tight">Learning Center</h1>
-			<p class="text-xl text-neutral-content/70 max-w-3xl mx-auto font-light leading-relaxed">
+			<p class="text-xl text-primary-content/70 max-w-3xl mx-auto font-light leading-relaxed">
 				Everything you need to know about sustainable agriculture, hydroponics, aquaponics, and
 				regenerative farming
 			</p>

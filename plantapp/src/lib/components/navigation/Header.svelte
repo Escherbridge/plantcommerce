@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/trpc/client';
 	import { browser } from '$app/environment';
+	import { cart } from '$lib/stores/cart';
 
 	// Get user from page data
 	const user = $derived($page.data.user);
@@ -93,8 +94,8 @@
 		return () => window.removeEventListener('scroll', onScroll);
 	});
 
-	// Cart count (placeholder — wire to real store when available)
-	let cartCount = $state(0);
+	// Cart count — wired to real cart store
+	const cartCount = $derived($cart.totalItems);
 	let prevCartCount = $state(0);
 	let cartPulse = $state(false);
 
@@ -218,13 +219,13 @@
 <style>
 	/* ---- Base header ---- */
 	.editorial-header {
-		position: fixed;
+		position: sticky;
 		top: 0;
-		left: 0;
-		right: 0;
 		z-index: 9999;
-		background-color: transparent;
-		border-bottom: 1px solid transparent;
+		background-color: oklch(var(--n) / 0.85);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		border-bottom: 1px solid oklch(var(--nc) / 0.06);
 		transition:
 			background-color 0.35s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
 			border-color 0.35s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
@@ -232,26 +233,27 @@
 	}
 
 	.editorial-header.scrolled {
-		background-color: oklch(var(--n));
+		background-color: oklch(var(--n) / 0.95);
 		border-bottom-color: oklch(var(--nc) / 0.1);
-		backdrop-filter: blur(12px);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
 	}
 
 	.header-container {
 		max-width: 1600px;
 		margin: 0 auto;
-		padding: 0 2rem;
+		padding: 0.25rem 2rem;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		height: 4.5rem;
+		height: 5rem;
 		gap: 2rem;
 	}
 
 	@media (max-width: 767px) {
 		.header-container {
-			padding: 0 1rem;
-			height: 3.5rem;
+			padding: 0.25rem 1rem;
+			height: 4rem;
 		}
 	}
 
@@ -492,12 +494,12 @@
 	.user-dropdown-name {
 		font-size: 0.875rem;
 		font-weight: 600;
-		color: oklch(var(--nc));
+		color: oklch(var(--bc));
 	}
 
 	.user-dropdown-email {
 		font-size: 0.75rem;
-		color: oklch(var(--nc) / 0.45);
+		color: oklch(var(--bc) / 0.55);
 	}
 
 	.user-dropdown-link {
@@ -505,7 +507,7 @@
 		padding: 0.625rem 1rem;
 		font-size: 0.8125rem;
 		font-weight: 400;
-		color: oklch(var(--nc) / 0.65);
+		color: oklch(var(--bc) / 0.7);
 		text-decoration: none;
 		border-radius: 0.375rem;
 		transition:
@@ -523,8 +525,8 @@
 	}
 
 	.user-dropdown-link:hover {
-		background-color: oklch(var(--nc) / 0.08);
-		color: oklch(var(--nc));
+		background-color: oklch(var(--p) / 0.08);
+		color: oklch(var(--bc));
 	}
 
 	.user-dropdown-link.primary-link {
@@ -543,7 +545,7 @@
 	.dropdown-divider {
 		margin: 0.375rem 0;
 		border: none;
-		border-top: 1px solid oklch(var(--nc) / 0.1);
+		border-top: 1px solid oklch(var(--bc) / 0.1);
 	}
 
 	.logout-btn {

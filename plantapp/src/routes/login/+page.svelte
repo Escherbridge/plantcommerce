@@ -1,22 +1,31 @@
 <script lang="ts">
 	import { trpc } from '$lib/trpc/client';
-	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
+	import { toasts } from '$lib/stores/toast';
 
 	let email = '';
 	let password = '';
 	let loading = false;
 	let error = '';
 
-	onMount(() => {
-		error = '';
-	});
+	function getRedirectUrl(): string {
+		const redirect = $page.url.searchParams.get('redirect');
+		if (redirect && redirect.startsWith('/')) {
+			return redirect;
+		}
+		return '/account/profile';
+	}
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
 		loading = true;
 		error = '';
+
+		if (!email.trim() || !password.trim()) {
+			error = 'Please enter your email and password.';
+			loading = false;
+			return;
+		}
 
 		try {
 			const result = await trpc.auth.login.mutate({
@@ -25,13 +34,24 @@
 			});
 
 			if (result.user && result.sessionToken) {
-				window.location.href = '/account/profile';
+				toasts.addToast({
+					message: `Welcome back, ${result.user.firstName || result.user.username}!`,
+					variant: 'success',
+					duration: 3000
+				});
+				window.location.href = getRedirectUrl();
 			} else {
 				error = 'Login failed. Please try again.';
 			}
 		} catch (err: any) {
-			console.error('Login error:', err);
-			error = err?.message || 'Invalid email or password';
+			const message = err?.message || '';
+			if (message.includes('UNAUTHORIZED') || message.includes('Invalid')) {
+				error = 'Invalid email or password. Please try again.';
+			} else if (message.includes('FORBIDDEN') || message.includes('disabled')) {
+				error = 'Your account has been disabled. Please contact support.';
+			} else {
+				error = 'Something went wrong. Please try again later.';
+			}
 		} finally {
 			loading = false;
 		}

@@ -34,7 +34,20 @@ export async function requireAuth(event: LoadEvent, redirectTo?: string) {
  * Get user if authenticated, return null if not (no redirect)
  */
 export async function getUser(event: LoadEvent) {
-    return event.locals?.user || null;
+    // Try locals first (server-side)
+    if (event.locals?.user) {
+        return event.locals.user;
+    }
+    // Fall back to parent data (works in client-side +page.ts loaders)
+    try {
+        const parentData = await event.parent();
+        if (parentData?.user) {
+            return parentData.user;
+        }
+    } catch {
+        // parent() may not be available in all contexts
+    }
+    return null;
 }
 
 /**

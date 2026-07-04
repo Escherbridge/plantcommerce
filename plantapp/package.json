@@ -61,12 +61,14 @@
 		"@fontsource/barlow-condensed": "^5.2.8",
 		"@fontsource/jetbrains-mono": "^5.2.8",
 		"@node-rs/argon2": "^2.0.2",
+		"@node-rs/argon2-linux-x64-gnu": "^2.0.2",
 		"@trpc/client": "^11.5.1",
 		"@trpc/server": "^11.5.1",
 		"@types/multer": "^1.4.12",
 		"multer": "^1.4.5-lts.1",
 		"postgres": "^3.4.5",
 		"posthog-node": "^5.9.2",
+		"stripe": "^22.0.0",
 		"trpc": "^0.10.4",
 		"zod": "^4.1.11"
 	}

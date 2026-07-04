@@ -149,11 +149,19 @@ export const affiliate = pgTable('affiliate', {
 	totalClicks: integer('total_clicks').notNull().default(0),
 	totalConversions: integer('total_conversions').notNull().default(0),
 	isActive: boolean('is_active').notNull().default(true),
+	status: text('status', { enum: ['pending', 'active', 'rejected', 'suspended'] }).notNull().default('pending'),
+	website: text('website'),
+	socialMedia: text('social_media'),
+	audience: text('audience'),
+	promotionMethod: text('promotion_method'),
+	monthlyTraffic: text('monthly_traffic'),
+	whyJoin: text('why_join'),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 }, (table) => ({
 	codeIdx: uniqueIndex('affiliate_code_idx').on(table.affiliateCode),
-	userIdx: index('affiliate_user_idx').on(table.userId)
+	userIdx: index('affiliate_user_idx').on(table.userId),
+	statusIdx: index('affiliate_status_idx').on(table.status)
 }));
 
 export const affiliateLink = pgTable('affiliate_link', {
@@ -253,6 +261,8 @@ export const order = pgTable('order', {
 	customerEmail: text('customer_email').notNull(),
 	customerPhone: text('customer_phone'),
 	notes: text('notes'),
+	stripeSessionId: text('stripe_session_id'), // Stripe Checkout session ID
+	stripePaymentIntentId: text('stripe_payment_intent_id'), // Stripe PaymentIntent ID
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 }, (table) => ({
@@ -260,7 +270,8 @@ export const order = pgTable('order', {
 	userIdx: index('order_user_idx').on(table.userId),
 	statusIdx: index('order_status_idx').on(table.status),
 	affiliateIdx: index('order_affiliate_idx').on(table.affiliateLinkId),
-	dateIdx: index('order_date_idx').on(table.createdAt)
+	dateIdx: index('order_date_idx').on(table.createdAt),
+	stripeSessionIdx: uniqueIndex('order_stripe_session_idx').on(table.stripeSessionId)
 }));
 
 export const orderItem = pgTable('order_item', {

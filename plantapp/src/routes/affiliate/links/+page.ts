@@ -1,40 +1,56 @@
 import type { PageLoad } from './$types';
-import { trpc } from '$lib/trpc/client';
-import { redirect } from '@sveltejs/kit';
+import { createCallerClient } from '$lib/trpc/client';
+import { redirect, isRedirect } from '@sveltejs/kit';
 
 export const load: PageLoad = async (event) => {
+	const trpc = createCallerClient(event.fetch);
 	try {
-		const affiliate = await trpc(event).affiliate.getMyAffiliate.query();
+		const affiliate = await trpc.affiliate.getMyAffiliate.query();
 
 		if (!affiliate) {
 			throw redirect(303, '/affiliate/join');
 		}
 
-		// Get all products for link generation
-		let products = [];
+		// Get all active products for link generation
+		let products: Array<{
+			id: number;
+			name: string;
+			slug: string;
+			price: string;
+			categoryName: string;
+		}> = [];
 		try {
-			products = await trpc(event).products.getProducts.query({ limit: 100 });
+			const results = await trpc.products.getProducts.query({ limit: 50, sortBy: 'name', sortOrder: 'asc' });
+			products = (Array.isArray(results) ? results : []).map((row: any) => {
+				const p = row.product ?? row;
+				const cat = row.category ?? p.category;
+				return {
+					id: p.id,
+					name: p.name,
+					slug: p.slug,
+					price: p.price,
+					categoryName: cat?.name || 'Uncategorized'
+				};
+			});
 		} catch (e) {
 			console.error('Error loading products:', e);
 		}
 
 		// Get existing affiliate links
-		let links = [];
+		let links: any[] = [];
 		try {
-			links = await trpc(event).affiliate.getMyLinks.query();
+			links = await trpc.affiliate.getMyLinks.query();
 		} catch (e) {
 			console.error('Error loading links:', e);
 		}
 
 		return {
 			affiliate,
-			products: Array.isArray(products) ? products : [],
+			products,
 			links: links || []
 		};
 	} catch (error) {
-		if (error instanceof Response) {
-			throw error;
-		}
+		if (isRedirect(error)) throw error;
 		console.error('Error loading links page:', error);
 		throw redirect(303, '/affiliate/join');
 	}

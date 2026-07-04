@@ -1,5 +1,5 @@
 <script lang="ts">
-	type Mode = 'scramble' | 'typewriter';
+	type Mode = 'fade-up' | 'typewriter';
 
 	interface Props {
 		text: string;
@@ -13,61 +13,19 @@
 
 	let {
 		text,
-		mode = 'scramble',
-		duration = 1200,
+		mode = 'fade-up',
+		duration = 800,
 		delay = 0,
 		triggerOnMount = true,
 		class: className = '',
 		oncomplete
 	}: Props = $props();
 
-	const CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%';
-
-	let display = $state('');
+	let visible = $state(false);
 	let done = $state(false);
 
-	function rand(n: number) {
-		return Math.floor(Math.random() * n);
-	}
-
-	function scramble() {
-		const target = text;
-		const len = target.length;
-		const start = performance.now() + delay;
-		const end = start + duration;
-
-		// How many chars are "locked" grows linearly over time
-		function frame(now: number) {
-			if (now < start) {
-				display = Array.from({ length: len }, () => CHARSET[rand(CHARSET.length)]).join('');
-				requestAnimationFrame(frame);
-				return;
-			}
-			const elapsed = now - start;
-			const progress = Math.min(elapsed / duration, 1);
-			const lockedCount = Math.floor(progress * len);
-
-			let result = '';
-			for (let i = 0; i < len; i++) {
-				if (i < lockedCount) {
-					result += target[i];
-				} else {
-					result += CHARSET[rand(CHARSET.length)];
-				}
-			}
-			display = result;
-
-			if (progress < 1) {
-				requestAnimationFrame(frame);
-			} else {
-				display = target;
-				done = true;
-				oncomplete?.();
-			}
-		}
-
-		requestAnimationFrame(frame);
-	}
+	// Typewriter state
+	let display = $state('');
 
 	function typewriter() {
 		const target = text;
@@ -95,14 +53,23 @@
 		const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		if (prefersReduced) {
 			display = text;
+			visible = true;
 			done = true;
 			oncomplete?.();
 			return;
 		}
 
 		if (triggerOnMount) {
-			if (mode === 'scramble') {
-				scramble();
+			if (mode === 'fade-up') {
+				display = text;
+				setTimeout(() => {
+					visible = true;
+					// Fire complete after the CSS transition finishes
+					setTimeout(() => {
+						done = true;
+						oncomplete?.();
+					}, duration);
+				}, delay);
 			} else {
 				typewriter();
 			}
@@ -112,7 +79,26 @@
 	});
 </script>
 
-<span class={className}>
+<span class="text-reveal {className}" class:text-reveal--visible={visible} style="--reveal-duration: {duration}ms">
 	<span aria-hidden="true">{display}</span>
 	<span class="sr-only">{text}</span>
 </span>
+
+<style>
+	.text-reveal {
+		display: inline-block;
+		opacity: 0;
+		transform: translateY(0.35em);
+		filter: blur(4px);
+		transition:
+			opacity var(--reveal-duration, 800ms) cubic-bezier(0.16, 1, 0.3, 1),
+			transform var(--reveal-duration, 800ms) cubic-bezier(0.16, 1, 0.3, 1),
+			filter var(--reveal-duration, 800ms) cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	.text-reveal--visible {
+		opacity: 1;
+		transform: translateY(0);
+		filter: blur(0);
+	}
+</style>

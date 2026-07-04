@@ -36,7 +36,7 @@
     if (background !== 'transparent') {
       const backgroundMap = {
         base: 'bg-base-100',
-        neutral: 'bg-neutral',
+        neutral: 'bg-primary text-primary-content',
         primary: 'bg-primary text-primary-content',
         secondary: 'bg-secondary text-secondary-content',
         accent: 'bg-accent text-accent-content'

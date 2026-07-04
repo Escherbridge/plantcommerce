@@ -1,4 +1,4 @@
-import { eq, and, desc, sum, count } from 'drizzle-orm';
+import { eq, and, desc, sum, count, gte, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { encodeBase64url } from '@oslojs/encoding';
@@ -35,7 +35,14 @@ export class AffiliateService {
 	/**
 	 * Create or retrieve an affiliate record for a user
 	 */
-	static async createAffiliate(userId: string, customCode?: string): Promise<table.Affiliate> {
+	static async createAffiliate(userId: string, customCode?: string, applicationData?: {
+		website?: string;
+		socialMedia?: string;
+		audience?: string;
+		promotionMethod?: string;
+		monthlyTraffic?: string;
+		whyJoin?: string;
+	}): Promise<table.Affiliate> {
 		// Check if affiliate already exists
 		const existing = await db
 			.select()
@@ -49,7 +56,7 @@ export class AffiliateService {
 
 		// Generate unique affiliate code
 		const affiliateCode = customCode || this.generateAffiliateCode();
-		
+
 		// Ensure code is unique
 		await this.ensureUniqueAffiliateCode(affiliateCode);
 
@@ -60,7 +67,14 @@ export class AffiliateService {
 			totalEarnings: '0.00',
 			totalClicks: 0,
 			totalConversions: 0,
-			isActive: true
+			isActive: true,
+			status: 'pending', // Start as pending approval
+			website: applicationData?.website,
+			socialMedia: applicationData?.socialMedia,
+			audience: applicationData?.audience,
+			promotionMethod: applicationData?.promotionMethod,
+			monthlyTraffic: applicationData?.monthlyTraffic,
+			whyJoin: applicationData?.whyJoin
 		};
 
 		const [affiliate] = await db.insert(table.affiliate).values(newAffiliate).returning();
@@ -89,9 +103,16 @@ export class AffiliateService {
 			return existing[0];
 		}
 
-		// Get product and affiliate info
+		// Get product with category info and affiliate info
 		const [productResult, affiliateResult] = await Promise.all([
-			db.select().from(table.product).where(eq(table.product.id, productId)).limit(1),
+			db.select({
+				product: table.product,
+				category: table.productCategory
+			})
+				.from(table.product)
+				.innerJoin(table.productCategory, eq(table.product.categoryId, table.productCategory.id))
+				.where(eq(table.product.id, productId))
+				.limit(1),
 			db.select().from(table.affiliate).where(eq(table.affiliate.id, affiliateId)).limit(1)
 		]);
 
@@ -103,15 +124,30 @@ export class AffiliateService {
 			throw new Error('Affiliate not found');
 		}
 
-		const product = productResult[0];
+		const product = productResult[0].product;
+		const category = productResult[0].category;
+
+		// Resolve the parent category slug for the URL
+		let categorySlug = category.slug;
+		if (category.parentId) {
+			const parentResult = await db
+				.select()
+				.from(table.productCategory)
+				.where(eq(table.productCategory.id, category.parentId))
+				.limit(1);
+			if (parentResult.length > 0) {
+				categorySlug = parentResult[0].slug;
+			}
+		}
+
 		const affiliate = affiliateResult[0];
 
 		// Generate unique link code
 		const linkCode = customCode || this.generateLinkCode();
 		await this.ensureUniqueLinkCode(linkCode);
 
-		// Build URLs
-		const originalUrl = `/products/${product.slug}`;
+		// Build URLs — product detail pages use /products/[category]/[slug]
+		const originalUrl = `/products/${categorySlug}/${product.slug}`;
 		const affiliateUrl = `/aff/${linkCode}`;
 
 		const newLink: typeof table.affiliateLink.$inferInsert = {
@@ -425,6 +461,149 @@ export class AffiliateService {
 			.where(eq(table.affiliateLink.id, linkId));
 
 		return { success: true, isActive: newStatus };
+	}
+
+	/**
+	 * Get earnings data for an affiliate, including history, current month, and pending payout
+	 */
+	static async getEarningsData(affiliateId: number): Promise<{
+		totalEarnings: number;
+		pendingPayout: number;
+		currentMonthEarnings: number;
+		lastMonthEarnings: number;
+		history: Array<{
+			date: string;
+			orderId: string;
+			productName: string;
+			saleAmount: number;
+			commissionRate: number;
+			commission: number;
+			status: string;
+		}>;
+	}> {
+		// Get the affiliate record
+		const affiliateResult = await db
+			.select()
+			.from(table.affiliate)
+			.where(eq(table.affiliate.id, affiliateId))
+			.limit(1);
+
+		if (affiliateResult.length === 0) {
+			throw new Error('Affiliate not found');
+		}
+
+		const affiliate = affiliateResult[0];
+
+		// Get all orders attributed to this affiliate's links
+		const orders = await db
+			.select({
+				orderId: table.order.id,
+				orderNumber: table.order.orderNumber,
+				subtotalAmount: table.order.subtotalAmount,
+				affiliateCommission: table.order.affiliateCommission,
+				orderStatus: table.order.status,
+				createdAt: table.order.createdAt,
+				linkId: table.affiliateLink.id,
+				productId: table.affiliateLink.productId,
+				productName: table.product.name
+			})
+			.from(table.order)
+			.innerJoin(table.affiliateLink, eq(table.order.affiliateLinkId, table.affiliateLink.id))
+			.innerJoin(table.product, eq(table.affiliateLink.productId, table.product.id))
+			.where(eq(table.affiliateLink.affiliateId, affiliateId))
+			.orderBy(desc(table.order.createdAt));
+
+		// Calculate current month and last month earnings
+		const now = new Date();
+		const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+		const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+		const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
+
+		let currentMonthEarnings = 0;
+		let lastMonthEarnings = 0;
+		let pendingPayout = 0;
+
+		const history = orders.map((order) => {
+			const commission = parseFloat(order.affiliateCommission);
+			const orderDate = new Date(order.createdAt);
+
+			// Current month earnings
+			if (orderDate >= currentMonthStart) {
+				currentMonthEarnings += commission;
+			}
+
+			// Last month earnings
+			if (orderDate >= lastMonthStart && orderDate <= lastMonthEnd) {
+				lastMonthEarnings += commission;
+			}
+
+			// Pending payout: commissions from orders that are confirmed/processing/shipped/delivered but not yet paid out
+			// We consider all non-cancelled, non-refunded orders as pending until a payout system is built
+			const isActiveOrder = !['cancelled', 'refunded'].includes(order.orderStatus);
+			if (isActiveOrder && commission > 0) {
+				pendingPayout += commission;
+			}
+
+			// Map order status to commission status
+			let commissionStatus = 'processing';
+			if (['delivered'].includes(order.orderStatus)) {
+				commissionStatus = 'pending'; // Delivered but not yet paid out
+			} else if (['cancelled', 'refunded'].includes(order.orderStatus)) {
+				commissionStatus = 'cancelled';
+			}
+
+			return {
+				date: order.createdAt.toISOString(),
+				orderId: order.orderNumber,
+				productName: order.productName,
+				saleAmount: parseFloat(order.subtotalAmount),
+				commissionRate: parseFloat(affiliate.commissionRate),
+				commission,
+				status: commissionStatus
+			};
+		});
+
+		return {
+			totalEarnings: parseFloat(affiliate.totalEarnings),
+			pendingPayout: Math.round(pendingPayout * 100) / 100,
+			currentMonthEarnings: Math.round(currentMonthEarnings * 100) / 100,
+			lastMonthEarnings: Math.round(lastMonthEarnings * 100) / 100,
+			history
+		};
+	}
+
+	/**
+	 * Get top performing links for an affiliate (for dashboard display)
+	 */
+	static async getTopPerformingLinks(affiliateId: number, limit: number = 10) {
+		const links = await db
+			.select({
+				id: table.affiliateLink.id,
+				linkCode: table.affiliateLink.linkCode,
+				clicks: table.affiliateLink.clicks,
+				conversions: table.affiliateLink.conversions,
+				earnings: table.affiliateLink.earnings,
+				productName: table.product.name,
+				productSlug: table.product.slug
+			})
+			.from(table.affiliateLink)
+			.innerJoin(table.product, eq(table.affiliateLink.productId, table.product.id))
+			.where(eq(table.affiliateLink.affiliateId, affiliateId))
+			.orderBy(desc(table.affiliateLink.clicks))
+			.limit(limit);
+
+		return links.map((link) => ({
+			id: link.id,
+			linkCode: link.linkCode,
+			clicks: link.clicks,
+			conversions: link.conversions,
+			earnings: parseFloat(link.earnings),
+			converted: link.conversions > 0,
+			product: {
+				name: link.productName,
+				slug: link.productSlug
+			}
+		}));
 	}
 
 	/**

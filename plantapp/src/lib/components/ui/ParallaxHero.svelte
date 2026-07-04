@@ -83,8 +83,8 @@
 	<!-- Background image with parallax -->
 	{#if backgroundImage}
 		<div
-			class="absolute inset-0 -z-10"
-			style="will-change: transform;"
+			class="absolute inset-0"
+			style="will-change: transform; z-index: 1;"
 		>
 			<img
 				bind:this={bgEl}
@@ -98,21 +98,22 @@
 		</div>
 	{/if}
 
-	<!-- Gradient overlay: transparent top → base-100 bottom -->
+	<!-- Dark overlay for text contrast + bottom fade to base-100 -->
 	<div
-		class="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-transparent to-base-100 pointer-events-none"
+		class="absolute inset-0 pointer-events-none"
+		style="background: linear-gradient(to bottom, rgba(27,45,74,0.3) 0%, rgba(27,45,74,0.2) 50%, rgba(27,45,74,0.35) 78%, rgba(247,245,240,0.9) 93%, rgba(247,245,240,1) 100%); z-index: 2;"
 	></div>
 
 	<!-- Content -->
-	<div class="relative z-10 flex flex-col items-center text-center px-6 gap-6 w-full max-w-7xl mx-auto">
+	<div class="relative flex flex-col items-center text-center px-6 gap-6 w-full max-w-7xl mx-auto text-white" style="z-index: 3;">
 		<!-- Title -->
 		<h1 class="text-hero font-display uppercase tracking-tight leading-none m-0"
 			style="font-size: clamp(3rem, 10vw, 10rem);"
 		>
 			<TextReveal
 				text={title}
-				mode="scramble"
-				duration={1200}
+				mode="fade-up"
+				duration={900}
 				oncomplete={onTitleComplete}
 			/>
 		</h1>
@@ -148,7 +149,7 @@
 				{#each ctaLinks as cta}
 					<a
 						href={cta.href}
-						class={cta.variant === 'primary' ? 'btn btn-primary' : 'btn btn-outline'}
+						class={cta.variant === 'primary' ? 'btn btn-primary' : 'btn btn-outline border-white/40 text-white hover:bg-white/10 hover:border-white/60'}
 					>
 						{cta.label}
 					</a>
@@ -160,7 +161,8 @@
 	<!-- Scroll indicator -->
 	{#if scrollIndicatorVisible}
 		<div
-			class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1 text-base-content/60"
+			class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/60"
+			style="z-index: 3;"
 			aria-hidden="true"
 		>
 			<span class="text-xs font-mono uppercase tracking-widest">Scroll</span>

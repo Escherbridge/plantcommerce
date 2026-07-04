@@ -18,7 +18,7 @@
 | PostgreSQL | — | Relational database |
 | Zod | 4.x | Runtime validation |
 | Stripe | — | Payment processing |
-| Google Cloud Storage | — | File/media storage |
+| Railway Object Storage (S3) | — | File/media storage (S3-compatible API) |
 
 ## Auth & Security
 | Technology | Purpose |

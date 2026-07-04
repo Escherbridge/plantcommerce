@@ -34,6 +34,7 @@ export const cartRouter = router({
 
 	/**
 	 * Add item to cart (public for guest carts)
+	 * Automatically reads the affiliate-link cookie set by /aff/[linkCode] redirect
 	 */
 	addItem: publicProcedure
 		.input(
@@ -47,13 +48,26 @@ export const cartRouter = router({
 		.mutation(async ({ ctx, input }) => {
 			try {
 				const userId = ctx.user?.id;
-				const { productId, quantity, sessionId, affiliateLinkId } = input;
+				const { productId, quantity, sessionId } = input;
 
 				if (!userId && !sessionId) {
 					throw new TRPCError({
 						code: 'BAD_REQUEST',
 						message: 'Session ID required for guest checkout'
 					});
+				}
+
+				// Read affiliate attribution from cookie (set by /aff/[linkCode] redirect)
+				// Client-provided affiliateLinkId takes priority, then cookie
+				let affiliateLinkId = input.affiliateLinkId;
+				if (!affiliateLinkId) {
+					const cookieValue = ctx.event.cookies.get('affiliate-link');
+					if (cookieValue) {
+						const parsed = parseInt(cookieValue, 10);
+						if (!isNaN(parsed) && parsed > 0) {
+							affiliateLinkId = parsed;
+						}
+					}
 				}
 
 				await CartService.addItem(

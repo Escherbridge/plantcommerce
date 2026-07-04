@@ -9,6 +9,8 @@
 	let lastName = $state('');
 	let errorMessage = $state('');
 	let isLoading = $state(false);
+	let registrationComplete = $state(false);
+	let registeredEmail = $state('');
 
 	const passwordErrors = $derived(() => {
 		const errors: string[] = [];
@@ -54,7 +56,8 @@
 			});
 
 			if (result.user && result.sessionToken) {
-				window.location.href = '/account/profile';
+				registeredEmail = email;
+				registrationComplete = true;
 			}
 		} catch (error: any) {
 			console.error('Registration error:', error);
@@ -72,6 +75,40 @@
 <div class="register-page">
 	<div class="register-container">
 		<div class="register-card glass-card-strong">
+			{#if registrationComplete}
+				<!-- Success State -->
+				<div class="register-header">
+					<a href="/" class="register-wordmark">AEVANI</a>
+					<div class="register-success-icon">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+							<polyline points="22 4 12 14.01 9 11.01"/>
+						</svg>
+					</div>
+					<h1 class="register-title">Account Created</h1>
+					<p class="register-subtitle">Welcome to Aevani! We've sent a verification email to:</p>
+					<p class="register-email-highlight">{registeredEmail}</p>
+				</div>
+
+				<div class="register-next-steps">
+					<p class="register-step-text">Check your inbox and click the verification link to activate your account. You can start browsing right away.</p>
+					<div class="register-success-actions">
+						<a href="/products" class="btn btn-primary w-full font-display uppercase tracking-wider">
+							Browse Products
+						</a>
+						<a href="/account/profile" class="btn btn-outline w-full font-display uppercase tracking-wider">
+							Go to My Account
+						</a>
+					</div>
+				</div>
+
+				<div class="register-footer">
+					<p class="register-legal">
+						Didn't receive the email? Check your spam folder or
+						<button class="link link-primary" onclick={() => { registrationComplete = false; }}>try again</button>
+					</p>
+				</div>
+			{:else}
 			<!-- Header -->
 			<div class="register-header">
 				<a href="/" class="register-wordmark">AEVANI</a>
@@ -224,6 +261,7 @@
 					<a href="/privacy" class="link link-primary">Privacy Policy</a>
 				</p>
 			</div>
+			{/if}
 		</div>
 	</div>
 </div>
@@ -342,5 +380,45 @@
 		margin-top: 0.75rem;
 		font-size: 0.75rem;
 		color: oklch(var(--bc) / 0.45);
+	}
+
+	.register-success-icon {
+		width: 3.5rem;
+		height: 3.5rem;
+		margin: 0 auto 1.25rem;
+		color: oklch(var(--su));
+	}
+
+	.register-success-icon svg {
+		width: 100%;
+		height: 100%;
+	}
+
+	.register-email-highlight {
+		font-weight: 600;
+		color: oklch(var(--p));
+		font-size: 0.9375rem;
+		margin-top: 0.5rem;
+	}
+
+	.register-next-steps {
+		margin: 1.5rem 0;
+		padding: 1.25rem;
+		background: oklch(var(--su) / 0.04);
+		border: 1px solid oklch(var(--su) / 0.12);
+		border-radius: var(--input-radius);
+	}
+
+	.register-step-text {
+		font-size: 0.875rem;
+		color: oklch(var(--bc) / 0.65);
+		line-height: 1.6;
+		margin-bottom: 1.25rem;
+	}
+
+	.register-success-actions {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
 	}
 </style>

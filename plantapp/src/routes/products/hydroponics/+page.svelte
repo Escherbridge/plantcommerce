@@ -6,6 +6,10 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
+<svelte:head>
+	<title>Hydroponics - Aevani</title>
+</svelte:head>
+
 <Section>
 	<Container>
 		<div class="mb-8">

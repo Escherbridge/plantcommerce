@@ -97,7 +97,9 @@ const USER_IDS = {
 	jordan: generateId(),
 	aisha: generateId(),
 	tom: generateId(),
-	priya: generateId()
+	priya: generateId(),
+	adminTest: generateId(),
+	ahmed: generateId()
 };
 
 const users: (typeof schema.user.$inferInsert)[] = [
@@ -203,6 +205,32 @@ const users: (typeof schema.user.$inferInsert)[] = [
 		isActive: true,
 		emailVerified: false,
 		createdAt: daysAgo(14),
+		updatedAt: new Date()
+	},
+	{
+		id: USER_IDS.adminTest,
+		username: 'admin.test',
+		email: 'admin-test@aevani.com',
+		passwordHash: '',
+		firstName: 'Test',
+		lastName: 'Admin',
+		role: 'admin',
+		isActive: true,
+		emailVerified: true,
+		createdAt: daysAgo(300),
+		updatedAt: new Date()
+	},
+	{
+		id: USER_IDS.ahmed,
+		username: 'ahmed.admin',
+		email: 'ahmed@aevani.com',
+		passwordHash: '',
+		firstName: 'Ahmed',
+		lastName: 'Zaher',
+		role: 'admin',
+		isActive: true,
+		emailVerified: true,
+		createdAt: daysAgo(365),
 		updatedAt: new Date()
 	}
 ];
@@ -962,6 +990,59 @@ const products: ProductDef[] = [
 		imageFile: 'PlantProduct-SEED.png',
 		metaTitle: 'Artisan Seed Packet Collection | 20 Heirloom Varieties',
 		metaDescription: '20 heirloom seed varieties in original botanical illustration packets. Vintage wooden storage box included.'
+	},
+	{
+		name: 'Seed Saving Starter Kit',
+		slug: 'seed-saving-starter-kit',
+		sku: 'KIT-SSK-001',
+		description: 'Complete kit for saving and storing seeds. Includes seed envelopes, desiccant packets, labels, magnifying glass, tweezers, and a vintage wooden storage box with dividers. Field guide covers seed collection timing, drying methods, and storage for 50+ common garden varieties.',
+		shortDescription: 'Complete kit for saving and storing seeds with wooden storage box.',
+		price: '34.99',
+		comparePrice: '44.99',
+		costPrice: '12.00',
+		stock: 86,
+		weight: '1.50',
+		categorySlug: 'starter-kits',
+		isFeatured: false,
+		tags: ['seed-saving', 'heritage', 'self-sufficiency', 'preservation'],
+		imageFile: 'PlantProduct-SEED.png',
+		metaTitle: 'Seed Saving Starter Kit | Complete Guide & Storage',
+		metaDescription: 'Everything you need to save and store seeds. Includes wooden storage box, tools, and field guide for 50+ garden varieties.'
+	},
+	{
+		name: 'Season Extension Kit',
+		slug: 'season-extension-kit',
+		sku: 'KIT-SEK-001',
+		description: 'Extend your growing season by 4-8 weeks. Includes 10 galvanized wire hoops, 20ft row cover fabric, 20 ground staples, soil thermometer, and planting calendar. Row covers protect from frost to 28°F while allowing light and rain through.',
+		shortDescription: 'Extend your growing season 4-8 weeks with row covers and hoops.',
+		price: '59.99',
+		costPrice: '22.00',
+		stock: 47,
+		weight: '8.00',
+		categorySlug: 'starter-kits',
+		isFeatured: false,
+		tags: ['season-extension', 'row-cover', 'frost-protection', 'spring', 'fall'],
+		imageFile: 'GeneralKits&Collections-PermacultureStarterKit.png',
+		metaTitle: 'Season Extension Kit | Frost Protection Row Covers',
+		metaDescription: 'Extend your growing season with row covers, hoops, and soil thermometer. Protect plants from frost to 28°F.'
+	},
+	{
+		name: 'Grafting & Propagation Kit',
+		slug: 'grafting-propagation-kit',
+		sku: 'KIT-GPK-001',
+		description: 'Master plant propagation with this professional grafting kit. Includes Japanese grafting knife, bypass pruning shears, grafting tape, parafilm, rooting hormone powder, 2 propagation domes, and an illustrated 80-page guide covering whip-and-tongue, cleft, and bud grafting techniques for fruit trees, tomatoes, and ornamentals.',
+		shortDescription: 'Professional grafting kit with tools, materials, and illustrated guide.',
+		price: '47.99',
+		comparePrice: '59.99',
+		costPrice: '18.00',
+		stock: 54,
+		weight: '1.20',
+		categorySlug: 'starter-kits',
+		isFeatured: false,
+		tags: ['grafting', 'propagation', 'fruit-trees', 'cloning', 'advanced'],
+		imageFile: 'GeneralKits&Collections-PermacultureStarterKit.png',
+		metaTitle: 'Grafting & Propagation Kit | Professional Tools & Guide',
+		metaDescription: 'Master grafting and propagation with Japanese knife, pruners, tape, and 80-page illustrated guide for fruit trees and ornamentals.'
 	}
 ];
 
@@ -1597,7 +1678,8 @@ async function seed() {
 	console.log(`  CMS SEO Records:    ${contentPages.length + 1}`);
 	console.log(`  Audit Entries:      ${auditEntries.length}`);
 	console.log('\n  Default password for all users: Aevani2024!');
-	console.log('  Admin login: admin@aevani.com / Aevani2024!\n');
+	console.log('  Admin logins: admin@aevani.com, admin-test@aevani.com, ahmed@aevani.com');
+	console.log('  Default password: Aevani2024!\n');
 }
 
 seed()

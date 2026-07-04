@@ -4,6 +4,9 @@ import * as auth from '$lib/server/auth';
 import { handleError } from '$lib/utils/errorHandler';
 
 const handleAuth: Handle = async ({ event, resolve }) => {
+    // Read guest cart session ID from cookie (for guest checkout)
+    event.locals.guestSessionId = event.cookies.get('aevani_guest_session') || null;
+
     const sessionToken = event.cookies.get(auth.sessionCookieName);
     if (!sessionToken) {
         event.locals.user = null;

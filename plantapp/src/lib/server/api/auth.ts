@@ -97,22 +97,25 @@ export const authRouter = router({
     }))
     .mutation(async ({ ctx, input }) => {
       const { guestSessionId, ...loginData } = input;
-      
-      // Authenticate user
-      const user = await UserService.authenticate(loginData.usernameOrEmail, loginData.password);
-      
-      if (!user) {
+
+      // Authenticate user via UserService.login (throws on invalid credentials)
+      let loginResult;
+      try {
+        loginResult = await UserService.login(loginData);
+      } catch {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'Invalid username/email or password'
         });
       }
 
+      const { user } = loginResult;
+
       // Check if user is active
       if (!user.isActive) {
         throw new TRPCError({
           code: 'FORBIDDEN',
-          message: 'Account is disabled'
+          message: 'Your account has been disabled. Please contact support.'
         });
       }
 
@@ -121,7 +124,7 @@ export const authRouter = router({
       // Create session and set cookie
       const sessionToken = generateSessionToken();
       const session = await createSession(sessionToken, user.id);
-      
+
       // Set the httpOnly cookie in the response
       if (ctx.event) {
         setSessionTokenCookie(ctx.event, sessionToken, session.expiresAt);

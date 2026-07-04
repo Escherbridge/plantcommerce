@@ -8,7 +8,7 @@
 	let dateTo = $state('');
 
 	const thisMonth = $derived(data.currentMonthEarnings || 0);
-	const lastMonth = $derived(0); // placeholder
+	const lastMonth = $derived(data.lastMonthEarnings || 0);
 	const allTime = $derived(data.totalEarnings || 0);
 	const pendingPayout = $derived(data.pendingPayout || 0);
 

@@ -1,4 +1,4 @@
-import { eq, and, like, or, desc, asc } from 'drizzle-orm';
+import { eq, and, like, or, desc, asc, inArray } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { FileService } from './file';
@@ -102,6 +102,7 @@ export interface ProductImage {
 
 export interface ProductFilter {
 	categoryId?: number;
+	categoryIds?: number[];
 	search?: string;
 	featured?: boolean;
 	limit?: number;
@@ -585,7 +586,7 @@ export class ProductService {
 	 * Get products with filtering and pagination
 	 */
 	static async getProducts(filter: ProductFilter): Promise<Array<{
-		product: table.Product;
+		product: table.Product & { images?: Array<{ url: string; altText: string | null; bucketPath: string }> };
 		category: {
 			id: number;
 			name: string;
@@ -594,6 +595,7 @@ export class ProductService {
 	}>> {
 		const {
 			categoryId,
+			categoryIds,
 			search,
 			featured,
 			limit = 20,
@@ -608,7 +610,9 @@ export class ProductService {
 			eq(table.productCategory.isActive, true)
 		];
 
-		if (categoryId) {
+		if (categoryIds && categoryIds.length > 0) {
+			conditions.push(inArray(table.product.categoryId, categoryIds));
+		} else if (categoryId) {
 			conditions.push(eq(table.product.categoryId, categoryId));
 		}
 
@@ -623,27 +627,45 @@ export class ProductService {
 		}
 
 		// Apply sorting
-		const sortColumn = sortBy === 'name' ? table.product.name : 
-						 sortBy === 'price' ? table.product.price : 
+		const sortColumn = sortBy === 'name' ? table.product.name :
+						 sortBy === 'price' ? table.product.price :
 						 table.product.createdAt;
 
-		const query = db
+		const rows = await db
 			.select({
 				product: table.product,
 				category: {
 					id: table.productCategory.id,
 					name: table.productCategory.name,
 					slug: table.productCategory.slug
-				}
+				},
+				image: table.productImage,
+				file: table.file
 			})
 			.from(table.product)
 			.innerJoin(table.productCategory, eq(table.product.categoryId, table.productCategory.id))
+			.leftJoin(table.productImage, and(
+				eq(table.product.id, table.productImage.productId),
+				eq(table.productImage.isMain, true)
+			))
+			.leftJoin(table.file, eq(table.productImage.fileId, table.file.id))
 			.where(and(...conditions))
 			.orderBy(sortOrder === 'asc' ? asc(sortColumn) : desc(sortColumn))
 			.limit(limit)
 			.offset(offset);
 
-		return await query;
+		// Attach image data to product
+		return rows.map(({ product, category, image, file }) => ({
+			product: {
+				...product,
+				images: file ? [{
+					url: FileService.generatePublicUrl(file.bucketPath, file.isPublic),
+					altText: image?.altText || product.shortDescription,
+					bucketPath: file.bucketPath
+				}] : []
+			},
+			category
+		}));
 	}
 
 	/**

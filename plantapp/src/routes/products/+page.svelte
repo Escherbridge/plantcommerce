@@ -123,7 +123,7 @@
 				{#if data.products && data.products.length > 0}
 					{#each data.products as product}
 						<a
-							href="/products/mock-detail"
+							href="/products/{product.categorySlug || product.category?.slug || 'all'}/{product.slug}"
 							class="group flex flex-col overflow-hidden rounded-3xl border border-base-200/30 bg-base-100 shadow-md transition-all duration-300 hover:shadow-xl hover:border-primary/20 hover:scale-[1.02]"
 						>
 							<figure class="bg-base-200 relative h-56 overflow-hidden">

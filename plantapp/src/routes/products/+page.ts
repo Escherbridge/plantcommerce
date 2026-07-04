@@ -1,12 +1,19 @@
 import type { PageLoad } from './$types';
-import { trpc } from '$lib/trpc/client';
-import { getMockProducts, getMockCategories } from '$lib/utils/mockProducts';
+import { createCallerClient } from '$lib/trpc/client';
 
-/** Normalize DB product shape to flat shape templates expect */
-function normalizeProduct(row: any) {
+function normalizeProduct(row: any, parentSlugMap: Map<number, string>) {
 	const p = row.product ?? row;
 	const cat = row.category ?? p.category;
 	const tags = typeof p.tags === 'string' ? JSON.parse(p.tags) : (p.tags ?? []);
+
+	function resolveImageUrl(img: any): string {
+		if (img?.url) return img.url;
+		const path = img?.bucketPath || 'AI-MockAssets/MAINHERO.png';
+		return `/api/files/serve?path=${encodeURIComponent(path)}`;
+	}
+
+	// Resolve the parent category slug for URL routing
+	const categorySlug = cat ? (parentSlugMap.get(cat.id) || cat.slug) : 'all';
 
 	return {
 		id: p.id,
@@ -22,30 +29,55 @@ function normalizeProduct(row: any) {
 		isFeatured: p.isFeatured,
 		tags,
 		category: cat ? { id: cat.id, name: cat.name, slug: cat.slug } : null,
+		categorySlug,
 		images: p.images?.length
 			? p.images.map((img: any) => ({
-				url: img.url || `/src/lib/images/${img.bucketPath || 'AI-MockAssets/MAINHERO.png'}`,
+				url: resolveImageUrl(img),
 				altText: img.altText || p.shortDescription
 			}))
 			: []
 	};
 }
 
+/** Build a map from category ID → parent category slug for URL routing */
+function buildParentSlugMap(categories: any[]): Map<number, string> {
+	const map = new Map<number, string>();
+	const byId = new Map(categories.map((c: any) => [c.id, c]));
+
+	for (const cat of categories) {
+		if (cat.parentId) {
+			// Child categories map to their parent's slug
+			const parent = byId.get(cat.parentId);
+			if (parent) {
+				map.set(cat.id, parent.slug);
+			}
+		} else {
+			// Parent categories map to themselves
+			map.set(cat.id, cat.slug);
+		}
+	}
+	return map;
+}
+
 export const load: PageLoad = async (event) => {
+	const trpc = createCallerClient(event.fetch);
 	const { url } = event;
 	const search = url.searchParams.get('search');
 	const category = url.searchParams.get('category');
 
 	try {
-		const categories = await trpc(event).products.getCategories.query();
+		const categories = await trpc.products.getCategories.query();
+		const parentSlugMap = buildParentSlugMap(categories);
 
-		const results = await trpc(event).products.getProducts.query({
+		const results = await trpc.products.getProducts.query({
 			search: search || undefined,
 			categoryId: category ? parseInt(category) : undefined,
 			limit: 50
 		});
 
-		const products = (Array.isArray(results) ? results : []).map(normalizeProduct);
+		const products = (Array.isArray(results) ? results : []).map(
+			(row: any) => normalizeProduct(row, parentSlugMap)
+		);
 
 		return {
 			products,
@@ -54,15 +86,10 @@ export const load: PageLoad = async (event) => {
 			searchQuery: search
 		};
 	} catch (error) {
-		console.error('Error loading products from database, using mock data:', error);
-
+		console.error('Error loading products:', error);
 		return {
-			products: getMockProducts({
-				search: search || undefined,
-				categoryId: category ? parseInt(category) : undefined,
-				limit: 50
-			}),
-			categories: getMockCategories(),
+			products: [],
+			categories: [],
 			selectedCategory: category,
 			searchQuery: search
 		};

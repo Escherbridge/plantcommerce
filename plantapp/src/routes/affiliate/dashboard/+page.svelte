@@ -55,10 +55,30 @@
 <div class="platform-content">
 	<div class="platform-header">
 		<h1 class="platform-header__title">Affiliate Dashboard</h1>
-		<p class="platform-header__subtitle">
-			Welcome back, {data.affiliate?.user?.firstName || 'Affiliate'}. Here is your performance overview.
-		</p>
+		{#if data.isAdmin && !data.affiliate}
+			<p class="platform-header__subtitle">
+				Admin view: Affiliate system overview. No affiliate record associated with your account.
+			</p>
+		{:else}
+			<p class="platform-header__subtitle">
+				Welcome back, {data.affiliate?.user?.firstName || 'Affiliate'}. Here is your performance overview.
+			</p>
+		{/if}
 	</div>
+
+	{#if data.isAdmin && !data.affiliate}
+		<div class="admin-notice">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="admin-notice__icon">
+				<circle cx="12" cy="12" r="10"/>
+				<line x1="12" y1="8" x2="12" y2="12"/>
+				<line x1="12" y1="16" x2="12.01" y2="16"/>
+			</svg>
+			<div class="admin-notice__content">
+				<h3 class="admin-notice__title">Admin Viewing Without Affiliate</h3>
+				<p class="admin-notice__text">You are viewing this as an admin. To use affiliate features, create an affiliate account or navigate to the admin affiliate management page.</p>
+			</div>
+		</div>
+	{/if}
 
 	<!-- Period Selector -->
 	<div class="period-selector">
@@ -137,15 +157,15 @@
 						{#each data.recentClicks as activity}
 							<tr>
 								<td>{activity.product?.name || 'N/A'}</td>
-								<td>{activity.clicks || 1}</td>
+								<td>{activity.clicks || 0}</td>
 								<td>
-									{#if activity.converted}
-										<span class="platform-badge platform-badge--success">Yes</span>
+									{#if activity.conversions > 0}
+										<span class="platform-badge platform-badge--success">{activity.conversions}</span>
 									{:else}
-										<span class="platform-badge platform-badge--ghost">No</span>
+										<span class="platform-badge platform-badge--ghost">0</span>
 									{/if}
 								</td>
-								<td>${activity.earnings ? parseFloat(activity.earnings).toFixed(2) : '0.00'}</td>
+								<td>${(activity.earnings || 0).toFixed(2)}</td>
 							</tr>
 						{/each}
 					</tbody>
@@ -223,6 +243,41 @@
 </div>
 
 <style>
+	.admin-notice {
+		display: flex;
+		gap: 1rem;
+		padding: 1rem 1.25rem;
+		background: oklch(var(--w) / 0.05);
+		border: 1.5px solid oklch(var(--w) / 0.2);
+		border-radius: var(--input-radius, 10px);
+		margin-bottom: 1.5rem;
+	}
+
+	.admin-notice__icon {
+		width: 1.25rem;
+		height: 1.25rem;
+		color: oklch(var(--w));
+		flex-shrink: 0;
+	}
+
+	.admin-notice__content {
+		flex: 1;
+	}
+
+	.admin-notice__title {
+		font-family: var(--font-display);
+		font-size: 0.875rem;
+		font-weight: 700;
+		color: oklch(var(--bc));
+		margin-bottom: 0.25rem;
+	}
+
+	.admin-notice__text {
+		font-size: 0.8125rem;
+		color: oklch(var(--bc) / 0.6);
+		line-height: 1.5;
+	}
+
 	.period-selector {
 		display: flex;
 		gap: 0.25rem;

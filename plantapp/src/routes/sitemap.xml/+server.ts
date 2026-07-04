@@ -1,19 +1,16 @@
 import type { RequestHandler } from '@sveltejs/kit';
+import { db } from '$lib/server/db';
+import { product, productCategory } from '$lib/server/db/schema';
+import { eq, and } from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ url }) => {
-	// Base URL for your site
 	const baseUrl = url.origin;
 
-	// Static routes that exist in your MVP
 	const staticRoutes = [
-		'',  // Home page
+		'',
 		'/about',
 		'/accessibility',
 		'/affiliate/join',
-		'/affiliate/dashboard',
-		'/affiliate/earnings',
-		'/affiliate/links',
-		'/affiliate/materials',
 		'/blog',
 		'/careers',
 		'/cart',
@@ -30,7 +27,6 @@ export const GET: RequestHandler = async ({ url }) => {
 		'/products/aquaponics',
 		'/products/hydroponics',
 		'/products/silvopasture',
-		'/products/mock-detail',
 		'/register',
 		'/resources',
 		'/returns',
@@ -38,35 +34,45 @@ export const GET: RequestHandler = async ({ url }) => {
 		'/sustainability',
 		'/terms',
 		'/login',
-		'/account/profile',
-		'/account/orders',
-		'/account/wishlist',
-		'/admin',
-		'/admin/analytics',
-		'/admin/content',
-		'/admin/orders',
-		'/admin/products',
-		'/admin/users',
 		'/verify-email'
 	];
 
-	// Generate XML
+	// Fetch all active products with their category slugs for dynamic URLs
+	let productRoutes: string[] = [];
+	try {
+		const products = await db
+			.select({
+				slug: product.slug,
+				categorySlug: productCategory.slug
+			})
+			.from(product)
+			.innerJoin(productCategory, eq(product.categoryId, productCategory.id))
+			.where(eq(product.isActive, true));
+
+		productRoutes = products.map(p => `/products/${p.categorySlug}/${p.slug}`);
+	} catch {
+		// If DB is unavailable, sitemap still works with static routes
+	}
+
+	const allRoutes = [...staticRoutes, ...productRoutes];
+
 	const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${staticRoutes
+${allRoutes
 	.map((route) => {
 		const fullUrl = `${baseUrl}${route.startsWith('/') ? route : '/' + route}`;
+		const isProduct = route.match(/^\/products\/[^/]+\/[^/]+$/);
+		const priority = route === '' ? '1.0' : isProduct ? '0.7' : route.startsWith('/products/') ? '0.8' : '0.6';
 		return `
 	<url>
 		<loc>${fullUrl}</loc>
-		<changefreq>weekly</changefreq>
-		<priority>${route === '' ? '1.0' : route.startsWith('/products/') ? '0.8' : '0.6'}</priority>
+		<changefreq>${isProduct ? 'daily' : 'weekly'}</changefreq>
+		<priority>${priority}</priority>
 	</url>`;
 	})
 	.join('')}
 </urlset>`;
 
-	// Return with proper headers
 	return new Response(xml, {
 		headers: {
 			'Content-Type': 'application/xml',

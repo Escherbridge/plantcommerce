@@ -1,8 +1,9 @@
 import type { PageLoad } from './$types';
 import { getUser } from '$lib/loaders/protected';
-import { trpc } from '$lib/trpc/client';
+import { createCallerClient } from '$lib/trpc/client';
 
 export const load: PageLoad = async (event) => {
+	const trpc = createCallerClient(event.fetch);
 	const user = await getUser(event);
 
 	if (!user) {
@@ -14,7 +15,7 @@ export const load: PageLoad = async (event) => {
 
 	try {
 		// Check if user is already an affiliate
-		const affiliateData = await trpc(event).affiliate.getMyAffiliate.query();
+		const affiliateData = await trpc.affiliate.getMyAffiliate.query();
 
 		return {
 			user,

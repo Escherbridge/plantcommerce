@@ -1,13 +1,19 @@
 import type { PageLoad } from './$types';
-import { trpc } from '$lib/trpc/client';
-import { redirect } from '@sveltejs/kit';
+import { createCallerClient } from '$lib/trpc/client';
+import { redirect, isRedirect } from '@sveltejs/kit';
+import { getUser } from '$lib/loaders/protected';
 
 export const load: PageLoad = async (event) => {
+	const trpc = createCallerClient(event.fetch);
 	try {
-		// Get affiliate data
-		const affiliate = await trpc(event).affiliate.getMyAffiliate.query();
+		// Get current user
+		const user = await getUser(event);
 
-		if (!affiliate) {
+		// Get affiliate data
+		const affiliate = await trpc.affiliate.getMyAffiliate.query();
+
+		// If user is admin, allow viewing dashboard without affiliate record
+		if (!affiliate && user?.role !== 'admin') {
 			throw redirect(303, '/affiliate/join');
 		}
 
@@ -20,15 +26,15 @@ export const load: PageLoad = async (event) => {
 		};
 
 		try {
-			stats = await trpc(event).affiliate.getStats.query();
+			stats = await trpc.affiliate.getStats.query();
 		} catch (e) {
 			console.error('Error loading stats:', e);
 		}
 
-		// Get recent activity
-		let recentClicks = [];
+		// Get top performing links (previously "recent clicks")
+		let recentClicks: any[] = [];
 		try {
-			recentClicks = await trpc(event).affiliate.getRecentClicks.query({ limit: 10 });
+			recentClicks = await trpc.affiliate.getRecentClicks.query({ limit: 10 });
 		} catch (e) {
 			console.error('Error loading recent clicks:', e);
 		}
@@ -36,10 +42,11 @@ export const load: PageLoad = async (event) => {
 		return {
 			affiliate,
 			stats,
-			recentClicks: recentClicks || []
+			recentClicks: recentClicks || [],
+			isAdmin: user?.role === 'admin'
 		};
 	} catch (error) {
-		if (error instanceof Response) {
+		if (isRedirect(error)) {
 			throw error;
 		}
 		console.error('Error loading affiliate dashboard:', error);

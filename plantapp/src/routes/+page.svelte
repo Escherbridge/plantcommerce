@@ -189,14 +189,14 @@
 </section>
 
 <!-- Section 3: Core Values -->
-<section class="bg-neutral relative w-full overflow-hidden py-32">
+<section class="bg-primary text-primary-content relative w-full overflow-hidden py-32">
 	<PatternBackground pattern={MyceliumNetwork} opacity={0.05} class="absolute inset-0 z-0" />
 
 	<div class="relative z-10 mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-12">
 		<div class="mb-24 space-y-6 text-center">
 			<h2 class="text-display uppercase tracking-tight text-5xl lg:text-7xl xl:text-8xl">CORE VALUES</h2>
 			<div class="bg-primary mx-auto h-1.5 w-32"></div>
-			<p class="text-base-content/60 mx-auto max-w-3xl text-xl font-light lg:text-2xl">
+			<p class="text-primary-content/60 mx-auto max-w-3xl text-xl font-light lg:text-2xl">
 				Building a sustainable future through diversity, education, and community
 			</p>
 		</div>
@@ -264,7 +264,7 @@
 
 				<!-- Diversity Block -->
 				<div class="group md:col-span-2 lg:col-span-2 xl:col-span-2">
-					<div class="from-primary to-primary/80 text-primary-content hover:shadow-3xl relative h-full overflow-hidden rounded-2xl bg-gradient-to-br p-10 shadow-2xl transition-all duration-300 hover:-translate-y-1 lg:p-14 xl:p-20">
+					<div class="from-secondary to-secondary/80 text-secondary-content hover:shadow-3xl relative h-full overflow-hidden rounded-2xl bg-gradient-to-br p-10 shadow-2xl transition-all duration-300 hover:-translate-y-1 lg:p-14 xl:p-20">
 						<div class="relative z-10 space-y-8">
 							<h3 class="text-4xl font-bold tracking-tight lg:text-6xl xl:text-7xl">DIVERSITY</h3>
 							<p class="max-w-2xl text-xl font-light leading-relaxed opacity-95 lg:text-2xl xl:text-3xl">
@@ -321,7 +321,7 @@
 			<div class="grid grid-cols-2 gap-6 lg:gap-10">
 				{#each featuredProducts as product, i}
 					<a
-						href="/products/{product.category?.slug || 'all'}/{product.slug}"
+						href="/products/{product.categorySlug || product.category?.slug || 'all'}/{product.slug}"
 						class="card bg-base-100 border-base-200 group overflow-hidden rounded-2xl border shadow-xl transition-all duration-500 hover:scale-[1.02] hover:shadow-xl {i === 0 ? 'col-span-2 md:col-span-1 md:row-span-2' : 'col-span-2 md:col-span-1'}"
 					>
 						<figure class="relative overflow-hidden {i === 0 ? 'h-80 md:h-[28rem]' : 'h-64'}">
@@ -359,7 +359,7 @@
 								<div class="text-primary font-mono text-2xl font-bold {i === 0 ? 'text-3xl lg:text-4xl' : ''}">
 									${parseFloat(product.price).toFixed(2)}
 								</div>
-								<span class="text-display btn btn-primary btn-sm uppercase tracking-widest transition-transform group-hover:scale-110 {i === 0 ? 'btn-md' : ''}">
+								<span class="btn btn-primary btn-sm font-display text-xs uppercase tracking-widest transition-transform group-hover:scale-105 {i === 0 ? 'btn-md text-sm' : ''}">
 									VIEW DETAILS
 								</span>
 							</div>
@@ -372,7 +372,7 @@
 		<div class="mt-16 text-center">
 			<a
 				href="/products"
-				class="btn btn-outline btn-lg text-display uppercase tracking-widest transition-transform hover:scale-105"
+				class="btn btn-outline btn-lg font-display text-sm uppercase tracking-widest transition-transform hover:scale-105"
 			>
 				VIEW ALL PRODUCTS
 			</a>
@@ -381,7 +381,7 @@
 </section>
 
 <!-- Section 5: Newsletter — Reimagined -->
-<section class="bg-neutral relative w-full overflow-hidden py-32">
+<section class="bg-primary text-primary-content relative w-full overflow-hidden py-32">
 	<PatternBackground pattern={RootSystem} opacity={0.08} class="absolute inset-0 z-0" />
 
 	<div class="relative z-10 mx-auto w-full max-w-[900px] px-4 sm:px-6 lg:px-12 text-center">
@@ -389,7 +389,7 @@
 			<h2 class="text-display uppercase tracking-tight text-5xl lg:text-7xl xl:text-8xl mb-6">
 				STAY CONNECTED
 			</h2>
-			<p class="text-base-content/60 mx-auto max-w-2xl text-xl font-light leading-relaxed mb-16">
+			<p class="text-primary-content/60 mx-auto max-w-2xl text-xl font-light leading-relaxed mb-16">
 				Get exclusive access to new products, growing guides, and sustainable agriculture tips.
 			</p>
 
@@ -407,7 +407,7 @@
 							<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
 						</svg>
 					</div>
-					<p class="text-base-content/80 text-xl font-light">You're in. We'll be in touch soon.</p>
+					<p class="text-primary-content/80 text-xl font-light">You're in. We'll be in touch soon.</p>
 				</div>
 			{:else}
 				<form onsubmit={handleSubscribe} class="flex flex-col items-center gap-8">
@@ -417,10 +417,10 @@
 							placeholder="your@email.com"
 							bind:value={emailValue}
 							required
-							class="w-full border-b-2 border-base-content/30 bg-transparent py-4 text-center text-2xl font-light text-base-content placeholder:text-base-content/30 focus:border-accent focus:outline-none transition-colors duration-300"
+							class="w-full border-b-2 border-primary-content/30 bg-transparent py-4 text-center text-2xl font-light text-primary-content placeholder:text-primary-content/30 focus:border-accent focus:outline-none transition-colors duration-300"
 						/>
 					</div>
-					<button type="submit" class="btn btn-accent btn-lg text-display uppercase tracking-widest px-12">
+					<button type="submit" class="btn btn-accent btn-lg font-display text-sm uppercase tracking-widest px-12">
 						SUBSCRIBE
 					</button>
 				</form>

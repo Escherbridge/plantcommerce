@@ -3,9 +3,11 @@
 	import { Header } from '$lib/components/navigation';
 	import { RootSystem } from '$lib/components/patterns';
 	import MarqueeBar from '$lib/components/ui/MarqueeBar.svelte';
+	import Toast from '$lib/components/ui/Toast.svelte';
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/trpc/client';
 	import { browser } from '$app/environment';
+	import { cart } from '$lib/stores/cart';
 	import SEO from '$lib/components/SEO.svelte';
 
 	const currentUrl = $derived($page.url.pathname);
@@ -41,6 +43,13 @@
 	$effect(() => {
 		currentUrl; // reactive dependency
 		drawerOpen = false;
+	});
+
+	// Initialize cart on mount
+	$effect(() => {
+		if (browser) {
+			cart.refresh();
+		}
 	});
 
 	// Mobile navigation structure
@@ -145,6 +154,8 @@
 		<main class="main-content">
 			{@render children()}
 		</main>
+
+		<Toast />
 
 		<!-- ===== LOGGED-IN USER BOTTOM BAR ===== -->
 		{#if user}
@@ -419,7 +430,7 @@
 		flex-direction: column;
 		min-height: 100vh;
 		max-width: 100vw;
-		overflow-x: hidden;
+		overflow-x: clip;
 		transition:
 			transform 0.4s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
 			filter 0.4s ease;
@@ -433,20 +444,12 @@
 
 	.main-content {
 		flex: 1;
-		/* push content below fixed header */
-		padding-top: 4.5rem;
-	}
-
-	@media (max-width: 767px) {
-		.main-content {
-			padding-top: 3.5rem;
-		}
 	}
 
 	/* ===== FOOTER ===== */
 	.editorial-footer {
-		background-color: oklch(var(--n));
-		color: oklch(var(--nc));
+		background-color: oklch(var(--p));
+		color: oklch(var(--pc));
 		position: relative;
 		overflow: hidden;
 	}

@@ -1,14 +1,24 @@
 import type { PageLoad } from './$types';
-import { trpc } from '$lib/trpc/client';
+import { createCallerClient } from '$lib/trpc/client';
+import { browser } from '$app/environment';
+
+const GUEST_SESSION_KEY = 'aevani_guest_session';
+
+function getGuestSessionId(): string | undefined {
+	if (!browser) return undefined;
+	return localStorage.getItem(GUEST_SESSION_KEY) || undefined;
+}
 
 export const load: PageLoad = async (event) => {
+	const trpc = createCallerClient(event.fetch);
 	try {
-		const cart = await trpc(event).cart.getCart.query();
+		const sessionId = getGuestSessionId();
+		const cart = await trpc.cart.getCart.query({ sessionId });
 
-		// Get recently viewed products
-		let recentlyViewed = [];
+		// Get recently viewed products (using featured as placeholder)
+		let recentlyViewed: any[] = [];
 		try {
-			const recentProducts = await trpc(event).products.getProducts.query({
+			const recentProducts = await trpc.products.getProducts.query({
 				limit: 4,
 				featured: true
 			});

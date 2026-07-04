@@ -53,11 +53,11 @@
 	async function generateLink() {
 		if (!selectedProduct) return;
 		try {
-			const result = await trpc().affiliate.generateLink.mutate({
+			const result = await trpc.affiliate.createLink.mutate({
 				productId: selectedProduct.id,
-				customSlug: customSlug || undefined
+				customCode: customSlug || undefined
 			});
-			generatedLink = result.url;
+			generatedLink = result.affiliateUrl;
 		} catch (error) {
 			console.error('Error generating link:', error);
 		}
@@ -97,9 +97,9 @@
 				<label for="product-select" class="field-label">Select Product</label>
 				<select id="product-select" class="field-input" bind:value={selectedProduct}>
 					<option value={null}>Choose a product...</option>
-					{#if data.products}
+					{#if data.products && data.products.length > 0}
 						{#each data.products as product}
-							<option value={product}>{product.name}</option>
+							<option value={product}>{product.name} — ${parseFloat(product.price).toFixed(2)} ({product.categoryName})</option>
 						{/each}
 					{/if}
 				</select>
@@ -208,7 +208,7 @@
 									{/if}
 								</td>
 								<td>
-									<div class="link-url">{link.url}</div>
+									<div class="link-url">{link.affiliateUrl}</div>
 								</td>
 								<td>
 									<span class="platform-badge platform-badge--primary">{link.clicks || 0}</span>
@@ -223,7 +223,7 @@
 									<div class="action-group">
 										<button
 											class="platform-action-btn copy-sm-btn"
-											onclick={() => copyLink(link.url, link.id)}
+											onclick={() => copyLink(link.affiliateUrl, link.id)}
 										>
 											{#if copiedId === link.id}
 												Copied

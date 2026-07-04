@@ -9,6 +9,11 @@
   dependencies:
     undici-types "~7.16.0"
 
+postgres@^3.4.8:
+  version "3.4.8"
+  resolved "https://registry.npmjs.org/postgres/-/postgres-3.4.8.tgz"
+  integrity sha512-d+JFcLM17njZaOLkv6SCev7uoLaBtfK86vMUXhW1Z4glPWh4jozno9APvW/XKFJ3CCxVoC7OL38BqRydtu5nGg==
+
 undici-types@~7.16.0:
   version "7.16.0"
   resolved "https://registry.npmjs.org/undici-types/-/undici-types-7.16.0.tgz"

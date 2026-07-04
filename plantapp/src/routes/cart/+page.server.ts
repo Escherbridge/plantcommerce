@@ -2,6 +2,10 @@ import type { Actions } from './$types';
 import { fail } from '@sveltejs/kit';
 import CartService from '$lib/server/services/cart';
 
+function getSessionId(locals: App.Locals): string | undefined {
+    return locals.user?.id ? undefined : locals.guestSessionId || undefined;
+}
+
 export const actions: Actions = {
     updateQuantity: async ({ request, locals }) => {
         const formData = await request.formData();
@@ -17,7 +21,7 @@ export const actions: Actions = {
                 itemId,
                 quantity,
                 locals.user?.id,
-                locals.session?.id
+                getSessionId(locals)
             );
             return { success: true };
         } catch (error) {
@@ -35,7 +39,7 @@ export const actions: Actions = {
         }
 
         try {
-            await CartService.removeItem(itemId, locals.user?.id, locals.session?.id);
+            await CartService.removeItem(itemId, locals.user?.id, getSessionId(locals));
             return { success: true };
         } catch (error) {
             console.error('Error removing item:', error);

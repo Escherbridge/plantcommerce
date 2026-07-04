@@ -1,6 +1,7 @@
 import { eq, and, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
+import { FileService } from './file';
 
 export interface CartItem {
 	id: number;
@@ -15,6 +16,7 @@ export interface CartItem {
 		price: string;
 		stockQuantity: number;
 		trackInventory: boolean;
+		shortDescription?: string | null;
 		images?: Array<{ url: string; altText: string | null; isMain: boolean }>;
 	};
 }
@@ -96,7 +98,7 @@ export class CartService {
 
 		const cart = cartResult[0];
 
-		// Get cart items with product details
+		// Get cart items with product details and image files
 		const items = await db
 			.select({
 				id: table.cartItem.id,
@@ -104,7 +106,8 @@ export class CartService {
 				quantity: table.cartItem.quantity,
 				unitPrice: table.cartItem.unitPrice,
 				product: table.product,
-				images: table.productImage
+				image: table.productImage,
+				file: table.file
 			})
 			.from(table.cartItem)
 			.innerJoin(table.product, eq(table.cartItem.productId, table.product.id))
@@ -112,9 +115,9 @@ export class CartService {
 				eq(table.product.id, table.productImage.productId),
 				eq(table.productImage.isMain, true)
 			))
+			.leftJoin(table.file, eq(table.productImage.fileId, table.file.id))
 			.where(eq(table.cartItem.cartId, cart.id));
 
-		// Group images by product
 		const cartItems: CartItem[] = items.map(item => ({
 			id: item.id,
 			productId: item.productId,
@@ -128,10 +131,10 @@ export class CartService {
 				price: item.product.price,
 				stockQuantity: item.product.stockQuantity,
 				trackInventory: item.product.trackInventory,
-				images: item.images ? [{
-					url: item.images.url,
-					altText: item.images.altText,
-					isMain: item.images.isMain
+				images: item.file ? [{
+					url: FileService.generatePublicUrl(item.file.bucketPath, item.file.isPublic),
+					altText: item.image?.altText || item.product.shortDescription,
+					isMain: item.image?.isMain || false
 				}] : []
 			}
 		}));

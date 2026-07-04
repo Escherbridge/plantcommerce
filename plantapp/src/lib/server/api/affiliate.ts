@@ -33,6 +33,66 @@ export const affiliateRouter = router({
 		}),
 
 	/**
+	 * Apply to become an affiliate (public-facing onboarding endpoint)
+	 */
+	submitApplication: protectedProcedure
+		.input(
+			z.object({
+				website: z.string().optional(),
+				socialMedia: z.string().optional(),
+				audience: z.string(),
+				promotionMethod: z.string(),
+				monthlyTraffic: z.string(),
+				whyJoin: z.string()
+			})
+		)
+		.mutation(async ({ ctx, input }) => {
+			try {
+				// Check if already an affiliate
+				const existing = await AffiliateService.getAffiliateByUserId(ctx.user.id);
+				if (existing) {
+					throw new TRPCError({
+						code: 'CONFLICT',
+						message: 'You already have an affiliate account.'
+					});
+				}
+
+				// Create affiliate account with application metadata
+				const affiliate = await AffiliateService.createAffiliate(ctx.user.id, undefined, {
+					website: input.website,
+					socialMedia: input.socialMedia,
+					audience: input.audience,
+					promotionMethod: input.promotionMethod,
+					monthlyTraffic: input.monthlyTraffic,
+					whyJoin: input.whyJoin
+				});
+
+				// Update user role to affiliate if not already
+				if (ctx.user.role !== 'affiliate' && ctx.user.role !== 'admin') {
+					await UserService.updateUserRole(ctx.user.id, 'affiliate');
+				}
+
+				return {
+					...affiliate,
+					applicationDetails: {
+						website: input.website,
+						socialMedia: input.socialMedia,
+						audience: input.audience,
+						promotionMethod: input.promotionMethod,
+						monthlyTraffic: input.monthlyTraffic,
+						whyJoin: input.whyJoin
+					}
+				};
+			} catch (error) {
+				if (error instanceof TRPCError) throw error;
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: error instanceof Error ? error.message : 'Failed to submit application'
+				});
+			}
+		}),
+
+	/**
 	 * Get current user's affiliate account
 	 */
 	getMyAffiliate: protectedProcedure.query(async ({ ctx }) => {
@@ -86,9 +146,7 @@ export const affiliateRouter = router({
 					return [];
 				}
 
-				// This would need to be implemented in AffiliateService
-				// For now, return empty array as placeholder
-				return [];
+				return await AffiliateService.getTopPerformingLinks(affiliate.id, input.limit || 10);
 			} catch (error) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
@@ -109,19 +167,17 @@ export const affiliateRouter = router({
 					totalEarnings: 0,
 					pendingPayout: 0,
 					currentMonthEarnings: 0,
+					lastMonthEarnings: 0,
 					history: [],
 					paymentMethod: null
 				};
 			}
 
-			// Return basic structure with affiliate's total earnings
-			// pendingPayout and paymentMethod would need to be added to the schema
+			const earningsData = await AffiliateService.getEarningsData(affiliate.id);
+
 			return {
-				totalEarnings: parseFloat(affiliate.totalEarnings || '0'),
-				pendingPayout: 0,
-				currentMonthEarnings: 0,
-				history: [],
-				paymentMethod: null
+				...earningsData,
+				paymentMethod: null // Payment method system not yet implemented
 			};
 		} catch (error) {
 			throw new TRPCError({
@@ -136,7 +192,13 @@ export const affiliateRouter = router({
 	 */
 	getMyLinks: protectedProcedure.query(async ({ ctx }) => {
 		try {
-			return await AffiliateService.getAffiliateLinks(ctx.user.id);
+			const links = await AffiliateService.getAffiliateLinks(ctx.user.id);
+			const baseUrl = ctx.event.url.origin;
+			// Return links with full shareable URLs
+			return links.map((link: any) => ({
+				...link,
+				affiliateUrl: `${baseUrl}/aff/${link.linkCode}`
+			}));
 		} catch (error) {
 			throw new TRPCError({
 				code: 'INTERNAL_SERVER_ERROR',
@@ -172,7 +234,12 @@ export const affiliateRouter = router({
 					customCode: input.customCode
 				});
 
-				return link;
+				// Return the link with a full shareable URL
+				const baseUrl = ctx.event.url.origin;
+				return {
+					...link,
+					affiliateUrl: `${baseUrl}/aff/${link.linkCode}`
+				};
 			} catch (error) {
 				if (error instanceof TRPCError) {
 					throw error;
@@ -185,11 +252,16 @@ export const affiliateRouter = router({
 		}),
 
 	/**
-	 * Get all affiliate links for current user
+	 * Get all affiliate links for current user (alias for getMyLinks)
 	 */
 	getLinks: protectedProcedure.query(async ({ ctx }) => {
 		try {
-			return await AffiliateService.getAffiliateLinks(ctx.user.id);
+			const links = await AffiliateService.getAffiliateLinks(ctx.user.id);
+			const baseUrl = ctx.event.url.origin;
+			return links.map((link: any) => ({
+				...link,
+				affiliateUrl: `${baseUrl}/aff/${link.linkCode}`
+			}));
 		} catch (error) {
 			throw new TRPCError({
 				code: 'INTERNAL_SERVER_ERROR',

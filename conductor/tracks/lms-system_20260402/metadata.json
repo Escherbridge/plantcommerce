@@ -1,0 +1,18 @@
+{
+  "trackId": "lms-system_20260402",
+  "title": "Learning Management System (LMS)",
+  "type": "feature",
+  "status": "ready",
+  "priority": "high",
+  "phase": 6,
+  "createdAt": "2026-04-02",
+  "updatedAt": "2026-04-02",
+  "dependencies": [
+    "transaction-core_20260314",
+    "auth-accounts_20260314",
+    "content-seo_20260314"
+  ],
+  "estimatedDuration": "12-14 weeks",
+  "totalTasks": 75,
+  "totalPhases": 9
+}

@@ -1,10 +1,11 @@
 import type { PageLoad } from './$types';
-import { trpc } from '$lib/trpc/client';
+import { createCallerClient } from '$lib/trpc/client';
 
 export const load: PageLoad = async (event) => {
+	const trpc = createCallerClient(event.fetch);
 	try {
-		const stats = await trpc(event).admin.getDashboardStats.query();
-		const recentOrders = await trpc(event).admin.getRecentOrders.query({ limit: 10 });
+		const stats = await trpc.admin.getDashboardStats.query();
+		const recentOrders = await trpc.admin.getRecentOrders.query({ limit: 10 });
 
 		return {
 			stats,

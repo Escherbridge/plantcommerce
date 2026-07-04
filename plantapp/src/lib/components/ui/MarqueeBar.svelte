@@ -44,7 +44,7 @@
 
 {#if mounted && !dismissed}
 	<div
-		class="marquee-bar relative overflow-hidden bg-primary text-primary-content
+		class="marquee-bar relative overflow-hidden
 		       h-7 sm:h-8 flex items-center {className}"
 		role="region"
 		aria-label="Announcements"
@@ -73,8 +73,8 @@
 		<!-- Dismiss button -->
 		<button
 			onclick={dismiss}
-			class="absolute right-0 top-0 bottom-0 px-3 flex items-center
-			       bg-primary hover:bg-primary/80 transition-colors z-10"
+			class="marquee-dismiss absolute right-0 top-0 bottom-0 px-3 flex items-center
+			       transition-colors z-10"
 			aria-label="Dismiss announcements"
 		>
 			<svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -86,6 +86,19 @@
 {/if}
 
 <style>
+	.marquee-bar {
+		background-color: #1B2D4A;
+		color: #F7F5F0;
+	}
+
+	.marquee-dismiss {
+		background-color: #1B2D4A;
+	}
+
+	.marquee-dismiss:hover {
+		background-color: rgba(27, 45, 74, 0.85);
+	}
+
 	.marquee-track {
 		animation: marquee 24s linear infinite;
 	}

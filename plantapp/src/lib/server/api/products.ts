@@ -10,6 +10,7 @@ export const productsRouter = router({
 	getProducts: publicProcedure
 		.input(z.object({
 			categoryId: z.number().optional(),
+			categoryIds: z.array(z.number()).optional(),
 			search: z.string().optional(),
 			featured: z.boolean().optional(),
 			limit: z.number().min(1).max(50).default(20),

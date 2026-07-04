@@ -345,6 +345,23 @@ export class FileService {
 	}
 
 	/**
+	 * Generate a public URL for a file based on its bucket path.
+	 * For public files, returns the S3 endpoint URL directly.
+	 * For non-public files or when S3 is not configured, returns a fallback path.
+	 */
+	static generatePublicUrl(bucketPath: string, isPublic: boolean = true): string {
+		// Mock assets are served locally via the file serve API
+		if (bucketPath.startsWith('AI-MockAssets/')) {
+			return `/api/files/serve?path=${encodeURIComponent(bucketPath)}`;
+		}
+		if (isPublic && env.S3_ENDPOINT && env.S3_BUCKET_NAME) {
+			return `${env.S3_ENDPOINT}/${env.S3_BUCKET_NAME}/${bucketPath}`;
+		}
+		// Fallback: serve via local API
+		return `/api/files/serve?path=${encodeURIComponent(bucketPath)}`;
+	}
+
+	/**
 	 * Convert database file record to FileWithUrl
 	 * Note: publicUrl is empty - use generateSignedUrl() for access
 	 */
