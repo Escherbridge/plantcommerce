@@ -1,4 +1,4 @@
-# PlantCommerce (Aevani) QA Test Plan
+# Aevani QA Test Plan
 
 ## How to Perform QA Testing
 

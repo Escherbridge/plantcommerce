@@ -1,53 +1,25 @@
 import type { LoadEvent } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
-import { trpc } from '$lib/trpc/client';
 
 /**
- * Check if user is authenticated using event.locals
+ * Check public parent data for an authenticated identity.
  * Redirects to login if not authenticated
  */
 export async function requireAuth(event: LoadEvent, redirectTo?: string) {
-    // TRY BOTH: parent data and locals
-    try {
-        // Try to get user from parent data first
-        const parentData = await event.parent();
-
-        if (parentData?.user) {
-
-            return parentData.user;
-        }
-    } catch (error) {
-
-    }
-
-    // Fall back to checking locals
-
-    if (event.locals?.user) {
-
-        return event.locals.user;
-    }
-    const redirectPath = redirectTo || event.url.pathname;
-    throw redirect(303, `/login?redirect=${encodeURIComponent(redirectPath)}`);
+	const parentData = await event.parent();
+	if (parentData?.user) {
+		return parentData.user;
+	}
+	const redirectPath = redirectTo || event.url.pathname;
+	throw redirect(303, `/login?redirect=${encodeURIComponent(redirectPath)}`);
 }
 
 /**
  * Get user if authenticated, return null if not (no redirect)
  */
 export async function getUser(event: LoadEvent) {
-    // Try locals first (server-side)
-    if (event.locals?.user) {
-        return event.locals.user;
-    }
-    // Fall back to parent data (works in client-side +page.ts loaders)
-    try {
-        const parentData = await event.parent();
-        if (parentData?.user) {
-            return parentData.user;
-        }
-    } catch {
-        // parent() may not be available in all contexts
-    }
-    return null;
+	const parentData = await event.parent();
+	return parentData?.user ?? null;
 }
 
 /**

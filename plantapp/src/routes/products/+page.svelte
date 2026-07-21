@@ -24,17 +24,30 @@
 	}
 </script>
 
+<svelte:head>
+	<meta name="robots" content="noindex,nofollow" />
+</svelte:head>
+
 <Section>
 	<Container>
 		<!-- Enhanced Header -->
 		<div class="mb-12 space-y-4">
-			<h1 class="text-5xl font-bold tracking-tight lg:text-7xl">ALL PRODUCTS</h1>
+			<h1 class="text-5xl font-bold tracking-tight lg:text-7xl">CATALOG</h1>
 			<div class="bg-primary h-1 w-24"></div>
 			<p class="text-base-content/60 max-w-3xl text-xl font-light lg:text-2xl">
-				Browse our complete selection of sustainable agriculture products
+				We publish products only after their supplier, offer, fulfillment, and claim evidence is verified.
 			</p>
 		</div>
 
+		{#if data.catalogAvailability.status === 'unavailable'}
+			<div class="rounded-3xl border border-base-300 bg-base-200/40 p-8 text-center shadow-sm md:p-12">
+				<h2 class="font-display text-3xl font-bold uppercase tracking-tight">Catalog verification in progress</h2>
+				<p class="mx-auto mt-4 max-w-2xl text-base-content/70 text-lg leading-relaxed">
+					{data.catalogAvailability.reason}
+				</p>
+				<a href="/support" class="btn btn-primary mt-8">Contact support</a>
+			</div>
+		{:else}
 		<!-- Enhanced Filters -->
 		<div class="mb-12 flex flex-col gap-6 md:flex-row md:items-end">
 			<!-- Search -->
@@ -186,5 +199,6 @@
 				{/if}
 			</div>
 		</div>
+		{/if}
 	</Container>
 </Section>

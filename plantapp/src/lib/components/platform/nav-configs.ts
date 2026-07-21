@@ -35,32 +35,17 @@ export const accountNavigation: NavigationConfig = [
 
 export const affiliateNavigation: NavigationConfig = [
   {
-    title: 'Affiliate',
+    title: 'Affiliate Program',
     items: [
       {
-        label: 'Dashboard',
-        href: '/affiliate/dashboard',
+        label: 'Program Status',
+        href: '/affiliate/terms',
         icon: 'M4 20h16M8 16V8M12 16V4M16 16v-6'
       },
       {
-        label: 'Links',
-        href: '/affiliate/links',
+        label: 'Application',
+        href: '/affiliate/join',
         icon: 'M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71'
-      },
-      {
-        label: 'Earnings',
-        href: '/affiliate/earnings',
-        icon: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.93V18h-2v-1.07C9.39 16.57 8 15.4 8 14c0-.55.45-1 1-1s1 .45 1 1c0 .28.37.57 1 .57.63 0 1-.29 1-.57 0-.29-.28-.56-1-.75-1.45-.37-3-.99-3-2.68 0-1.37 1.13-2.44 2.5-2.75V7h2v1.07c1.38.31 2.5 1.38 2.5 2.75 0 .55-.45 1-1 1s-1-.45-1-1c0-.28-.37-.57-1-.57-.63 0-1 .29-1 .57 0 .29.28.56 1 .75 1.45.37 3 .99 3 2.68 0 1.37-1.13 2.44-2.5 2.75V16h-1V16z'
-      },
-      {
-        label: 'Materials',
-        href: '/affiliate/materials',
-        icon: 'M3 7l9-4 9 4v10l-9 4-9-4V7zM3 7l9 4M21 7l-9 4M12 22V11'
-      },
-      {
-        label: 'Payouts',
-        href: '/affiliate/payouts',
-        icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z'
       }
     ]
   }

@@ -7,6 +7,10 @@ export const load: PageLoad = async (event) => {
 	const { category: categorySlug, slug } = params;
 
 	const trpc = createCallerClient(event.fetch);
+	const catalogAvailability = await trpc.products.getCatalogAvailability.query();
+	if (catalogAvailability.status !== 'available') {
+		throw error(503, catalogAvailability.reason);
+	}
 	const product = await trpc.products.getProduct.query({ slug });
 
 	if (!product) {

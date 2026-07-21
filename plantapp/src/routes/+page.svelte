@@ -4,6 +4,7 @@
 	import { PatternBackground, MyceliumNetwork, RootSystem } from '$lib/components/patterns';
 	import ScrollReveal from '$lib/components/ui/ScrollReveal.svelte';
 	import ParallaxHero from '$lib/components/ui/ParallaxHero.svelte';
+	import { publicSite, publicSiteUrl } from '$lib/config/site';
 	import type { PageData } from './$types';
 
 	// Import images via Vite for proper bundling
@@ -20,38 +21,28 @@
 	// Featured products from server load (database-backed)
 	const featuredProducts = data.featuredProducts;
 
-	let subscribed = $state(false);
-	let emailValue = $state('');
-
-	function handleSubscribe(e: Event) {
-		e.preventDefault();
-		if (emailValue) {
-			subscribed = true;
-		}
-	}
-
 	const categories = [
 		{
 			label: 'Hydroponics',
-			href: '/products/hydroponics',
+			href: '/learn',
 			image: hydroImg,
 			alt: 'Vertical tower garden hydroponic system'
 		},
 		{
 			label: 'Aquaponics',
-			href: '/products/aquaponics',
+			href: '/learn',
 			image: aquaImg,
 			alt: 'Aquaponic system with fish and plants'
 		},
 		{
 			label: 'Silvopasture',
-			href: '/products/silvopasture',
+			href: '/learn',
 			image: silvoImg,
 			alt: 'Silvopasture seed mix products'
 		},
 		{
 			label: 'Agroforestry',
-			href: '/products/agroforestry',
+			href: '/learn',
 			image: agroImg,
 			alt: 'Nitrogen-fixing tree seeds for agroforestry'
 		}
@@ -59,7 +50,7 @@
 </script>
 
 <svelte:head>
-	<title>Aevani - Sustainable Agriculture Marketplace</title>
+	<title>{publicSite.name} | Sustainable Agriculture Marketplace</title>
 	<meta
 		name="description"
 		content="From monoculture to polyculture. Sustainable agriculture systems for a resilient future."
@@ -69,14 +60,9 @@
 	<StructuredData
 		type="website"
 		data={{
-			name: 'PlantCommerce',
-			url: 'https://plantcommerce.com',
-			description: 'Sustainable growing tools, hydroponic systems, and educational resources for modern growers.',
-			potentialAction: {
-				'@type': 'SearchAction',
-				target: 'https://plantcommerce.com/search?q={search_term_string}',
-				'query-input': 'required name=search_term_string'
-			}
+			name: publicSite.name,
+			url: publicSite.origin,
+			description: publicSite.description
 		}}
 	/>
 
@@ -84,14 +70,9 @@
 	<StructuredData
 		type="organization"
 		data={{
-			name: 'PlantCommerce',
-			url: 'https://plantcommerce.com',
-			logo: 'https://plantcommerce.com/images/AI-MockAssets/MAINHERO.png',
-			sameAs: [
-				'https://facebook.com/plantcommerce',
-				'https://twitter.com/plantcommerce',
-				'https://instagram.com/plantcommerce'
-			]
+			name: publicSite.name,
+			url: publicSite.origin,
+			logo: publicSiteUrl(heroImg)
 		}}
 	/>
 </svelte:head>
@@ -102,7 +83,7 @@
 	subtitle="From monoculture to polyculture. Sustainable agriculture systems for a resilient future."
 	backgroundImage={heroImg}
 	ctaLinks={[
-		{ label: 'Explore Products', href: '/products', variant: 'primary' },
+		{ label: 'Catalog Status', href: '/products', variant: 'primary' },
 		{ label: 'Learn More', href: '/learn', variant: 'outline' }
 	]}
 />
@@ -111,10 +92,10 @@
 <section class="bg-base-100 w-full py-24 md:py-32">
 	<Container>
 		<div class="mb-16 space-y-4 text-center">
-			<h2 class="text-display uppercase tracking-widest">Shop by Category</h2>
+			<h2 class="text-display uppercase tracking-widest">Explore Growing Systems</h2>
 			<div class="bg-primary mx-auto h-1 w-24"></div>
 			<p class="text-base-content/60 mx-auto max-w-2xl text-xl font-light">
-				Browse our sustainable growing collections
+				Browse learning pathways and research themes while catalog verification is in progress.
 			</p>
 		</div>
 
@@ -141,7 +122,7 @@
 						<span
 							class="inline-block translate-y-4 text-white/0 font-semibold tracking-widest uppercase text-sm transition-all duration-300 group-hover:translate-y-0 group-hover:text-white"
 						>
-							Shop Now &rarr;
+							Explore guides &rarr;
 						</span>
 					</div>
 				</a>
@@ -166,7 +147,7 @@
 							<span
 								class="inline-block translate-y-4 text-white/0 font-semibold tracking-widest uppercase text-sm transition-all duration-300 group-hover:translate-y-0 group-hover:text-white"
 							>
-								Shop Now &rarr;
+							Explore guides &rarr;
 							</span>
 						</div>
 					</a>
@@ -179,7 +160,7 @@
 				href="/products"
 				class="inline-flex items-center text-lg font-medium text-primary hover:underline"
 			>
-				View all products
+				View catalog status
 				<svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
 				</svg>
@@ -275,7 +256,7 @@
 								href="/products"
 								class="btn btn-secondary btn-lg mt-4 inline-block text-base font-semibold tracking-wide transition-transform hover:scale-105"
 							>
-								EXPLORE PRODUCTS
+				EXPLORE LEARNING
 							</a>
 						</div>
 					</div>
@@ -310,14 +291,15 @@
 <section class="bg-base-100 w-full py-32">
 	<Container>
 		<div class="mb-20 space-y-6 text-center">
-			<h2 class="text-display uppercase tracking-tight text-5xl lg:text-7xl xl:text-8xl">FEATURED PRODUCTS</h2>
+			<h2 class="text-display uppercase tracking-tight text-5xl lg:text-7xl xl:text-8xl">CATALOG VERIFICATION</h2>
 			<div class="bg-primary mx-auto h-1.5 w-32"></div>
 			<p class="text-base-content/60 mx-auto max-w-3xl text-xl font-light lg:text-2xl">
-				Carefully curated systems and kits for sustainable agriculture
+				We do not publish product prices, availability, or claims until their operational evidence is reviewed.
 			</p>
 		</div>
 
 		<ScrollReveal animation="fade-up">
+			{#if featuredProducts.length > 0}
 			<div class="grid grid-cols-2 gap-6 lg:gap-10">
 				{#each featuredProducts as product, i}
 					<a
@@ -367,6 +349,13 @@
 					</a>
 				{/each}
 			</div>
+			{:else}
+				<div class="mx-auto max-w-2xl rounded-3xl border border-base-300 bg-base-200/40 p-8 text-center">
+					<p class="text-base-content/70 text-lg leading-relaxed">
+						The product catalog is unavailable while supplier, offer, fulfillment, and claim evidence is verified.
+					</p>
+				</div>
+			{/if}
 		</ScrollReveal>
 
 		<div class="mt-16 text-center">
@@ -374,7 +363,7 @@
 				href="/products"
 				class="btn btn-outline btn-lg font-display text-sm uppercase tracking-widest transition-transform hover:scale-105"
 			>
-				VIEW ALL PRODUCTS
+				VIEW CATALOG STATUS
 			</a>
 		</div>
 	</Container>
@@ -389,42 +378,12 @@
 			<h2 class="text-display uppercase tracking-tight text-5xl lg:text-7xl xl:text-8xl mb-6">
 				STAY CONNECTED
 			</h2>
-			<p class="text-primary-content/60 mx-auto max-w-2xl text-xl font-light leading-relaxed mb-16">
-				Get exclusive access to new products, growing guides, and sustainable agriculture tips.
+			<p class="text-primary-content/60 mx-auto max-w-2xl text-xl font-light leading-relaxed mb-6">
+				Newsletter sign-up is currently unavailable.
 			</p>
-
-			{#if subscribed}
-				<div class="flex flex-col items-center gap-6">
-					<div class="flex h-20 w-20 items-center justify-center rounded-full border-2 border-accent">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="h-10 w-10 text-accent"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-						</svg>
-					</div>
-					<p class="text-primary-content/80 text-xl font-light">You're in. We'll be in touch soon.</p>
-				</div>
-			{:else}
-				<form onsubmit={handleSubscribe} class="flex flex-col items-center gap-8">
-					<div class="w-full max-w-lg">
-						<input
-							type="email"
-							placeholder="your@email.com"
-							bind:value={emailValue}
-							required
-							class="w-full border-b-2 border-primary-content/30 bg-transparent py-4 text-center text-2xl font-light text-primary-content placeholder:text-primary-content/30 focus:border-accent focus:outline-none transition-colors duration-300"
-						/>
-					</div>
-					<button type="submit" class="btn btn-accent btn-lg font-display text-sm uppercase tracking-widest px-12">
-						SUBSCRIBE
-					</button>
-				</form>
-			{/if}
+			<p class="text-primary-content/80 mx-auto max-w-xl text-lg font-light leading-relaxed">
+				For updates or support, <a href="/contact" class="underline decoration-accent underline-offset-4">contact Aevani</a>.
+			</p>
 		</ScrollReveal>
 	</div>
 </section>

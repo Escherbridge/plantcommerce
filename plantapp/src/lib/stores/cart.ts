@@ -1,4 +1,4 @@
-import { writable, get } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { trpc } from '$lib/trpc/client';
 import { toasts } from './toast';
@@ -24,20 +24,6 @@ export interface CartItem {
 	};
 }
 
-const GUEST_SESSION_KEY = 'aevani_guest_session';
-
-function getGuestSessionId(): string {
-	if (!browser) return '';
-	let sessionId = localStorage.getItem(GUEST_SESSION_KEY);
-	if (!sessionId) {
-		sessionId = crypto.randomUUID();
-		localStorage.setItem(GUEST_SESSION_KEY, sessionId);
-	}
-	// Also set as cookie so server-side actions (checkout) can read it
-	document.cookie = `${GUEST_SESSION_KEY}=${sessionId}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`;
-	return sessionId;
-}
-
 function createCartStore() {
 	const { subscribe, set, update } = writable<CartState>({
 		items: [],
@@ -49,8 +35,7 @@ function createCartStore() {
 	async function refresh() {
 		if (!browser) return;
 		try {
-			const sessionId = getGuestSessionId();
-			const cart = await trpc.cart.getCart.query({ sessionId });
+			const cart = await trpc.cart.getCart.query();
 			if (cart && cart.items) {
 				const items = cart.items as CartItem[];
 				set({
@@ -75,8 +60,7 @@ function createCartStore() {
 		if (!browser) return;
 		update((s) => ({ ...s, loading: true }));
 		try {
-			const sessionId = getGuestSessionId();
-			await trpc.cart.addItem.mutate({ productId, quantity, sessionId });
+			await trpc.cart.addItem.mutate({ productId, quantity });
 			await refresh();
 			toasts.addToast({
 				message: `Added ${quantity} × ${productName || 'item'} to cart`,
@@ -94,8 +78,7 @@ function createCartStore() {
 		if (!browser) return;
 		update((s) => ({ ...s, loading: true }));
 		try {
-			const sessionId = getGuestSessionId();
-			await trpc.cart.updateItemQuantity.mutate({ cartItemId, quantity, sessionId });
+			await trpc.cart.updateItemQuantity.mutate({ cartItemId, quantity });
 			await refresh();
 		} catch (error) {
 			const message =
@@ -109,8 +92,7 @@ function createCartStore() {
 		if (!browser) return;
 		update((s) => ({ ...s, loading: true }));
 		try {
-			const sessionId = getGuestSessionId();
-			await trpc.cart.removeItem.mutate({ cartItemId, sessionId });
+			await trpc.cart.removeItem.mutate({ cartItemId });
 			await refresh();
 			toasts.addToast({
 				message: 'Item removed from cart',
@@ -129,8 +111,7 @@ function createCartStore() {
 		if (!browser) return;
 		update((s) => ({ ...s, loading: true }));
 		try {
-			const sessionId = getGuestSessionId();
-			await trpc.cart.clearCart.mutate({ sessionId });
+			await trpc.cart.clearCart.mutate();
 			set({ items: [], totalItems: 0, totalAmount: 0, loading: false });
 		} catch (error) {
 			update((s) => ({ ...s, loading: false }));
@@ -143,8 +124,7 @@ function createCartStore() {
 		addItem,
 		updateItemQuantity,
 		removeItem,
-		clearCart,
-		getGuestSessionId
+		clearCart
 	};
 }
 

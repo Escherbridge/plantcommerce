@@ -1,7 +1,8 @@
-import { eq, and, desc, count, avg, sql, gte } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, isNotNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as lmsTable from '$lib/server/db/lms-schema';
 
+/** Learner aggregates based on enrollment-owned, submitted quiz attempts. */
 export class LearnerAnalyticsService {
 	static async getLearnerStats(userId: string) {
 		const [enrolledResult] = await db
@@ -20,37 +21,45 @@ export class LearnerAnalyticsService {
 			);
 
 		const quizAttempts = await db
-			.select({ score: lmsTable.lmsQuizAttempt.score, maxScore: lmsTable.lmsQuizAttempt.maxScore })
+			.select({
+				score: lmsTable.lmsQuizAttempt.score,
+				totalPoints: lmsTable.lmsQuizAttempt.totalPoints
+			})
 			.from(lmsTable.lmsQuizAttempt)
+			.innerJoin(
+				lmsTable.lmsEnrollment,
+				eq(lmsTable.lmsQuizAttempt.enrollmentId, lmsTable.lmsEnrollment.id)
+			)
 			.where(
 				and(
-					eq(lmsTable.lmsQuizAttempt.userId, userId),
-					eq(lmsTable.lmsQuizAttempt.status, 'completed')
+					eq(lmsTable.lmsEnrollment.userId, userId),
+					isNotNull(lmsTable.lmsQuizAttempt.submittedAt),
+					isNotNull(lmsTable.lmsQuizAttempt.passed)
 				)
 			);
 
-		let averageQuizScore = 0;
-		if (quizAttempts.length > 0) {
-			const totalPercent = quizAttempts.reduce((sum, a) => {
-				const maxScore = a.maxScore || 1;
-				return sum + ((a.score || 0) / maxScore) * 100;
-			}, 0);
-			averageQuizScore = Math.round(totalPercent / quizAttempts.length);
-		}
-
-		const streak = await this.getLearningStreak(userId);
+		const scoredAttempts = quizAttempts.filter((attempt) => (attempt.totalPoints ?? 0) > 0);
+		const averageQuizScore =
+			scoredAttempts.length > 0
+				? Math.round(
+						scoredAttempts.reduce(
+							(sum, attempt) =>
+								sum + (((attempt.score ?? 0) / (attempt.totalPoints ?? 1)) * 100),
+							0
+						) / scoredAttempts.length
+					)
+				: 0;
 
 		return {
 			coursesEnrolled: enrolledResult?.count || 0,
 			coursesCompleted: completedResult?.count || 0,
-			totalLearningMinutes: 0, // Would need session tracking to calculate
+			totalLearningMinutes: 0,
 			averageQuizScore,
-			currentStreak: streak
+			currentStreak: await this.getLearningStreak(userId)
 		};
 	}
 
 	static async getLearningStreak(userId: string): Promise<number> {
-		// Get distinct dates with progress activity, ordered desc
 		const enrollments = await db
 			.select({ id: lmsTable.lmsEnrollment.id })
 			.from(lmsTable.lmsEnrollment)
@@ -58,14 +67,10 @@ export class LearnerAnalyticsService {
 
 		if (enrollments.length === 0) return 0;
 
-		const enrollmentIds = enrollments.map((e) => e.id);
-
 		const activityDates = await db
-			.select({
-				activityDate: sql<string>`DATE(${lmsTable.lmsProgress.updatedAt})`
-			})
+			.select({ activityDate: sql<string>`DATE(${lmsTable.lmsProgress.updatedAt})` })
 			.from(lmsTable.lmsProgress)
-			.where(sql`${lmsTable.lmsProgress.enrollmentId} IN (${sql.join(enrollmentIds.map(id => sql`${id}`), sql`, `)})`)
+			.where(inArray(lmsTable.lmsProgress.enrollmentId, enrollments.map(({ id }) => id)))
 			.groupBy(sql`DATE(${lmsTable.lmsProgress.updatedAt})`)
 			.orderBy(desc(sql`DATE(${lmsTable.lmsProgress.updatedAt})`));
 
@@ -75,18 +80,14 @@ export class LearnerAnalyticsService {
 		const today = new Date();
 		today.setHours(0, 0, 0, 0);
 
-		for (let i = 0; i < activityDates.length; i++) {
-			const activityDate = new Date(activityDates[i].activityDate);
+		for (let index = 0; index < activityDates.length; index += 1) {
+			const activityDate = new Date(activityDates[index].activityDate);
 			activityDate.setHours(0, 0, 0, 0);
 
 			const expectedDate = new Date(today);
-			expectedDate.setDate(expectedDate.getDate() - i);
-
-			if (activityDate.getTime() === expectedDate.getTime()) {
-				streak++;
-			} else {
-				break;
-			}
+			expectedDate.setDate(expectedDate.getDate() - index);
+			if (activityDate.getTime() !== expectedDate.getTime()) break;
+			streak += 1;
 		}
 
 		return streak;
@@ -94,15 +95,13 @@ export class LearnerAnalyticsService {
 
 	static async getRecentActivity(userId: string, limit = 10) {
 		const enrollments = await db
-			.select({ id: lmsTable.lmsEnrollment.id, courseId: lmsTable.lmsEnrollment.courseId })
+			.select({ id: lmsTable.lmsEnrollment.id })
 			.from(lmsTable.lmsEnrollment)
 			.where(eq(lmsTable.lmsEnrollment.userId, userId));
 
 		if (enrollments.length === 0) return [];
 
-		const enrollmentIds = enrollments.map((e) => e.id);
-
-		const progress = await db
+		return db
 			.select({
 				id: lmsTable.lmsProgress.id,
 				lessonId: lmsTable.lmsProgress.lessonId,
@@ -112,29 +111,36 @@ export class LearnerAnalyticsService {
 				enrollmentId: lmsTable.lmsProgress.enrollmentId
 			})
 			.from(lmsTable.lmsProgress)
-			.where(sql`${lmsTable.lmsProgress.enrollmentId} IN (${sql.join(enrollmentIds.map(id => sql`${id}`), sql`, `)})`)
+			.where(inArray(lmsTable.lmsProgress.enrollmentId, enrollments.map(({ id }) => id)))
 			.orderBy(desc(lmsTable.lmsProgress.updatedAt))
 			.limit(limit);
-
-		return progress;
 	}
 
 	static async getQuizPerformanceHistory(userId: string) {
-		const attempts = await db
+		return db
 			.select({
 				quizId: lmsTable.lmsQuizAttempt.quizId,
 				score: lmsTable.lmsQuizAttempt.score,
-				maxScore: lmsTable.lmsQuizAttempt.maxScore,
+				totalPoints: lmsTable.lmsQuizAttempt.totalPoints,
 				passed: lmsTable.lmsQuizAttempt.passed,
 				startedAt: lmsTable.lmsQuizAttempt.startedAt,
+				submittedAt: lmsTable.lmsQuizAttempt.submittedAt,
+				timeSpent: lmsTable.lmsQuizAttempt.timeSpent,
 				quizTitle: lmsTable.lmsQuiz.title
 			})
 			.from(lmsTable.lmsQuizAttempt)
+			.innerJoin(
+				lmsTable.lmsEnrollment,
+				eq(lmsTable.lmsQuizAttempt.enrollmentId, lmsTable.lmsEnrollment.id)
+			)
 			.innerJoin(lmsTable.lmsQuiz, eq(lmsTable.lmsQuizAttempt.quizId, lmsTable.lmsQuiz.id))
-			.where(eq(lmsTable.lmsQuizAttempt.userId, userId))
-			.orderBy(desc(lmsTable.lmsQuizAttempt.startedAt));
-
-		return attempts;
+			.where(
+				and(
+					eq(lmsTable.lmsEnrollment.userId, userId),
+					isNotNull(lmsTable.lmsQuizAttempt.submittedAt)
+				)
+			)
+			.orderBy(desc(lmsTable.lmsQuizAttempt.submittedAt));
 	}
 
 	static async getCourseProgress(userId: string, courseId: string) {

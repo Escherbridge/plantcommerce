@@ -11,7 +11,7 @@
 	const currentPath = $derived($page.url.pathname);
 
 	// Pages that should NOT use PlatformShell
-	const excludedPaths = ['/affiliate/join', '/affiliate'];
+	const excludedPaths = ['/affiliate/join', '/affiliate', '/affiliate/terms'];
 	const usePlatformShell = $derived(
 		!excludedPaths.includes(currentPath)
 	);

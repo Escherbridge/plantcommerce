@@ -56,9 +56,9 @@ export const contentRouter = router({
 		}),
 
 	/**
-	 * Create content page (protected - admins and content creators)
+	 * CMS pages are created by administrators.
 	 */
-	createPage: protectedProcedure
+	createPage: adminProcedure
 		.input(
 			z.object({
 				title: z.string().min(1),
@@ -76,14 +76,9 @@ export const contentRouter = router({
 		)
 		.mutation(async ({ ctx, input }) => {
 			try {
-				// Only admins can publish immediately
-				const finalStatus = input.status === 'published' && ctx.user.role !== 'admin' 
-					? 'draft' 
-					: input.status;
-
 				const page = await ContentService.createPage({
 					...input,
-					status: finalStatus,
+					status: input.status,
 					authorId: ctx.user.id
 				});
 				
@@ -97,9 +92,9 @@ export const contentRouter = router({
 		}),
 
 	/**
-	 * Update content page (protected - author or admin)
+	 * CMS pages are updated by administrators.
 	 */
-	updatePage: protectedProcedure
+	updatePage: adminProcedure
 		.input(
 			z.object({
 				id: z.number(),
@@ -120,14 +115,9 @@ export const contentRouter = router({
 			try {
 				const { id, status, ...updateData } = input;
 
-				// Only admins can change status to published
-				const finalStatus = status === 'published' && ctx.user.role !== 'admin' 
-					? undefined // Don't change status if not admin
-					: status;
-
 				const updatedPage = await ContentService.updatePage(
 					id,
-					{ ...updateData, status: finalStatus },
+					{ ...updateData, status },
 					ctx.user.id,
 					ctx.user.role
 				);
@@ -142,9 +132,9 @@ export const contentRouter = router({
 		}),
 
 	/**
-	 * Delete content page (protected - author or admin)
+	 * CMS pages are deleted by administrators.
 	 */
-	deletePage: protectedProcedure
+	deletePage: adminProcedure
 		.input(z.object({ id: z.number() }))
 		.mutation(async ({ ctx, input }) => {
 			try {

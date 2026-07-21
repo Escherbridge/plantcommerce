@@ -39,6 +39,10 @@ export async function loadProductsByCategory(event: LoadEvent, categorySlug: str
 	const search = url.searchParams.get('filter');
 
 	try {
+		const catalogAvailability = await trpc.products.getCatalogAvailability.query();
+		if (catalogAvailability.status !== 'available') {
+			return { products: [], category: null, catalogAvailability };
+		}
 		const categories = await trpc.products.getCategories.query();
 		const category = categories.find((c: any) => c.slug === categorySlug);
 
@@ -65,9 +69,16 @@ export async function loadProductsByCategory(event: LoadEvent, categorySlug: str
 
 		console.log(`[productCategory] slug="${categorySlug}" → ${products.length} products:`, products.map((p: any) => p.name));
 
-		return { products, category };
+		return { products, category, catalogAvailability };
 	} catch (error) {
 		console.error(`Error loading ${categorySlug} products:`, error);
-		return { products: [], category: null };
+		return {
+			products: [],
+			category: null,
+			catalogAvailability: {
+				status: 'unavailable' as const,
+				reason: 'The catalog could not be checked. Please try again later or contact support.'
+			}
+		};
 	}
 }

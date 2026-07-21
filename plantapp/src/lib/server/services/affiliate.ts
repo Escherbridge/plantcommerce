@@ -1,7 +1,31 @@
-import { eq, and, desc, sum, count, gte, sql } from 'drizzle-orm';
+import { eq, and, desc, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
+import { assertPublicCatalogAvailable, getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
 import { encodeBase64url } from '@oslojs/encoding';
+import { invalidateUserSessions } from '../auth';
+
+export type AffiliateStatus = 'pending' | 'active' | 'rejected' | 'suspended';
+
+export class AffiliateAccessError extends Error {
+	constructor(message: string = 'Active affiliate approval is required') {
+		super(message);
+		this.name = 'AffiliateAccessError';
+	}
+}
+
+export class AffiliateNotFoundError extends Error {
+	constructor() {
+		super('Affiliate not found');
+		this.name = 'AffiliateNotFoundError';
+	}
+}
+
+export function isActiveApprovedAffiliate(
+	affiliate: Pick<table.Affiliate, 'status' | 'isActive'>
+): boolean {
+	return affiliate.status === 'active' && affiliate.isActive;
+}
 
 export interface AffiliateStats {
 	totalEarnings: number;
@@ -23,62 +47,158 @@ export interface CreateAffiliateLinkParams {
 	customCode?: string;
 }
 
-export interface AffiliateClickData {
-	ipAddress?: string;
-	userAgent?: string;
-	referer?: string;
-	sessionId?: string;
-	userId?: string;
+export interface AffiliateApplicationData {
+	website?: string;
+	socialMedia?: string;
+	audience?: string;
+	promotionMethod?: string;
+	monthlyTraffic?: string;
+	whyJoin?: string;
+}
+
+export interface AffiliateCreateResult {
+	affiliate: table.Affiliate;
+	created: boolean;
 }
 
 export class AffiliateService {
-	/**
-	 * Create or retrieve an affiliate record for a user
-	 */
-	static async createAffiliate(userId: string, customCode?: string, applicationData?: {
-		website?: string;
-		socialMedia?: string;
-		audience?: string;
-		promotionMethod?: string;
-		monthlyTraffic?: string;
-		whyJoin?: string;
-	}): Promise<table.Affiliate> {
-		// Check if affiliate already exists
-		const existing = await db
-			.select()
-			.from(table.affiliate)
-			.where(eq(table.affiliate.userId, userId))
-			.limit(1);
+	/** Create or retrieve a single affiliate owner record under a transaction-scoped identity lock. */
+	static async createAffiliate(
+		userId: string,
+		customCode?: string,
+		applicationData?: AffiliateApplicationData
+	): Promise<table.Affiliate> {
+		return (await this.createOrGetAffiliate(userId, customCode, applicationData)).affiliate;
+	}
 
-		if (existing.length > 0) {
-			return existing[0];
+	/** Return whether this request, rather than a concurrent request, created the affiliate application. */
+	static async createOrGetAffiliate(
+		userId: string,
+		customCode?: string,
+		applicationData?: AffiliateApplicationData
+	): Promise<AffiliateCreateResult> {
+		return await db.transaction(async (tx) => {
+			await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${`affiliate:user:${userId}`}))`);
+			const [existing] = await tx
+				.select()
+				.from(table.affiliate)
+				.where(eq(table.affiliate.userId, userId))
+				.limit(1);
+			if (existing) {
+				return { affiliate: existing, created: false };
+			}
+
+			for (let attempt = 0; attempt < 5; attempt += 1) {
+				const affiliateCode = customCode ?? this.generateAffiliateCode();
+				if (customCode) {
+					const [codeOwner] = await tx
+						.select({ id: table.affiliate.id })
+						.from(table.affiliate)
+						.where(eq(table.affiliate.affiliateCode, affiliateCode))
+						.limit(1);
+					if (codeOwner) {
+						throw new Error('Affiliate code already exists');
+					}
+				}
+
+				const [affiliate] = await tx
+					.insert(table.affiliate)
+					.values({
+						userId,
+						affiliateCode,
+						commissionRate: '0.05',
+						totalEarnings: '0.00',
+						totalClicks: 0,
+						totalConversions: 0,
+						isActive: false,
+						status: 'pending',
+						website: applicationData?.website,
+						socialMedia: applicationData?.socialMedia,
+						audience: applicationData?.audience,
+						promotionMethod: applicationData?.promotionMethod,
+						monthlyTraffic: applicationData?.monthlyTraffic,
+						whyJoin: applicationData?.whyJoin
+					})
+					.onConflictDoNothing()
+					.returning();
+				if (affiliate) {
+					return { affiliate, created: true };
+				}
+
+				const [winner] = await tx
+					.select()
+					.from(table.affiliate)
+					.where(eq(table.affiliate.userId, userId))
+					.limit(1);
+				if (winner) {
+					return { affiliate: winner, created: false };
+				}
+				if (customCode) {
+					throw new Error('Affiliate code already exists');
+				}
+			}
+
+			throw new Error('Unable to allocate a unique affiliate code');
+		});
+	}
+
+	/**
+	 * Change application state and keep the linked user role and sessions in sync.
+	 */
+	static async setAffiliateStatus(
+		affiliateId: number,
+		status: AffiliateStatus
+	): Promise<table.Affiliate> {
+		const affiliate = await this.getAffiliateById(affiliateId);
+		if (!affiliate) {
+			throw new AffiliateNotFoundError();
 		}
 
-		// Generate unique affiliate code
-		const affiliateCode = customCode || this.generateAffiliateCode();
+		const isActive = status === 'active';
+		const updatedAt = new Date();
 
-		// Ensure code is unique
-		await this.ensureUniqueAffiliateCode(affiliateCode);
+		await db.transaction(async (tx) => {
+			const [affiliateUser] = await tx
+				.select({ role: table.user.role })
+				.from(table.user)
+				.where(eq(table.user.id, affiliate.userId))
+				.limit(1);
 
-		const newAffiliate: typeof table.affiliate.$inferInsert = {
-			userId,
-			affiliateCode,
-			commissionRate: '0.05', // 5% default
-			totalEarnings: '0.00',
-			totalClicks: 0,
-			totalConversions: 0,
-			isActive: true,
-			status: 'pending', // Start as pending approval
-			website: applicationData?.website,
-			socialMedia: applicationData?.socialMedia,
-			audience: applicationData?.audience,
-			promotionMethod: applicationData?.promotionMethod,
-			monthlyTraffic: applicationData?.monthlyTraffic,
-			whyJoin: applicationData?.whyJoin
+			if (!affiliateUser) {
+				throw new Error('Affiliate user not found');
+			}
+
+			await tx
+				.update(table.affiliate)
+				.set({ status, isActive, updatedAt })
+				.where(eq(table.affiliate.id, affiliateId));
+
+			// Administrators retain their administrative role. Everyone else is an
+			// ordinary customer until their application is active and approved.
+			if (affiliateUser.role !== 'admin') {
+				await tx
+					.update(table.user)
+					.set({ role: isActive ? 'affiliate' : 'customer', updatedAt })
+					.where(eq(table.user.id, affiliate.userId));
+			}
+		});
+
+		await invalidateUserSessions(affiliate.userId);
+
+		return {
+			...affiliate,
+			status,
+			isActive,
+			updatedAt
 		};
+	}
 
-		const [affiliate] = await db.insert(table.affiliate).values(newAffiliate).returning();
-		return affiliate;
+	static async approveAffiliate(affiliateId: number): Promise<table.Affiliate> {
+		return this.setAffiliateStatus(affiliateId, 'active');
+	}
+
+	static async rejectAffiliate(affiliateId: number): Promise<table.Affiliate> {
+		return this.setAffiliateStatus(affiliateId, 'rejected');
 	}
 
 	/**
@@ -86,6 +206,8 @@ export class AffiliateService {
 	 */
 	static async createAffiliateLink(params: CreateAffiliateLinkParams): Promise<table.AffiliateLink> {
 		const { affiliateId, productId, customCode } = params;
+		assertPublicCatalogAvailable();
+		await this.requireActiveAffiliateById(affiliateId);
 
 		// Check if link already exists
 		const existing = await db
@@ -103,25 +225,19 @@ export class AffiliateService {
 			return existing[0];
 		}
 
-		// Get product with category info and affiliate info
-		const [productResult, affiliateResult] = await Promise.all([
-			db.select({
+		// Get product with category info
+		const productResult = await db
+			.select({
 				product: table.product,
 				category: table.productCategory
 			})
-				.from(table.product)
-				.innerJoin(table.productCategory, eq(table.product.categoryId, table.productCategory.id))
-				.where(eq(table.product.id, productId))
-				.limit(1),
-			db.select().from(table.affiliate).where(eq(table.affiliate.id, affiliateId)).limit(1)
-		]);
+			.from(table.product)
+			.innerJoin(table.productCategory, eq(table.product.categoryId, table.productCategory.id))
+			.where(eq(table.product.id, productId))
+			.limit(1);
 
 		if (productResult.length === 0) {
 			throw new Error('Product not found');
-		}
-
-		if (affiliateResult.length === 0) {
-			throw new Error('Affiliate not found');
 		}
 
 		const product = productResult[0].product;
@@ -139,8 +255,6 @@ export class AffiliateService {
 				categorySlug = parentResult[0].slug;
 			}
 		}
-
-		const affiliate = affiliateResult[0];
 
 		// Generate unique link code
 		const linkCode = customCode || this.generateLinkCode();
@@ -167,137 +281,10 @@ export class AffiliateService {
 	}
 
 	/**
-	 * Track a click on an affiliate link
-	 */
-	static async trackClick(linkCode: string, clickData: AffiliateClickData): Promise<boolean> {
-		// Get affiliate link with affiliate info
-		const linkResult = await db
-			.select({
-				link: table.affiliateLink,
-				affiliate: table.affiliate
-			})
-			.from(table.affiliateLink)
-			.innerJoin(table.affiliate, eq(table.affiliateLink.affiliateId, table.affiliate.id))
-			.where(
-				and(
-					eq(table.affiliateLink.linkCode, linkCode),
-					eq(table.affiliateLink.isActive, true)
-				)
-			)
-			.limit(1);
-
-		if (linkResult.length === 0) {
-			return false;
-		}
-
-		const { link, affiliate } = linkResult[0];
-
-		// Record the click
-		const clickRecord: typeof table.affiliateClick.$inferInsert = {
-			affiliateLinkId: link.id,
-			ipAddress: clickData.ipAddress,
-			userAgent: clickData.userAgent,
-			referer: clickData.referer,
-			sessionId: clickData.sessionId,
-			userId: clickData.userId
-		};
-
-		await Promise.all([
-			// Insert click record
-			db.insert(table.affiliateClick).values(clickRecord),
-			// Update link click count
-			db
-				.update(table.affiliateLink)
-				.set({ 
-					clicks: link.clicks + 1,
-					updatedAt: new Date()
-				})
-				.where(eq(table.affiliateLink.id, link.id)),
-			// Update affiliate total clicks
-			db
-				.update(table.affiliate)
-				.set({ 
-					totalClicks: affiliate.totalClicks + 1,
-					updatedAt: new Date()
-				})
-				.where(eq(table.affiliate.id, link.affiliateId))
-		]);
-
-		return true;
-	}
-
-	/**
-	 * Process an affiliate conversion (when order is completed)
-	 */
-	static async processConversion(orderId: number): Promise<void> {
-		// Get order with affiliate link
-		const orderResult = await db
-			.select({
-				order: table.order,
-				affiliate: table.affiliate,
-				affiliateLink: table.affiliateLink
-			})
-			.from(table.order)
-			.leftJoin(table.affiliateLink, eq(table.order.affiliateLinkId, table.affiliateLink.id))
-			.leftJoin(table.affiliate, eq(table.affiliateLink.affiliateId, table.affiliate.id))
-			.where(eq(table.order.id, orderId))
-			.limit(1);
-
-		if (orderResult.length === 0 || !orderResult[0].affiliate || !orderResult[0].affiliateLink) {
-			return; // No affiliate attribution
-		}
-
-		const { order, affiliate, affiliateLink } = orderResult[0];
-
-		// Calculate commission
-		const commission = parseFloat(order.subtotalAmount) * parseFloat(affiliate.commissionRate);
-		
-		// Update order with commission
-		await db
-			.update(table.order)
-			.set({
-				affiliateCommission: commission.toFixed(2),
-				updatedAt: new Date()
-			})
-			.where(eq(table.order.id, orderId));
-
-		// Update affiliate link stats
-		await db
-			.update(table.affiliateLink)
-			.set({
-				conversions: affiliateLink.conversions + 1,
-				earnings: (parseFloat(affiliateLink.earnings) + commission).toFixed(2),
-				updatedAt: new Date()
-			})
-			.where(eq(table.affiliateLink.id, affiliateLink.id));
-
-		// Update affiliate totals
-		await db
-			.update(table.affiliate)
-			.set({
-				totalConversions: affiliate.totalConversions + 1,
-				totalEarnings: (parseFloat(affiliate.totalEarnings) + commission).toFixed(2),
-				updatedAt: new Date()
-			})
-			.where(eq(table.affiliate.id, affiliate.id));
-	}
-
-	/**
 	 * Get affiliate statistics
 	 */
 	static async getAffiliateStats(affiliateId: number): Promise<AffiliateStats> {
-		// Get affiliate basic stats
-		const affiliateResult = await db
-			.select()
-			.from(table.affiliate)
-			.where(eq(table.affiliate.id, affiliateId))
-			.limit(1);
-
-		if (affiliateResult.length === 0) {
-			throw new Error('Affiliate not found');
-		}
-
-		const affiliate = affiliateResult[0];
+		const affiliate = await this.requireActiveAffiliateById(affiliateId);
 
 		// Get recent links with product names
 		const recentLinks = await db
@@ -346,15 +333,40 @@ export class AffiliateService {
 		return result.length > 0 ? result[0] : null;
 	}
 
+	static async getAffiliateById(affiliateId: number): Promise<table.Affiliate | null> {
+		const result = await db
+			.select()
+			.from(table.affiliate)
+			.where(eq(table.affiliate.id, affiliateId))
+			.limit(1);
+
+		return result.length > 0 ? result[0] : null;
+	}
+
+	static async requireActiveAffiliateByUserId(userId: string): Promise<table.Affiliate> {
+		const affiliate = await this.getAffiliateByUserId(userId);
+		if (!affiliate || !isActiveApprovedAffiliate(affiliate)) {
+			throw new AffiliateAccessError();
+		}
+
+		return affiliate;
+	}
+
+	static async requireActiveAffiliateById(affiliateId: number): Promise<table.Affiliate> {
+		const affiliate = await this.getAffiliateById(affiliateId);
+		if (!affiliate || !isActiveApprovedAffiliate(affiliate)) {
+			throw new AffiliateAccessError();
+		}
+
+		return affiliate;
+	}
+
 	/**
 	 * Get affiliate links for a user
 	 */
 	static async getAffiliateLinks(userId: string) {
 		// First get the affiliate record
-		const affiliate = await this.getAffiliateByUserId(userId);
-		if (!affiliate) {
-			throw new Error('Affiliate account not found');
-		}
+		const affiliate = await this.requireActiveAffiliateByUserId(userId);
 
 		const links = await db
 			.select({
@@ -387,23 +399,29 @@ export class AffiliateService {
 	 */
 	static async getLinkByCode(linkCode: string): Promise<table.AffiliateLink | null> {
 		const result = await db
-			.select()
+			.select({ link: table.affiliateLink })
 			.from(table.affiliateLink)
+			.innerJoin(table.affiliate, eq(table.affiliateLink.affiliateId, table.affiliate.id))
 			.where(
 				and(
 					eq(table.affiliateLink.linkCode, linkCode),
-					eq(table.affiliateLink.isActive, true)
+					eq(table.affiliateLink.isActive, true),
+					eq(table.affiliate.isActive, true),
+					eq(table.affiliate.status, 'active')
 				)
 			)
 			.limit(1);
 
-		return result.length > 0 ? result[0] : null;
+		return result.length > 0 ? result[0].link : null;
 	}
 
 	/**
 	 * Get affiliate link with product details by code
 	 */
 	static async getLinkWithProductByCode(linkCode: string) {
+		if (getPublicCatalogAvailability().status !== 'available') {
+			return null;
+		}
 		const link = await this.getLinkByCode(linkCode);
 		if (!link) {
 			return null;
@@ -429,8 +447,12 @@ export class AffiliateService {
 	/**
 	 * Toggle affiliate link status
 	 */
-	static async toggleLinkStatus(linkId: number, userId: string): Promise<{ success: boolean; isActive: boolean }> {
-		// Verify user owns this link
+	static async toggleLinkStatus(
+		linkId: number,
+		userId: string,
+		isAdmin: boolean = false
+	): Promise<{ success: boolean; isActive: boolean }> {
+		// Load the link and its affiliate before checking ownership and status.
 		const linkResult = await db
 			.select({
 				link: table.affiliateLink,
@@ -438,19 +460,23 @@ export class AffiliateService {
 			})
 			.from(table.affiliateLink)
 			.innerJoin(table.affiliate, eq(table.affiliateLink.affiliateId, table.affiliate.id))
-			.where(
-				and(
-					eq(table.affiliateLink.id, linkId),
-					eq(table.affiliate.userId, userId)
-				)
-			)
+			.where(eq(table.affiliateLink.id, linkId))
 			.limit(1);
 
 		if (linkResult.length === 0) {
 			throw new Error('Affiliate link not found or access denied');
 		}
 
-		const newStatus = !linkResult[0].link.isActive;
+		const { link, affiliate } = linkResult[0];
+		if (!isActiveApprovedAffiliate(affiliate)) {
+			throw new AffiliateAccessError();
+		}
+
+		if (!isAdmin && affiliate.userId !== userId) {
+			throw new Error('Affiliate link not found or access denied');
+		}
+
+		const newStatus = !link.isActive;
 		
 		await db
 			.update(table.affiliateLink)
@@ -481,18 +507,7 @@ export class AffiliateService {
 			status: string;
 		}>;
 	}> {
-		// Get the affiliate record
-		const affiliateResult = await db
-			.select()
-			.from(table.affiliate)
-			.where(eq(table.affiliate.id, affiliateId))
-			.limit(1);
-
-		if (affiliateResult.length === 0) {
-			throw new Error('Affiliate not found');
-		}
-
-		const affiliate = affiliateResult[0];
+		const affiliate = await this.requireActiveAffiliateById(affiliateId);
 
 		// Get all orders attributed to this affiliate's links
 		const orders = await db
@@ -576,6 +591,8 @@ export class AffiliateService {
 	 * Get top performing links for an affiliate (for dashboard display)
 	 */
 	static async getTopPerformingLinks(affiliateId: number, limit: number = 10) {
+		await this.requireActiveAffiliateById(affiliateId);
+
 		const links = await db
 			.select({
 				id: table.affiliateLink.id,
@@ -620,21 +637,6 @@ export class AffiliateService {
 	private static generateLinkCode(): string {
 		const bytes = crypto.getRandomValues(new Uint8Array(8));
 		return encodeBase64url(bytes);
-	}
-
-	/**
-	 * Ensure affiliate code is unique
-	 */
-	private static async ensureUniqueAffiliateCode(code: string): Promise<void> {
-		const existing = await db
-			.select()
-			.from(table.affiliate)
-			.where(eq(table.affiliate.affiliateCode, code))
-			.limit(1);
-
-		if (existing.length > 0) {
-			throw new Error('Affiliate code already exists');
-		}
 	}
 
 	/**

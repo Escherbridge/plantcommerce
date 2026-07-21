@@ -42,6 +42,19 @@ export interface ProductWithImages {
 	}>;
 }
 
+function publicProductImageUrl(file: table.File | null, productId: number): string | null {
+	if (
+		!file ||
+		!file.isPublic ||
+		file.entityType !== 'product' ||
+		file.entityId !== String(productId)
+	) {
+		return null;
+	}
+
+	return FileService.generatePublicUrl(file.bucketPath, true);
+}
+
 export interface CreateProductParams {
 	name: string;
 	slug: string;
@@ -301,14 +314,19 @@ export class ProductService {
 				slug: category.slug,
 				description: category.description
 			},
-			images: images.map(({ image, file }) => ({
-				id: image.id,
-				fileId: image.fileId,
-				url: file ? FileService.generatePublicUrl(file.bucketPath, file.isPublic) : undefined,
-				altText: image.altText,
-				sortOrder: image.sortOrder,
-				isMain: image.isMain
-			}))
+			images: images.flatMap(({ image, file }) => {
+				const url = publicProductImageUrl(file, productId);
+				return url
+					? [{
+						id: image.id,
+						fileId: image.fileId,
+						url,
+						altText: image.altText,
+						sortOrder: image.sortOrder,
+						isMain: image.isMain
+					}]
+					: [];
+			})
 		};
 	}
 
@@ -386,6 +404,8 @@ export class ProductService {
 			throw new Error('Product not found');
 		}
 
+		await this.assertPublicProductFile(fileId, productId);
+
 		// If this is the main image, unset other main images
 		if (isMain) {
 			await db
@@ -454,20 +474,29 @@ export class ProductService {
 			sortOrder?: number;
 		}
 	): Promise<ProductImage> {
-		// If setting as main, unset other main images for the same product
-		if (updates.isMain) {
+		let existingImage: typeof table.productImage.$inferSelect | undefined;
+		if (updates.isMain || updates.fileId) {
 			const imageResult = await db
 				.select()
 				.from(table.productImage)
 				.where(eq(table.productImage.id, imageId))
 				.limit(1);
 
-			if (imageResult.length > 0) {
+			existingImage = imageResult[0];
+			if (!existingImage) {
+				throw new Error('Image not found');
+			}
+
+			if (updates.fileId) {
+				await this.assertPublicProductFile(updates.fileId, existingImage.productId);
+			}
+
+			if (updates.isMain) {
 				await db
 					.update(table.productImage)
 					.set({ isMain: false })
 					.where(and(
-						eq(table.productImage.productId, imageResult[0].productId),
+						eq(table.productImage.productId, existingImage.productId),
 						eq(table.productImage.isMain, true)
 					));
 			}
@@ -557,7 +586,7 @@ export class ProductService {
 			slug: product.slug,
 			price: product.price,
 			shortDescription: product.shortDescription,
-			mainImage: file ? FileService.generatePublicUrl(file.bucketPath, file.isPublic) : null
+			mainImage: publicProductImageUrl(file, product.id)
 		}));
 	}
 
@@ -586,7 +615,7 @@ export class ProductService {
 	 * Get products with filtering and pagination
 	 */
 	static async getProducts(filter: ProductFilter): Promise<Array<{
-		product: table.Product & { images?: Array<{ url: string; altText: string | null; bucketPath: string }> };
+		product: table.Product & { images?: Array<{ url: string; altText: string | null }> };
 		category: {
 			id: number;
 			name: string;
@@ -655,17 +684,19 @@ export class ProductService {
 			.offset(offset);
 
 		// Attach image data to product
-		return rows.map(({ product, category, image, file }) => ({
-			product: {
-				...product,
-				images: file ? [{
-					url: FileService.generatePublicUrl(file.bucketPath, file.isPublic),
-					altText: image?.altText || product.shortDescription,
-					bucketPath: file.bucketPath
-				}] : []
-			},
-			category
-		}));
+		return rows.map(({ product, category, image, file }) => {
+			const url = publicProductImageUrl(file, product.id);
+			return {
+				product: {
+					...product,
+					images: url ? [{
+						url,
+						altText: image?.altText || product.shortDescription
+					}] : []
+				},
+				category
+			};
+		});
 	}
 
 	/**
@@ -772,12 +803,29 @@ export class ProductService {
 
 		return images.map(({ image, file }) => ({
 			id: image.id,
-			url: file ? FileService.generatePublicUrl(file.bucketPath, file.isPublic) : null,
+			url: publicProductImageUrl(file, productId),
 			altText: image.altText,
 			sortOrder: image.sortOrder,
 			isMain: image.isMain,
 			createdAt: image.createdAt
 		}));
+	}
+
+	private static async assertPublicProductFile(fileId: string, productId: number): Promise<void> {
+		const [file] = await db
+			.select()
+			.from(table.file)
+			.where(eq(table.file.id, fileId))
+			.limit(1);
+
+		if (
+			!file ||
+			!file.isPublic ||
+			file.entityType !== 'product' ||
+			file.entityId !== String(productId)
+		) {
+			throw new Error('Product images must reference a public file assigned to this product');
+		}
 	}
 }
 

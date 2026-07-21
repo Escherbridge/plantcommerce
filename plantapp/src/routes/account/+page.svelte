@@ -93,8 +93,8 @@
 					<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
 				</svg>
 				<p class="platform-empty__title">No orders yet</p>
-				<p class="platform-empty__text">Browse our collection and place your first order</p>
-				<a href="/products" class="cta-btn">Browse Products</a>
+				<p class="platform-empty__text">The product catalog and ordering workflow are currently unavailable.</p>
+				<a href="/products" class="cta-btn">View Catalog Status</a>
 			</div>
 		{/if}
 	</div>
@@ -109,7 +109,7 @@
 				<svg viewBox="0 0 24 24" class="action-svg" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
 					<path d="M3 7l9-4 9 4v10l-9 4-9-4V7zM3 7l9 4M21 7l-9 4M12 22V11"/>
 				</svg>
-				Browse Products
+				Catalog Status
 			</a>
 			<a href="/account/wishlist" class="platform-action-btn">
 				<svg viewBox="0 0 24 24" class="action-svg" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -136,11 +136,11 @@
 					</svg>
 				</div>
 				<div>
-					<h3 class="affiliate-cta__title">Become an Affiliate</h3>
-					<p class="affiliate-cta__text">Earn commissions by referring customers to our store. Share your unique link and track your earnings.</p>
+					<h3 class="affiliate-cta__title">Affiliate Program Status</h3>
+					<p class="affiliate-cta__text">Applications may be recorded for manual review, but no commission, link, or payout terms are currently published.</p>
 				</div>
 			</div>
-			<a href="/affiliate/join" class="cta-btn cta-btn--secondary">Join Program</a>
+			<a href="/affiliate/terms" class="cta-btn cta-btn--secondary">Review Status</a>
 		</div>
 	{/if}
 </div>

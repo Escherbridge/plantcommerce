@@ -1,6 +1,7 @@
 import { router, protectedProcedure } from '../trpc';
 import { z } from 'zod';
 import { LmsMediaService } from '../../services/lms/media';
+import { LmsAccessService } from '../../services/lms/access';
 
 export const mediaRouter = router({
 	requestUploadUrl: protectedProcedure
@@ -13,9 +14,7 @@ export const mediaRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			if (ctx.user.role !== 'admin' && ctx.user.role !== 'instructor') {
-				throw new Error('Only admins and instructors can upload media');
-			}
+			await LmsAccessService.requireCourseManager(ctx.user, input.courseId);
 			return LmsMediaService.generateUploadUrl(
 				input.courseId,
 				input.filename,
@@ -27,14 +26,18 @@ export const mediaRouter = router({
 
 	confirmUpload: protectedProcedure
 		.input(z.object({ fileId: z.string(), fileSize: z.number().positive() }))
-		.mutation(async ({ input }) => {
+		.mutation(async ({ ctx, input }) => {
+			await LmsAccessService.requireLmsFileManager(ctx.user, input.fileId);
 			await LmsMediaService.confirmUpload(input.fileId, input.fileSize);
 			return { success: true };
 		}),
 
 	getStreamingUrl: protectedProcedure
-		.input(z.object({ fileId: z.string(), expiresIn: z.number().optional() }))
-		.query(async ({ input }) => {
+		.input(
+			z.object({ fileId: z.string(), expiresIn: z.number().int().min(60).max(900).default(900) })
+		)
+		.query(async ({ ctx, input }) => {
+			await LmsAccessService.requireLmsFileRead(ctx.user, input.fileId);
 			const url = await LmsMediaService.generateStreamingUrl(input.fileId, input.expiresIn);
 			return { url };
 		}),
@@ -49,18 +52,14 @@ export const mediaRouter = router({
 			})
 		)
 		.query(async ({ ctx, input }) => {
-			if (ctx.user.role !== 'admin' && ctx.user.role !== 'instructor') {
-				throw new Error('Only admins and instructors can view media library');
-			}
+			await LmsAccessService.requireCourseManager(ctx.user, input.courseId);
 			return LmsMediaService.getMediaLibrary(input.courseId, input.type, input.page, input.limit);
 		}),
 
 	deleteMedia: protectedProcedure
 		.input(z.object({ fileId: z.string() }))
 		.mutation(async ({ ctx, input }) => {
-			if (ctx.user.role !== 'admin' && ctx.user.role !== 'instructor') {
-				throw new Error('Only admins and instructors can delete media');
-			}
+			await LmsAccessService.requireLmsFileManager(ctx.user, input.fileId);
 			await LmsMediaService.deleteMedia(input.fileId, ctx.user.id);
 			return { success: true };
 		})

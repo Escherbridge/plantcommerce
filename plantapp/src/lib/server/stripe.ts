@@ -1,13 +1,28 @@
 import Stripe from 'stripe';
-import { STRIPE_SECRET_KEY } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
-if (!STRIPE_SECRET_KEY || STRIPE_SECRET_KEY.startsWith('sk_test_placeholder')) {
-	console.warn('[Stripe] Warning: Using placeholder Stripe key. Replace with real test key in .env');
+let stripeClient: Stripe | null = null;
+let stripeClientKey: string | null = null;
+
+function configuredStripeKey(): string {
+	const key = env.STRIPE_SECRET_KEY?.trim();
+	if (!key || key.startsWith('sk_test_placeholder') || key.startsWith('sk_test_replace')) {
+		throw new Error('Stripe is unavailable because STRIPE_SECRET_KEY is not configured');
+	}
+
+	return key;
 }
 
-export const stripe = new Stripe(STRIPE_SECRET_KEY, {
-	apiVersion: '2026-03-25.dahlia',
-	typescript: true
-});
+/** Create the Stripe client only when a configured payment path actually uses it. */
+export function getStripeClient(): Stripe {
+	const key = configuredStripeKey();
+	if (!stripeClient || stripeClientKey !== key) {
+		stripeClient = new Stripe(key, {
+			apiVersion: '2026-03-25.dahlia',
+			typescript: true
+		});
+		stripeClientKey = key;
+	}
 
-export default stripe;
+	return stripeClient;
+}

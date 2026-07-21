@@ -1,11 +1,13 @@
 import { z } from 'zod';
-import { TRPCError } from '@trpc/server';
-import { publicProcedure, protectedProcedure, adminProcedure, router } from './trpc';
+import { publicProcedure, adminProcedure, router } from './trpc';
 import { ProductService } from '../services/product';
 import { AuditLogService } from '../services/auditLog';
+import { getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
 
 export const productsRouter = router({
-	getCategories: publicProcedure.query(() => ProductService.getCategories()),
+	getCatalogAvailability: publicProcedure.query(() => getPublicCatalogAvailability()),
+
+	getCategories: publicProcedure.query(async () => [] as Awaited<ReturnType<typeof ProductService.getCategories>>),
 
 	getProducts: publicProcedure
 		.input(z.object({
@@ -18,17 +20,11 @@ export const productsRouter = router({
 			sortBy: z.enum(['name', 'price', 'created']).default('created'),
 			sortOrder: z.enum(['asc', 'desc']).default('desc')
 		}))
-		.query(({ input }) => ProductService.getProducts(input)),
+		.query(async () => [] as Awaited<ReturnType<typeof ProductService.getProducts>>),
 
 	getProduct: publicProcedure
 		.input(z.object({ slug: z.string() }))
-		.query(async ({ input }) => {
-			const product = await ProductService.getProductBySlug(input.slug);
-			if (!product) {
-				throw new TRPCError({ code: 'NOT_FOUND', message: 'Product not found' });
-			}
-			return product;
-		}),
+		.query(async () => null as Awaited<ReturnType<typeof ProductService.getProductBySlug>>),
 
 	createProduct: adminProcedure
 		.input(z.object({

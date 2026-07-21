@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
+
 	interface Props {
 		config: { slides: Array<{ title?: string; content: string }>; theme?: string };
 	}
@@ -7,6 +9,7 @@
 	let showOverview = $state(false);
 	const total = $derived(config.slides?.length || 0);
 	const slide = $derived(config.slides?.[currentSlide]);
+	const slideContent = $derived(sanitizeRichText(slide?.content));
 
 	function prev() { if (currentSlide > 0) currentSlide--; }
 	function next() { if (currentSlide < total - 1) currentSlide++; }
@@ -38,7 +41,7 @@
 			{#if slide.title}
 				<h3 class="text-2xl font-bold mb-4">{slide.title}</h3>
 			{/if}
-			<div class="prose max-w-none">{@html slide.content}</div>
+			<div class="prose max-w-none">{@html slideContent}</div>
 		</div>
 	{/if}
 	<div class="flex items-center justify-between px-4 py-3 bg-base-200/50 border-t border-base-200/30">

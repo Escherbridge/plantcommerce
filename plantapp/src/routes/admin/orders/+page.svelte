@@ -37,17 +37,6 @@
 		}
 	}
 
-	// Placeholder counts per status
-	const statusCounts: Record<string, number> = {
-		all: orders.length,
-		pending: 0,
-		confirmed: 0,
-		processing: 0,
-		shipped: 0,
-		delivered: 0,
-		cancelled: 0
-	};
-
 	function exportCSV() {
 		const headers = ['Order #', 'Customer', 'Items', 'Total', 'Status', 'Date'];
 		const rows = orders.map((order: any) => [
@@ -75,7 +64,7 @@
 		<div class="admin-header-row">
 			<div>
 				<h1 class="platform-header__title">Orders</h1>
-				<p class="platform-header__subtitle">Track and manage customer orders</p>
+				<p class="platform-header__subtitle">Review recorded customer orders</p>
 			</div>
 			<button class="platform-action-btn admin-header-btn" onclick={exportCSV}>
 				<svg viewBox="0 0 24 24" class="w-5 h-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -97,7 +86,6 @@
 				onclick={() => setStatusFilter(tab)}
 			>
 				<span class="admin-tab-label">{tab}</span>
-				<span class="admin-tab-count">{statusCounts[tab] ?? 0}</span>
 			</button>
 		{/each}
 	</div>
@@ -185,7 +173,7 @@
 			<p class="platform-empty__text">
 				{activeStatus !== 'all'
 					? `No ${activeStatus} orders. Try a different filter.`
-					: 'Orders will appear here once customers start purchasing.'}
+					: 'No orders are available for this view.'}
 			</p>
 		</div>
 	{/if}
@@ -237,19 +225,6 @@
 	.admin-tab--active {
 		background: oklch(var(--p) / 0.08);
 		border-color: oklch(var(--p) / 0.3);
-		color: oklch(var(--p));
-	}
-
-	.admin-tab-count {
-		font-size: 0.6875rem;
-		padding: 0.0625rem 0.375rem;
-		border-radius: 9999px;
-		background: oklch(var(--bc) / 0.06);
-		color: oklch(var(--bc) / 0.5);
-	}
-
-	.admin-tab--active .admin-tab-count {
-		background: oklch(var(--p) / 0.15);
 		color: oklch(var(--p));
 	}
 

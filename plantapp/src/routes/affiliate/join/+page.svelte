@@ -50,49 +50,46 @@
 
 	const benefits = [
 		{
-			title: 'Competitive Commissions',
-			description: 'Earn up to 15% commission on all referred sales with our tiered structure.',
+			title: 'Application Review',
+			description: 'Applications are recorded for manual review; approval is not guaranteed.',
 			icon: 'M12 2a10 10 0 100 20 10 10 0 000-20zM8 14l2 2 4-4'
 		},
 		{
-			title: 'Marketing Materials',
-			description: 'Professional banners, social templates, and branded content ready to use.',
+			title: 'Terms Before Activation',
+			description: 'Commission, attribution, disclosure, and payout terms are not published until reviewed in writing.',
 			icon: 'M4 4h16v12H4zM8 20h8M12 16v4'
 		},
 		{
-			title: 'Real-time Analytics',
-			description: 'Track clicks, conversions, and earnings with a comprehensive dashboard.',
+			title: 'Application State',
+			description: 'An account or dashboard state does not represent approval, earnings, or a promotion right.',
 			icon: 'M3 20h18M6 16v4M10 12v8M14 8v12M18 4v16'
 		},
 		{
-			title: '30-Day Cookie Window',
-			description: 'Long attribution window ensures you get credit for referred customers.',
+			title: 'No Published Cookie Window',
+			description: 'Attribution policy applies only when it is included in a reviewed written agreement.',
 			icon: 'M12 2a10 10 0 100 20 10 10 0 000-20zM12 6v6l4 2'
 		},
 		{
-			title: 'Monthly Payouts',
-			description: 'Timely payments via PayPal, bank transfer, or check. $50 minimum.',
+			title: 'No Published Payout Schedule',
+			description: 'Aevani does not currently publish a payment provider, threshold, or payout timeline.',
 			icon: 'M2 7h20v12a2 2 0 01-2 2H4a2 2 0 01-2-2V7zM22 7l-2-4H4L2 7M8 12h8'
 		},
 		{
-			title: 'Dedicated Support',
-			description: 'A partner team that helps you maximize conversions and earnings.',
+			title: 'Questions and Support',
+			description: 'Contact support with program questions before relying on any affiliate-related arrangement.',
 			icon: 'M17 8a5 5 0 00-10 0c0 4 5 8 5 12 0-4 5-8 5-12zM12 20v2M8 22h8'
 		}
 	];
 
 	const commissionTiers = [
-		{ sales: '$0 - $1,000', rate: '5%', earnings: 'Up to $50', highlight: false },
-		{ sales: '$1,001 - $5,000', rate: '8%', earnings: 'Up to $400', highlight: false },
-		{ sales: '$5,001 - $10,000', rate: '10%', earnings: 'Up to $1,000', highlight: true },
-		{ sales: '$10,001+', rate: '15%', earnings: 'Unlimited', highlight: false }
+		{ sales: 'Terms in review', rate: '—', earnings: 'No payout terms published', highlight: false }
 	];
 
 	const steps = [
 		{ num: 1, label: 'Apply' },
-		{ num: 2, label: 'Get Approved' },
-		{ num: 3, label: 'Promote' },
-		{ num: 4, label: 'Earn' }
+		{ num: 2, label: 'Review' },
+		{ num: 3, label: 'Receive Terms' },
+		{ num: 4, label: 'Activate' }
 	];
 
 	async function handleSubmit() {
@@ -110,7 +107,7 @@
 			});
 
 			toasts.addToast({
-				message: 'Application submitted! We\'ll review it within 24-48 hours.',
+				message: 'Application recorded for manual review. It does not promise approval, terms, or a payout.',
 				variant: 'success',
 				duration: 5000
 			});
@@ -129,7 +126,8 @@
 </script>
 
 <svelte:head>
-	<title>Affiliate Program - Aevani</title>
+	<title>Affiliate program status | Aevani</title>
+	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <!-- Hero -->
@@ -140,7 +138,7 @@
 			<span class="aff-hero__tag">Partner with us</span>
 			<h1 class="aff-hero__title">Grow With Aevani</h1>
 			<p class="aff-hero__subtitle">
-				Join our affiliate program and earn up to 15% commission promoting sustainable agriculture products to your audience.
+				Aevani accepts applications for manual review, but no public commission, attribution, or payout terms are available.
 			</p>
 			{#if data.user && data.isAffiliate}
 				<a href="/affiliate/dashboard" class="aff-hero__cta">Go to Dashboard</a>
@@ -159,8 +157,8 @@
 <Section>
 	<Container>
 		<div class="aff-section-header">
-			<h2 class="aff-section-title">Why Partner With Us</h2>
-			<p class="aff-section-desc">Everything you need to succeed as an Aevani affiliate.</p>
+			<h2 class="aff-section-title">Application Status</h2>
+			<p class="aff-section-desc">Applications are informational until a reviewed agreement is available.</p>
 		</div>
 
 		<div class="aff-benefits-grid">
@@ -183,8 +181,8 @@
 <section class="aff-commission">
 	<Container>
 		<div class="aff-section-header">
-			<h2 class="aff-section-title">Commission Structure</h2>
-			<p class="aff-section-desc">Earn more as your referrals grow. Tiered rates that reward performance.</p>
+			<h2 class="aff-section-title">Program Terms</h2>
+			<p class="aff-section-desc">No commission rate, cookie window, tier, or payout schedule is currently published.</p>
 		</div>
 
 		<div class="aff-tiers">
@@ -195,10 +193,10 @@
 					{/if}
 					<span class="aff-tier__rate">{tier.rate}</span>
 					<span class="aff-tier__sales">{tier.sales}</span>
-					<span class="aff-tier__label">monthly sales</span>
+					<span class="aff-tier__label">program status</span>
 					<div class="aff-tier__divider"></div>
 					<span class="aff-tier__earnings">{tier.earnings}</span>
-					<span class="aff-tier__label">potential earnings</span>
+					<span class="aff-tier__label">payout status</span>
 				</div>
 			{/each}
 		</div>
@@ -222,9 +220,9 @@
 					<span class="aff-step__label">{s.label}</span>
 					<span class="aff-step__desc">
 						{#if s.num === 1}Fill out the quick application below
-						{:else if s.num === 2}We review within 24-48 hours
-						{:else if s.num === 3}Share your unique affiliate links
-						{:else}Get paid monthly for referrals
+						{:else if s.num === 2}Approval is not guaranteed and no review timeframe is promised
+						{:else if s.num === 3}If Aevani proceeds, you will receive written terms to review
+						{:else}Activate only after explicit approval and written terms
 						{/if}
 					</span>
 				</div>
@@ -246,7 +244,7 @@
 					</svg>
 				</div>
 				<h2 class="aff-apply__title">You're an Affiliate</h2>
-				<p class="aff-apply__desc">Head to your dashboard to manage links, track performance, and view earnings.</p>
+				<p class="aff-apply__desc">Follow the written terms associated with your approval. This page does not represent a public commission or payout commitment.</p>
 				<a href="/affiliate/dashboard" class="aff-hero__cta">Go to Dashboard</a>
 			</div>
 
@@ -260,7 +258,7 @@
 					</svg>
 				</div>
 				<h2 class="aff-apply__title">Application Submitted</h2>
-				<p class="aff-apply__desc">We'll review your application and get back to you within 24-48 hours. Check your email for updates.</p>
+				<p class="aff-apply__desc">Your application was recorded for manual review. It does not constitute approval, an agreement, or a payout right.</p>
 				<a href="/account/profile" class="aff-hero__cta">Back to Account</a>
 			</div>
 
@@ -268,7 +266,7 @@
 			<!-- Onboarding application form -->
 			<div class="aff-section-header">
 				<h2 class="aff-section-title">Apply Now</h2>
-				<p class="aff-section-desc">Tell us about yourself and how you plan to promote Aevani products.</p>
+				<p class="aff-section-desc">Tell us about your audience and promotion approach. An application is only a request for manual review.</p>
 			</div>
 
 			<div class="aff-form-card">
@@ -398,13 +396,14 @@
 									bind:checked={formData.agreeTerms}
 								/>
 								<span>
-									I agree to the
+									I understand that this application is not an affiliate agreement and does not promise approval,
+									commission, payout, or a promotion right. Read the
 									<button
 										type="button"
 										class="terms-link"
 										onclick={openTermsModal}
 									>
-										Affiliate Terms & Conditions
+										current program status
 									</button>
 								</span>
 							</label>
@@ -445,7 +444,7 @@
 			<!-- Not logged in -->
 			<div class="aff-apply__card">
 				<h2 class="aff-apply__title">Ready to Get Started?</h2>
-				<p class="aff-apply__desc">Sign in or create an account to apply for the affiliate program and start earning commissions.</p>
+				<p class="aff-apply__desc">Sign in or create an account to submit a request for manual review. No commission or payout terms are currently published.</p>
 				<div class="aff-apply__buttons">
 					<a href="/login?redirect=/affiliate/join" class="aff-hero__cta">Sign In to Apply</a>
 					<a href="/register" class="aff-apply__secondary">Create an Account</a>
@@ -454,13 +453,13 @@
 		{/if}
 
 		<p class="aff-terms-note">
-			By applying, you agree to our
-			<a href="/affiliate/terms" class="link link-primary">Affiliate Terms & Conditions</a>
+			By applying, you acknowledge the
+			<a href="/affiliate/terms" class="link link-primary">current affiliate program status</a>
 		</p>
 	</Container>
 </section>
 
-<!-- Terms & Conditions Modal -->
+<!-- Affiliate program status modal -->
 {#if showTermsModal}
 	<div class="terms-modal-overlay" onclick={(e) => {
 		if (e.target === e.currentTarget) {
@@ -469,7 +468,7 @@
 	}}>
 		<div class="terms-modal-card">
 			<div class="terms-modal__header">
-				<h2 class="terms-modal__title">Affiliate Terms & Conditions</h2>
+				<h2 class="terms-modal__title">Affiliate Program Status</h2>
 				<button
 					type="button"
 					class="terms-modal__close"
@@ -489,90 +488,30 @@
 				onscroll={handleTermsScroll}
 			>
 				<section class="terms-section">
-					<h3 class="terms-heading">1. Program Overview</h3>
+					<h3 class="terms-heading">1. Current Boundary</h3>
 					<p>
-						The Aevani Affiliate Program allows partners to earn competitive commissions by promoting our sustainable agriculture products. As an affiliate, you will receive a unique referral code and links to use in your promotional materials.
+						Aevani has not published a finalized affiliate agreement, commission schedule, attribution policy, payout policy, or promotion workflow. This notice is not a legal agreement.
 					</p>
 				</section>
 
 				<section class="terms-section">
-					<h3 class="terms-heading">2. Commission Structure</h3>
+					<h3 class="terms-heading">2. Applications Are Not Approval</h3>
 					<p>
-						Affiliates earn commissions based on a tiered structure:
-					</p>
-					<ul class="terms-list">
-						<li>Base Tier: 5% on sales up to $1,000/month</li>
-						<li>Silver Tier: 8% on sales $1,001-$5,000/month</li>
-						<li>Gold Tier: 10% on sales $5,001-$10,000/month</li>
-						<li>Platinum Tier: 15% on sales $10,001+/month</li>
-					</ul>
-					<p>
-						Commission rates are calculated on the net sale amount (excluding taxes and shipping) and are paid monthly.
+						Submitting an application, creating an account, or seeing an application state does not create a right to approval, a commission, a payout, or a promotion right.
 					</p>
 				</section>
 
 				<section class="terms-section">
-					<h3 class="terms-heading">3. Cookie Policy and Attribution</h3>
+					<h3 class="terms-heading">3. Terms Before Activation</h3>
 					<p>
-						We use a 30-day cookie window for affiliate attribution. If a customer clicks your affiliate link and makes a purchase within 30 days, the order is attributed to your account. Only one affiliate per order will receive credit. If multiple affiliate links are used, the last click takes precedence.
+						If the program becomes available, Aevani will provide explicit written terms before an approved participant receives any active promotional, attribution, commission, or payout arrangement.
 					</p>
 				</section>
 
 				<section class="terms-section">
-					<h3 class="terms-heading">4. Prohibited Practices</h3>
+					<h3 class="terms-heading">4. Questions</h3>
 					<p>
-						Affiliates agree not to engage in the following:
-					</p>
-					<ul class="terms-list">
-						<li>Bidding on Aevani brand keywords or trademarked terms in paid advertising</li>
-						<li>Misleading claims about products or commission structure</li>
-						<li>Spam, unsolicited emails, or aggressive sales tactics</li>
-						<li>Creating fake reviews or testimonials</li>
-						<li>Promoting products in illegal or inappropriate contexts</li>
-						<li>Direct email to customer lists without prior permission</li>
-						<li>Using deceptive link cloaking or obfuscation techniques</li>
-					</ul>
-				</section>
-
-				<section class="terms-section">
-					<h3 class="terms-heading">5. Payment Terms</h3>
-					<p>
-						Commissions are calculated and paid monthly via your preferred payment method (PayPal, bank transfer, or check). Minimum payout threshold is $50. Payments are processed within 10 business days of the month's close. Affiliates must provide accurate payment information.
-					</p>
-				</section>
-
-				<section class="terms-section">
-					<h3 class="terms-heading">6. Term and Termination</h3>
-					<p>
-						This agreement is effective upon approval and continues on a month-to-month basis. Either party may terminate with 30 days' notice. Aevani reserves the right to terminate immediately if you violate these terms or engage in fraudulent activity. Upon termination, all commissions earned through the last day of activity will be paid within 60 days.
-					</p>
-				</section>
-
-				<section class="terms-section">
-					<h3 class="terms-heading">7. Intellectual Property</h3>
-					<p>
-						All marketing materials, logos, and brand assets provided by Aevani remain our property. You may use them solely for promoting Aevani products. You may not modify, copy, or redistribute these materials without written permission.
-					</p>
-				</section>
-
-				<section class="terms-section">
-					<h3 class="terms-heading">8. Confidentiality</h3>
-					<p>
-						Affiliate commission rates, promotional strategies, and unpublished product information are confidential. You agree not to disclose this information to competitors or the public.
-					</p>
-				</section>
-
-				<section class="terms-section">
-					<h3 class="terms-heading">9. Liability and Indemnification</h3>
-					<p>
-						Aevani is not liable for lost earnings or indirect damages. You indemnify Aevani against claims, damages, or costs arising from your use of affiliate links or promotional materials.
-					</p>
-				</section>
-
-				<section class="terms-section">
-					<h3 class="terms-heading">10. Changes to Terms</h3>
-					<p>
-						Aevani reserves the right to modify these terms at any time. Changes are effective immediately upon posting. Continued participation in the program constitutes acceptance of updated terms.
+						Contact support before relying on an affiliate-related arrangement. Do not publish links or make program claims until you have explicit active approval and finalized written terms.
 					</p>
 				</section>
 			</div>
@@ -587,7 +526,7 @@
 					onclick={acceptTerms}
 					disabled={!termsScrolled}
 				>
-					I've Read & Accept
+					I've Read & Acknowledge
 				</button>
 			</div>
 		</div>

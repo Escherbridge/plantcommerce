@@ -1,4 +1,4 @@
-import { eq, and, desc, count, sql } from 'drizzle-orm';
+import { eq, and, desc, count, sql, asc } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
 import { db } from '$lib/server/db';
 import * as lmsTable from '$lib/server/db/lms-schema';
@@ -128,6 +128,19 @@ export class QuestionBankService {
 			.where(eq(lmsTable.lmsQuestion.bankId, bankId))
 			.orderBy(sql`random()`)
 			.limit(questionCount);
+	}
+
+	static async getQuestionsForCourse(courseId: string) {
+		const rows = await db
+			.select({ question: lmsTable.lmsQuestion })
+			.from(lmsTable.lmsQuestion)
+			.innerJoin(
+				lmsTable.lmsQuestionBank,
+				eq(lmsTable.lmsQuestion.bankId, lmsTable.lmsQuestionBank.id)
+			)
+			.where(eq(lmsTable.lmsQuestionBank.courseId, courseId))
+			.orderBy(asc(lmsTable.lmsQuestionBank.name), asc(lmsTable.lmsQuestion.sortOrder));
+		return rows.map(({ question }) => question);
 	}
 
 	static async getQuestionWithOptions(questionId: string) {

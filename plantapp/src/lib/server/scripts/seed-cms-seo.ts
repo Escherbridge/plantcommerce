@@ -7,21 +7,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export async function seedCmsSeoFields() {
-	console.log('🌱 Creating mock CMS SEO data...');
+	console.log('🌱 Creating local-development CMS SEO fixtures (not for public publication)...');
 
-	// Mock SEO fields for key pages - stored in JSON file
+	// Local fixtures must be replaced with reviewed metadata before publication.
+	const origin = (process.env.PUBLIC_BASE_URL?.trim() || 'https://aevani.example').replace(/\/+$/, '');
 	const pages = [
 		{
 			id: '1',
 			pageId: 'home',
 			pageType: 'page',
-			metaTitle: 'PlantCommerce | Sustainable Growing Tools & Supplies',
-			metaDescription: 'Discover sustainable growing tools, hydroponic systems, and educational resources for modern growers.',
-			ogTitle: 'PlantCommerce | Sustainable Gardening',
-			ogDescription: 'Your source for sustainable growing tools and educational resources.',
+			metaTitle: 'Aevani | Local Development Metadata Fixture',
+			metaDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+			ogTitle: 'Aevani | Local Development Metadata Fixture',
+			ogDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
 			ogImage: '/images/AI-MockAssets/MAINHERO.png',
-			robots: 'index, follow',
-			canonicalUrl: 'https://plantcommerce.com',
+			robots: 'noindex, nofollow',
+			canonicalUrl: origin,
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString()
 		},
@@ -29,13 +30,13 @@ export async function seedCmsSeoFields() {
 			id: '2',
 			pageId: 'products',
 			pageType: 'category',
-			metaTitle: 'Gardening Products & Supplies | PlantCommerce',
-			metaDescription: 'Shop our collection of sustainable gardening products, hydroponic systems, aquaponics kits, and growing supplies.',
-			ogTitle: 'Gardening Products | PlantCommerce',
-			ogDescription: 'Sustainable gardening products and supplies for modern growers.',
+			metaTitle: 'Aevani Products | Local Development Metadata Fixture',
+			metaDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+			ogTitle: 'Aevani Products | Local Development Metadata Fixture',
+			ogDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
 			ogImage: '/images/AI-MockAssets/MAINHERO.png',
-			robots: 'index, follow',
-			canonicalUrl: 'https://plantcommerce.com/products',
+			robots: 'noindex, nofollow',
+			canonicalUrl: `${origin}/products`,
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString()
 		},
@@ -43,13 +44,13 @@ export async function seedCmsSeoFields() {
 			id: '3',
 			pageId: 'products/hydroponics',
 			pageType: 'category',
-			metaTitle: 'Hydroponic Systems & Supplies | PlantCommerce',
-			metaDescription: 'Complete hydroponic systems, grow lights, nutrients, and supplies for indoor gardening. Shop our hydroponics collection.',
-			ogTitle: 'Hydroponic Gardening Supplies | PlantCommerce',
-			ogDescription: 'Everything you need for successful hydroponic gardening.',
+			metaTitle: 'Aevani Hydroponics | Local Development Metadata Fixture',
+			metaDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+			ogTitle: 'Aevani Hydroponics | Local Development Metadata Fixture',
+			ogDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
 			ogImage: '/images/AI-MockAssets/HydroToolProduct-HydroponicGrowTentKit.png',
-			robots: 'index, follow',
-			canonicalUrl: 'https://plantcommerce.com/products/hydroponics',
+			robots: 'noindex, nofollow',
+			canonicalUrl: `${origin}/products/hydroponics`,
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString()
 		},
@@ -57,13 +58,13 @@ export async function seedCmsSeoFields() {
 			id: '4',
 			pageId: 'blog',
 			pageType: 'category',
-			metaTitle: 'Gardening Blog & Resources | PlantCommerce',
-			metaDescription: 'Learn about sustainable gardening, hydroponics, plant care, and growing techniques with our educational blog posts.',
-			ogTitle: 'Gardening Blog | PlantCommerce',
-			ogDescription: 'Educational resources for sustainable gardening.',
+			metaTitle: 'Aevani Resources | Local Development Metadata Fixture',
+			metaDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+			ogTitle: 'Aevani Resources | Local Development Metadata Fixture',
+			ogDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
 			ogImage: '/images/AI-MockAssets/MAINHERO.png',
-			robots: 'index, follow',
-			canonicalUrl: 'https://plantcommerce.com/blog',
+			robots: 'noindex, nofollow',
+			canonicalUrl: `${origin}/blog`,
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString()
 		}
@@ -97,7 +98,7 @@ export default cmsSeoFields;
 
 		fs.writeFileSync(tsFilePath, tsContent);
 
-		console.log(`✅ Created ${pages.length} mock CMS SEO field records`);
+		console.log(`✅ Created ${pages.length} local-development CMS SEO fixture records`);
 		console.log(`📁 Data saved to: ${filePath}`);
 		console.log(`📁 TypeScript module: ${tsFilePath}`);
 
@@ -112,11 +113,11 @@ export default cmsSeoFields;
 if (import.meta.url.endsWith(process.argv[1])) {
 	seedCmsSeoFields()
 		.then(() => {
-			console.log('🌱 Mock CMS SEO data creation complete');
+			console.log('Local-development CMS SEO fixture creation complete');
 			process.exit(0);
 		})
 		.catch((error) => {
-			console.error('❌ Mock CMS SEO data creation failed:', error);
+			console.error('Local-development CMS SEO fixture creation failed:', error);
 			process.exit(1);
 		});
 }

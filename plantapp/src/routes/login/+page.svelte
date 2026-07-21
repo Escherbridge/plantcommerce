@@ -33,7 +33,7 @@
 				password: password
 			});
 
-			if (result.user && result.sessionToken) {
+			if (result.user) {
 				toasts.addToast({
 					message: `Welcome back, ${result.user.firstName || result.user.username}!`,
 					variant: 'success',
@@ -86,17 +86,17 @@
 			<form class="login-form" onsubmit={handleSubmit} novalidate>
 				<div class="form-control">
 					<label class="label" for="email-address">
-						<span class="label-text">Email address</span>
+						<span class="label-text">Email address or username</span>
 					</label>
 					<input
 						id="email-address"
-						name="email"
-						type="email"
-						autocomplete="email"
+						name="usernameOrEmail"
+						type="text"
+						autocomplete="username"
 						required
 						bind:value={email}
 						class="input input-bordered w-full"
-						placeholder="you@example.com"
+						placeholder="you@example.com or username"
 						disabled={loading}
 					/>
 				</div>
@@ -136,6 +136,12 @@
 
 			<!-- Footer -->
 			<div class="login-footer">
+				<p>
+					<a href="/forgot-password" class="link link-primary font-semibold">Forgot your password?</a>
+				</p>
+				<p>
+					<a href="/resend-verification" class="link link-primary font-semibold">Resend verification email</a>
+				</p>
 				<p>
 					Don't have an account?
 					<a href="/register" class="link link-primary font-semibold">Create one</a>

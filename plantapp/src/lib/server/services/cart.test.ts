@@ -3,13 +3,20 @@ import { CartService } from './cart';
 import { db } from '$lib/server/db';
 
 // Mock the database module
-vi.mock('$lib/server/db', () => ({
-    db: {
+vi.mock('$lib/server/db', () => {
+    const db = {
         select: vi.fn(),
         insert: vi.fn(),
         update: vi.fn(),
-        delete: vi.fn()
-    }
+        delete: vi.fn(),
+        execute: vi.fn(),
+        transaction: vi.fn(async (callback: (tx: object) => unknown) => await callback(db))
+    };
+    return { db };
+});
+
+vi.mock('../catalogTruth/publicCatalog', () => ({
+	assertPublicCatalogAvailable: vi.fn()
 }));
 
 describe('CartService', () => {
@@ -131,6 +138,31 @@ describe('CartService', () => {
     });
 
     describe('removeItem', () => {
+		it('fails closed when no cart identity is provided', async () => {
+			await expect(CartService.removeItem(1)).rejects.toThrow(
+				'Either userId or sessionId is required'
+			);
+			expect(db.select).not.toHaveBeenCalled();
+		});
+
+		it('does not let a guest identity mutate a user cart', async () => {
+			const limitMock = vi.fn().mockResolvedValue([{
+				cartItem: { id: 1, cartId: 1, productId: 101 },
+				cart: { id: 1, userId: 'user123', sessionId: null },
+				product: { id: 101, trackInventory: false }
+			}]);
+			const whereMock = vi.fn().mockReturnValue({ limit: limitMock });
+			const join2Mock = vi.fn().mockReturnValue({ where: whereMock });
+			const join1Mock = vi.fn().mockReturnValue({ innerJoin: join2Mock });
+			const fromMock = vi.fn().mockReturnValue({ innerJoin: join1Mock });
+			(db.select as any).mockReturnValue({ from: fromMock });
+
+			await expect(CartService.removeItem(1, undefined, 'guest-session')).rejects.toThrow(
+				'Access denied'
+			);
+			expect(db.delete).not.toHaveBeenCalled();
+		});
+
         it('should remove item from cart', async () => {
             // Mock updateItemQuantity internal call which does a complex join
             const limitMock = vi.fn().mockResolvedValue([{

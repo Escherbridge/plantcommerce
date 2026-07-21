@@ -113,7 +113,7 @@
 				<p class="text-base-content/70 mb-6">
 					Start shopping to see your orders here.
 				</p>
-				<a href="/products/hydroponics" class="btn btn-primary font-display uppercase tracking-wider">Browse Products</a>
+				<a href="/products" class="btn btn-primary font-display uppercase tracking-wider">View Catalog Status</a>
 			</div>
 		{/if}
 	</Container>

@@ -1,8 +1,17 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { protectedProcedure, adminProcedure, router } from './trpc';
-import { UserService } from '../services/user';
+import {
+	isEmailLoginIdentifier,
+	normalizeEmailAddress,
+	UserService,
+	type UserProfile
+} from '../services/user';
 import { OrderService } from '../services/order';
+import { accountCapabilitiesEnabled, generateEmailChangeCapabilities } from '../auth';
+import { EmailService } from '../services/email';
+import { AuditLogService } from '../services/auditLog';
+import { assertPublicCatalogAvailable, getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
 
 export const usersRouter = router({
 	/**
@@ -40,14 +49,70 @@ export const usersRouter = router({
 				firstName: z.string().optional(),
 				lastName: z.string().optional(),
 				email: z.string().email().optional(),
-				username: z.string().min(3).optional()
+				currentPassword: z.string().min(1).optional(),
+				username: z
+					.string()
+					.min(3)
+					.refine((value) => !isEmailLoginIdentifier(value), 'Username cannot be an email address')
+					.optional()
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
 			try {
-				const updatedUser = await UserService.updateProfile(ctx.user.id, input);
-				return updatedUser;
+				const { email, currentPassword, ...profileInput } = input;
+				const normalizedEmail = email === undefined ? undefined : normalizeEmailAddress(email);
+				const emailChanged = normalizedEmail !== undefined && normalizedEmail !== ctx.user.email;
+				if (emailChanged && !accountCapabilitiesEnabled()) {
+					throw new TRPCError({
+						code: 'PRECONDITION_FAILED',
+						message: 'Email changes are temporarily unavailable.'
+					});
+				}
+				if (emailChanged && (!currentPassword || !EmailService.isConfigured())) {
+					throw new TRPCError({
+						code: 'PRECONDITION_FAILED',
+						message: currentPassword
+							? 'Email changes are temporarily unavailable.'
+							: 'Enter your current password to change your email.'
+					});
+				}
+
+				let updatedUser: UserProfile;
+				let verificationEmailSent = false;
+				if (emailChanged && normalizedEmail && currentPassword) {
+					const change = await UserService.requestEmailChange(
+						ctx.user.id,
+						normalizedEmail,
+						currentPassword,
+						profileInput
+					);
+					updatedUser = change.user;
+					try {
+						const capabilities = await generateEmailChangeCapabilities(
+							updatedUser.id,
+							change.previousEmail,
+							normalizedEmail
+						);
+						if (capabilities) {
+							await EmailService.sendNewEmailChangeProof(normalizedEmail, capabilities.newEmailToken);
+							await EmailService.sendExistingEmailChangeConfirmation(
+								change.previousEmail,
+								normalizedEmail,
+								capabilities.existingEmailToken
+							);
+							await AuditLogService.log(updatedUser.id, 'email_verification_requested');
+							verificationEmailSent = true;
+						}
+					} catch (error) {
+						console.error('Failed to send changed-email verification:', error);
+					}
+				} else {
+					updatedUser = await UserService.updateProfile(ctx.user.id, profileInput);
+				}
+
+				return { ...updatedUser, verificationEmailSent };
 			} catch (error) {
+				if (error instanceof TRPCError) throw error;
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
 					message: error instanceof Error ? error.message : 'Failed to update profile'
@@ -108,6 +173,9 @@ export const usersRouter = router({
 	 */
 	getWishlist: protectedProcedure.query(async ({ ctx }) => {
 		try {
+			if (getPublicCatalogAvailability().status !== 'available') {
+				return [];
+			}
 			return await UserService.getWishlist(ctx.user.id);
 		} catch (error) {
 			throw new TRPCError({
@@ -124,6 +192,7 @@ export const usersRouter = router({
 		.input(z.object({ productId: z.number() }))
 		.mutation(async ({ ctx, input }) => {
 			try {
+				assertPublicCatalogAvailable();
 				const item = await UserService.addToWishlist(ctx.user.id, input.productId);
 				return { success: true, item };
 			} catch (error) {
@@ -159,7 +228,7 @@ export const usersRouter = router({
 			z.object({
 				limit: z.number().min(1).max(100).default(50),
 				offset: z.number().min(0).default(0),
-				role: z.enum(['admin', 'customer', 'affiliate']).optional(),
+				role: z.enum(['admin', 'customer', 'affiliate', 'instructor']).optional(),
 				search: z.string().optional(),
 				isActive: z.boolean().optional()
 			})
@@ -239,7 +308,7 @@ export const usersRouter = router({
 		.input(
 			z.object({
 				userId: z.string(),
-				role: z.enum(['admin', 'customer', 'affiliate'])
+				role: z.enum(['admin', 'customer', 'affiliate', 'instructor'])
 			})
 		)
 		.mutation(async ({ input }) => {

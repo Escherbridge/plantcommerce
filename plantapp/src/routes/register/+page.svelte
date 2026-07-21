@@ -11,6 +11,7 @@
 	let isLoading = $state(false);
 	let registrationComplete = $state(false);
 	let registeredEmail = $state('');
+	let verificationEmailSent = $state(false);
 
 	const passwordErrors = $derived(() => {
 		const errors: string[] = [];
@@ -55,8 +56,9 @@
 				lastName: lastName || undefined
 			});
 
-			if (result.user && result.sessionToken) {
+			if (result.user) {
 				registeredEmail = email;
+				verificationEmailSent = result.verificationEmailSent;
 				registrationComplete = true;
 			}
 		} catch (error: any) {
@@ -86,12 +88,16 @@
 						</svg>
 					</div>
 					<h1 class="register-title">Account Created</h1>
-					<p class="register-subtitle">Welcome to Aevani! We've sent a verification email to:</p>
+					<p class="register-subtitle">Welcome to Aevani!</p>
 					<p class="register-email-highlight">{registeredEmail}</p>
 				</div>
 
 				<div class="register-next-steps">
-					<p class="register-step-text">Check your inbox and click the verification link to activate your account. You can start browsing right away.</p>
+					{#if verificationEmailSent}
+						<p class="register-step-text">Check your inbox and confirm the verification request. You can start browsing right away.</p>
+					{:else}
+						<p class="register-step-text">Your account was created, but verification email delivery is not available yet. Please contact support before relying on email verification.</p>
+					{/if}
 					<div class="register-success-actions">
 						<a href="/products" class="btn btn-primary w-full font-display uppercase tracking-wider">
 							Browse Products
@@ -102,12 +108,11 @@
 					</div>
 				</div>
 
-				<div class="register-footer">
-					<p class="register-legal">
-						Didn't receive the email? Check your spam folder or
-						<button class="link link-primary" onclick={() => { registrationComplete = false; }}>try again</button>
-					</p>
-				</div>
+				{#if verificationEmailSent}
+					<div class="register-footer">
+						<p class="register-legal">Didn't receive the email? Check your spam folder or contact support.</p>
+					</div>
+				{/if}
 			{:else}
 			<!-- Header -->
 			<div class="register-header">

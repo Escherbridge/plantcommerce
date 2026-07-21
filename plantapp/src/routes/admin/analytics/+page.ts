@@ -8,15 +8,8 @@ export const load: PageLoad = async (event) => {
 		return { analytics };
 	} catch (error) {
 		return {
-			analytics: {
-				totalRevenue: 0,
-				totalOrders: 0,
-				averageOrderValue: 0,
-				conversionRate: 0,
-				topProducts: [],
-				topCategories: [],
-				revenueByMonth: []
-			}
+			analytics: null,
+			error: 'Analytics data could not be loaded. No zero-value fallback is being shown as a report.'
 		};
 	}
 };

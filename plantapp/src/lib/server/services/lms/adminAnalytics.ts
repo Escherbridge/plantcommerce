@@ -1,4 +1,4 @@
-import { eq, and, desc, count, avg, sql, gte, lte, between } from 'drizzle-orm';
+import { eq, and, desc, count, avg, sql, gte, lte } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as lmsTable from '$lib/server/db/lms-schema';
 
@@ -130,26 +130,29 @@ export class AdminAnalyticsService {
 			.from(lmsTable.lmsQuizAttempt)
 			.where(eq(lmsTable.lmsQuizAttempt.quizId, quizId));
 
-		const completed = attempts.filter((a) => a.status === 'completed');
-		const passed = completed.filter((a) => a.passed);
+		const submitted = attempts.filter((attempt) => attempt.submittedAt !== null);
+		const finalized = submitted.filter((attempt) => attempt.passed !== null);
+		const passed = finalized.filter((attempt) => attempt.passed === true);
+		const scored = finalized.filter((attempt) => (attempt.totalPoints ?? 0) > 0);
 
-		const passRate = completed.length > 0 ? Math.round((passed.length / completed.length) * 100) : 0;
-
-		const avgScore =
-			completed.length > 0
+		const passRate = finalized.length > 0 ? Math.round((passed.length / finalized.length) * 100) : 0;
+		const averageScore =
+			scored.length > 0
 				? Math.round(
-						completed.reduce((sum, a) => {
-							const maxScore = a.maxScore || 1;
-							return sum + ((a.score || 0) / maxScore) * 100;
-						}, 0) / completed.length
+						scored.reduce(
+							(sum, attempt) =>
+								sum + (((attempt.score ?? 0) / (attempt.totalPoints ?? 1)) * 100),
+							0
+						) / scored.length
 					)
 				: 0;
 
 		return {
 			totalAttempts: attempts.length,
-			completedAttempts: completed.length,
+			completedAttempts: submitted.length,
+			pendingGradingAttempts: submitted.length - finalized.length,
 			passRate,
-			averageScore: avgScore
+			averageScore
 		};
 	}
 

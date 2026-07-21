@@ -51,11 +51,11 @@ export function validateFileSignature(buffer: Buffer, mimeType: string): boolean
  * @param buffer The file buffer.
  * @returns A promise that resolves if the file is clean, and rejects if it is malicious.
  */
-export async function scanForViruses(buffer: Buffer): Promise<void> {
+export async function scanForViruses(_buffer: Buffer): Promise<void> {
   // TODO: Integrate with a real virus scanning service (e.g., ClamAV).
   // For now, we'll simulate a scan by checking for a dummy "virus signature".
   const virusSignature = 'X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*';
-  if (buffer.toString().includes(virusSignature)) {
+  if (_buffer.toString().includes(virusSignature)) {
     throw new AppError('VIRUS_DETECTED', 'A virus was detected in the file.', 400);
   }
   // Simulate a short delay for the scan

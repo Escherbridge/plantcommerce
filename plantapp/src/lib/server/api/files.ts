@@ -1,17 +1,17 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { publicProcedure, protectedProcedure, adminProcedure, router } from './trpc';
-import { FileService, type FileWithUrl } from '../services/file';
+import { FileService } from '../services/file';
+import {
+	canChangeFileVisibility,
+	canListFilesForEntity,
+	canManageFile,
+	canReadFile,
+	toFileClientRecord
+} from '../fileAuthorization';
 
 // Validation schemas
 const entityTypeSchema = z.enum(['user', 'product', 'content', 'general']);
-
-const uploadFileSchema = z.object({
-	entityType: entityTypeSchema,
-	entityId: z.string().optional(),
-	isPublic: z.boolean().default(false),
-	metadata: z.record(z.any()).optional()
-});
 
 const getFilesByEntitySchema = z.object({
 	entityType: entityTypeSchema,
@@ -35,32 +35,25 @@ export const filesRouter = router({
 		}))
 		.query(async ({ input, ctx }) => {
 			const file = await FileService.getFileById(input.fileId);
-			
-			if (!file) {
+
+			if (!file || !canReadFile(ctx.user, file)) {
 				throw new TRPCError({
 					code: 'NOT_FOUND',
 					message: 'File not found'
 				});
 			}
 
-			// If file is private, require authentication
-			if (!file.isPublic && !ctx.user) {
-				throw new TRPCError({
-					code: 'UNAUTHORIZED',
-					message: 'Authentication required for private files'
-				});
-			}
-
-			// If file is private and user is authenticated, generate signed URL
+			let signedUrl: string | undefined;
+			// Private files need a short-lived URL after authorization succeeds.
 			if (!file.isPublic && ctx.user) {
 				try {
-					file.signedUrl = await FileService.generateSignedUrl(file.id);
+					signedUrl = await FileService.generateSignedUrl(file.id);
 				} catch (error) {
 					console.error('Failed to generate signed URL:', error);
 				}
 			}
 
-			return file;
+			return toFileClientRecord(file, signedUrl);
 		}),
 
 	/**
@@ -68,12 +61,21 @@ export const filesRouter = router({
 	 */
 	getFilesByEntity: protectedProcedure
 		.input(getFilesByEntitySchema)
-		.query(async ({ input }) => {
-			return await FileService.getFilesByEntity(
+		.query(async ({ input, ctx }) => {
+			if (!canListFilesForEntity(ctx.user, input.entityType, input.entityId)) {
+				throw new TRPCError({
+					code: 'FORBIDDEN',
+					message: 'Access denied'
+				});
+			}
+
+			const files = await FileService.getFilesByEntity(
 				input.entityType,
 				input.entityId,
 				input.limit
 			);
+
+			return files.map((file) => toFileClientRecord(file));
 		}),
 
 	/**
@@ -87,19 +89,10 @@ export const filesRouter = router({
 		.query(async ({ input, ctx }) => {
 			const file = await FileService.getFileById(input.fileId);
 			
-			if (!file) {
+			if (!file || !canReadFile(ctx.user, file)) {
 				throw new TRPCError({
 					code: 'NOT_FOUND',
 					message: 'File not found'
-				});
-			}
-
-			// Check if user has access to this file
-			// Users can access their own uploaded files, admins can access all files
-			if (file.uploadedBy !== ctx.userId && ctx.userRole !== 'admin') {
-				throw new TRPCError({
-					code: 'FORBIDDEN',
-					message: 'Access denied'
 				});
 			}
 
@@ -129,19 +122,26 @@ export const filesRouter = router({
 				});
 			}
 
-			// Check if user has access to update this file
-			if (file.uploadedBy !== ctx.userId && ctx.userRole !== 'admin') {
+			if (!canManageFile(ctx.user, file)) {
 				throw new TRPCError({
 					code: 'FORBIDDEN',
 					message: 'Access denied'
 				});
 			}
 
+			if (input.isPublic !== undefined && !canChangeFileVisibility(ctx.user)) {
+				throw new TRPCError({
+					code: 'FORBIDDEN',
+					message: 'Only administrators can change file visibility'
+				});
+			}
+
 			try {
-				return await FileService.updateFileMetadata(input.fileId, {
+				const updatedFile = await FileService.updateFileMetadata(input.fileId, {
 					metadata: input.metadata,
 					isPublic: input.isPublic
 				});
+				return toFileClientRecord(updatedFile);
 			} catch (error) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
@@ -167,8 +167,7 @@ export const filesRouter = router({
 				});
 			}
 
-			// Check if user has access to delete this file
-			if (file.uploadedBy !== ctx.userId && ctx.userRole !== 'admin') {
+			if (!canManageFile(ctx.user, file)) {
 				throw new TRPCError({
 					code: 'FORBIDDEN',
 					message: 'Access denied'
@@ -210,7 +209,7 @@ export const filesRouter = router({
 			files = files.filter(file => file.isPublic);
 
 			// Limit results
-			return files.slice(0, input.limit);
+			return files.slice(0, input.limit).map((file) => toFileClientRecord(file));
 		}),
 
 	/**
@@ -222,11 +221,8 @@ export const filesRouter = router({
 			mimeTypeFilter: z.string().optional()
 		}))
 		.query(async ({ input, ctx }) => {
-			// This would need to be implemented in the FileService
-			// For now, we'll get all files and filter by uploadedBy
-			const files = await FileService.getFilesByMimeType('', 1000); // Get many files
-			
-			let userFiles = files.filter(file => file.uploadedBy === ctx.userId);
+			const files = await FileService.getFilesByUploader(ctx.user.id, input.limit * 5);
+			let userFiles = files;
 
 			// Filter by MIME type if specified
 			if (input.mimeTypeFilter) {
@@ -235,7 +231,7 @@ export const filesRouter = router({
 				);
 			}
 
-			return userFiles.slice(0, input.limit);
+			return userFiles.slice(0, input.limit).map((file) => toFileClientRecord(file));
 		}),
 
 	/**
@@ -258,7 +254,7 @@ export const filesRouter = router({
 				files = files.filter(file => file.entityType === input.entityType);
 			}
 
-			return files.slice(0, input.limit);
+			return files.slice(0, input.limit).map((file) => toFileClientRecord(file));
 		}),
 
 	/**

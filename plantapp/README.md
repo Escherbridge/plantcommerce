@@ -6,7 +6,7 @@ This directory contains the main Aevani application built with SvelteKit, Drizzl
 ```bash
 npm install
 npm run db:start
-npm run db:push
+# Read drizzle/AGENTS.md before changing or applying any schema.
 npm run dev
 ```
 
@@ -19,30 +19,27 @@ npm run dev
 
 ## Application Overview
 
-This is the main application for PlantCommerce, a sustainable agriculture e-commerce platform featuring hydroponics, aquaponics, silvopasture, and agroforestry products with a comprehensive affiliate marketing system.
+This is the main Aevani application. It contains a hardening-in-progress commerce platform, educational content, and affiliate foundations. Public product publication remains disabled until supplier, offer, fulfillment, and claim evidence is reviewed.
 
 ## Key Features
 
 ### Public Facing Features
 
-- **Product Categories**
-  - Hydroponics
-  - Aquaponics
-  - Silvopasture
-  - Agroforestry
+- **Catalog truth boundary**
+  - Research records for hydroponics, aquaponics, silvopasture, and agroforestry
+  - Public product, price, stock, and structured-data publication disabled until verified
 
 - **User Authentication**
   - Secure login/register system
   - User profiles and order history
 
 - **Shopping Cart**
-  - Add/remove items
-  - Quantity adjustments
-  - Discount codes
+  - Server-bound anonymous and authenticated cart identities
+  - Mutation and ownership safeguards
 
 - **Checkout System**
-  - Secure payment processing
-  - Order confirmation and tracking
+  - Immutable server-priced draft and Stripe verification architecture
+  - Feature-gated until migration reconciliation and release rehearsal
 
 - **Content Management System**
   - Built-in CMS for blog posts, guides, and educational content
@@ -64,11 +61,8 @@ This is the main application for PlantCommerce, a sustainable agriculture e-comm
   - Update order details
 
 - **Affiliate Program**
-  - User-generated affiliate links for any product
-  - Click tracking and conversion analytics
-  - Commission management and earnings tracking
-  - Real-time affiliate statistics dashboard
-  - Automatic commission calculations on orders
+  - Approved-affiliate links, signed attribution, and immutable commission-ledger foundations
+  - Payout and external fulfillment activation require their source-only migration rehearsal
 
 - **User Management**
   - Manage admin users
@@ -126,18 +120,12 @@ This is the main application for PlantCommerce, a sustainable agriculture e-comm
 
 ### ✅ Completed Features
 
-- **Database Schema**: Complete e-commerce and affiliate tracking schema with Drizzle ORM
-- **User Authentication**: Lucia Auth with role-based access control
-- **Affiliate System**: Complete implementation following SOLID principles
-  - Affiliate account creation and management
-  - Unique affiliate link generation for products
-  - Click tracking with detailed analytics
-  - Conversion tracking and commission calculations
-  - Real-time statistics dashboard
-- **API Layer**: Type-safe tRPC APIs for all core functionality
-- **Product Management**: Complete CRUD operations for products and categories
-- **Content Management System**: Built-in CMS for pages, blog posts, guides, and FAQs
-- **Affiliate Link Redirects**: Automatic tracking and redirection system
+- **Database Schema**: Drizzle schema with a documented unresolved migration baseline
+- **User Authentication**: Session, capability, lockout, and recovery hardening
+- **Affiliate System**: Approved-status and source-only immutable-ledger foundation
+- **API Layer**: tRPC endpoints with resource authorization work in progress
+- **Product Management**: Admin-side CRUD; public publication is deliberately fail-closed
+- **Content Management System**: CMS, guides, and FAQ foundations with stored-HTML safeguards
 
 ### 🚧 In Development
 
@@ -145,7 +133,7 @@ This is the main application for PlantCommerce, a sustainable agriculture e-comm
 - **Shopping Cart**: Cart management and checkout flow
 - **Payment Processing**: Integration with payment providers
 - **File Upload**: Product image and content media management
-- **Email System**: Notifications and marketing emails
+- **Email System**: Account email delivery when a configured provider is present; newsletter signup is unavailable
 
 ### 📋 Planned Features
 
@@ -212,7 +200,7 @@ This is the main application for PlantCommerce, a sustainable agriculture e-comm
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd plantcommerce/plantapp
+   cd <repository>/plantapp
    ```
 
 2. **Install dependencies**
@@ -240,10 +228,10 @@ This is the main application for PlantCommerce, a sustainable agriculture e-comm
    # Or connect to your existing PostgreSQL instance
    ```
 
-5. **Apply database migrations**
+5. **Reconcile the database baseline before applying schema changes**
    ```bash
-   npm run db:generate
-   npm run db:push
+   # This repository currently has unresolved Drizzle history.
+   # Read drizzle/AGENTS.md; do not run db:push or db:migrate against a shared database.
    ```
 
 6. **Start the development server**
@@ -254,9 +242,9 @@ This is the main application for PlantCommerce, a sustainable agriculture e-comm
 ### Database Management Commands
 
 - `npm run db:start` - Start PostgreSQL with Docker Compose
-- `npm run db:generate` - Generate Drizzle migrations
-- `npm run db:push` - Apply schema changes to database
-- `npm run db:migrate` - Run migrations
+- `npm run db:generate` - Generate a migration only after the baseline is reconciled
+- `npm run db:push` - Do not use until the baseline is reconciled and a release procedure is approved
+- `npm run db:migrate` - Do not use until the baseline is reconciled and a release procedure is approved
 - `npm run db:studio` - Open Drizzle Studio (database GUI)
 
 ## Contributing

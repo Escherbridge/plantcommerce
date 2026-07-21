@@ -1,7 +1,12 @@
-import { eq, and, isNull } from 'drizzle-orm';
+import { eq, and, inArray, isNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { FileService } from './file';
+import {
+	AffiliateAttributionService,
+	type ResolvedAffiliateAttribution
+} from '../affiliateAttribution';
+import { assertPublicCatalogAvailable } from '../catalogTruth/publicCatalog';
 
 export interface CartItem {
 	id: number;
@@ -31,65 +36,97 @@ export interface Cart {
 	totalItems: number;
 }
 
+type CartIdentity =
+	| { kind: 'user'; userId: string }
+	| { kind: 'guest'; sessionId: string };
+
+function requireCartIdentity(userId?: string, sessionId?: string): CartIdentity {
+	if (userId && sessionId) {
+		throw new Error('Cart identity must be either a user or a guest session');
+	}
+
+	if (userId) {
+		return { kind: 'user', userId };
+	}
+
+	if (sessionId) {
+		return { kind: 'guest', sessionId };
+	}
+
+	throw new Error('Either userId or sessionId is required');
+}
+
+function cartIdentityCondition(identity: CartIdentity) {
+	return identity.kind === 'user'
+		? eq(table.cart.userId, identity.userId)
+		: and(isNull(table.cart.userId), eq(table.cart.sessionId, identity.sessionId));
+}
+
+function cartBelongsToIdentity(
+	cart: Pick<Cart, 'userId' | 'sessionId'>,
+	identity: CartIdentity
+): boolean {
+	return identity.kind === 'user'
+		? cart.userId === identity.userId
+		: cart.userId === null && cart.sessionId === identity.sessionId;
+}
+
+function cartAdvisoryLockSubject(identity: CartIdentity): string {
+	return identity.kind === 'user'
+		? `cart:user:${identity.userId}`
+		: `cart:guest:${identity.sessionId}`;
+}
+
 export class CartService {
+	private static async getOrCreateCartRecord(
+		userId?: string,
+		sessionId?: string,
+		affiliateLinkId?: number
+	): Promise<{ id: number; created: boolean }> {
+		const identity = requireCartIdentity(userId, sessionId);
+
+		return await db.transaction(async (tx) => {
+			// The lock protects current deployments before 0007's partial unique indexes are applied.
+			await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${cartAdvisoryLockSubject(identity)}))`);
+			const existingCart = await tx
+				.select()
+				.from(table.cart)
+				.where(cartIdentityCondition(identity))
+				.limit(1);
+
+			if (existingCart.length > 0) {
+				return { id: existingCart[0].id, created: false };
+			}
+
+			const newCart: typeof table.cart.$inferInsert = {
+				userId: identity.kind === 'user' ? identity.userId : null,
+				sessionId: identity.kind === 'guest' ? identity.sessionId : null,
+				affiliateLinkId: affiliateLinkId || null
+			};
+
+			const [cart] = await tx.insert(table.cart).values(newCart).returning();
+			return { id: cart.id, created: true };
+		});
+	}
+
 	/**
 	 * Get or create cart for user/session
 	 */
-	static async getOrCreateCart(userId?: string, sessionId?: string, affiliateLinkId?: number): Promise<number> {
-		if (!userId && !sessionId) {
-			throw new Error('Either userId or sessionId is required');
-		}
-
-		// Try to find existing cart
-		const conditions = [];
-		if (userId) {
-			conditions.push(eq(table.cart.userId, userId));
-		}
-		if (sessionId && !userId) {
-			conditions.push(eq(table.cart.sessionId, sessionId));
-		}
-
-		const existingCart = await db
-			.select()
-			.from(table.cart)
-			.where(and(...conditions))
-			.limit(1);
-
-		if (existingCart.length > 0) {
-			return existingCart[0].id;
-		}
-
-		// Create new cart
-		const newCart: typeof table.cart.$inferInsert = {
-			userId: userId || null,
-			sessionId: sessionId || null,
-			affiliateLinkId: affiliateLinkId || null
-		};
-
-		const [cart] = await db.insert(table.cart).values(newCart).returning();
-		return cart.id;
+	static async getOrCreateCart(userId?: string, sessionId?: string): Promise<number> {
+		return (await this.getOrCreateCartRecord(userId, sessionId)).id;
 	}
 
 	/**
 	 * Get full cart with items and product details
 	 */
 	static async getCart(userId?: string, sessionId?: string): Promise<Cart | null> {
-		if (!userId && !sessionId) {
-			throw new Error('Either userId or sessionId is required');
-		}
-
-		const conditions = [];
-		if (userId) {
-			conditions.push(eq(table.cart.userId, userId));
-		}
-		if (sessionId && !userId) {
-			conditions.push(eq(table.cart.sessionId, sessionId));
-		}
+		assertPublicCatalogAvailable();
+		const identity = requireCartIdentity(userId, sessionId);
 
 		const cartResult = await db
 			.select()
 			.from(table.cart)
-			.where(and(...conditions))
+			.where(cartIdentityCondition(identity))
 			.limit(1);
 
 		if (cartResult.length === 0) {
@@ -118,26 +155,32 @@ export class CartService {
 			.leftJoin(table.file, eq(table.productImage.fileId, table.file.id))
 			.where(eq(table.cartItem.cartId, cart.id));
 
-		const cartItems: CartItem[] = items.map(item => ({
-			id: item.id,
-			productId: item.productId,
-			quantity: item.quantity,
-			unitPrice: item.unitPrice,
-			product: {
-				id: item.product.id,
-				name: item.product.name,
-				slug: item.product.slug,
-				sku: item.product.sku,
-				price: item.product.price,
-				stockQuantity: item.product.stockQuantity,
-				trackInventory: item.product.trackInventory,
-				images: item.file ? [{
-					url: FileService.generatePublicUrl(item.file.bucketPath, item.file.isPublic),
-					altText: item.image?.altText || item.product.shortDescription,
-					isMain: item.image?.isMain || false
-				}] : []
-			}
-		}));
+		const cartItems: CartItem[] = items.map(item => {
+			const imageUrl = item.file && item.file.isPublic && item.file.entityType === 'product' && item.file.entityId === String(item.product.id)
+				? FileService.generatePublicUrl(item.file.bucketPath, true)
+				: null;
+
+			return {
+				id: item.id,
+				productId: item.productId,
+				quantity: item.quantity,
+				unitPrice: item.unitPrice,
+				product: {
+					id: item.product.id,
+					name: item.product.name,
+					slug: item.product.slug,
+					sku: item.product.sku,
+					price: item.product.price,
+					stockQuantity: item.product.stockQuantity,
+					trackInventory: item.product.trackInventory,
+					images: imageUrl ? [{
+						url: imageUrl,
+						altText: item.image?.altText || item.product.shortDescription,
+						isMain: item.image?.isMain || false
+					}] : []
+				}
+			};
+		});
 
 		const totalAmount = cartItems.reduce((sum, item) => 
 			sum + (parseFloat(item.unitPrice) * item.quantity), 0
@@ -159,12 +202,15 @@ export class CartService {
 	 * Add item to cart
 	 */
 	static async addItem(
-		productId: number, 
-		quantity: number, 
-		userId?: string, 
+		productId: number,
+		quantity: number,
+		userId?: string,
 		sessionId?: string,
-		affiliateLinkId?: number
+		affiliateAttribution?: ResolvedAffiliateAttribution
 	): Promise<void> {
+		assertPublicCatalogAvailable();
+		const identity = requireCartIdentity(userId, sessionId);
+
 		// Validate product exists and has stock
 		const productResult = await db
 			.select()
@@ -185,8 +231,12 @@ export class CartService {
 			throw new Error('Insufficient stock');
 		}
 
-		// Get or create cart
-		const cartId = await this.getOrCreateCart(userId, sessionId, affiliateLinkId);
+		const cartRecord = await this.getOrCreateCartRecord(
+			identity.kind === 'user' ? identity.userId : undefined,
+			identity.kind === 'guest' ? identity.sessionId : undefined,
+			affiliateAttribution?.affiliateLinkId
+		);
+		const cartId = cartRecord.id;
 
 		// Check if item already exists in cart
 		const existingItem = await db
@@ -230,6 +280,25 @@ export class CartService {
 			.update(table.cart)
 			.set({ updatedAt: new Date() })
 			.where(eq(table.cart.id, cartId));
+
+		if (affiliateAttribution && !cartRecord.created) {
+			await db
+				.update(table.cart)
+				.set({
+					affiliateLinkId: affiliateAttribution.affiliateLinkId,
+					updatedAt: new Date()
+				})
+				.where(and(eq(table.cart.id, cartId), isNull(table.cart.affiliateLinkId)));
+		}
+
+		if (affiliateAttribution) {
+			try {
+				await AffiliateAttributionService.markConsumed(affiliateAttribution.id);
+			} catch (error) {
+				// Attribution telemetry must never turn a persisted cart change into a client-visible failure.
+				console.error('Unable to mark affiliate attribution as consumed:', error);
+			}
+		}
 	}
 
 	/**
@@ -241,6 +310,8 @@ export class CartService {
 		userId?: string,
 		sessionId?: string
 	): Promise<void> {
+		const identity = requireCartIdentity(userId, sessionId);
+
 		// Verify cart item belongs to user/session
 		const cartItemResult = await db
 			.select({
@@ -260,8 +331,7 @@ export class CartService {
 
 		const { cartItem, cart, product } = cartItemResult[0];
 
-		// Verify ownership
-		if ((userId && cart.userId !== userId) || (sessionId && cart.sessionId !== sessionId)) {
+		if (!cartBelongsToIdentity(cart, identity)) {
 			throw new Error('Access denied');
 		}
 
@@ -302,22 +372,12 @@ export class CartService {
 	 * Clear all items from cart
 	 */
 	static async clearCart(userId?: string, sessionId?: string): Promise<void> {
-		if (!userId && !sessionId) {
-			throw new Error('Either userId or sessionId is required');
-		}
-
-		const conditions = [];
-		if (userId) {
-			conditions.push(eq(table.cart.userId, userId));
-		}
-		if (sessionId && !userId) {
-			conditions.push(eq(table.cart.sessionId, sessionId));
-		}
+		const identity = requireCartIdentity(userId, sessionId);
 
 		const cartResult = await db
 			.select()
 			.from(table.cart)
-			.where(and(...conditions))
+			.where(cartIdentityCondition(identity))
 			.limit(1);
 
 		if (cartResult.length === 0) {
@@ -340,47 +400,121 @@ export class CartService {
 	 * Transfer guest cart to user account
 	 */
 	static async transferGuestCart(sessionId: string, userId: string): Promise<void> {
-		// Find guest cart
-		const guestCart = await db
-			.select()
-			.from(table.cart)
-			.where(and(
-				eq(table.cart.sessionId, sessionId),
-				isNull(table.cart.userId)
-			))
-			.limit(1);
-
-		if (guestCart.length === 0) {
-			return; // No guest cart to transfer
+		if (!sessionId || !userId) {
+			throw new Error('Guest cart session and user ID are required');
 		}
 
-		// Check if user already has a cart
-		const userCart = await db
-			.select()
-			.from(table.cart)
-			.where(eq(table.cart.userId, userId))
-			.limit(1);
+		await db.transaction(async (tx) => {
+			const lockSubjects = [
+				cartAdvisoryLockSubject({ kind: 'guest', sessionId }),
+				cartAdvisoryLockSubject({ kind: 'user', userId })
+			].sort();
+			for (const lockSubject of lockSubjects) {
+				await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${lockSubject}))`);
+			}
+			const [candidateGuestCart] = await tx
+				.select({ id: table.cart.id })
+				.from(table.cart)
+				.where(and(eq(table.cart.sessionId, sessionId), isNull(table.cart.userId)))
+				.limit(1);
+			if (!candidateGuestCart) {
+				return;
+			}
 
-		if (userCart.length > 0) {
-			// Merge carts - move all items from guest cart to user cart
-			await db
-				.update(table.cartItem)
-				.set({ cartId: userCart[0].id })
-				.where(eq(table.cartItem.cartId, guestCart[0].id));
-
-			// Delete guest cart
-			await db.delete(table.cart).where(eq(table.cart.id, guestCart[0].id));
-		} else {
-			// Simply assign guest cart to user
-			await db
-				.update(table.cart)
-				.set({ 
-					userId,
-					sessionId: null,
-					updatedAt: new Date()
+			// Match checkout's cart-item then cart-row lock order before changing ownership.
+			const guestItems = await tx
+				.select({
+					id: table.cartItem.id,
+					productId: table.cartItem.productId,
+					quantity: table.cartItem.quantity
 				})
-				.where(eq(table.cart.id, guestCart[0].id));
-		}
+				.from(table.cartItem)
+				.where(eq(table.cartItem.cartId, candidateGuestCart.id))
+				.for('update');
+			const [guestCart] = await tx
+				.select()
+				.from(table.cart)
+				.where(and(eq(table.cart.id, candidateGuestCart.id), eq(table.cart.sessionId, sessionId), isNull(table.cart.userId)))
+				.for('update');
+			if (!guestCart) {
+				return;
+			}
+
+			const activeDrafts = await tx
+				.select({ id: table.checkoutDraft.id })
+				.from(table.checkoutDraft)
+				.where(and(
+					eq(table.checkoutDraft.sourceCartId, guestCart.id),
+					inArray(table.checkoutDraft.status, ['pending_session', 'checkout_created', 'quarantined', 'paid'])
+				))
+				.for('update');
+			if (activeDrafts.length > 0) {
+				throw new Error('Guest cart ownership cannot change while checkout is active');
+			}
+
+			const [candidateUserCart] = await tx
+				.select()
+				.from(table.cart)
+				.where(eq(table.cart.userId, userId))
+				.limit(1);
+
+			const userItems: Array<{ id: number; productId: number; quantity: number }> = candidateUserCart
+				? await tx
+					.select({
+						id: table.cartItem.id,
+						productId: table.cartItem.productId,
+						quantity: table.cartItem.quantity
+					})
+					.from(table.cartItem)
+					.where(eq(table.cartItem.cartId, candidateUserCart.id))
+					.for('update')
+				: [];
+			const [userCart] = candidateUserCart
+				? await tx
+					.select()
+					.from(table.cart)
+					.where(eq(table.cart.id, candidateUserCart.id))
+					.for('update')
+				: [];
+
+			if (userCart) {
+				const userItemByProduct = new Map<number, { id: number; productId: number; quantity: number }>(
+					userItems.map((item) => [item.productId, item])
+				);
+				for (const guestItem of guestItems) {
+					const matchingUserItem = userItemByProduct.get(guestItem.productId);
+					if (matchingUserItem) {
+						const mergedQuantity = matchingUserItem.quantity + guestItem.quantity;
+						if (!Number.isSafeInteger(mergedQuantity) || mergedQuantity <= 0) {
+							throw new Error('Merged cart quantity is invalid');
+						}
+						await tx
+							.update(table.cartItem)
+							.set({ quantity: mergedQuantity, updatedAt: new Date() })
+							.where(eq(table.cartItem.id, matchingUserItem.id));
+						await tx.delete(table.cartItem).where(eq(table.cartItem.id, guestItem.id));
+						matchingUserItem.quantity = mergedQuantity;
+					} else {
+						await tx
+							.update(table.cartItem)
+							.set({ cartId: userCart.id, updatedAt: new Date() })
+							.where(eq(table.cartItem.id, guestItem.id));
+						userItemByProduct.set(guestItem.productId, guestItem);
+					}
+				}
+				await tx
+					.update(table.cart)
+					.set({ updatedAt: new Date() })
+					.where(eq(table.cart.id, userCart.id));
+				await tx.delete(table.cart).where(eq(table.cart.id, guestCart.id));
+				return;
+			}
+
+			await tx
+				.update(table.cart)
+				.set({ userId, sessionId: null, updatedAt: new Date() })
+				.where(eq(table.cart.id, guestCart.id));
+		});
 	}
 }
 

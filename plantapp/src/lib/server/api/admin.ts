@@ -5,6 +5,7 @@ import { ProductService } from '../services/product';
 import { OrderService } from '../services/order';
 import { UserService } from '../services/user';
 import { ContentService } from '../services/content';
+import AffiliateService, { AffiliateNotFoundError } from '../services/affiliate';
 import { db } from '../db';
 import { product, order, user as userTable, affiliate } from '../db/schema';
 import { sql, eq } from 'drizzle-orm';
@@ -59,14 +60,10 @@ export const adminRouter = router({
 			};
 		} catch (error) {
 			console.error('Error getting dashboard stats:', error);
-			return {
-				totalRevenue: 0,
-				totalOrders: 0,
-				totalUsers: 0,
-				totalProducts: 0,
-				recentOrders: 0,
-				lowStockProducts: 0
-			};
+			throw new TRPCError({
+				code: 'INTERNAL_SERVER_ERROR',
+				message: 'Dashboard data is unavailable'
+			});
 		}
 	}),
 
@@ -78,9 +75,12 @@ export const adminRouter = router({
 		.query(async ({ input }) => {
 			try {
 				return await OrderService.getRecentOrders(input.limit);
-			} catch (error) {
-				console.error('Error getting recent orders:', error);
-				return [];
+		} catch (error) {
+			console.error('Error getting recent orders:', error);
+			throw new TRPCError({
+				code: 'INTERNAL_SERVER_ERROR',
+				message: 'Recent orders are unavailable'
+			});
 			}
 		}),
 
@@ -133,7 +133,7 @@ export const adminRouter = router({
 			z.object({
 				limit: z.number().min(1).max(100).default(50),
 				offset: z.number().min(0).default(0),
-				role: z.enum(['admin', 'customer', 'affiliate']).optional()
+				role: z.enum(['admin', 'customer', 'affiliate', 'instructor']).optional()
 			})
 		)
 		.query(async ({ input }) => {
@@ -185,22 +185,17 @@ export const adminRouter = router({
 				totalRevenue,
 				totalOrders,
 				averageOrderValue,
-				conversionRate: 2.5, // Placeholder
+				conversionRate: 0,
 				topProducts: [],
 				topCategories: [],
 				revenueByMonth: []
 			};
 		} catch (error) {
 			console.error('Error getting analytics:', error);
-			return {
-				totalRevenue: 0,
-				totalOrders: 0,
-				averageOrderValue: 0,
-				conversionRate: 0,
-				topProducts: [],
-				topCategories: [],
-				revenueByMonth: []
-			};
+			throw new TRPCError({
+				code: 'INTERNAL_SERVER_ERROR',
+				message: 'Analytics data is unavailable'
+			});
 		}
 	}),
 
@@ -307,42 +302,17 @@ export const adminRouter = router({
 		.input(z.object({ affiliateId: z.number() }))
 		.mutation(async ({ input }) => {
 			try {
-				// Get affiliate and user
-				const aff = await db
-					.select()
-					.from(affiliate)
-					.where(eq(affiliate.id, input.affiliateId));
+				await AffiliateService.approveAffiliate(input.affiliateId);
 
-				if (!aff || aff.length === 0) {
+				return { success: true, affiliateId: input.affiliateId };
+			} catch (error) {
+				if (error instanceof TRPCError) throw error;
+				if (error instanceof AffiliateNotFoundError) {
 					throw new TRPCError({
 						code: 'NOT_FOUND',
 						message: 'Affiliate not found'
 					});
 				}
-
-				const affRecord = aff[0];
-
-				// Update affiliate status
-				await db
-					.update(affiliate)
-					.set({ status: 'active', updatedAt: new Date() })
-					.where(eq(affiliate.id, input.affiliateId));
-
-				// Update user role to affiliate (but don't downgrade admins)
-				const [currentUser] = await db
-					.select({ role: userTable.role })
-					.from(userTable)
-					.where(eq(userTable.id, affRecord.userId));
-
-				if (currentUser && currentUser.role !== 'admin') {
-					await db
-						.update(userTable)
-						.set({ role: 'affiliate', updatedAt: new Date() })
-						.where(eq(userTable.id, affRecord.userId));
-				}
-
-				return { success: true, affiliateId: input.affiliateId };
-			} catch (error) {
 				console.error('Error approving affiliate:', error);
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
@@ -358,26 +328,17 @@ export const adminRouter = router({
 		.input(z.object({ affiliateId: z.number() }))
 		.mutation(async ({ input }) => {
 			try {
-				const aff = await db
-					.select()
-					.from(affiliate)
-					.where(eq(affiliate.id, input.affiliateId));
+				await AffiliateService.rejectAffiliate(input.affiliateId);
 
-				if (!aff || aff.length === 0) {
+				return { success: true, affiliateId: input.affiliateId };
+			} catch (error) {
+				if (error instanceof TRPCError) throw error;
+				if (error instanceof AffiliateNotFoundError) {
 					throw new TRPCError({
 						code: 'NOT_FOUND',
 						message: 'Affiliate not found'
 					});
 				}
-
-				// Update affiliate status
-				await db
-					.update(affiliate)
-					.set({ status: 'rejected', updatedAt: new Date() })
-					.where(eq(affiliate.id, input.affiliateId));
-
-				return { success: true, affiliateId: input.affiliateId };
-			} catch (error) {
 				console.error('Error rejecting affiliate:', error);
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',

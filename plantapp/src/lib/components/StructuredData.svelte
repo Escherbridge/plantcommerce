@@ -1,22 +1,19 @@
 <script lang="ts">
-	// Define props using $props() for Svelte 5 runes
 	const {
 		type = 'website',
 		data = {}
 	} = $props<{
 		type?: 'product' | 'website' | 'article' | 'breadcrumb' | 'organization';
-		data?: any;
+		data?: Record<string, unknown>;
 	}>();
 
-	// Generate the JSON-LD object
-	const jsonLd = $derived(() => {
+	const jsonLd = $derived.by(() => {
 		const base = {
+			...data,
 			'@context': 'https://schema.org',
-			'@type': getSchemaType(type),
-			...data
+			'@type': getSchemaType(type)
 		};
 
-		// Special handling for breadcrumbs
 		if (type === 'breadcrumb') {
 			return {
 				...base,
@@ -28,7 +25,6 @@
 		return base;
 	});
 
-	// Helper function to get proper schema type
 	function getSchemaType(t: string): string {
 		const map: Record<string, string> = {
 			product: 'Product',
@@ -37,12 +33,25 @@
 			breadcrumb: 'BreadcrumbList',
 			organization: 'Organization'
 		};
-		return map[t] || t.charAt(0).toUpperCase() + t.slice(1);
+		return map[t] || map.website;
 	}
 
-	// Create the JSON string for the script tag
-	const jsonString = $derived(JSON.stringify(jsonLd, null, 2));
+	function serializeJsonLd(value: unknown): string {
+		try {
+			return JSON.stringify(value)
+				.replaceAll('<', '\\u003c')
+				.replaceAll('>', '\\u003e')
+				.replaceAll('&', '\\u0026')
+				.replaceAll('\u2028', '\\u2028')
+				.replaceAll('\u2029', '\\u2029');
+		} catch {
+			return '{}';
+		}
+	}
+
+	const jsonString = $derived(serializeJsonLd(jsonLd));
 </script>
 
-<!-- Use {@html} to render the script tag -->
-{@html `<script type="application/ld+json">${jsonString}</script>`}
+<svelte:head>
+	<script type="application/ld+json">{jsonString}</script>
+</svelte:head>

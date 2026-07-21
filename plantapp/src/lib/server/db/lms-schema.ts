@@ -281,7 +281,8 @@ export const lmsQuizAnswer = pgTable('lms_quiz_answer', {
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 }, (table) => ({
 	attemptIdx: index('lms_quiz_answer_attempt_idx').on(table.attemptId),
-	questionIdx: index('lms_quiz_answer_question_idx').on(table.questionId)
+	questionIdx: index('lms_quiz_answer_question_idx').on(table.questionId),
+	attemptQuestionIdx: uniqueIndex('lms_quiz_answer_attempt_question_idx').on(table.attemptId, table.questionId)
 }));
 
 // 14. lmsCertificateTemplate

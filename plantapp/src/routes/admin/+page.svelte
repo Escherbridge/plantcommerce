@@ -3,26 +3,9 @@
 
 	let { data }: { data: PageData } = $props();
 
-	const stats = $derived(
-		data.stats || {
-			totalRevenue: 0,
-			totalOrders: 0,
-			totalUsers: 0,
-			totalProducts: 0,
-			recentOrders: 0,
-			lowStockProducts: 0
-		}
-	);
+	const stats = $derived(data.stats);
 
 	const recentOrders = $derived(data.recentOrders || []);
-
-	const placeholderActivity = [
-		{ description: 'New order #1042 placed by customer', time: '2 minutes ago', type: 'order' },
-		{ description: 'Product "Hydroponic Starter Kit" stock updated', time: '15 minutes ago', type: 'product' },
-		{ description: 'New user registration: jane@example.com', time: '1 hour ago', type: 'user' },
-		{ description: 'Affiliate commission processed for $24.50', time: '3 hours ago', type: 'affiliate' },
-		{ description: 'Order #1038 marked as shipped', time: '5 hours ago', type: 'order' }
-	];
 
 	function getStatusBadgeClass(status: string): string {
 		switch (status?.toLowerCase()) {
@@ -40,11 +23,18 @@
 <div class="platform-content">
 	<div class="platform-header">
 		<h1 class="platform-header__title">Admin Dashboard</h1>
-		<p class="platform-header__subtitle">Overview of your store</p>
+		<p class="platform-header__subtitle">Overview of recorded administrative data</p>
 	</div>
 
-	<!-- KPI Cards -->
-	<div class="admin-kpi-grid">
+	{#if data.error}
+		<div class="alert alert-error mb-6">
+			<span>{data.error}</span>
+		</div>
+	{/if}
+
+	{#if stats}
+		<!-- KPI Cards -->
+		<div class="admin-kpi-grid">
 		<div class="platform-stat">
 			<div class="admin-stat-icon admin-stat-icon--revenue">
 				<svg viewBox="0 0 24 24" class="w-5 h-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -52,7 +42,7 @@
 					<path d="M12 6v12M9 9h4.5a2.5 2.5 0 010 5H9"/>
 				</svg>
 			</div>
-			<span class="platform-stat__label">Revenue (Today)</span>
+			<span class="platform-stat__label">Recorded Revenue</span>
 			<span class="platform-stat__value" style="color: oklch(var(--su))">
 				${stats.totalRevenue.toLocaleString()}
 			</span>
@@ -66,7 +56,7 @@
 					<circle cx="18" cy="21" r="1"/>
 				</svg>
 			</div>
-			<span class="platform-stat__label">Orders (This Week)</span>
+			<span class="platform-stat__label">Recorded Orders</span>
 			<span class="platform-stat__value">{stats.totalOrders.toLocaleString()}</span>
 		</div>
 
@@ -77,7 +67,7 @@
 					<path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/>
 				</svg>
 			</div>
-			<span class="platform-stat__label">New Users (This Week)</span>
+			<span class="platform-stat__label">Registered Users</span>
 			<span class="platform-stat__value">{stats.totalUsers.toLocaleString()}</span>
 		</div>
 
@@ -88,10 +78,11 @@
 					<path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>
 				</svg>
 			</div>
-			<span class="platform-stat__label">Active Affiliates</span>
+			<span class="platform-stat__label">Catalog Records</span>
 			<span class="platform-stat__value">{stats.totalProducts.toLocaleString()}</span>
 		</div>
-	</div>
+		</div>
+	{/if}
 
 	<!-- Recent Orders -->
 	<div class="platform-card">
@@ -127,10 +118,10 @@
 					</tbody>
 				</table>
 			</div>
-		{:else}
+		{:else if !data.error}
 			<div class="platform-empty">
 				<p class="platform-empty__title">No Recent Orders</p>
-				<p class="platform-empty__text">Orders will appear here once customers begin placing them.</p>
+				<p class="platform-empty__text">No recorded orders are available for this view.</p>
 			</div>
 		{/if}
 	</div>
@@ -170,44 +161,13 @@
 		</div>
 	</div>
 
-	<!-- Activity Feed -->
+	<!-- Activity Feed Status -->
 	<div class="platform-card">
 		<div class="platform-card__header">
-			<h2 class="platform-card__title">Recent Activity</h2>
-			<a href="/admin/settings" class="admin-view-all-link">View Audit Log</a>
+			<h2 class="platform-card__title">Activity Feed Status</h2>
 		</div>
-		<div class="admin-activity-feed">
-			{#each placeholderActivity as activity}
-				<div class="admin-activity-item">
-					<div class="admin-activity-icon">
-						{#if activity.type === 'order'}
-							<svg viewBox="0 0 24 24" class="w-4 h-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-								<path d="M3 3h2l3 12h10l3-9H6"/>
-								<circle cx="8" cy="21" r="1"/>
-								<circle cx="18" cy="21" r="1"/>
-							</svg>
-						{:else if activity.type === 'product'}
-							<svg viewBox="0 0 24 24" class="w-4 h-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-								<path d="M3 7l9-4 9 4v10l-9 4-9-4V7z"/>
-							</svg>
-						{:else if activity.type === 'user'}
-							<svg viewBox="0 0 24 24" class="w-4 h-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-								<path d="M16 11a4 4 0 10-8 0 4 4 0 008 0z"/>
-								<path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/>
-							</svg>
-						{:else}
-							<svg viewBox="0 0 24 24" class="w-4 h-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-								<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>
-								<path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>
-							</svg>
-						{/if}
-					</div>
-					<div class="admin-activity-content">
-						<p class="admin-activity-desc">{activity.description}</p>
-						<span class="admin-activity-time">{activity.time}</span>
-					</div>
-				</div>
-			{/each}
+		<div class="platform-empty">
+			<p class="platform-empty__text">A durable administrative activity feed is not available. Static fixture events are intentionally not displayed as audit evidence.</p>
 		</div>
 	</div>
 </div>

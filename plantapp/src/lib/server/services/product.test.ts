@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ProductService } from './product';
+import { FileService } from './file';
 import { db } from '$lib/server/db';
 
 // Mock dependencies
@@ -104,7 +105,7 @@ describe('ProductService', () => {
             // Mock images fetch
             const imagesOrderByMock = vi.fn().mockResolvedValue([{
                 image: { id: 1, fileId: 'file1' },
-                file: { bucketPath: 'path/to/file', isPublic: true }
+				file: { bucketPath: 'path/to/file', isPublic: true, entityType: 'product', entityId: '1' }
             }]);
             const imagesWhereMock = vi.fn().mockReturnValue({ orderBy: imagesOrderByMock });
             const imagesJoinMock = vi.fn().mockReturnValue({ where: imagesWhereMock });
@@ -121,7 +122,7 @@ describe('ProductService', () => {
             expect(product?.images).toHaveLength(1);
         });
 
-        it('should return null if product not found', async () => {
+		it('should return null if product not found', async () => {
             const limitMock = vi.fn().mockResolvedValue([]);
             const whereMock = vi.fn().mockReturnValue({ limit: limitMock });
             const joinMock = vi.fn().mockReturnValue({ where: whereMock });
@@ -130,7 +131,39 @@ describe('ProductService', () => {
 
             const product = await ProductService.getProductById(999);
 
-            expect(product).toBeNull();
-        });
-    });
+			expect(product).toBeNull();
+		});
+
+		it('does not serialize a private product-file object key to public product consumers', async () => {
+			const productLimit = vi.fn().mockResolvedValue([{
+				product: { id: 1, name: 'Test Product', categoryId: 1 },
+				category: { id: 1, name: 'Test Category' }
+			}]);
+			const productWhere = vi.fn().mockReturnValue({ limit: productLimit });
+			const productJoin = vi.fn().mockReturnValue({ where: productWhere });
+			const productFrom = vi.fn().mockReturnValue({ innerJoin: productJoin });
+
+			const imagesOrderBy = vi.fn().mockResolvedValue([{
+				image: { id: 1, fileId: 'private-file', altText: null, sortOrder: 0, isMain: true },
+				file: {
+					bucketPath: 'users/private-file.jpg',
+					isPublic: false,
+					entityType: 'product',
+					entityId: '1'
+				}
+			}]);
+			const imagesWhere = vi.fn().mockReturnValue({ orderBy: imagesOrderBy });
+			const imagesJoin = vi.fn().mockReturnValue({ where: imagesWhere });
+			const imagesFrom = vi.fn().mockReturnValue({ leftJoin: imagesJoin });
+
+			(db.select as any)
+				.mockReturnValueOnce({ from: productFrom })
+				.mockReturnValueOnce({ from: imagesFrom });
+
+			const product = await ProductService.getProductById(1);
+
+			expect(product?.images).toEqual([]);
+			expect(FileService.generatePublicUrl).not.toHaveBeenCalled();
+		});
+	});
 });

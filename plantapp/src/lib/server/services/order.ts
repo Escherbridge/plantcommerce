@@ -1,38 +1,8 @@
 import { eq, desc, and, or, inArray } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
-import { CartService } from './cart';
-import AffiliateService from './affiliate';
 
 export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
-
-export interface CreateOrderParams {
-	userId?: string;
-	sessionId?: string;
-	customerEmail: string;
-	customerPhone?: string;
-	shippingAddress: {
-		firstName: string;
-		lastName: string;
-		address1: string;
-		address2?: string;
-		city: string;
-		state: string;
-		postalCode: string;
-		country: string;
-	};
-	billingAddress?: {
-		firstName: string;
-		lastName: string;
-		address1: string;
-		address2?: string;
-		city: string;
-		state: string;
-		postalCode: string;
-		country: string;
-	};
-	notes?: string;
-}
 
 export interface OrderSummary {
 	id: number;
@@ -73,102 +43,6 @@ export interface OrderDetails {
 }
 
 export class OrderService {
-	/**
-	 * Create order from cart
-	 */
-	static async createOrder(params: CreateOrderParams): Promise<OrderDetails> {
-		const { userId, sessionId, customerEmail, customerPhone, shippingAddress, billingAddress, notes } = params;
-
-		// Get cart
-		const cart = await CartService.getCart(userId, sessionId);
-		if (!cart || cart.items.length === 0) {
-			throw new Error('Cart is empty');
-		}
-
-		// Validate stock for all items
-		for (const item of cart.items) {
-			if (item.product.trackInventory && item.product.stockQuantity < item.quantity) {
-				throw new Error(`Insufficient stock for ${item.product.name}`);
-			}
-		}
-
-		// Generate order number
-		const orderNumber = await this.generateOrderNumber();
-
-		// TODO: Make this configurable via environment variable
-		const TAX_RATE = 0.08; // 8% sales tax
-
-		// Calculate totals
-		const subtotalAmount = cart.totalAmount;
-		const taxAmount = subtotalAmount * TAX_RATE; // Implement tax calculation
-		const shippingAmount = 5.00; // TODO: Make this configurable, e.g., via env var or a more complex shipping logic
-		const discountAmount = 0; // TODO: Implement discount/coupon code logic
-		const totalAmount = subtotalAmount + taxAmount + shippingAmount - discountAmount;
-
-		// Create order
-		const newOrder: typeof table.order.$inferInsert = {
-			orderNumber,
-			userId: userId || null,
-			affiliateLinkId: cart.affiliateLinkId,
-			status: 'pending',
-			totalAmount: totalAmount.toFixed(2),
-			subtotalAmount: subtotalAmount.toFixed(2),
-			taxAmount: taxAmount.toFixed(2),
-			shippingAmount: shippingAmount.toFixed(2),
-			discountAmount: discountAmount.toFixed(2),
-			affiliateCommission: '0.00', // Will be calculated if there's affiliate attribution
-			shippingAddress: JSON.stringify(shippingAddress),
-			billingAddress: JSON.stringify(billingAddress || shippingAddress),
-			customerEmail,
-			customerPhone,
-			notes
-		};
-
-		const [order] = await db.insert(table.order).values(newOrder).returning();
-
-		// Create order items
-		const orderItems: Array<typeof table.orderItem.$inferInsert> = cart.items.map(item => ({
-			orderId: order.id,
-			productId: item.productId,
-			productName: item.product.name,
-			productSku: item.product.sku || `PROD-${item.productId}`,
-			quantity: item.quantity,
-			unitPrice: item.unitPrice,
-			totalPrice: (parseFloat(item.unitPrice) * item.quantity).toFixed(2)
-		}));
-
-		await db.insert(table.orderItem).values(orderItems);
-
-		// Update product stock quantities
-		for (const item of cart.items) {
-			if (item.product.trackInventory) {
-				await db
-					.update(table.product)
-					.set({
-						stockQuantity: item.product.stockQuantity - item.quantity,
-						updatedAt: new Date()
-					})
-					.where(eq(table.product.id, item.productId));
-			}
-		}
-
-		// Process affiliate commission if applicable
-		if (cart.affiliateLinkId) {
-			try {
-				await AffiliateService.processConversion(order.id);
-			} catch (error) {
-				console.error('Failed to process affiliate conversion:', error);
-				// Don't fail the order creation if affiliate processing fails
-			}
-		}
-
-		// Clear cart
-		await CartService.clearCart(userId, sessionId);
-
-		// Return order details
-		return await this.getOrderById(order.id);
-	}
-
 	/**
 	 * Get order by ID
 	 */
@@ -236,6 +110,19 @@ export class OrderService {
 		}
 
 		return await this.getOrderById(orderResult[0].id);
+	}
+
+	static async getOrderByNumberForUser(
+		orderNumber: string,
+		userId: string,
+		isAdmin: boolean = false
+	): Promise<OrderDetails | null> {
+		const order = await this.getOrderByNumber(orderNumber);
+		if (!order || (!isAdmin && order.userId !== userId)) {
+			return null;
+		}
+
+		return order;
 	}
 
 	/**
@@ -378,44 +265,7 @@ export class OrderService {
 	}
 
 	/**
-	 * Cancel order
-	 */
-	static async cancelOrder(orderId: number): Promise<void> {
-		const order = await this.getOrderById(orderId);
-		
-		if (order.status === 'cancelled' || order.status === 'refunded') {
-			throw new Error('Order is already cancelled or refunded');
-		}
-
-		if (order.status === 'shipped' || order.status === 'delivered') {
-			throw new Error('Cannot cancel shipped or delivered order');
-		}
-
-		// Restore stock quantities
-		for (const item of order.items) {
-			const productResult = await db
-				.select()
-				.from(table.product)
-				.where(eq(table.product.id, item.productId))
-				.limit(1);
-
-			if (productResult.length > 0 && productResult[0].trackInventory) {
-				await db
-					.update(table.product)
-					.set({
-						stockQuantity: productResult[0].stockQuantity + item.quantity,
-						updatedAt: new Date()
-					})
-					.where(eq(table.product.id, item.productId));
-			}
-		}
-
-		// Update order status
-		await this.updateOrderStatus(orderId, 'cancelled');
-	}
-
-	/**
-	 * Get order by Stripe session ID (for idempotency checks and success page)
+	 * Get order by Stripe session ID for internal idempotency checks.
 	 */
 	static async getOrderByStripeSessionId(stripeSessionId: string): Promise<OrderDetails | null> {
 		const orderResult = await db
@@ -431,149 +281,17 @@ export class OrderService {
 		return await this.getOrderById(orderResult[0].id);
 	}
 
-	/**
-	 * Create order from Stripe Checkout webhook data
-	 */
-	static async createOrderFromStripe(params: {
-		stripeSessionId: string;
-		stripePaymentIntentId?: string;
-		cartId: number;
-		userId?: string | null;
-		sessionId?: string | null;
-		customerEmail: string;
-		shippingAddress?: {
-			firstName: string;
-			lastName: string;
-			address1: string;
-			address2?: string;
-			city: string;
-			state: string;
-			postalCode: string;
-			country: string;
-		};
-	}): Promise<OrderDetails> {
-		const {
-			stripeSessionId,
-			stripePaymentIntentId,
-			cartId,
-			userId,
-			sessionId,
-			customerEmail,
-			shippingAddress
-		} = params;
-
-		// Idempotency: check if order already exists for this Stripe session
-		const existing = await this.getOrderByStripeSessionId(stripeSessionId);
-		if (existing) {
-			return existing;
+	static async getOrderByStripeSessionIdForUser(
+		stripeSessionId: string,
+		userId: string,
+		isAdmin: boolean = false
+	): Promise<OrderDetails | null> {
+		const order = await this.getOrderByStripeSessionId(stripeSessionId);
+		if (!order || (!isAdmin && order.userId !== userId)) {
+			return null;
 		}
 
-		// Get cart
-		const cart = await CartService.getCart(userId || undefined, sessionId || undefined);
-		if (!cart || cart.items.length === 0) {
-			throw new Error('Cart is empty or not found');
-		}
-
-		// Validate stock for all items
-		for (const item of cart.items) {
-			if (item.product.trackInventory && item.product.stockQuantity < item.quantity) {
-				throw new Error(`Insufficient stock for ${item.product.name}`);
-			}
-		}
-
-		// Generate order number
-		const orderNumber = await this.generateOrderNumber();
-
-		const TAX_RATE = 0.08;
-		const subtotalAmount = cart.totalAmount;
-		const taxAmount = subtotalAmount * TAX_RATE;
-		const shippingAmount = 5.0;
-		const discountAmount = 0;
-		const totalAmount = subtotalAmount + taxAmount + shippingAmount - discountAmount;
-
-		// Create order with confirmed status (payment already succeeded via Stripe)
-		const newOrder: typeof table.order.$inferInsert = {
-			orderNumber,
-			userId: userId || null,
-			affiliateLinkId: cart.affiliateLinkId,
-			status: 'confirmed', // Payment verified by Stripe
-			totalAmount: totalAmount.toFixed(2),
-			subtotalAmount: subtotalAmount.toFixed(2),
-			taxAmount: taxAmount.toFixed(2),
-			shippingAmount: shippingAmount.toFixed(2),
-			discountAmount: discountAmount.toFixed(2),
-			affiliateCommission: '0.00',
-			shippingAddress: shippingAddress ? JSON.stringify(shippingAddress) : null,
-			billingAddress: shippingAddress ? JSON.stringify(shippingAddress) : null,
-			customerEmail,
-			stripeSessionId,
-			stripePaymentIntentId: stripePaymentIntentId || null
-		};
-
-		const [order] = await db.insert(table.order).values(newOrder).returning();
-
-		// Create order items
-		const orderItems: Array<typeof table.orderItem.$inferInsert> = cart.items.map((item: any) => ({
-			orderId: order.id,
-			productId: item.productId,
-			productName: item.product.name,
-			productSku: item.product.sku || `PROD-${item.productId}`,
-			quantity: item.quantity,
-			unitPrice: item.unitPrice,
-			totalPrice: (parseFloat(item.unitPrice) * item.quantity).toFixed(2)
-		}));
-
-		await db.insert(table.orderItem).values(orderItems);
-
-		// Update product stock quantities
-		for (const item of cart.items) {
-			if (item.product.trackInventory) {
-				await db
-					.update(table.product)
-					.set({
-						stockQuantity: item.product.stockQuantity - item.quantity,
-						updatedAt: new Date()
-					})
-					.where(eq(table.product.id, item.productId));
-			}
-		}
-
-		// Process affiliate commission if applicable
-		if (cart.affiliateLinkId) {
-			try {
-				await AffiliateService.processConversion(order.id);
-			} catch (error) {
-				console.error('Failed to process affiliate conversion:', error);
-			}
-		}
-
-		// Clear cart
-		await CartService.clearCart(userId || undefined, sessionId || undefined);
-
-		return await this.getOrderById(order.id);
-	}
-
-	/**
-	 * Generate unique order number
-	 */
-	private static async generateOrderNumber(): Promise<string> {
-		const timestamp = Date.now().toString().slice(-8);
-		const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-		const orderNumber = `ORD-${timestamp}-${random}`;
-
-		// Ensure uniqueness
-		const existing = await db
-			.select()
-			.from(table.order)
-			.where(eq(table.order.orderNumber, orderNumber))
-			.limit(1);
-
-		if (existing.length > 0) {
-			// Recursive call if collision (very rare)
-			return await this.generateOrderNumber();
-		}
-
-		return orderNumber;
+		return order;
 	}
 }
 

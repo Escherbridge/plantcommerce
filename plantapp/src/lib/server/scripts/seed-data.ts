@@ -1,4 +1,5 @@
 import { eq } from 'drizzle-orm';
+import { hash } from '@node-rs/argon2';
 import { db } from '../db';
 import * as table from '../db/schema';
 
@@ -78,12 +79,24 @@ export async function createDefaultAdmin() {
 			return;
 		}
 
-		// Create default admin (password should be changed immediately)
+		const password = process.env.AEVANI_DEV_ADMIN_PASSWORD;
+		if (!password || password.length < 16) {
+			throw new Error('Set a unique AEVANI_DEV_ADMIN_PASSWORD with at least 16 characters before seeding an admin.');
+		}
+
+		const passwordHash = await hash(password, {
+			memoryCost: 19456,
+			timeCost: 2,
+			outputLen: 32,
+			parallelism: 1
+		});
+
+		// Create a local development admin using the caller-supplied password.
 		const adminUser: typeof table.user.$inferInsert = {
 			id: crypto.randomUUID(),
 			username: 'admin',
 			email: 'admin@aevani.local',
-			passwordHash: '$argon2id$v=19$m=19456,t=2,p=1$placeholder', // Placeholder - use proper hashing
+			passwordHash,
 			firstName: 'Plant',
 			lastName: 'Admin',
 			role: 'admin',
@@ -91,8 +104,7 @@ export async function createDefaultAdmin() {
 		};
 
 		await db.insert(table.user).values(adminUser);
-		console.log('✅ Created default admin user (username: admin, email: admin@aevani.local)');
-		console.log('⚠️  IMPORTANT: Change the default password immediately!');
+		console.log('Created development admin from the caller-supplied environment password');
 
 	} catch (error) {
 		console.error('❌ Error creating admin user:', error);

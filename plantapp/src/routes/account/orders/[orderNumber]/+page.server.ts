@@ -5,27 +5,27 @@ import OrderService from '$lib/server/services/order';
 export const load: PageServerLoad = async ({ params, locals }) => {
     const { orderNumber } = params;
 
+    if (!locals.user) {
+        throw error(401, 'Authentication required');
+    }
+
+    let order: Awaited<ReturnType<typeof OrderService.getOrderByNumberForUser>>;
     try {
-        const order = await OrderService.getOrderByNumber(orderNumber);
-
-        if (!order) {
-            throw error(404, 'Order not found');
-        }
-
-        // Security check:
-        // If user is logged in, ensure they own the order.
-        // If user is guest (not logged in), we currently allow viewing by order number (MVP).
-        // TODO: Implement stricter security for guest orders (e.g., magic link or session check).
-        if (locals.user && order.userId && order.userId !== locals.user.id) {
-            throw error(403, 'You do not have permission to view this order');
-        }
-
-        return {
-            order
-        };
+        order = await OrderService.getOrderByNumberForUser(
+            orderNumber,
+            locals.user.id,
+            locals.user.role === 'admin'
+        );
     } catch (err) {
-        if (err instanceof Response) throw err; // Handle sveltekit errors
         console.error('Error loading order:', err);
         throw error(500, 'Failed to load order details');
     }
+
+    if (!order) {
+        throw error(404, 'Order not found');
+    }
+
+    return {
+        order
+    };
 };

@@ -1,49 +1,18 @@
 import { redirect } from '@sveltejs/kit';
-import { dev } from '$app/environment';
 import type { PageServerLoad } from './$types';
-import AffiliateService from '$lib/server/services/affiliate';
+import { AffiliateAttributionService } from '$lib/server/affiliateAttribution';
 
-export const load: PageServerLoad = async ({ params, request, getClientAddress, cookies }) => {
+export const load: PageServerLoad = async ({ params, cookies, locals }) => {
 	const { linkCode } = params;
-
-	// Get affiliate link
-	const affiliateLink = await AffiliateService.getLinkByCode(linkCode);
+	const affiliateLink = await AffiliateAttributionService.recordRedirect(
+		linkCode,
+		cookies,
+		locals.user?.id
+	);
 
 	if (!affiliateLink) {
-		// Redirect to homepage if affiliate link not found
 		throw redirect(302, '/');
 	}
 
-	// Extract tracking data from request
-	const userAgent = request.headers.get('user-agent') || '';
-	const referer = request.headers.get('referer') || '';
-	const ipAddress = getClientAddress();
-	const sessionId = cookies.get('session-id') || crypto.randomUUID();
-
-	const cookieOpts = {
-		path: '/',
-		maxAge: 60 * 60 * 24 * 30, // 30 days
-		httpOnly: true,
-		secure: !dev,
-		sameSite: 'lax' as const
-	};
-
-	// Set session cookie if not exists
-	if (!cookies.get('session-id')) {
-		cookies.set('session-id', sessionId, cookieOpts);
-	}
-
-	// Track the click (fire and forget)
-	AffiliateService.trackClick(linkCode, {
-		ipAddress,
-		userAgent,
-		referer,
-		sessionId
-	}).catch(console.error);
-
-	// Set affiliate attribution cookie for potential future purchase (30-day window)
-	cookies.set('affiliate-link', String(affiliateLink.id), cookieOpts);
-
-	// Redirect to the original product page
 	throw redirect(302, affiliateLink.originalUrl);
 };

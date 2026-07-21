@@ -1,82 +1,76 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { publicProcedure, protectedProcedure, router } from './trpc';
+import { publicProcedure, protectedProcedure, router, type Context } from './trpc';
 import { CartService } from '../services/cart';
+import {
+	deleteGuestCartSessionCookie,
+	getOrCreateGuestCartSessionId,
+	readGuestCartSessionId
+} from '../guestCart';
+import {
+	AffiliateAttributionService,
+	clearAffiliateAttributionCookie,
+	clearLegacyAffiliateCookie
+} from '../affiliateAttribution';
+import { assertPublicCatalogAvailable, getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
+
+function getCartIdentity(ctx: Pick<Context, 'user' | 'event'>): {
+	userId?: string;
+	sessionId?: string;
+} {
+	if (ctx.user) {
+		return { userId: ctx.user.id };
+	}
+
+	return { sessionId: getOrCreateGuestCartSessionId(ctx.event.cookies) };
+}
 
 export const cartRouter = router({
-	/**
-	 * Get cart contents (public for guest carts)
-	 */
-	getCart: publicProcedure
-		.input(
-			z.object({
-				sessionId: z.string().optional()
-			})
-		)
-		.query(async ({ ctx, input }) => {
-			try {
-				const userId = ctx.user?.id;
-				const sessionId = input.sessionId;
-				
-				if (!userId && !sessionId) {
-					return null; // Empty cart
-				}
-
-				const cart = await CartService.getCart(userId, sessionId);
-				return cart;
-			} catch (error) {
-				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Failed to retrieve cart'
-				});
+	getCart: publicProcedure.query(async ({ ctx }) => {
+		try {
+			if (getPublicCatalogAvailability().status !== 'available') {
+				return null;
 			}
-		}),
+			const identity = getCartIdentity(ctx);
+			return await CartService.getCart(identity.userId, identity.sessionId);
+		} catch {
+			throw new TRPCError({
+				code: 'INTERNAL_SERVER_ERROR',
+				message: 'Failed to retrieve cart'
+			});
+		}
+	}),
 
-	/**
-	 * Add item to cart (public for guest carts)
-	 * Automatically reads the affiliate-link cookie set by /aff/[linkCode] redirect
-	 */
 	addItem: publicProcedure
 		.input(
 			z.object({
 				productId: z.number(),
-				quantity: z.number().min(1),
-				sessionId: z.string().optional(),
-				affiliateLinkId: z.number().optional()
+				quantity: z.number().min(1)
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
 			try {
-				const userId = ctx.user?.id;
-				const { productId, quantity, sessionId } = input;
-
-				if (!userId && !sessionId) {
-					throw new TRPCError({
-						code: 'BAD_REQUEST',
-						message: 'Session ID required for guest checkout'
-					});
-				}
-
-				// Read affiliate attribution from cookie (set by /aff/[linkCode] redirect)
-				// Client-provided affiliateLinkId takes priority, then cookie
-				let affiliateLinkId = input.affiliateLinkId;
-				if (!affiliateLinkId) {
-					const cookieValue = ctx.event.cookies.get('affiliate-link');
-					if (cookieValue) {
-						const parsed = parseInt(cookieValue, 10);
-						if (!isNaN(parsed) && parsed > 0) {
-							affiliateLinkId = parsed;
-						}
-					}
+				assertPublicCatalogAvailable();
+				const identity = getCartIdentity(ctx);
+				clearLegacyAffiliateCookie(ctx.event.cookies);
+				let attribution = null;
+				try {
+					attribution = await AffiliateAttributionService.resolveForCart(ctx.event.cookies, ctx.user?.id);
+				} catch (error) {
+					// Cart availability takes precedence over optional attribution telemetry.
+					console.error('Unable to resolve affiliate attribution for cart:', error);
 				}
 
 				await CartService.addItem(
-					productId,
-					quantity,
-					userId,
-					sessionId,
-					affiliateLinkId
+					input.productId,
+					input.quantity,
+					identity.userId,
+					identity.sessionId,
+					attribution ?? undefined
 				);
+				if (attribution) {
+					clearAffiliateAttributionCookie(ctx.event.cookies);
+				}
 
 				return { success: true };
 			} catch (error) {
@@ -87,109 +81,76 @@ export const cartRouter = router({
 			}
 		}),
 
-	/**
-	 * Update item quantity in cart (public for guest carts)
-	 */
 	updateItemQuantity: publicProcedure
 		.input(
 			z.object({
 				cartItemId: z.number(),
-				quantity: z.number().min(0), // 0 to remove
-				sessionId: z.string().optional()
+				quantity: z.number().min(0)
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
 			try {
-				const userId = ctx.user?.id;
-				const { cartItemId, quantity, sessionId } = input;
-
+				const identity = getCartIdentity(ctx);
 				await CartService.updateItemQuantity(
-					cartItemId,
-					quantity,
-					userId,
-					sessionId
+					input.cartItemId,
+					input.quantity,
+					identity.userId,
+					identity.sessionId
 				);
-
 				return { success: true };
 			} catch (error) {
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
-					message: error instanceof Error ? error.message : 'Failed to update item quantity'
+					message: error instanceof Error ? error.message : 'Failed to update cart'
 				});
 			}
 		}),
 
-	/**
-	 * Remove item from cart (public for guest carts)
-	 */
 	removeItem: publicProcedure
-		.input(
-			z.object({
-				cartItemId: z.number(),
-				sessionId: z.string().optional()
-			})
-		)
+		.input(z.object({ cartItemId: z.number() }))
 		.mutation(async ({ ctx, input }) => {
 			try {
-				const userId = ctx.user?.id;
-				const { cartItemId, sessionId } = input;
-
-				await CartService.removeItem(cartItemId, userId, sessionId);
-
+				const identity = getCartIdentity(ctx);
+				await CartService.removeItem(input.cartItemId, identity.userId, identity.sessionId);
 				return { success: true };
 			} catch (error) {
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
-					message: error instanceof Error ? error.message : 'Failed to remove item from cart'
+					message: error instanceof Error ? error.message : 'Failed to remove item'
 				});
 			}
 		}),
 
-	/**
-	 * Clear cart (public for guest carts)
-	 */
-	clearCart: publicProcedure
-		.input(
-			z.object({
-				sessionId: z.string().optional()
-			})
-		)
-		.mutation(async ({ ctx, input }) => {
-			try {
-				const userId = ctx.user?.id;
-				const { sessionId } = input;
+	clearCart: publicProcedure.mutation(async ({ ctx }) => {
+		try {
+			const identity = getCartIdentity(ctx);
+			await CartService.clearCart(identity.userId, identity.sessionId);
+			return { success: true };
+		} catch {
+			throw new TRPCError({
+				code: 'INTERNAL_SERVER_ERROR',
+				message: 'Failed to clear cart'
+			});
+		}
+	}),
 
-				await CartService.clearCart(userId, sessionId);
-
+	transferGuestCart: protectedProcedure.mutation(async ({ ctx }) => {
+		try {
+			const sessionId = readGuestCartSessionId(ctx.event.cookies);
+			if (!sessionId) {
 				return { success: true };
-			} catch (error) {
-				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Failed to clear cart'
-				});
 			}
-		}),
 
-	/**
-	 * Transfer guest cart to user account (protected)
-	 */
-	transferGuestCart: protectedProcedure
-		.input(
-			z.object({
-				sessionId: z.string()
-			})
-		)
-		.mutation(async ({ ctx, input }) => {
-			try {
-				await CartService.transferGuestCart(input.sessionId, ctx.user.id);
-				return { success: true };
-			} catch (error) {
-				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Failed to transfer cart'
-				});
-			}
-		})
+			await CartService.transferGuestCart(sessionId, ctx.user.id);
+			deleteGuestCartSessionCookie(ctx.event.cookies);
+			return { success: true };
+		} catch {
+			throw new TRPCError({
+				code: 'INTERNAL_SERVER_ERROR',
+				message: 'Failed to transfer cart'
+			});
+		}
+	})
 });
 
 export type CartRouter = typeof cartRouter;

@@ -1,11 +1,12 @@
 import type { Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import * as auth from '$lib/server/auth';
+import { readGuestCartSessionId } from '$lib/server/guestCart';
 import { handleError } from '$lib/utils/errorHandler';
 
 const handleAuth: Handle = async ({ event, resolve }) => {
-    // Read guest cart session ID from cookie (for guest checkout)
-    event.locals.guestSessionId = event.cookies.get('aevani_guest_session') || null;
+	// Guest cart identities are server-issued and never accepted from request payloads.
+	event.locals.guestCartSessionId = readGuestCartSessionId(event.cookies);
 
     const sessionToken = event.cookies.get(auth.sessionCookieName);
     if (!sessionToken) {
@@ -33,24 +34,22 @@ const handleAuth: Handle = async ({ event, resolve }) => {
     return resolve(event);
 };
 
-const handleCSP: Handle = async ({ event, resolve }) => {
-	const response = await resolve(event);
-	// In a production environment, you should use a more restrictive CSP.
-	// For example, instead of 'unsafe-inline', you could use a nonce-based approach.
-	const csp = [
-		"default-src 'self'",
-		"script-src 'self' 'unsafe-inline'",
-		"style-src 'self' 'unsafe-inline'",
-		"img-src 'self' data: https:",
-		"font-src 'self'",
-		"object-src 'none'",
-		"base-uri 'self'",
-		"form-action 'self'",
-		"frame-ancestors 'none'",
-	].join('; ');
+const securityHeaders = {
+	'Permissions-Policy': 'camera=(), geolocation=(), microphone=()',
+	'Referrer-Policy': 'strict-origin-when-cross-origin',
+	'X-Content-Type-Options': 'nosniff',
+	'X-Frame-Options': 'DENY'
+} as const;
 
-	response.headers.set('Content-Security-Policy', csp);
+const handleSecurityHeaders: Handle = async ({ event, resolve }) => {
+	const response = await resolve(event);
+	for (const [name, value] of Object.entries(securityHeaders)) {
+		response.headers.set(name, value);
+	}
+	if (event.url.protocol === 'https:') {
+		response.headers.set('Strict-Transport-Security', 'max-age=31536000');
+	}
 	return response;
 };
 
-export const handle: Handle = sequence(handleAuth, handleCSP);
+export const handle: Handle = sequence(handleAuth, handleSecurityHeaders);

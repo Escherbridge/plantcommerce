@@ -205,7 +205,7 @@
 					<div class="space-y-4 rounded-2xl bg-base-200 p-6">
 						<h3 class="text-lg font-bold uppercase tracking-wide text-primary">Key Features</h3>
 						<ul class="grid gap-3">
-							{#each ['Premium quality sustainable materials', 'Eco-friendly production process', 'Expert support & 30-day guarantee'] as feature}
+							{#each ['Product details require supplier verification', 'Claim evidence is reviewed before publication', 'Support and warranty terms are product-specific when available'] as feature}
 								<li class="flex items-start gap-3">
 									<div class="mt-1 rounded-full bg-info p-1">
 										<svg class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">

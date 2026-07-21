@@ -9,9 +9,10 @@
 	import { browser } from '$app/environment';
 	import { cart } from '$lib/stores/cart';
 	import SEO from '$lib/components/SEO.svelte';
+	import { publicSite, publicSiteUrl } from '$lib/config/site';
 
 	const currentUrl = $derived($page.url.pathname);
-	const absoluteUrl = $derived(`https://plantcommerce.com${currentUrl}`);
+	const absoluteUrl = $derived(publicSiteUrl(currentUrl));
 
 	let { children, data } = $props();
 	const user = $derived(data.user);
@@ -55,14 +56,9 @@
 	// Mobile navigation structure
 	const mobileNavigation = [
 		{
-			label: 'Shop',
+			label: 'Catalog',
 			href: '/products',
-			children: [
-				{ label: 'Hydroponics', href: '/products/hydroponics' },
-				{ label: 'Aquaponics', href: '/products/aquaponics' },
-				{ label: 'Silvopasture', href: '/products/silvopasture' },
-				{ label: 'Agroforestry', href: '/products/agroforestry' }
-			]
+			children: [{ label: 'Catalog Status', href: '/products' }]
 		},
 		{
 			label: 'Learn',
@@ -75,33 +71,31 @@
 			]
 		},
 		{
-			label: 'Affiliate',
-			href: '/affiliate',
+			label: 'Affiliate Status',
+			href: '/affiliate/terms',
 			children: [
-				{ label: 'Join Program', href: '/affiliate/join' },
-				{ label: 'Dashboard', href: '/affiliate/dashboard' },
-				{ label: 'Earnings', href: '/affiliate/earnings' },
-				{ label: 'Links', href: '/affiliate/links' }
+				{ label: 'Program Status', href: '/affiliate/terms' },
+				{ label: 'Apply for Review', href: '/affiliate/join' }
 			]
 		},
 		{
 			label: 'Support',
 			href: '/support',
 			children: [
+				{ label: 'Support Overview', href: '/support' },
 				{ label: 'Contact', href: '/contact' },
 				{ label: 'Help Center', href: '/help' },
 				{ label: 'Shipping', href: '/shipping' },
-				{ label: 'Returns', href: '/returns' }
+				{ label: 'Returns', href: '/returns' },
+				{ label: 'Warranty', href: '/warranty' },
+				{ label: 'Size Guide', href: '/size-guide' }
 			]
 		}
 	];
 
 	const footerLinks = {
 		shop: [
-			{ label: 'Hydroponics', href: '/products/hydroponics' },
-			{ label: 'Aquaponics', href: '/products/aquaponics' },
-			{ label: 'Silvopasture', href: '/products/silvopasture' },
-			{ label: 'Agroforestry', href: '/products/agroforestry' }
+			{ label: 'Catalog Status', href: '/products' }
 		],
 		learn: [
 			{ label: 'Guides', href: '/guides' },
@@ -116,9 +110,11 @@
 			{ label: 'Press', href: '/press' }
 		],
 		support: [
+			{ label: 'Support', href: '/support' },
 			{ label: 'Help Center', href: '/help' },
 			{ label: 'Shipping', href: '/shipping' },
 			{ label: 'Returns', href: '/returns' },
+			{ label: 'Warranty', href: '/warranty' },
 			{ label: 'Size Guide', href: '/size-guide' }
 		]
 	};
@@ -130,9 +126,8 @@
 
 <svelte:head>
 	<SEO
-		title="PlantCommerce | Sustainable Growing Tools & Supplies"
-		description="Discover sustainable growing tools, hydroponic systems, and educational resources for modern growers."
-		image="/images/AI-MockAssets/MAINHERO.png"
+		title={publicSite.defaultTitle}
+		description={publicSite.description}
 		url={absoluteUrl}
 	/>
 </svelte:head>
@@ -148,7 +143,7 @@
 
 	<!-- Main content — scales/blurs when drawer is open -->
 	<div class="layout-content" class:drawer-active={drawerOpen}>
-		<MarqueeBar messages={["Free shipping on orders over $75", "New: Polyculture Starter Kits", "Join 10,000+ sustainable growers"]} />
+		<MarqueeBar messages={["Growing tools and learning for resilient systems", "Explore Aevani resources"]} />
 		<Header />
 
 		<main class="main-content">
@@ -188,9 +183,9 @@
 					</nav>
 
 					<div class="user-bottom-bar__actions">
-						<a href="/affiliate/join" class="user-bottom-bar__affiliate">
+						<a href="/affiliate/terms" class="user-bottom-bar__affiliate">
 							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.8-6.3-3.3-6.3 3.3 1.2-6.8-5-4.9 7-1z"/></svg>
-							Become an Affiliate
+							Affiliate Status
 						</a>
 					</div>
 				</div>
@@ -215,20 +210,14 @@
 					<!-- Brand & newsletter -->
 					<div class="footer-brand-col">
 						<p class="footer-tagline">
-							Sustainable hydroponics, aquaponics, and agroforestry products to help you grow
-							better.
+							Learning resources and catalog verification for sustainable growing.
 						</p>
 
 						<div class="newsletter-block">
-							<h4 class="newsletter-label">Join our community</h4>
-							<div class="newsletter-form">
-								<input
-									type="email"
-									placeholder="your@email.com"
-									class="newsletter-input"
-								/>
-								<button class="newsletter-btn">Subscribe</button>
-							</div>
+							<h4 class="newsletter-label">Newsletter updates</h4>
+							<p class="newsletter-unavailable">
+								Sign-up is not available yet. Review <a href="/support">support status</a> for updates.
+							</p>
 						</div>
 
 						<!-- Social icons (inline SVG) -->
@@ -384,8 +373,9 @@
 
 			<!-- Newsletter -->
 			<div class="drawer-newsletter">
-				<input type="email" placeholder="your@email.com" class="drawer-email-input" />
-				<button class="drawer-subscribe-btn">Subscribe</button>
+				<p class="drawer-newsletter-unavailable">
+					Newsletter sign-up is currently unavailable. Review <a href="/support" onclick={closeDrawer}>support status</a>.
+				</p>
 			</div>
 
 			<!-- Social -->
@@ -560,51 +550,18 @@
 		color: oklch(var(--nc) / 0.5);
 	}
 
-	.newsletter-form {
-		display: flex;
-		gap: 0.75rem;
+	.newsletter-unavailable {
+		font-family: var(--font-sans, 'Inter', sans-serif);
+		font-size: 0.875rem;
+		color: oklch(var(--nc) / 0.7);
+		line-height: 1.5;
 		max-width: 22rem;
 	}
 
-	.newsletter-input {
-		flex: 1;
-		background: transparent;
-		border: none;
-		border-bottom: 2px solid oklch(var(--nc) / 0.3);
-		color: oklch(var(--nc));
-		font-family: var(--font-sans, 'Inter', sans-serif);
-		font-size: 0.875rem;
-		padding: 0.5rem 0;
-		outline: none;
-		transition: border-color 0.2s;
-	}
-
-	.newsletter-input::placeholder {
-		color: oklch(var(--nc) / 0.35);
-	}
-
-	.newsletter-input:focus {
-		border-bottom-color: oklch(var(--nc));
-	}
-
-	.newsletter-btn {
-		font-family: var(--font-sans, 'Inter', sans-serif);
-		font-size: 0.75rem;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.06em;
-		padding: 0.5rem 1rem;
-		background-color: oklch(var(--nc));
-		color: oklch(var(--n));
-		border: none;
-		border-radius: 0.25rem;
-		cursor: pointer;
-		transition: opacity 0.2s;
-		flex-shrink: 0;
-	}
-
-	.newsletter-btn:hover {
-		opacity: 0.8;
+	.newsletter-unavailable a {
+		color: inherit;
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
 	}
 
 	/* Social icons */
@@ -1023,49 +980,20 @@
 
 	/* Drawer newsletter */
 	.drawer-newsletter {
-		display: flex;
-		gap: 0.75rem;
-	}
-
-	.drawer-email-input {
-		flex: 1;
-		background: transparent;
-		border: none;
-		border-bottom: 2px solid oklch(var(--nc) / 0.25);
-		color: oklch(var(--nc));
 		font-family: var(--font-sans, 'Inter', sans-serif);
-		font-size: 0.875rem;
-		padding: 0.375rem 0;
-		outline: none;
-		transition: border-color 0.2s;
+		font-size: 0.8125rem;
+		line-height: 1.5;
+		color: oklch(var(--nc) / 0.65);
 	}
 
-	.drawer-email-input::placeholder {
-		color: oklch(var(--nc) / 0.3);
+	.drawer-newsletter-unavailable {
+		margin: 0;
 	}
 
-	.drawer-email-input:focus {
-		border-bottom-color: oklch(var(--nc));
-	}
-
-	.drawer-subscribe-btn {
-		font-family: var(--font-sans, 'Inter', sans-serif);
-		font-size: 0.75rem;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.06em;
-		padding: 0.5rem 1rem;
-		background-color: oklch(var(--nc));
-		color: oklch(var(--n));
-		border: none;
-		border-radius: 0.25rem;
-		cursor: pointer;
-		transition: opacity 0.2s;
-		flex-shrink: 0;
-	}
-
-	.drawer-subscribe-btn:hover {
-		opacity: 0.8;
+	.drawer-newsletter-unavailable a {
+		color: inherit;
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
 	}
 
 	/* Drawer social */

@@ -31,7 +31,7 @@ export function createCallerClient(eventFetch: typeof fetch) {
 	return createTRPCClient<AppRouter>({
 		links: [
 			httpBatchLink({
-				url: `${getBaseUrl()}/api/trpc`,
+				url: '/api/trpc',
 				fetch(url, options) {
 					return eventFetch(url as any, {
 						...options,

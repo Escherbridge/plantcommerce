@@ -28,14 +28,9 @@
 	// Navigation structure
 	const mainNavigation = [
 		{
-			label: 'Shop',
+			label: 'Catalog',
 			href: '/products',
-			children: [
-				{ label: 'Hydroponics', href: '/products/hydroponics' },
-				{ label: 'Aquaponics', href: '/products/aquaponics' },
-				{ label: 'Silvopasture', href: '/products/silvopasture' },
-				{ label: 'Agroforestry', href: '/products/agroforestry' }
-			]
+			children: [{ label: 'Catalog Status', href: '/products' }]
 		},
 		{
 			label: 'Learn',
@@ -47,7 +42,7 @@
 				{ label: 'Resources', href: '/resources' }
 			]
 		},
-		{ label: 'Affiliate', href: '/affiliate' },
+		{ label: 'Affiliate Status', href: '/affiliate/terms' },
 		{ label: 'Support', href: '/support' }
 	];
 
@@ -59,7 +54,7 @@
 		];
 		const role = user?.role;
 		if (role === 'affiliate' || role === 'admin') {
-			base.push({ label: 'Affiliate Portal', href: '/affiliate/dashboard' });
+			base.push({ label: 'Affiliate Status', href: '/affiliate/terms' });
 		}
 		if (role === 'admin') {
 			base.push({ label: 'Admin Panel', href: '/admin' });

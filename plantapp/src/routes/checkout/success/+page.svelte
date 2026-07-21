@@ -21,7 +21,7 @@
 </script>
 
 <svelte:head>
-	<title>Order {data.status === 'complete' ? 'Confirmed' : 'Processing'} | Aevani</title>
+	<title>Order {data.status === 'complete' ? 'Confirmed' : data.status === 'access_required' ? 'Details Protected' : 'Processing'} | Aevani</title>
 </svelte:head>
 
 <div class="success-page">
@@ -86,6 +86,15 @@
 				<a href="/products" class="btn-continue">Continue Shopping</a>
 				<a href="/account/orders" class="btn-orders">View Orders</a>
 			</div>
+		</div>
+
+	{:else if data.status === 'access_required'}
+		<div class="success-container processing">
+			<h1>Order Details Protected</h1>
+			<p class="confirmation-text">
+				We can’t display order details in this browser. If you completed a payment, it will still be processed and you’ll receive a confirmation email.
+			</p>
+			<a href="/products" class="btn-continue">Continue Shopping</a>
 		</div>
 
 	{:else if data.status === 'processing'}

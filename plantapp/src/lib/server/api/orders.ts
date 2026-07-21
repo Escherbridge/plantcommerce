@@ -1,87 +1,23 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { publicProcedure, protectedProcedure, adminProcedure, router } from './trpc';
+import { protectedProcedure, adminProcedure, router } from './trpc';
 import { OrderService, type OrderStatus } from '../services/order';
 
-const addressSchema = z.object({
-	firstName: z.string().min(1),
-	lastName: z.string().min(1),
-	address1: z.string().min(1),
-	address2: z.string().optional(),
-	city: z.string().min(1),
-	state: z.string().min(1),
-	postalCode: z.string().min(1),
-	country: z.string().min(1)
-});
-
 export const ordersRouter = router({
-	/**
-	 * Create order from cart (public for guest checkout)
-	 */
-	createOrder: publicProcedure
-		.input(
-			z.object({
-				customerEmail: z.string().email(),
-				customerPhone: z.string().optional(),
-				shippingAddress: addressSchema,
-				billingAddress: addressSchema.optional(),
-				sessionId: z.string().optional(),
-				notes: z.string().optional()
-			})
-		)
-		.mutation(async ({ ctx, input }) => {
+	getOrderByNumber: protectedProcedure
+		.input(z.object({ orderNumber: z.string() }))
+		.query(async ({ ctx, input }) => {
 			try {
-				const userId = ctx.user?.id;
-				const { sessionId, ...orderData } = input;
+				const order = await OrderService.getOrderByNumberForUser(
+					input.orderNumber,
+					ctx.user.id,
+					ctx.user.role === 'admin'
+				);
 
-				if (!userId && !sessionId) {
-					throw new TRPCError({
-						code: 'BAD_REQUEST',
-						message: 'Session ID required for guest checkout'
-					});
-				}
-
-				const order = await OrderService.createOrder({
-					userId,
-					sessionId,
-					...orderData
-				});
-
-				return order;
-			} catch (error) {
-				throw new TRPCError({
-					code: 'BAD_REQUEST',
-					message: error instanceof Error ? error.message : 'Failed to create order'
-				});
-			}
-		}),
-
-	/**
-	 * Get order by order number (public for order tracking)
-	 */
-	getOrderByNumber: publicProcedure
-		.input(
-			z.object({
-				orderNumber: z.string(),
-				email: z.string().email().optional() // For guest order verification
-			})
-		)
-		.query(async ({ input }) => {
-			try {
-				const order = await OrderService.getOrderByNumber(input.orderNumber);
-				
 				if (!order) {
 					throw new TRPCError({
 						code: 'NOT_FOUND',
 						message: 'Order not found'
-					});
-				}
-
-				// If email is provided and order has no user ID, verify email matches
-				if (input.email && !order.userId && order.customerEmail !== input.email) {
-					throw new TRPCError({
-						code: 'FORBIDDEN',
-						message: 'Access denied'
 					});
 				}
 
@@ -153,29 +89,15 @@ export const ordersRouter = router({
 		}),
 
 	/**
-	 * Cancel order (protected - user can cancel their own orders)
+	 * Cancellation requires the reconciled payment-refund workflow.
 	 */
 	cancelOrder: protectedProcedure
 		.input(z.object({ orderId: z.number() }))
-		.mutation(async ({ ctx, input }) => {
-			try {
-				// Verify user owns this order
-				const order = await OrderService.getOrderById(input.orderId);
-				if (order.userId !== ctx.user.id && ctx.user.role !== 'admin') {
-					throw new TRPCError({
-						code: 'FORBIDDEN',
-						message: 'Access denied'
-					});
-				}
-
-				await OrderService.cancelOrder(input.orderId);
-				return { success: true };
-			} catch (error) {
-				throw new TRPCError({
-					code: 'BAD_REQUEST',
-					message: error instanceof Error ? error.message : 'Failed to cancel order'
-				});
-			}
+		.mutation(async () => {
+			throw new TRPCError({
+				code: 'PRECONDITION_FAILED',
+				message: 'Online order cancellation is temporarily unavailable. Please contact support.'
+			});
 		}),
 
 	/**
@@ -218,6 +140,14 @@ export const ordersRouter = router({
 			})
 		)
 		.mutation(async ({ input }) => {
+			if (!['processing', 'shipped', 'delivered'].includes(input.status)) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message:
+						'Only fulfillment status updates are available here. Payment, cancellation, and refund changes require their reconciled workflows.'
+				});
+			}
+
 			try {
 				await OrderService.updateOrderStatus(
 					input.orderId,

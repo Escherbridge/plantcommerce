@@ -9,22 +9,14 @@ export const load: PageLoad = async (event) => {
 
 		return {
 			stats,
-			recentOrders,
-			pendingReviews: 0 // Placeholder
+			recentOrders
 		};
 	} catch (error) {
 		console.error('Error loading admin dashboard:', error);
 		return {
-			stats: {
-				totalRevenue: 0,
-				totalOrders: 0,
-				totalUsers: 0,
-				totalProducts: 0,
-				recentOrders: 0,
-				lowStockProducts: 0
-			},
+			stats: null,
 			recentOrders: [],
-			pendingReviews: 0
+			error: 'Dashboard data could not be loaded. No zero-value fallback is being shown as a report.'
 		};
 	}
 };

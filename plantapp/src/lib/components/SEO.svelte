@@ -1,11 +1,12 @@
 <script lang="ts">
 	// Use $props() instead of export let in runes mode
-	import { PUBLIC_BASE_URL } from '$env/static/public';
+	import { publicSite, publicSiteUrl } from '$lib/config/site';
+	import defaultSocialImage from '$lib/images/AI-MockAssets/MAINHERO.png';
 	
 	const {
-		title = 'PlantCommerce | Sustainable Growing Tools & Supplies',
-		description = 'Discover sustainable growing tools, hydroponic systems, and educational resources for modern growers.',
-		image = '/images/AI-MockAssets/MAINHERO.png',
+		title = publicSite.defaultTitle,
+		description = publicSite.description,
+		image = defaultSocialImage,
 		url = '',
 		type = 'website',
 		publishedTime = null,
@@ -28,12 +29,11 @@
 	const safeTitle = $derived(title.length > 60 ? title.substring(0, 57) + '...' : title);
 	const safeDescription = $derived(description.length > 160 ? description.substring(0, 157) + '...' : description);
 	
-	const baseUrl = (PUBLIC_BASE_URL ?? '').endsWith('/') ? PUBLIC_BASE_URL.slice(0, -1) : (PUBLIC_BASE_URL ?? '');
-	const urlPath = url ? (url.startsWith('/') ? url : `/${url}`) : '';
-	const absoluteUrl = $derived(url ? (url.startsWith('http') ? url : `${baseUrl}${urlPath}`) : baseUrl);
+	const baseUrl = publicSite.origin;
+	const absoluteUrl = $derived(url ? (url.startsWith('http') ? url : publicSiteUrl(url)) : baseUrl);
 
 	const imagePath = image.startsWith('/') ? image : `/${image}`;
-	const absoluteImage = $derived(image.startsWith('http') ? image : `${baseUrl}${imagePath}`);
+	const absoluteImage = $derived(image.startsWith('http') ? image : publicSiteUrl(imagePath));
 </script>
 
 <!-- Primary Meta Tags -->

@@ -1,8 +1,50 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { publicProcedure, protectedProcedure, router } from './trpc';
-import AffiliateService from '../services/affiliate';
-import { UserService } from '../services/user';
+import AffiliateService, {
+	AffiliateAccessError,
+	isActiveApprovedAffiliate
+} from '../services/affiliate';
+import { getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
+
+const activeAffiliateRequiredMessage = 'Your affiliate application must be active and approved';
+
+function withoutAffiliateOperations<T extends {
+	affiliateCode: string;
+	commissionRate: string;
+	totalEarnings: string;
+	totalClicks: number;
+	totalConversions: number;
+	isActive: boolean;
+}>(affiliate: T) {
+	return {
+		...affiliate,
+		affiliateCode: '',
+		commissionRate: '0.00',
+		totalEarnings: '0.00',
+		totalClicks: 0,
+		totalConversions: 0,
+		isActive: false
+	};
+}
+
+async function getPortalAffiliate(userId: string, isAdmin: boolean) {
+	try {
+		return await AffiliateService.requireActiveAffiliateByUserId(userId);
+	} catch (error) {
+		if (error instanceof AffiliateAccessError) {
+			// Admins can enter the portal without a personal affiliate record, but
+			// cannot access an inactive applicant's data or links.
+			if (isAdmin) return null;
+			throw new TRPCError({
+				code: 'FORBIDDEN',
+				message: activeAffiliateRequiredMessage
+			});
+		}
+
+		throw error;
+	}
+}
 
 export const affiliateRouter = router({
 	/**
@@ -17,13 +59,10 @@ export const affiliateRouter = router({
 		.mutation(async ({ ctx, input }) => {
 			try {
 				const affiliate = await AffiliateService.createAffiliate(ctx.user.id, input.customCode);
-				
-				// Update user role to affiliate if not already
-				if (ctx.user.role !== 'affiliate' && ctx.user.role !== 'admin') {
-					await UserService.updateUserRole(ctx.user.id, 'affiliate');
-				}
 
-				return affiliate;
+				return ctx.user.role === 'admin' || isActiveApprovedAffiliate(affiliate)
+					? affiliate
+					: withoutAffiliateOperations(affiliate);
 			} catch (error) {
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
@@ -48,17 +87,7 @@ export const affiliateRouter = router({
 		)
 		.mutation(async ({ ctx, input }) => {
 			try {
-				// Check if already an affiliate
-				const existing = await AffiliateService.getAffiliateByUserId(ctx.user.id);
-				if (existing) {
-					throw new TRPCError({
-						code: 'CONFLICT',
-						message: 'You already have an affiliate account.'
-					});
-				}
-
-				// Create affiliate account with application metadata
-				const affiliate = await AffiliateService.createAffiliate(ctx.user.id, undefined, {
+				const result = await AffiliateService.createOrGetAffiliate(ctx.user.id, undefined, {
 					website: input.website,
 					socialMedia: input.socialMedia,
 					audience: input.audience,
@@ -66,14 +95,18 @@ export const affiliateRouter = router({
 					monthlyTraffic: input.monthlyTraffic,
 					whyJoin: input.whyJoin
 				});
-
-				// Update user role to affiliate if not already
-				if (ctx.user.role !== 'affiliate' && ctx.user.role !== 'admin') {
-					await UserService.updateUserRole(ctx.user.id, 'affiliate');
+				if (!result.created) {
+					throw new TRPCError({
+						code: 'CONFLICT',
+						message: 'You already have an affiliate account.'
+					});
 				}
+				const affiliate = result.affiliate;
 
 				return {
-					...affiliate,
+					...(ctx.user.role === 'admin' || isActiveApprovedAffiliate(affiliate)
+						? affiliate
+						: withoutAffiliateOperations(affiliate)),
 					applicationDetails: {
 						website: input.website,
 						socialMedia: input.socialMedia,
@@ -98,7 +131,13 @@ export const affiliateRouter = router({
 	getMyAffiliate: protectedProcedure.query(async ({ ctx }) => {
 		try {
 			const affiliate = await AffiliateService.getAffiliateByUserId(ctx.user.id);
-			return affiliate;
+			if (!affiliate || ctx.user.role === 'admin' || isActiveApprovedAffiliate(affiliate)) {
+				return affiliate;
+			}
+
+			// Applicants may check their status, but legacy pending/rejected records
+			// must not reveal accumulated affiliate operations before approval.
+			return withoutAffiliateOperations(affiliate);
 		} catch (error) {
 			throw new TRPCError({
 				code: 'INTERNAL_SERVER_ERROR',
@@ -112,19 +151,24 @@ export const affiliateRouter = router({
 	 */
 	getStats: protectedProcedure.query(async ({ ctx }) => {
 		try {
-			const affiliate = await AffiliateService.getAffiliateByUserId(ctx.user.id);
-
+			const affiliate = await getPortalAffiliate(ctx.user.id, ctx.user.role === 'admin');
 			if (!affiliate) {
-				throw new TRPCError({
-					code: 'NOT_FOUND',
-					message: 'Affiliate account not found'
-				});
+				return {
+					totalEarnings: 0,
+					totalClicks: 0,
+					totalConversions: 0,
+					conversionRate: 0,
+					recentLinks: []
+				};
 			}
 
 			return await AffiliateService.getAffiliateStats(affiliate.id);
 		} catch (error) {
 			if (error instanceof TRPCError) {
 				throw error;
+			}
+			if (error instanceof AffiliateAccessError) {
+				throw new TRPCError({ code: 'FORBIDDEN', message: activeAffiliateRequiredMessage });
 			}
 			throw new TRPCError({
 				code: 'INTERNAL_SERVER_ERROR',
@@ -140,14 +184,15 @@ export const affiliateRouter = router({
 		.input(z.object({ limit: z.number().optional() }))
 		.query(async ({ ctx, input }) => {
 			try {
-				const affiliate = await AffiliateService.getAffiliateByUserId(ctx.user.id);
-
-				if (!affiliate) {
-					return [];
-				}
+				const affiliate = await getPortalAffiliate(ctx.user.id, ctx.user.role === 'admin');
+				if (!affiliate) return [];
 
 				return await AffiliateService.getTopPerformingLinks(affiliate.id, input.limit || 10);
 			} catch (error) {
+				if (error instanceof TRPCError) throw error;
+				if (error instanceof AffiliateAccessError) {
+					throw new TRPCError({ code: 'FORBIDDEN', message: activeAffiliateRequiredMessage });
+				}
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
 					message: 'Failed to retrieve recent clicks'
@@ -160,7 +205,7 @@ export const affiliateRouter = router({
 	 */
 	getEarnings: protectedProcedure.query(async ({ ctx }) => {
 		try {
-			const affiliate = await AffiliateService.getAffiliateByUserId(ctx.user.id);
+			const affiliate = await getPortalAffiliate(ctx.user.id, ctx.user.role === 'admin');
 
 			if (!affiliate) {
 				return {
@@ -180,6 +225,10 @@ export const affiliateRouter = router({
 				paymentMethod: null // Payment method system not yet implemented
 			};
 		} catch (error) {
+			if (error instanceof TRPCError) throw error;
+			if (error instanceof AffiliateAccessError) {
+				throw new TRPCError({ code: 'FORBIDDEN', message: activeAffiliateRequiredMessage });
+			}
 			throw new TRPCError({
 				code: 'INTERNAL_SERVER_ERROR',
 				message: 'Failed to retrieve earnings data'
@@ -192,6 +241,9 @@ export const affiliateRouter = router({
 	 */
 	getMyLinks: protectedProcedure.query(async ({ ctx }) => {
 		try {
+			const affiliate = await getPortalAffiliate(ctx.user.id, ctx.user.role === 'admin');
+			if (!affiliate) return [];
+
 			const links = await AffiliateService.getAffiliateLinks(ctx.user.id);
 			const baseUrl = ctx.event.url.origin;
 			// Return links with full shareable URLs
@@ -200,6 +252,10 @@ export const affiliateRouter = router({
 				affiliateUrl: `${baseUrl}/aff/${link.linkCode}`
 			}));
 		} catch (error) {
+			if (error instanceof TRPCError) throw error;
+			if (error instanceof AffiliateAccessError) {
+				throw new TRPCError({ code: 'FORBIDDEN', message: activeAffiliateRequiredMessage });
+			}
 			throw new TRPCError({
 				code: 'INTERNAL_SERVER_ERROR',
 				message: error instanceof Error ? error.message : 'Failed to retrieve affiliate links'
@@ -214,17 +270,24 @@ export const affiliateRouter = router({
 		.input(
 			z.object({
 				productId: z.number(),
-				customCode: z.string().optional()
+				customCode: z.string().optional(),
+				affiliateId: z.number().optional()
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
 			try {
-				const affiliate = await AffiliateService.getAffiliateByUserId(ctx.user.id);
-				
+				if (input.affiliateId !== undefined && ctx.user.role !== 'admin') {
+					throw new TRPCError({ code: 'FORBIDDEN', message: 'Access denied' });
+				}
+
+				const affiliate = input.affiliateId !== undefined
+					? await AffiliateService.requireActiveAffiliateById(input.affiliateId)
+					: await getPortalAffiliate(ctx.user.id, ctx.user.role === 'admin');
+
 				if (!affiliate) {
 					throw new TRPCError({
-						code: 'NOT_FOUND',
-						message: 'Affiliate account not found. Please create one first.'
+						code: 'BAD_REQUEST',
+						message: 'Select an active affiliate account before creating a link'
 					});
 				}
 
@@ -244,6 +307,9 @@ export const affiliateRouter = router({
 				if (error instanceof TRPCError) {
 					throw error;
 				}
+				if (error instanceof AffiliateAccessError) {
+					throw new TRPCError({ code: 'FORBIDDEN', message: activeAffiliateRequiredMessage });
+				}
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
 					message: error instanceof Error ? error.message : 'Failed to create affiliate link'
@@ -256,6 +322,9 @@ export const affiliateRouter = router({
 	 */
 	getLinks: protectedProcedure.query(async ({ ctx }) => {
 		try {
+			const affiliate = await getPortalAffiliate(ctx.user.id, ctx.user.role === 'admin');
+			if (!affiliate) return [];
+
 			const links = await AffiliateService.getAffiliateLinks(ctx.user.id);
 			const baseUrl = ctx.event.url.origin;
 			return links.map((link: any) => ({
@@ -263,6 +332,10 @@ export const affiliateRouter = router({
 				affiliateUrl: `${baseUrl}/aff/${link.linkCode}`
 			}));
 		} catch (error) {
+			if (error instanceof TRPCError) throw error;
+			if (error instanceof AffiliateAccessError) {
+				throw new TRPCError({ code: 'FORBIDDEN', message: activeAffiliateRequiredMessage });
+			}
 			throw new TRPCError({
 				code: 'INTERNAL_SERVER_ERROR',
 				message: error instanceof Error ? error.message : 'Failed to retrieve affiliate links'
@@ -271,41 +344,15 @@ export const affiliateRouter = router({
 	}),
 
 	/**
-	 * Track affiliate link click (public endpoint)
-	 */
-	trackClick: publicProcedure
-		.input(
-			z.object({
-				linkCode: z.string(),
-				clickData: z.object({
-					ipAddress: z.string().optional(),
-					userAgent: z.string().optional(),
-					referer: z.string().optional(),
-					sessionId: z.string().optional(),
-					userId: z.string().optional()
-				})
-			})
-		)
-		.mutation(async ({ input }) => {
-			const success = await AffiliateService.trackClick(input.linkCode, input.clickData);
-			
-			if (!success) {
-				throw new TRPCError({
-					code: 'NOT_FOUND',
-					message: 'Affiliate link not found'
-				});
-			}
-
-			return { success: true };
-		}),
-
-	/**
 	 * Get affiliate link details by code (public endpoint for redirects)
 	 */
 	getLinkByCode: publicProcedure
 		.input(z.object({ linkCode: z.string() }))
 		.query(async ({ input }) => {
 			try {
+				if (getPublicCatalogAvailability().status !== 'available') {
+					throw new TRPCError({ code: 'NOT_FOUND', message: 'Affiliate link not found' });
+				}
 				const linkWithProduct = await AffiliateService.getLinkWithProductByCode(input.linkCode);
 				
 				if (!linkWithProduct) {
@@ -338,8 +385,20 @@ export const affiliateRouter = router({
 		)
 		.mutation(async ({ ctx, input }) => {
 			try {
-				return await AffiliateService.toggleLinkStatus(input.linkId, ctx.user.id);
+				if (ctx.user.role !== 'admin') {
+					await getPortalAffiliate(ctx.user.id, false);
+				}
+
+				return await AffiliateService.toggleLinkStatus(
+					input.linkId,
+					ctx.user.id,
+					ctx.user.role === 'admin'
+				);
 			} catch (error) {
+				if (error instanceof TRPCError) throw error;
+				if (error instanceof AffiliateAccessError) {
+					throw new TRPCError({ code: 'FORBIDDEN', message: activeAffiliateRequiredMessage });
+				}
 				throw new TRPCError({
 					code: 'BAD_REQUEST',
 					message: error instanceof Error ? error.message : 'Failed to toggle link status'

@@ -2,18 +2,18 @@ import { router, protectedProcedure } from '../trpc';
 import { z } from 'zod';
 import { AdminAnalyticsService } from '../../services/lms/adminAnalytics';
 import { LearnerAnalyticsService } from '../../services/lms/learnerAnalytics';
+import { LmsAccessService } from '../../services/lms/access';
 
 export const analyticsRouter = router({
 	dashboard: protectedProcedure.query(async ({ ctx }) => {
-		if (ctx.user.role !== 'admin') throw new Error('Admin only');
+		LmsAccessService.requireAdmin(ctx.user);
 		return AdminAnalyticsService.getLMSDashboardStats();
 	}),
 
 	courseAnalytics: protectedProcedure
 		.input(z.object({ courseId: z.string() }))
 		.query(async ({ ctx, input }) => {
-			if (ctx.user.role !== 'admin' && ctx.user.role !== 'instructor')
-				throw new Error('Unauthorized');
+			await LmsAccessService.requireCourseManager(ctx.user, input.courseId);
 			return AdminAnalyticsService.getCourseAnalytics(input.courseId);
 		}),
 
@@ -26,7 +26,7 @@ export const analyticsRouter = router({
 			})
 		)
 		.query(async ({ ctx, input }) => {
-			if (ctx.user.role !== 'admin') throw new Error('Admin only');
+			LmsAccessService.requireAdmin(ctx.user);
 			return AdminAnalyticsService.getEnrollmentTrends(
 				input.startDate,
 				input.endDate,
@@ -37,8 +37,7 @@ export const analyticsRouter = router({
 	quizAnalytics: protectedProcedure
 		.input(z.object({ quizId: z.string() }))
 		.query(async ({ ctx, input }) => {
-			if (ctx.user.role !== 'admin' && ctx.user.role !== 'instructor')
-				throw new Error('Unauthorized');
+			await LmsAccessService.requireQuizManager(ctx.user, input.quizId);
 			return AdminAnalyticsService.getQuizAnalytics(input.quizId);
 		}),
 
@@ -50,7 +49,7 @@ export const analyticsRouter = router({
 			})
 		)
 		.query(async ({ ctx, input }) => {
-			if (ctx.user.role !== 'admin') throw new Error('Admin only');
+			LmsAccessService.requireAdmin(ctx.user);
 			return AdminAnalyticsService.getRevenueReport(input.startDate, input.endDate);
 		}),
 

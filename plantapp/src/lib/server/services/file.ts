@@ -216,6 +216,24 @@ export class FileService {
 	}
 
 	/**
+	 * Get files uploaded by a specific user. Authorization is enforced by the
+	 * caller before this storage-level query is made.
+	 */
+	static async getFilesByUploader(
+		uploadedBy: string,
+		limit: number = 50
+	): Promise<FileWithUrl[]> {
+		const files = await db
+			.select()
+			.from(table.file)
+			.where(eq(table.file.uploadedBy, uploadedBy))
+			.orderBy(desc(table.file.createdAt))
+			.limit(limit);
+
+		return files.map(file => this.fileWithUrl(file));
+	}
+
+	/**
 	 * Delete file from both S3 and database
 	 */
 	static async deleteFile(fileId: string): Promise<void> {
@@ -345,20 +363,21 @@ export class FileService {
 	}
 
 	/**
-	 * Generate a public URL for a file based on its bucket path.
-	 * For public files, returns the S3 endpoint URL directly.
-	 * For non-public files or when S3 is not configured, returns a fallback path.
+	 * Generate a public URL only for an explicitly public file.
 	 */
-	static generatePublicUrl(bucketPath: string, isPublic: boolean = true): string {
+	static generatePublicUrl(bucketPath: string, isPublic: boolean = true): string | null {
+		if (!isPublic) {
+			return null;
+		}
+
 		// Mock assets are served locally via the file serve API
 		if (bucketPath.startsWith('AI-MockAssets/')) {
 			return `/api/files/serve?path=${encodeURIComponent(bucketPath)}`;
 		}
-		if (isPublic && env.S3_ENDPOINT && env.S3_BUCKET_NAME) {
+		if (env.S3_ENDPOINT && env.S3_BUCKET_NAME) {
 			return `${env.S3_ENDPOINT}/${env.S3_BUCKET_NAME}/${bucketPath}`;
 		}
-		// Fallback: serve via local API
-		return `/api/files/serve?path=${encodeURIComponent(bucketPath)}`;
+		return null;
 	}
 
 	/**

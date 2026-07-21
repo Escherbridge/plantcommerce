@@ -13,22 +13,22 @@
 					id: '1',
 					pageId: 'home',
 					pageType: 'page',
-					metaTitle: 'PlantCommerce | Sustainable Growing Tools & Supplies',
-					metaDescription: 'Discover sustainable growing tools, hydroponic systems, and educational resources.',
-					ogTitle: 'PlantCommerce | Sustainable Gardening',
+					metaTitle: 'Aevani | Local Development Metadata Fixture',
+					metaDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+					ogTitle: 'Aevani | Local Development Metadata Fixture',
 					ogImage: '/images/AI-MockAssets/MAINHERO.png',
-					robots: 'index, follow',
+					robots: 'noindex, nofollow',
 					updatedAt: new Date().toISOString()
 				},
 				{
 					id: '2',
 					pageId: 'products',
 					pageType: 'category',
-					metaTitle: 'Gardening Products & Supplies | PlantCommerce',
-					metaDescription: 'Shop our collection of sustainable gardening products.',
-					ogTitle: 'Gardening Products | PlantCommerce',
+					metaTitle: 'Aevani Products | Local Development Metadata Fixture',
+					metaDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+					ogTitle: 'Aevani Products | Local Development Metadata Fixture',
 					ogImage: '/images/AI-MockAssets/MAINHERO.png',
-					robots: 'index, follow',
+					robots: 'noindex, nofollow',
 					updatedAt: new Date().toISOString()
 				}
 			];
@@ -40,15 +40,17 @@
 		}
 	});
 
-	function handleSave(field: any) {
-		console.log('Saving SEO field:', field);
-	}
 </script>
 
 <div class="platform-content">
 	<div class="platform-header">
 		<h1 class="platform-header__title">SEO Management</h1>
-		<p class="platform-header__subtitle">Manage meta tags and Open Graph data for all pages</p>
+		<p class="platform-header__subtitle">Reviewed metadata publishing is not available yet.</p>
+	</div>
+	<div class="platform-card">
+		<p class="admin-seo-info-text">
+			The records below are local development fixtures only. They are not a source of published metadata and cannot be edited or previewed here.
+		</p>
 	</div>
 
 	{#if loading}
@@ -91,17 +93,11 @@
 							<td>{new Date(field.updatedAt).toLocaleDateString()}</td>
 							<td>
 								<div class="admin-action-group">
-									<button
-										class="platform-action-btn admin-table-btn"
-										onclick={() => handleSave(field)}
-									>
-										Edit
+									<button class="platform-action-btn admin-table-btn" disabled title="SEO publishing is unavailable">
+										Edit unavailable
 									</button>
-									<button
-										class="platform-action-btn admin-table-btn"
-										onclick={() => console.log('Preview:', field)}
-									>
-										Preview
+									<button class="platform-action-btn admin-table-btn" disabled title="SEO publishing is unavailable">
+										Preview unavailable
 									</button>
 								</div>
 							</td>
@@ -117,8 +113,8 @@
 				<h2 class="platform-card__title">About SEO Fields</h2>
 			</div>
 			<p class="admin-seo-info-text">
-				Edit meta titles, descriptions, and Open Graph tags for each page.
-				Changes here affect how your pages appear in search results and social media shares.
+				A reviewed, persisted SEO workflow is required before metadata can be changed.
+				Do not treat local fixtures as search or social metadata.
 			</p>
 			<div class="admin-seo-info-grid">
 				<div class="admin-seo-info-card">

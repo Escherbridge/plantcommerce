@@ -23,6 +23,25 @@ if (!DATABASE_URL) {
 const client = postgres(DATABASE_URL);
 const db = drizzle(client, { schema });
 
+function requireDisposableUatSeedConfiguration(): string {
+	const confirmation = process.env.AEVANI_UAT_SEED_CONFIRM;
+	if (confirmation !== 'ERASE_AND_SEED_DISPOSABLE_DATABASE') {
+		throw new Error('Set AEVANI_UAT_SEED_CONFIRM for an explicitly disposable UAT database.');
+	}
+
+	const databaseName = new URL(DATABASE_URL).pathname.replace(/^\//, '');
+	if (!/(^|_)(dev|test|uat)(_|$)/i.test(databaseName)) {
+		throw new Error(`Refusing destructive UAT seed for non-disposable database "${databaseName}".`);
+	}
+
+	const password = process.env.AEVANI_UAT_SEED_PASSWORD;
+	if (!password || password.length < 16) {
+		throw new Error('Set a unique AEVANI_UAT_SEED_PASSWORD with at least 16 characters.');
+	}
+
+	return password;
+}
+
 // ---------- helpers ----------
 function generateId(): string {
 	return crypto.randomUUID();
@@ -1162,11 +1181,12 @@ const contentPages: ContentDef[] = [
 // ================================================================
 
 async function seed() {
+	const seedPassword = requireDisposableUatSeedConfiguration();
 	console.log('=== Aevani UAT Seed Script ===\n');
 
 	// --- 0. Hash passwords ---
 	console.log('[1/12] Hashing user passwords...');
-	const passwordHash = await hash('Aevani2024!', {
+	const passwordHash = await hash(seedPassword, {
 		memoryCost: 19456,
 		timeCost: 2,
 		outputLen: 32,
@@ -1399,6 +1419,7 @@ async function seed() {
 				totalClicks: a.totalClicks,
 				totalConversions: a.totalConversions,
 				isActive: true,
+				status: 'active',
 				createdAt: daysAgo(randomInt(90, 150)),
 				updatedAt: new Date()
 			})
@@ -1677,9 +1698,7 @@ async function seed() {
 	console.log(`  Content Pages:      ${contentPages.length}`);
 	console.log(`  CMS SEO Records:    ${contentPages.length + 1}`);
 	console.log(`  Audit Entries:      ${auditEntries.length}`);
-	console.log('\n  Default password for all users: Aevani2024!');
-	console.log('  Admin logins: admin@aevani.com, admin-test@aevani.com, ahmed@aevani.com');
-	console.log('  Default password: Aevani2024!\n');
+	console.log('\n  Credentials were supplied through the local UAT seed environment.\n');
 }
 
 seed()
