@@ -21,8 +21,7 @@
 		ctaLinks = []
 	}: Props = $props();
 
-	let heroEl: HTMLElement;
-	let bgEl: HTMLElement;
+	let bgEl = $state<HTMLElement>();
 	let scrollY = $state(0);
 	let titleDone = $state(false);
 	let subtitleVisible = $state(false);
@@ -79,7 +78,6 @@
 </script>
 
 <section
-	bind:this={heroEl}
 	class="relative flex min-h-svh flex-col items-center justify-center overflow-hidden"
 	aria-label="Hero section"
 >

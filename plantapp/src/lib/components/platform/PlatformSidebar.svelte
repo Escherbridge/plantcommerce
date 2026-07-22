@@ -139,7 +139,7 @@
 	<div class="sidebar-divider"></div>
 
 	<!-- Navigation Groups -->
-	<nav role="navigation" aria-label="Platform navigation" class="sidebar-nav">
+	<nav aria-label="Platform navigation" class="sidebar-nav">
 		{#each navigation as group}
 			<div class="sidebar-nav-group">
 				{#if !collapsed}
@@ -291,7 +291,7 @@
 	<div class="sidebar-divider"></div>
 
 	<!-- Navigation Groups -->
-	<nav role="navigation" aria-label="Platform navigation" class="sidebar-nav">
+	<nav aria-label="Platform navigation" class="sidebar-nav">
 		{#each navigation as group}
 			<div class="sidebar-nav-group">
 				<span class="sidebar-group-title">{group.title}</span>

@@ -4,6 +4,7 @@
 	import type { PageData } from './$types';
 	import { trpc } from '$lib/trpc/client';
 	import { toasts } from '$lib/stores/toast';
+	import { tick } from 'svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -12,7 +13,13 @@
 	let isSubmitting = $state(false);
 	let showTermsModal = $state(false);
 	let termsScrolled = $state(false);
-	let termsModalElement: HTMLDivElement;
+	let termsModalContent = $state<HTMLDivElement | null>(null);
+	let termsModalDialog = $state<HTMLDivElement | null>(null);
+	let termsModalCloseButton = $state<HTMLButtonElement | null>(null);
+	let termsModalTrigger = $state<HTMLButtonElement | null>(null);
+
+	const modalFocusableSelector =
+		'a[href], button:not([disabled]):not([tabindex="-1"]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 	let formData = $state({
 		website: '',
@@ -24,13 +31,46 @@
 		agreeTerms: false
 	});
 
-	function openTermsModal() {
+	async function openTermsModal(event: MouseEvent) {
+		termsModalTrigger = event.currentTarget as HTMLButtonElement;
 		showTermsModal = true;
 		termsScrolled = false;
+		await tick();
+		if (termsModalContent) {
+			termsScrolled = termsModalContent.scrollHeight <= termsModalContent.clientHeight + 10;
+		}
+		termsModalCloseButton?.focus();
 	}
 
-	function closeTermsModal() {
+	async function closeTermsModal() {
 		showTermsModal = false;
+		await tick();
+		if (termsModalTrigger?.isConnected) termsModalTrigger.focus();
+	}
+
+	function handleTermsModalKeydown(event: KeyboardEvent) {
+		if (!showTermsModal) return;
+		if (event.key === 'Escape') {
+			event.preventDefault();
+			void closeTermsModal();
+			return;
+		}
+
+		if (event.key !== 'Tab' || !termsModalDialog) return;
+		const focusable = Array.from(
+			termsModalDialog.querySelectorAll<HTMLElement>(modalFocusableSelector)
+		);
+		const first = focusable[0];
+		const last = focusable.at(-1);
+		if (!first || !last) return;
+
+		if (event.shiftKey && document.activeElement === first) {
+			event.preventDefault();
+			last.focus();
+		} else if (!event.shiftKey && document.activeElement === last) {
+			event.preventDefault();
+			first.focus();
+		}
 	}
 
 	function handleTermsScroll(e: Event) {
@@ -44,7 +84,7 @@
 	function acceptTerms() {
 		if (termsScrolled) {
 			formData.agreeTerms = true;
-			closeTermsModal();
+			void closeTermsModal();
 		}
 	}
 
@@ -130,6 +170,8 @@
 		}
 	}
 </script>
+
+<svelte:window onkeydown={handleTermsModalKeydown} />
 
 <svelte:head>
 	<title>Affiliate program status | Aevani</title>
@@ -505,21 +547,30 @@
 
 <!-- Affiliate program status modal -->
 {#if showTermsModal}
-	<div
-		class="terms-modal-overlay"
-		onclick={(e) => {
-			if (e.target === e.currentTarget) {
-				closeTermsModal();
-			}
-		}}
-	>
-		<div class="terms-modal-card">
+	<div class="terms-modal-overlay">
+		<button
+			type="button"
+			class="terms-modal-backdrop"
+			tabindex="-1"
+			aria-label="Close affiliate program status"
+			onclick={() => void closeTermsModal()}
+		></button>
+		<div
+			bind:this={termsModalDialog}
+			class="terms-modal-card"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="affiliate-program-status-title"
+		>
 			<div class="terms-modal__header">
-				<h2 class="terms-modal__title">Affiliate Program Status</h2>
+				<h2 id="affiliate-program-status-title" class="terms-modal__title">
+					Affiliate Program Status
+				</h2>
 				<button
+					bind:this={termsModalCloseButton}
 					type="button"
 					class="terms-modal__close"
-					onclick={closeTermsModal}
+					onclick={() => void closeTermsModal()}
 					aria-label="Close modal"
 				>
 					<svg
@@ -536,7 +587,14 @@
 				</button>
 			</div>
 
-			<div class="terms-modal__content" bind:this={termsModalElement} onscroll={handleTermsScroll}>
+			<!-- svelte-ignore a11y_no_noninteractive_tabindex (keyboard-scrollable acceptance region) -->
+			<div
+				class="terms-modal__content"
+				bind:this={termsModalContent}
+				tabindex="0"
+				aria-label="Affiliate program status details"
+				onscroll={handleTermsScroll}
+			>
 				<section class="terms-section">
 					<h3 class="terms-heading">1. Current Boundary</h3>
 					<p>
@@ -1071,14 +1129,23 @@
 	.terms-modal-overlay {
 		position: fixed;
 		inset: 0;
-		background: oklch(var(--bc) / 0.4);
-		backdrop-filter: blur(2px);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		z-index: 50;
+		z-index: 10010;
 		padding: 1rem;
 		animation: fadeIn 200ms ease;
+	}
+
+	.terms-modal-backdrop {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		border: 0;
+		background: oklch(var(--bc) / 0.4);
+		backdrop-filter: blur(2px);
+		cursor: default;
 	}
 
 	@keyframes fadeIn {
@@ -1091,6 +1158,8 @@
 	}
 
 	.terms-modal-card {
+		position: relative;
+		z-index: 1;
 		width: 100%;
 		max-width: 36rem;
 		max-height: 85vh;
@@ -1133,8 +1202,8 @@
 	}
 
 	.terms-modal__close {
-		width: 2rem;
-		height: 2rem;
+		width: 2.75rem;
+		height: 2.75rem;
 		padding: 0;
 		border: none;
 		background: oklch(var(--b2));
@@ -1191,19 +1260,6 @@
 	}
 
 	.terms-section p:last-child {
-		margin-bottom: 0;
-	}
-
-	.terms-list {
-		margin: 0.625rem 0 0.75rem;
-		padding-left: 1.5rem;
-	}
-
-	.terms-list li {
-		margin-bottom: 0.375rem;
-	}
-
-	.terms-list li:last-child {
 		margin-bottom: 0;
 	}
 

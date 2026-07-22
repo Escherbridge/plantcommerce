@@ -1,43 +1,30 @@
 import type { RequestHandler } from '@sveltejs/kit';
+import { publicIndexablePaths, publicSiteUrl } from '$lib/config/site';
 
-export const GET: RequestHandler = async ({ url }) => {
-	const baseUrl = url.origin;
+export const _publicSitemapRoutes = publicIndexablePaths;
 
-	const staticRoutes = [
-		'',
-		'/accessibility',
-		'/blog',
-		'/careers',
-		'/faq',
-		'/guides',
-		'/learn',
-		'/register',
-		'/resources',
-		'/size-guide',
-		'/support',
-		'/login',
-		'/verify-email'
-	];
+export function _renderPublicSitemap(baseUrl: string): string {
+	const origin = baseUrl.replace(/\/+$/, '');
 
-	const allRoutes = staticRoutes;
-
-	const xml = `<?xml version="1.0" encoding="UTF-8"?>
+	return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${allRoutes
+${_publicSitemapRoutes
 	.map((route) => {
-		const fullUrl = `${baseUrl}${route.startsWith('/') ? route : '/' + route}`;
-		const isProduct = route.match(/^\/products\/[^/]+\/[^/]+$/);
-		const priority =
-			route === '' ? '1.0' : isProduct ? '0.7' : route.startsWith('/products/') ? '0.8' : '0.6';
+		const fullUrl = route === '/' ? `${origin}/` : `${origin}${route}`;
 		return `
 	<url>
 		<loc>${fullUrl}</loc>
-		<changefreq>${isProduct ? 'daily' : 'weekly'}</changefreq>
-		<priority>${priority}</priority>
+		<changefreq>weekly</changefreq>
+		<priority>${route === '/' ? '1.0' : '0.6'}</priority>
 	</url>`;
 	})
 	.join('')}
 </urlset>`;
+}
+
+export const GET: RequestHandler = async ({ url }) => {
+	const baseUrl = publicSiteUrl('/', url.origin).replace(/\/+$/, '');
+	const xml = _renderPublicSitemap(baseUrl);
 
 	return new Response(xml, {
 		headers: {

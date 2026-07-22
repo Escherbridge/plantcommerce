@@ -1,3 +1,25 @@
-# allow crawling everything by default
 User-agent: *
-Disallow:
+Disallow: /account
+Disallow: /admin
+Disallow: /api
+Disallow: /instructor
+Disallow: /affiliate/dashboard
+Disallow: /affiliate/earnings
+Disallow: /affiliate/links
+Disallow: /affiliate/materials
+Disallow: /affiliate/payouts
+Disallow: /affiliate/settings
+Disallow: /learn/certificates
+Disallow: /learn/course/
+Disallow: /learn/my-courses
+Disallow: /aff/
+Disallow: /certificates/verify/
+Disallow: /checkout/success
+Disallow: /forgot-password
+Disallow: /login
+Disallow: /register
+Disallow: /resend-verification
+Disallow: /reset-password
+Disallow: /verify-email
+
+Sitemap: https://aevani.com/sitemap.xml

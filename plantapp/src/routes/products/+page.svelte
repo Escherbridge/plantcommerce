@@ -58,6 +58,7 @@
 				<!-- Search -->
 				<div class="flex-1">
 					<label
+						for="catalog-search"
 						class="font-display mb-2 block text-xs tracking-widest text-base-content/40 uppercase"
 					>
 						Search
@@ -75,11 +76,12 @@
 								<path stroke-linecap="round" d="M20 20l-3.5-3.5" />
 							</svg>
 							<input
+								id="catalog-search"
 								type="text"
 								placeholder="Search products..."
 								class="input-bordered input w-full pl-10 text-lg"
 								bind:value={searchQuery}
-								onkeypress={(e) => e.key === 'Enter' && handleSearch()}
+								onkeydown={(e) => e.key === 'Enter' && handleSearch()}
 							/>
 						</div>
 						<button
@@ -94,11 +96,13 @@
 				<!-- Category Filter -->
 				<div class="md:w-72">
 					<label
+						for="catalog-category"
 						class="font-display mb-2 block text-xs tracking-widest text-base-content/40 uppercase"
 					>
 						Category
 					</label>
 					<Select
+						id="catalog-category"
 						options={[
 							{ value: '', label: 'All Categories' },
 							...data.categories.map((c) => ({ value: c.id, label: c.name }))

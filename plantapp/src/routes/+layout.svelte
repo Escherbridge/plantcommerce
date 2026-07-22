@@ -8,11 +8,15 @@
 	import { browser } from '$app/environment';
 	import { cart } from '$lib/stores/cart';
 	import SEO from '$lib/components/SEO.svelte';
-	import { publicSite, publicSiteUrl } from '$lib/config/site';
+	import { isPublicIndexablePath, publicSite, publicSiteUrl } from '$lib/config/site';
+	import { tick } from 'svelte';
 
 	const currentYear = new Date().getFullYear();
 	const currentUrl = $derived($page.url.pathname);
 	const absoluteUrl = $derived(publicSiteUrl(currentUrl));
+	const robotsDirective = $derived(
+		isPublicIndexablePath(currentUrl) ? 'index, follow' : 'noindex, nofollow'
+	);
 
 	let { children, data } = $props();
 	const user = $derived(data.user);
@@ -35,17 +39,57 @@
 		}
 	}
 
-	// Drawer open state (mirrors the checkbox)
+	// Drawer state and focus handoff
 	let drawerOpen = $state(false);
+	let drawerTrigger = $state<HTMLButtonElement | null>(null);
+	let drawerCloseButton = $state<HTMLButtonElement | null>(null);
+	let mobileDrawer = $state<HTMLDivElement | null>(null);
 
-	function closeDrawer() {
+	const focusableSelector =
+		'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+	async function openDrawer(trigger: HTMLButtonElement) {
+		drawerTrigger = trigger;
+		drawerOpen = true;
+		await tick();
+		drawerCloseButton?.focus();
+	}
+
+	async function closeDrawer() {
+		if (!drawerOpen) return;
 		drawerOpen = false;
+		await tick();
+		if (drawerTrigger?.isConnected) drawerTrigger.focus();
+	}
+
+	function handleDrawerKeydown(event: KeyboardEvent) {
+		if (!drawerOpen) return;
+		if (event.key === 'Escape') {
+			event.preventDefault();
+			void closeDrawer();
+			return;
+		}
+
+		if (event.key !== 'Tab' || !mobileDrawer) return;
+		const focusable = Array.from(mobileDrawer.querySelectorAll<HTMLElement>(focusableSelector));
+		const first = focusable[0];
+		const last = focusable.at(-1);
+		if (!first || !last) return;
+
+		if (event.shiftKey && document.activeElement === first) {
+			event.preventDefault();
+			last.focus();
+		} else if (!event.shiftKey && document.activeElement === last) {
+			event.preventDefault();
+			first.focus();
+		}
 	}
 
 	// Close drawer on route change
 	$effect(() => {
 		currentUrl; // reactive dependency
 		drawerOpen = false;
+		drawerTrigger = null;
 	});
 
 	// Initialize cart on mount
@@ -126,17 +170,23 @@
 
 <svelte:head>
 	<SEO title={publicSite.defaultTitle} description={publicSite.description} url={absoluteUrl} />
+	<meta name="robots" content={robotsDirective} />
 </svelte:head>
 
+<svelte:window onkeydown={handleDrawerKeydown} />
+
 <div class="swiss-layout">
-	<!-- Hidden checkbox for CSS-driven drawer fallback -->
-	<input id="drawer-toggle" type="checkbox" class="drawer-toggle" bind:checked={drawerOpen} />
-
 	<!-- Main content — scales/blurs when drawer is open -->
-	<div class="layout-content" class:drawer-active={drawerOpen}>
-		<Header />
+	<div
+		class="layout-content"
+		class:drawer-active={drawerOpen}
+		inert={drawerOpen}
+		aria-hidden={drawerOpen}
+	>
+		<a class="skip-link" href="#main-content">Skip to main content</a>
+		<Header {drawerOpen} onOpenDrawer={openDrawer} />
 
-		<main class="main-content">
+		<main id="main-content" class="main-content" tabindex="-1">
 			{@render children()}
 		</main>
 
@@ -375,18 +425,34 @@
 	<div
 		class="drawer-overlay"
 		class:open={drawerOpen}
-		onclick={closeDrawer}
+		onclick={() => void closeDrawer()}
 		aria-hidden="true"
 	></div>
 
-	<div class="mobile-drawer" class:open={drawerOpen} aria-modal="true" role="dialog">
+	<div
+		bind:this={mobileDrawer}
+		id="mobile-navigation-drawer"
+		class="mobile-drawer"
+		class:open={drawerOpen}
+		aria-hidden={!drawerOpen}
+		aria-modal="true"
+		aria-label="Site navigation"
+		role="dialog"
+		inert={!drawerOpen}
+	>
 		<!-- SVG pattern background -->
 		<div class="drawer-pattern" aria-hidden="true">
 			<RootSystem />
 		</div>
 
 		<!-- Close button -->
-		<button class="drawer-close" onclick={closeDrawer} aria-label="Close menu">
+		<button
+			bind:this={drawerCloseButton}
+			type="button"
+			class="drawer-close"
+			onclick={() => void closeDrawer()}
+			aria-label="Close menu"
+		>
 			<svg
 				viewBox="0 0 24 24"
 				fill="none"
@@ -401,7 +467,7 @@
 		</button>
 
 		<!-- Wordmark -->
-		<a href="/" class="drawer-wordmark" onclick={closeDrawer}>AEVANI</a>
+		<a href="/" class="drawer-wordmark" onclick={() => void closeDrawer()}>AEVANI</a>
 
 		<!-- Primary nav -->
 		<nav class="drawer-nav">
@@ -416,7 +482,7 @@
 										href={child.href}
 										class="drawer-sub-link"
 										style="transition-delay: {drawerOpen ? i * 50 + j * 30 : 0}ms"
-										onclick={closeDrawer}
+										onclick={() => void closeDrawer()}
 									>
 										{child.label}
 									</a>
@@ -424,7 +490,9 @@
 							</div>
 						</details>
 					{:else}
-						<a href={item.href} class="drawer-nav-link" onclick={closeDrawer}>{item.label}</a>
+						<a href={item.href} class="drawer-nav-link" onclick={() => void closeDrawer()}
+							>{item.label}</a
+						>
 					{/if}
 				</div>
 			{/each}
@@ -439,10 +507,12 @@
 						<span class="drawer-user-name">{user.firstName || user.username}</span>
 						<span class="drawer-user-email">{user.email}</span>
 					</div>
-					<a href="/account" class="drawer-action-btn" onclick={closeDrawer}>My Account</a>
+					<a href="/account" class="drawer-action-btn" onclick={() => void closeDrawer()}
+						>My Account</a
+					>
 					<button
 						onclick={() => {
-							closeDrawer();
+							void closeDrawer();
 							handleLogout();
 						}}
 						class="drawer-action-btn"
@@ -451,8 +521,10 @@
 						{isLoggingOut ? 'Logging out...' : 'Logout'}
 					</button>
 				{:else}
-					<a href="/login" class="drawer-action-btn" onclick={closeDrawer}>Login</a>
-					<a href="/register" class="drawer-action-btn primary" onclick={closeDrawer}>Register</a>
+					<a href="/login" class="drawer-action-btn" onclick={() => void closeDrawer()}>Login</a>
+					<a href="/register" class="drawer-action-btn primary" onclick={() => void closeDrawer()}
+						>Register</a
+					>
 				{/if}
 			</div>
 
@@ -461,7 +533,7 @@
 				<p class="drawer-newsletter-unavailable">
 					Newsletter sign-up is currently unavailable. Review <a
 						href="/support"
-						onclick={closeDrawer}>support status</a
+						onclick={() => void closeDrawer()}>support status</a
 					>.
 				</p>
 			</div>
@@ -520,10 +592,6 @@
 		line-height: 1.6;
 	}
 
-	.drawer-toggle {
-		display: none;
-	}
-
 	.layout-content {
 		display: flex;
 		flex-direction: column;
@@ -543,6 +611,24 @@
 
 	.main-content {
 		flex: 1;
+	}
+
+	.skip-link {
+		position: fixed;
+		top: 0.5rem;
+		left: 0.5rem;
+		z-index: 10001;
+		padding: 0.625rem 1rem;
+		border-radius: 0.375rem;
+		background: oklch(var(--b1));
+		color: oklch(var(--bc));
+		box-shadow: 0 4px 12px oklch(0% 0 0 / 0.2);
+		transform: translateY(calc(-100% - 1rem));
+		transition: transform 0.15s ease;
+	}
+
+	.skip-link:focus {
+		transform: translateY(0);
 	}
 
 	/* ===== FOOTER ===== */
@@ -902,8 +988,8 @@
 		position: absolute;
 		top: 1.25rem;
 		right: 1.25rem;
-		width: 2.5rem;
-		height: 2.5rem;
+		width: 2.75rem;
+		height: 2.75rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -1119,8 +1205,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 2rem;
-		height: 2rem;
+		width: 2.75rem;
+		height: 2.75rem;
 		color: oklch(var(--nc) / 0.35);
 		transition: color 0.2s;
 	}

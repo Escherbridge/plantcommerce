@@ -2,7 +2,7 @@
 	import type { Snippet, Component } from 'svelte';
 
 	let {
-		pattern,
+		pattern: Pattern,
 		patternProps = {},
 		color = 'currentColor',
 		opacity = 0.1,
@@ -28,7 +28,7 @@
 		style="opacity: {opacity}; mix-blend-mode: {blendMode}; color: {color};"
 		aria-hidden="true"
 	>
-		<svelte:component this={pattern} {color} opacity={1} {animate} {...patternProps} />
+		<Pattern {color} opacity={1} {animate} {...patternProps} />
 	</div>
 	{#if children}
 		<div class="relative z-10">

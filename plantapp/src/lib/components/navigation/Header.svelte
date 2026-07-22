@@ -3,12 +3,55 @@
 	import { trpc } from '$lib/trpc/client';
 	import { browser } from '$app/environment';
 	import { cart } from '$lib/stores/cart';
+	import { tick } from 'svelte';
+
+	interface Props {
+		drawerOpen?: boolean;
+		onOpenDrawer?: (trigger: HTMLButtonElement) => void;
+	}
+
+	let { drawerOpen = false, onOpenDrawer = () => {} }: Props = $props();
 
 	// Get user from page data
 	const user = $derived($page.data.user);
 
 	// Logout function
 	let isLoggingOut = $state(false);
+	let userMenuOpen = $state(false);
+	let userMenuButton = $state<HTMLButtonElement | null>(null);
+	let userMenuPanel = $state<HTMLDivElement | null>(null);
+
+	async function openUserMenuAndFocusFirst() {
+		userMenuOpen = true;
+		await tick();
+		userMenuPanel?.querySelector<HTMLElement>('a[href], button:not([disabled])')?.focus();
+	}
+
+	async function closeUserMenu(restoreFocus = false) {
+		userMenuOpen = false;
+		await tick();
+		if (restoreFocus) userMenuButton?.focus();
+	}
+
+	function handleUserMenuKeydown(event: KeyboardEvent) {
+		if (event.key !== 'Escape' || !userMenuOpen) return;
+		event.preventDefault();
+		void closeUserMenu(true);
+	}
+
+	function handleUserMenuFocusout(event: FocusEvent) {
+		const nextTarget = event.relatedTarget as Node | null;
+		const menu = event.currentTarget as HTMLDivElement | null;
+		if (!menu || !nextTarget || !menu.contains(nextTarget)) {
+			userMenuOpen = false;
+		}
+	}
+
+	$effect(() => {
+		$page.url.pathname;
+		userMenuOpen = false;
+	});
+
 	async function handleLogout() {
 		if (isLoggingOut) return;
 		isLoggingOut = true;
@@ -104,14 +147,23 @@
 	});
 </script>
 
+<svelte:window onkeydown={handleUserMenuKeydown} />
+
 <header class="editorial-header" class:scrolled>
 	<div class="header-container">
 		<!-- Mobile hamburger -->
-		<label for="drawer-toggle" class="hamburger" aria-label="Open menu">
+		<button
+			type="button"
+			class="hamburger"
+			aria-label="Open menu"
+			aria-expanded={drawerOpen}
+			aria-controls="mobile-navigation-drawer"
+			onclick={(event) => onOpenDrawer(event.currentTarget)}
+		>
 			<span class="bar bar-1"></span>
 			<span class="bar bar-2"></span>
 			<span class="bar bar-3"></span>
-		</label>
+		</button>
 
 		<!-- Wordmark -->
 		<a href="/" class="wordmark">AEVANI</a>
@@ -160,8 +212,22 @@
 			</a>
 
 			<!-- User menu -->
-			<div class="user-menu">
-				<button class="action-btn" aria-label="User menu">
+			<div class="user-menu" class:open={userMenuOpen} onfocusout={handleUserMenuFocusout}>
+				<button
+					bind:this={userMenuButton}
+					type="button"
+					class="action-btn"
+					aria-label="User menu"
+					aria-expanded={userMenuOpen}
+					aria-controls="user-navigation-menu"
+					onclick={() => (userMenuOpen = !userMenuOpen)}
+					onkeydown={(event) => {
+						if (event.key === 'ArrowDown') {
+							event.preventDefault();
+							void openUserMenuAndFocusFirst();
+						}
+					}}
+				>
 					<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
@@ -171,7 +237,12 @@
 						></path>
 					</svg>
 				</button>
-				<div class="user-dropdown">
+				<div
+					bind:this={userMenuPanel}
+					id="user-navigation-menu"
+					class="user-dropdown"
+					hidden={!userMenuOpen}
+				>
 					{#if user}
 						<div class="user-dropdown-header">
 							<span class="user-dropdown-name">
@@ -181,21 +252,35 @@
 						</div>
 						<hr class="dropdown-divider" />
 						{#each userNavigation as item, j}
-							<a href={item.href} class="user-dropdown-link" style="transition-delay: {j * 50}ms">
+							<a
+								href={item.href}
+								class="user-dropdown-link"
+								style="transition-delay: {j * 50}ms"
+								onclick={() => void closeUserMenu()}
+							>
 								{item.label}
 							</a>
 						{/each}
 						<hr class="dropdown-divider" />
 						<button
-							onclick={handleLogout}
+							onclick={() => {
+								void closeUserMenu(true);
+								void handleLogout();
+							}}
 							class="user-dropdown-link logout-btn"
 							disabled={isLoggingOut}
 						>
 							{isLoggingOut ? 'Logging out...' : 'Logout'}
 						</button>
 					{:else}
-						<a href="/login" class="user-dropdown-link">Login</a>
-						<a href="/register" class="user-dropdown-link primary-link">Register</a>
+						<a href="/login" class="user-dropdown-link" onclick={() => void closeUserMenu()}
+							>Login</a
+						>
+						<a
+							href="/register"
+							class="user-dropdown-link primary-link"
+							onclick={() => void closeUserMenu()}>Register</a
+						>
 					{/if}
 				</div>
 			</div>
@@ -298,6 +383,7 @@
 	}
 
 	.nav-link:hover,
+	.nav-link:focus-visible,
 	.nav-link.active {
 		color: oklch(var(--nc));
 	}
@@ -315,6 +401,7 @@
 	}
 
 	.nav-link:hover .nav-underline,
+	.nav-link:focus-visible .nav-underline,
 	.nav-link.active .nav-underline {
 		transform: scaleX(1);
 	}
@@ -342,7 +429,8 @@
 			transform 0.22s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
 	}
 
-	.nav-item:hover .nav-dropdown {
+	.nav-item:hover .nav-dropdown,
+	.nav-item:focus-within .nav-dropdown {
 		opacity: 1;
 		visibility: visible;
 		transform: translateY(0);
@@ -366,12 +454,14 @@
 			transform 0.18s ease;
 	}
 
-	.nav-item:hover .nav-dropdown-link {
+	.nav-item:hover .nav-dropdown-link,
+	.nav-item:focus-within .nav-dropdown-link {
 		opacity: 1;
 		transform: translateX(0);
 	}
 
-	.nav-dropdown-link:hover {
+	.nav-dropdown-link:hover,
+	.nav-dropdown-link:focus-visible {
 		background-color: #f5f5f5;
 		color: #1a1a1a;
 	}
@@ -390,6 +480,8 @@
 		align-items: center;
 		justify-content: center;
 		padding: 0.5rem;
+		min-width: 2.75rem;
+		min-height: 2.75rem;
 		color: oklch(var(--nc) / 0.8);
 		background: none;
 		border: none;
@@ -471,7 +563,7 @@
 			transform 0.22s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
 	}
 
-	.user-menu:hover .user-dropdown {
+	.user-menu.open .user-dropdown {
 		opacity: 1;
 		visibility: visible;
 		transform: translateY(0);
@@ -512,12 +604,13 @@
 		transform: translateX(-6px);
 	}
 
-	.user-menu:hover .user-dropdown-link {
+	.user-menu.open .user-dropdown-link {
 		opacity: 1;
 		transform: translateX(0);
 	}
 
-	.user-dropdown-link:hover {
+	.user-dropdown-link:hover,
+	.user-dropdown-link:focus-visible {
 		background-color: oklch(var(--p) / 0.08);
 		color: oklch(var(--bc));
 	}
@@ -561,10 +654,13 @@
 		flex-direction: column;
 		justify-content: center;
 		gap: 5px;
-		width: 2rem;
-		height: 2rem;
+		width: 2.75rem;
+		height: 2.75rem;
 		cursor: pointer;
 		padding: 0.25rem;
+		border: 0;
+		background: none;
+		color: inherit;
 		flex-shrink: 0;
 	}
 
