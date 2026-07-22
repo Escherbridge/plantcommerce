@@ -10,6 +10,7 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import { publicSite, publicSiteUrl } from '$lib/config/site';
 
+	const currentYear = new Date().getFullYear();
 	const currentUrl = $derived($page.url.pathname);
 	const absoluteUrl = $derived(publicSiteUrl(currentUrl));
 
@@ -347,7 +348,7 @@
 
 				<!-- Footer bottom bar -->
 				<div class="footer-bottom">
-					<p class="copyright">&copy; 2024 Aevani. All rights reserved.</p>
+					<p class="copyright">&copy; {currentYear} Aevani. All rights reserved.</p>
 					<div class="footer-bottom-links">
 						<a href="/privacy" class="footer-bottom-link">Privacy Policy</a>
 						<a href="/terms" class="footer-bottom-link">Terms of Service</a>
