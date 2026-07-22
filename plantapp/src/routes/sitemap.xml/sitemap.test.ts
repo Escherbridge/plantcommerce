@@ -53,6 +53,6 @@ describe('public crawler discovery', () => {
 
 		expect(robots).not.toContain('Disallow: /products');
 		expect(robots).not.toContain('Disallow: /cart');
-		expect(robots).toContain('Sitemap: https://aevani.com/sitemap.xml');
+		expect(robots).toContain('Sitemap: https://aevani-web-production.up.railway.app/sitemap.xml');
 	});
 });

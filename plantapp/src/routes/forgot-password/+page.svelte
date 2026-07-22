@@ -27,7 +27,7 @@
 	<title>Reset password - Aevani</title>
 </svelte:head>
 
-<main class="mx-auto flex min-h-screen max-w-md items-center px-4 py-12">
+<div class="mx-auto flex min-h-screen max-w-md items-center px-4 py-12">
 	<section class="card w-full bg-base-100 shadow-xl">
 		<div class="card-body">
 			<h1 class="card-title text-2xl">Reset your password</h1>
@@ -68,4 +68,4 @@
 			{/if}
 		</div>
 	</section>
-</main>
+</div>

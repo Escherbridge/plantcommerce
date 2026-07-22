@@ -22,4 +22,4 @@ Disallow: /resend-verification
 Disallow: /reset-password
 Disallow: /verify-email
 
-Sitemap: https://aevani.com/sitemap.xml
+Sitemap: https://aevani-web-production.up.railway.app/sitemap.xml
