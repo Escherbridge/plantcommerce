@@ -16,9 +16,25 @@ Do not run `drizzle-kit push`, `db:migrate`, or any source-only migration agains
 - Main image bucket: `aevani-images` (`3ec6d799-d64a-4149-b98b-a29ca00ddef5`)
 - Public URL: `https://aevani-web-production.up.railway.app`
 - Health endpoint: `/api/health`
-- Git release branch: `codex/aevani-railway-release`
+- Git release branch: `main`
+- Local continuation branch: `codex/aevani-railway-release`
 
 Secrets and object-storage credentials are Railway variables. Do not copy them into Git or this handoff.
+
+## Verified stable release checkpoint
+
+- Stable Git commit: `ca35780bfa57b9ae6a5034d67e534095c236ddc1`
+- Deployment PR: `https://github.com/Escherbridge/plantcommerce/pull/2`
+- CI correction PR: `https://github.com/Escherbridge/plantcommerce/pull/3`
+- GitHub `main` build: run `29879467554`, terminal `success`
+- Railway deployment: `cfccda69-5164-4942-abb8-ee0ed60b4ecf`, terminal `SUCCESS`
+- Railway source: `Escherbridge/plantcommerce`, branch `main`, root `/plantapp`
+- Build/start contract: `npm run build` / `npm run start`
+- Runtime verification: `node build/index.js` listening on `0.0.0.0:8080`
+- Health verification: `status=ready`, `releaseMode=status`, `database.connected=true`, `database.schemaReady=true`
+- Homepage verification: HTTP `200`
+
+This checkpoint used GitHub-to-Railway deployment only. Do not replace it with an FTP or local archive deployment path.
 
 ## First task: establish an operational database baseline
 
