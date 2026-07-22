@@ -18,7 +18,7 @@ The task owns Conductor reconciliation before implementation. It must retro, sup
 - Preserve disabled migration-dependent commerce/auth capabilities until their database and flow contracts are rehearsed.
 - Do not run production migrations or enable operational flags merely to make the UI appear complete.
 
-Read `.omc/plans/aevani-post-release-hardening-handoff.md` and `.omc/plans/aevani-hardening-world-class.md` before changing code or infrastructure.
+Read `.omc/plans/aevani-post-release-hardening-handoff.md`, `.omc/plans/aevani-hardening-world-class.md`, and `.omc/plans/aevani-launch-catalog-seed-plan.md` before changing code or infrastructure.
 
 ## Live browser evidence
 
@@ -124,6 +124,7 @@ After the status audit, create or refine this minimal track set. Use the local d
 - Choose one canonical hardened checkout flow and remove/deprecate the competing implementation.
 - Preserve signed one-time affiliate attribution through landing, cart, checkout draft, Stripe completion, refunds, and commission ledger events.
 - Optimize marketplace -> PDP -> cart -> checkout for low friction and high trust without dark patterns.
+- Specify Shoppable Grow Plans now and activate them after the catalog, cart, checkout, and attribution P0 gates pass.
 
 ### `auth-journey-contracts_20260721`
 
@@ -131,6 +132,31 @@ After the status audit, create or refine this minimal track set. Use the local d
 - Give every form field stable names, labels, autocomplete semantics, server validation, accessible errors, loading/disabled states, and safe retry behavior.
 - Test success and failure paths without leaking account existence or weakening existing abuse protection.
 - Keep auth capability flags disabled until database and integration requirements are proven.
+
+## Launch catalog and seed safety
+
+`documentation/WHITELABEL.MD` is the assortment reference for the launch seed. It maps to 35 SKU candidates and one collection-only concept. The exact normalized identities, slugs, SKUs, sales models, validation waves, risk gates, UAT-fixture reconciliation, and production procedure are specified in `.omc/plans/aevani-launch-catalog-seed-plan.md`.
+
+- Seed all candidates as research-only, inactive, not customer-facing, and not sellable.
+- Never copy supplier price ranges into retail pricing or imply supplier/affiliate relationships without current evidence.
+- Verify real SKU imagery and usage rights before uploading to `aevani-images`.
+- Do not run `npm run db:seed` or reuse `plantapp/src/lib/server/db/seed.ts` in production; it is a destructive UAT reset.
+- Build a separate versioned `catalog:seed:plan/apply/verify/rollback` workflow with dry-run default, immutable source IDs, managed-field ownership, transactional advisory locking, audit hashes, and non-destructive deactivation.
+- Run production catalog work as a manual Railway worker/job on internal networking, never in the web start command or automatic predeploy hook.
+- Query production read-only before and after any apply operation; never log database or bucket credentials.
+
+## Grade-A empowerment feature: Shoppable Grow Plans
+
+The white-label engagement strategy does contain one Grade-A feature worth planning, but it is not a launch blocker. Create four editorial, outcome-led, shareable grow plans:
+
+- Countertop Hydroponics
+- 10-Day Microgreens
+- Pollinator Patch
+- Soil Renewal / Composting
+
+Each plan explains the goal, skill level, space, setup time, compatibility, required versus optional products, and next steps. Aevani-owned items use a server-owned add-required-items action. Affiliate-only items use clearly disclosed, attributable outbound actions and never appear to share Aevani checkout.
+
+Keep the MVP bounded: no AI recommender, quiz engine, public community, supplier portal, multi-vendor checkout, LMS, subscription, or automated agronomic advice. Specify and model it during the P0 work; activate it only after catalog/media, auth, cart, checkout, and attribution contracts pass.
 
 ## Required guides
 
@@ -159,6 +185,33 @@ Read and reconcile these before setting visual direction:
 7. Implement real-media/catalog and core journey fixes.
 8. Apply the modular visual-system refresh across the proven journeys.
 9. Run one integrated browser, accessibility, responsive, conversion, test, lint, typecheck, build, and release-verification sweep at the end, subject to the user's current test policy.
+
+## Maximum-concurrency workflow for the implementation task
+
+Use all four available execution slots with strict file ownership and an integrator-owned contract surface.
+
+### Wave 1: audit and contract freeze
+
+- Root/integrator: protect branch state, reconcile Conductor, and freeze DTO/route/event contracts.
+- Lane 1: launch manifest, catalog truth, seed/schema preflight, and media provenance.
+- Lane 2: browser-led design/storefront audit and design-system migration map.
+- Lane 3: authentication, cart, checkout, affiliate, and logging contract audit.
+
+### Wave 2: parallel implementation
+
+- Root/integrator: shared contracts, Conductor state, merge sequencing, and Grow Plan specification/routes.
+- Lane 1: production-safe catalog reconciler, real-image ingestion, bucket verification, and catalog APIs.
+- Lane 2: tokens, components, marketplace/PDP/Grow Plan UI, copy, accessibility, and responsive behavior.
+- Lane 3: auth journeys, server cart, canonical checkout, affiliate attribution/disclosure, and structured logging.
+
+### Wave 3: integrated hardening and release
+
+- Freeze feature edits and use a separate verifier/reviewer lane.
+- Run one integrated test, lint, typecheck, build, migration-rehearsal, browser, accessibility, responsive, security, and conversion sweep.
+- Run read-only production schema/catalog/media preflight and the catalog seed dry-run.
+- Apply only the reviewed idempotent catalog command from the exact release commit, then verify the manifest by querying production.
+- Push through Git-based CI, require a green main build, monitor Railway to terminal `SUCCESS`, and smoke-test production health and all critical journeys.
+- Roll back or disable the affected capability when any gate fails.
 
 ## Acceptance evidence
 
