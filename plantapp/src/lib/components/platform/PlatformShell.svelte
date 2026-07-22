@@ -14,13 +14,7 @@
 		children: Snippet;
 	}
 
-	let {
-		navigation,
-		user,
-		currentPath,
-		breadcrumbOverrides = {},
-		children
-	}: Props = $props();
+	let { navigation, user, currentPath, breadcrumbOverrides = {}, children }: Props = $props();
 
 	let sidebarCollapsed = $state(false);
 	let mobileOpen = $state(false);
@@ -52,7 +46,15 @@
 				onclick={() => (mobileOpen = true)}
 				aria-label="Open navigation menu"
 			>
-				<svg viewBox="0 0 24 24" class="w-5 h-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+				<svg
+					viewBox="0 0 24 24"
+					class="h-5 w-5"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
 					<path d="M4 6h16M4 12h16M4 18h16" />
 				</svg>
 			</button>
@@ -112,7 +114,10 @@
 		background: transparent;
 		color: oklch(var(--bc) / 0.7);
 		cursor: pointer;
-		transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
+		transition:
+			border-color 150ms ease,
+			color 150ms ease,
+			background-color 150ms ease;
 	}
 
 	.platform-mobile-toggle:hover {

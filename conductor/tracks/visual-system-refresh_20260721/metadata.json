@@ -1,0 +1,9 @@
+{
+  "id": "visual-system-refresh_20260721",
+  "title": "Visual System Refresh",
+  "status": "planned",
+  "priority": "P1",
+  "createdAt": "2026-07-21",
+  "dependencies": [],
+  "tags": ["design-system", "accessibility", "responsive", "truthful-copy"]
+}

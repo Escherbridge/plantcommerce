@@ -122,28 +122,28 @@ type PlantGeoEventBase = Readonly<{
 
 export type PlantGeoCommerceEvent =
 	| (PlantGeoEventBase &
-		Readonly<{
-			type: 'recommendation.recorded';
-			recommendation: PlantGeoRecommendation;
-		}>)
+			Readonly<{
+				type: 'recommendation.recorded';
+				recommendation: PlantGeoRecommendation;
+			}>)
 	| (PlantGeoEventBase &
-		Readonly<{
-			type: 'recommendation.clicked';
-			recommendationId: string;
-			productId: PlantGeoProductId;
-			attribution: PlantGeoAttributionReference;
-		}>)
+			Readonly<{
+				type: 'recommendation.clicked';
+				recommendationId: string;
+				productId: PlantGeoProductId;
+				attribution: PlantGeoAttributionReference;
+			}>)
 	| (PlantGeoEventBase &
-		Readonly<{
-			type: 'commerce.attributed';
-			order: Readonly<{
-				id: string;
-				currency: string;
-				totalMinor: number;
-				items: readonly Readonly<{ productId: PlantGeoProductId; quantity: number }>[];
-			}>;
-			attribution: PlantGeoAttributionReference;
-		}>);
+			Readonly<{
+				type: 'commerce.attributed';
+				order: Readonly<{
+					id: string;
+					currency: string;
+					totalMinor: number;
+					items: readonly Readonly<{ productId: PlantGeoProductId; quantity: number }>[];
+				}>;
+				attribution: PlantGeoAttributionReference;
+			}>);
 
 const opaqueReferencePattern = /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/;
 const productIdPattern = /^product_[1-9][0-9]*$/;
@@ -227,7 +227,10 @@ function copyClaims(claims: readonly PlantGeoCatalogClaim[]): PlantGeoCatalogCla
 		if (claim.evidence.length === 0) {
 			throw new Error('catalog claims require verified source evidence');
 		}
-		return { statement: requiredText(claim.statement, 'claim statement'), evidence: copyEvidence(claim.evidence) };
+		return {
+			statement: requiredText(claim.statement, 'claim statement'),
+			evidence: copyEvidence(claim.evidence)
+		};
 	});
 }
 
@@ -253,13 +256,18 @@ export function plantGeoProductId(productId: number): PlantGeoProductId {
 }
 
 /** Project only provenance-bearing, publishable catalog fields for PlantGeo. */
-export function projectPlantGeoCatalogProduct(source: PlantGeoCatalogSource): PlantGeoCatalogProduct {
+export function projectPlantGeoCatalogProduct(
+	source: PlantGeoCatalogSource
+): PlantGeoCatalogProduct {
 	return {
 		id: plantGeoProductId(source.productId),
 		canonicalUrl: publicHttpsUrl(source.canonicalUrl, 'canonical URL'),
 		title: requiredText(source.title, 'catalog title'),
 		summary: source.summary === null ? null : requiredText(source.summary, 'catalog summary'),
-		price: { amountMinor: minorAmount(source.price.amountMinor, 'price'), currency: currency(source.price.currency) },
+		price: {
+			amountMinor: minorAmount(source.price.amountMinor, 'price'),
+			currency: currency(source.price.currency)
+		},
 		availability: source.availability,
 		availabilityCheckedAt: isoDate(source.availabilityCheckedAt, 'availability freshness'),
 		category: {
@@ -272,8 +280,12 @@ export function projectPlantGeoCatalogProduct(source: PlantGeoCatalogSource): Pl
 			fulfillment: source.merchant.fulfillment
 		},
 		suitability: {
-			geography: source.suitability.geography.map((value) => requiredText(value, 'geography suitability')),
-			climate: source.suitability.climate.map((value) => requiredText(value, 'climate suitability')),
+			geography: source.suitability.geography.map((value) =>
+				requiredText(value, 'geography suitability')
+			),
+			climate: source.suitability.climate.map((value) =>
+				requiredText(value, 'climate suitability')
+			),
 			evidence: copyEvidence(source.suitability.evidence)
 		},
 		claims: copyClaims(source.claims),
@@ -282,20 +294,28 @@ export function projectPlantGeoCatalogProduct(source: PlantGeoCatalogSource): Pl
 	};
 }
 
-export function projectPlantGeoCatalog(source: PlantGeoCatalogProjectionSource): PlantGeoCatalogProjection {
+export function projectPlantGeoCatalog(
+	source: PlantGeoCatalogProjectionSource
+): PlantGeoCatalogProjection {
 	return {
 		contractVersion: plantGeoContractVersion,
 		generatedAt: isoDate(source.generatedAt, 'catalog generation time'),
 		cursor: source.cursor === null ? null : opaqueReference(source.cursor, 'catalog cursor'),
-		nextCursor: source.nextCursor === null ? null : opaqueReference(source.nextCursor, 'catalog next cursor'),
+		nextCursor:
+			source.nextCursor === null ? null : opaqueReference(source.nextCursor, 'catalog next cursor'),
 		products: source.products.map(projectPlantGeoCatalogProduct)
 	};
 }
 
 /** Derive a non-reversible subject reference from a stable internal account or anonymous identity. */
-export function hashPlantGeoSubject(stableInternalSubjectId: string, hashSecret: string): PlantGeoSubjectHash {
+export function hashPlantGeoSubject(
+	stableInternalSubjectId: string,
+	hashSecret: string
+): PlantGeoSubjectHash {
 	if (!internalSubjectIdPattern.test(stableInternalSubjectId)) {
-		throw new Error('PlantGeo subjects require an opaque internal identifier, not email, IP, or session data');
+		throw new Error(
+			'PlantGeo subjects require an opaque internal identifier, not email, IP, or session data'
+		);
 	}
 	if (Buffer.byteLength(hashSecret) < 32) {
 		throw new Error('PlantGeo subject hashing requires a secret of at least 32 bytes');
@@ -326,7 +346,11 @@ function copyRecommendation(recommendation: PlantGeoRecommendation): PlantGeoRec
 	) {
 		throw new Error('recommendations require selected products from the recorded candidate set');
 	}
-	if (!Number.isFinite(recommendation.confidence) || recommendation.confidence < 0 || recommendation.confidence > 1) {
+	if (
+		!Number.isFinite(recommendation.confidence) ||
+		recommendation.confidence < 0 ||
+		recommendation.confidence > 1
+	) {
 		throw new Error('recommendation confidence must be between zero and one');
 	}
 	if (recommendation.rationaleCodes.length === 0 || recommendation.sourceEvidence.length === 0) {
@@ -336,8 +360,12 @@ function copyRecommendation(recommendation: PlantGeoRecommendation): PlantGeoRec
 		id: opaqueReference(recommendation.id, 'recommendation id'),
 		candidateProductIds,
 		selectedProductIds,
-		rationaleCodes: recommendation.rationaleCodes.map((value) => opaqueReference(value, 'rationale code')),
-		constraintCodes: recommendation.constraintCodes.map((value) => opaqueReference(value, 'constraint code')),
+		rationaleCodes: recommendation.rationaleCodes.map((value) =>
+			opaqueReference(value, 'rationale code')
+		),
+		constraintCodes: recommendation.constraintCodes.map((value) =>
+			opaqueReference(value, 'constraint code')
+		),
 		confidence: recommendation.confidence,
 		sourceEvidence: copyEvidence(recommendation.sourceEvidence),
 		agent: {
@@ -361,7 +389,9 @@ function copyAttribution(attribution: PlantGeoAttributionReference): PlantGeoAtt
 }
 
 /** Clone the contract allowlist before dispatch so cast or extra runtime fields cannot leave the process. */
-export function serializePlantGeoCommerceEvent(event: PlantGeoCommerceEvent): PlantGeoCommerceEvent {
+export function serializePlantGeoCommerceEvent(
+	event: PlantGeoCommerceEvent
+): PlantGeoCommerceEvent {
 	const base = {
 		eventId: opaqueReference(event.eventId, 'event id'),
 		occurredAt: isoDate(event.occurredAt, 'event time'),
@@ -370,7 +400,11 @@ export function serializePlantGeoCommerceEvent(event: PlantGeoCommerceEvent): Pl
 
 	switch (event.type) {
 		case 'recommendation.recorded':
-			return { type: event.type, ...base, recommendation: copyRecommendation(event.recommendation) };
+			return {
+				type: event.type,
+				...base,
+				recommendation: copyRecommendation(event.recommendation)
+			};
 		case 'recommendation.clicked':
 			return {
 				type: event.type,

@@ -42,7 +42,9 @@ describe('EmailService', () => {
 		);
 
 		const request = vi.mocked(fetch).mock.calls[0][1] as RequestInit;
-		expect(request.headers).not.toEqual(expect.objectContaining({ 'Idempotency-Key': expect.stringContaining(token) }));
+		expect(request.headers).not.toEqual(
+			expect.objectContaining({ 'Idempotency-Key': expect.stringContaining(token) })
+		);
 		expect(String(request.body)).toContain('https://aevani.example/verify-email?token=');
 	});
 
@@ -50,9 +52,9 @@ describe('EmailService', () => {
 		const originalKey = env.RESEND_API_KEY;
 		env.RESEND_API_KEY = '';
 
-		await expect(EmailService.sendVerificationEmail('person@example.net', 'A'.repeat(43))).rejects.toBeInstanceOf(
-			EmailConfigurationError
-		);
+		await expect(
+			EmailService.sendVerificationEmail('person@example.net', 'A'.repeat(43))
+		).rejects.toBeInstanceOf(EmailConfigurationError);
 
 		env.RESEND_API_KEY = originalKey;
 	});

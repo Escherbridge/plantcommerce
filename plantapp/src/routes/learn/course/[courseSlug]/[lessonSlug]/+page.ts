@@ -68,7 +68,8 @@ export const load: PageLoad = async (event) => {
 	);
 
 	const prevLesson = lessonIndex > 0 ? flatLessons[lessonIndex - 1] : null;
-	const nextLesson = lessonIndex >= 0 && lessonIndex < flatLessons.length - 1 ? flatLessons[lessonIndex + 1] : null;
+	const nextLesson =
+		lessonIndex >= 0 && lessonIndex < flatLessons.length - 1 ? flatLessons[lessonIndex + 1] : null;
 
 	return {
 		course,

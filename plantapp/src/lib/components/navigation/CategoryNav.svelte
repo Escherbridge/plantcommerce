@@ -85,7 +85,9 @@
 						{category.name}
 					</span>
 					{#if showCounts}
-						<span class="ml-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 group-hover:bg-primary/10">
+						<span
+							class="ml-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 group-hover:bg-primary/10"
+						>
 							{category.productCount}
 						</span>
 					{/if}
@@ -101,7 +103,9 @@
 					class="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
 				>
 					<!-- Background gradient -->
-					<div class="absolute inset-0 bg-gradient-to-br {category.color} opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+					<div
+						class="absolute inset-0 bg-gradient-to-br {category.color} opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+					></div>
 
 					<div class="relative z-10">
 						<div class="mb-3 flex items-center justify-between">
@@ -122,17 +126,31 @@
 							</div>
 
 							{#if showCounts}
-								<div class="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 group-hover:bg-primary/10 group-hover:text-primary">
+								<div
+									class="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 group-hover:bg-primary/10 group-hover:text-primary"
+								>
 									{category.productCount} products
 								</div>
 							{/if}
 						</div>
 
 						<div class="mt-4 flex justify-end">
-							<span class="inline-flex items-center text-sm font-medium text-primary group-hover:underline">
+							<span
+								class="inline-flex items-center text-sm font-medium text-primary group-hover:underline"
+							>
 								Browse category
-								<svg class="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+								<svg
+									class="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M14 5l7 7m0 0l-7 7m7-7H3"
+									/>
 								</svg>
 							</span>
 						</div>

@@ -1,7 +1,5 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import type { RequestEvent } from '@sveltejs/kit';
-import { validateSessionToken } from '../auth';
-import { db } from '../db';
 import * as table from '../db/schema';
 import { handleError } from '$lib/utils/errorHandler';
 
@@ -12,22 +10,22 @@ export interface Context {
 }
 
 export async function createContext(event: RequestEvent): Promise<Context> {
-    try {
-        // Use the already validated user and session from hooks.server.ts
-        return {
-            event,
-            user: event.locals.user || null,
-            session: event.locals.session || null
-        };
-    } catch (error) {
-        console.error('🔐 createContext: Error:', error);
-        // Return empty context on error
-        return {
-            event,
-            user: null,
-            session: null
-        };
-    }
+	try {
+		// Use the already validated user and session from hooks.server.ts
+		return {
+			event,
+			user: event.locals.user || null,
+			session: event.locals.session || null
+		};
+	} catch (error) {
+		console.error('🔐 createContext: Error:', error);
+		// Return empty context on error
+		return {
+			event,
+			user: null,
+			session: null
+		};
+	}
 }
 
 const t = initTRPC.context<Context>().create();
@@ -56,8 +54,8 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
 			userId: ctx.user?.id,
 			url: ctx.event.url.pathname,
 			method: ctx.event.request.method,
-			userAgent: ctx.event.request.headers.get('user-agent'),
-			ip: ctx.event.getClientAddress(),
+			userAgent: ctx.event.request.headers.get('user-agent') ?? undefined,
+			ip: ctx.event.getClientAddress()
 		});
 		throw error;
 	}
@@ -91,8 +89,8 @@ export const adminProcedure = t.procedure.use(async ({ ctx, next }) => {
 			userId: ctx.user?.id,
 			url: ctx.event.url.pathname,
 			method: ctx.event.request.method,
-			userAgent: ctx.event.request.headers.get('user-agent'),
-			ip: ctx.event.getClientAddress(),
+			userAgent: ctx.event.request.headers.get('user-agent') ?? undefined,
+			ip: ctx.event.getClientAddress()
 		});
 		throw error;
 	}
@@ -126,8 +124,8 @@ export const affiliateProcedure = t.procedure.use(async ({ ctx, next }) => {
 			userId: ctx.user?.id,
 			url: ctx.event.url.pathname,
 			method: ctx.event.request.method,
-			userAgent: ctx.event.request.headers.get('user-agent'),
-			ip: ctx.event.getClientAddress(),
+			userAgent: ctx.event.request.headers.get('user-agent') ?? undefined,
+			ip: ctx.event.getClientAddress()
 		});
 		throw error;
 	}
@@ -161,8 +159,8 @@ export const customerProcedure = t.procedure.use(async ({ ctx, next }) => {
 			userId: ctx.user?.id,
 			url: ctx.event.url.pathname,
 			method: ctx.event.request.method,
-			userAgent: ctx.event.request.headers.get('user-agent'),
-			ip: ctx.event.getClientAddress(),
+			userAgent: ctx.event.request.headers.get('user-agent') ?? undefined,
+			ip: ctx.event.getClientAddress()
 		});
 		throw error;
 	}

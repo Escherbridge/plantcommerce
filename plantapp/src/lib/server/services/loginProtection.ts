@@ -21,7 +21,9 @@ type ThrottleSubject = {
 };
 
 function hashIdentifier(scope: string, value: string): string {
-	return encodeHexLowerCase(sha256(new TextEncoder().encode(`${scope}:${value.trim().toLowerCase()}`)));
+	return encodeHexLowerCase(
+		sha256(new TextEncoder().encode(`${scope}:${value.trim().toLowerCase()}`))
+	);
 }
 
 function subject(
@@ -67,10 +69,7 @@ function emailVerificationSubjects(ipAddress: string, email: string): ThrottleSu
 }
 
 async function recordSubjectAttempt(subject: ThrottleSubject): Promise<boolean> {
-	if (
-		env.AUTH_CAPABILITIES_ENABLED !== 'true' ||
-		env.AUTH_ATOMIC_THROTTLES_ENABLED !== 'true'
-	) {
+	if (env.AUTH_CAPABILITIES_ENABLED !== 'true' || env.AUTH_ATOMIC_THROTTLES_ENABLED !== 'true') {
 		return recordLegacySubjectAttempt(subject);
 	}
 
@@ -103,10 +102,10 @@ async function recordSubjectAttempt(subject: ThrottleSubject): Promise<boolean> 
 		})
 		.onConflictDoUpdate({
 			target: [table.loginAttempts.identifier, table.loginAttempts.identifierType],
-		set: {
-			attempts: nextAttempts,
-			lastAttempt: nextLastAttempt,
-			blockedUntil: nextBlockedUntil
+			set: {
+				attempts: nextAttempts,
+				lastAttempt: nextLastAttempt,
+				blockedUntil: nextBlockedUntil
 			}
 		})
 		.returning();
@@ -132,7 +131,9 @@ async function recordLegacySubjectAttempt(subject: ThrottleSubject): Promise<boo
 			)
 			.for('update');
 		if (attempts.length > 1) {
-			console.error('Duplicate legacy throttle subjects require the 0004 recovery migration before use');
+			console.error(
+				'Duplicate legacy throttle subjects require the 0004 recovery migration before use'
+			);
 			return false;
 		}
 		const attempt = attempts[0];
@@ -150,10 +151,10 @@ async function recordLegacySubjectAttempt(subject: ThrottleSubject): Promise<boo
 			return true;
 		}
 
-		const attemptCount = now.getTime() - attempt.lastAttempt.getTime() >= subject.windowMs
-			? 1
-			: attempt.attempts + 1;
-		const blockedUntil = attemptCount >= subject.maxAttempts ? new Date(now.getTime() + subject.lockMs) : null;
+		const attemptCount =
+			now.getTime() - attempt.lastAttempt.getTime() >= subject.windowMs ? 1 : attempt.attempts + 1;
+		const blockedUntil =
+			attemptCount >= subject.maxAttempts ? new Date(now.getTime() + subject.lockMs) : null;
 		await tx
 			.update(table.loginAttempts)
 			.set({ attempts: attemptCount, lastAttempt: now, blockedUntil })

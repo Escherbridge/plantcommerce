@@ -7,7 +7,7 @@ Append these modifiers to prompts to ensure brand consistency:
 Style: Photorealistic, high resolution, 8k, soft natural lighting, earthy tones, deep blue and cream color palette, cinematic depth of field, organic textures, vibrant but natural colors. Negative Prompt: Artificial, plastic, neon, low resolution, blurry, distorted, text, watermark, monoculture, industrial, sterile, corporate.
 
 1. Hero & Landing Page Images
-These images are designed to make a strong first impression, embodying the "Monoculture to Polyculture" shift.
+   These images are designed to make a strong first impression, embodying the "Monoculture to Polyculture" shift.
 
 Main Hero
 Concept: A thriving, diverse polyculture garden. Prompt: A breathtaking wide shot of a lush, biodiverse permaculture garden at golden hour. Interconnected plant guilds with varying heights, textures, and colors. A mix of vegetables, flowers, and herbs growing together in harmony. Soft sunlight filtering through leaves. The overall feeling is abundant, resilient, and alive. Dominant colors: Deep greens, earthy browns, splashes of vibrant flower colors, soft sky blues.
@@ -19,7 +19,7 @@ Value Prop: Community
 Concept: Diverse group of people gardening. Prompt: A candid, lifestyle shot of a diverse group of people (different ages, ethnicities) working together in a community garden. They are smiling, sharing tools, and harvesting produce. Soft focus background. conveys a sense of collaboration, joy, and shared purpose.
 
 2. Product Images
-Mock images for the e-commerce section.
+   Mock images for the e-commerce section.
 
 Plant: Heirloom Tomato
 Prompt: Professional product photography of a vibrant, red Heirloom Tomato on a rustic wooden table. Water droplets on the skin. Soft, natural window lighting. Shallow depth of field. The background is a blurred kitchen setting. High detail, appetizing.
@@ -147,7 +147,7 @@ Grafting & Propagation Kit
 Prompt: Professional grafting tools laid out: grafting knife, pruning shears, grafting tape, rooting hormone, and propagation dome. Arranged on a clean surface with a successfully grafted plant cutting. Shows advanced growing techniques. Clean, educational product photography.
 
 3. Educational & Content Images
-For the Blog, Guides, and Learn sections.
+   For the Blog, Guides, and Learn sections.
 
 Hydroponic Setup (Modern/Accessible)
 Prompt: A sleek, modern indoor hydroponic setup in a bright living room. Lush green leafy vegetables growing in a vertical system. Clean lines, white and wood accents. Shows that growing food is accessible and can fit into a modern lifestyle.
@@ -159,7 +159,7 @@ Companion Planting
 Prompt: A top-down view of a companion planting bed. Marigolds planted next to tomatoes and basil. Distinct visual contrast between the different plant types. Sunlight dappled across the bed. Visualizes the concept of plant guilds and cooperation.
 
 4. Brand & Abstract Backgrounds
-For headers, footers, and UI backgrounds.
+   For headers, footers, and UI backgrounds.
 
 Abstract Polyculture Texture
 Prompt: An abstract, macro texture shot of overlapping leaves of different shapes and shades of green. Deep shadows and bright highlights. Creates a complex, organic pattern. No distinct focal point. Suitable for use as a subtle background overlay.
@@ -171,8 +171,8 @@ Water & Growth
 Prompt: Abstract macro photography of water ripples on a pond surface with a single green shoot emerging. Calm, serene, and reflective. Dominant colors: Muted Blue (#457B9D) and Light Blue-Green (#A8DADC).
 
 5. Admin & Dashboard
-Empty State Illustration
-Prompt: A simple, flat-style vector illustration of a sprout emerging from a seed. Using the brand color palette (Deep Blue, Light Cream, Accent Red). Clean lines, minimal detail. Friendly and encouraging.
+   Empty State Illustration
+   Prompt: A simple, flat-style vector illustration of a sprout emerging from a seed. Using the brand color palette (Deep Blue, Light Cream, Accent Red). Clean lines, minimal detail. Friendly and encouraging.
 
 Success State Illustration
 Prompt: A simple, flat-style vector illustration of a blooming flower or a basket of harvested vegetables. Brand colors. Celebratory but elegant.

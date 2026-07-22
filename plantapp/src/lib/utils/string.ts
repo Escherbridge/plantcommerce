@@ -4,5 +4,5 @@
  * @returns The escaped string.
  */
 export function sanitizeLike(str: string): string {
-  return str.replace(/%/g, '\\%').replace(/_/g, '\\_');
+	return str.replace(/%/g, '\\%').replace(/_/g, '\\_');
 }

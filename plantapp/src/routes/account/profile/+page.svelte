@@ -31,7 +31,7 @@
 		<div class="platform-card__header">
 			<h2 class="platform-card__title">Personal Information</h2>
 			<button
-				class="btn btn-sm btn-outline font-display uppercase tracking-wider"
+				class="font-display btn tracking-wider uppercase btn-outline btn-sm"
 				onclick={() => (editMode = !editMode)}
 			>
 				{editMode ? 'Cancel' : 'Edit'}
@@ -46,7 +46,7 @@
 				<input
 					id="firstName"
 					type="text"
-					class="input input-bordered w-full"
+					class="input-bordered input w-full"
 					bind:value={formData.firstName}
 					disabled={!editMode}
 				/>
@@ -59,7 +59,7 @@
 				<input
 					id="lastName"
 					type="text"
-					class="input input-bordered w-full"
+					class="input-bordered input w-full"
 					bind:value={formData.lastName}
 					disabled={!editMode}
 				/>
@@ -72,7 +72,7 @@
 				<input
 					id="email"
 					type="email"
-					class="input input-bordered w-full"
+					class="input-bordered input w-full"
 					bind:value={formData.email}
 					disabled={!editMode}
 				/>
@@ -85,7 +85,7 @@
 				<input
 					id="phone"
 					type="tel"
-					class="input input-bordered w-full"
+					class="input-bordered input w-full"
 					bind:value={formData.phone}
 					disabled={!editMode}
 				/>
@@ -94,7 +94,7 @@
 
 		{#if editMode}
 			<div class="platform-card__actions">
-				<button class="btn btn-primary font-display uppercase tracking-wider">Save Changes</button>
+				<button class="font-display btn tracking-wider uppercase btn-primary">Save Changes</button>
 			</div>
 		{/if}
 	</div>
@@ -110,7 +110,7 @@
 				<input
 					id="currentPassword"
 					type="password"
-					class="input input-bordered w-full"
+					class="input-bordered input w-full"
 					placeholder="Enter current password"
 				/>
 			</div>
@@ -122,7 +122,7 @@
 				<input
 					id="newPassword"
 					type="password"
-					class="input input-bordered w-full"
+					class="input-bordered input w-full"
 					placeholder="Enter new password"
 				/>
 			</div>
@@ -134,14 +134,14 @@
 				<input
 					id="confirmPassword"
 					type="password"
-					class="input input-bordered w-full"
+					class="input-bordered input w-full"
 					placeholder="Confirm new password"
 				/>
 			</div>
 		</div>
 
 		<div class="platform-card__actions">
-			<button class="btn btn-primary font-display uppercase tracking-wider">Update Password</button>
+			<button class="font-display btn tracking-wider uppercase btn-primary">Update Password</button>
 		</div>
 	</div>
 
@@ -151,11 +151,15 @@
 		<div class="platform-stats">
 			<div class="platform-stat">
 				<span class="platform-stat__label">Total Orders</span>
-				<span class="platform-stat__value" style="color: oklch(var(--p));">{data.stats?.totalOrders || 0}</span>
+				<span class="platform-stat__value" style="color: oklch(var(--p));"
+					>{data.stats?.totalOrders || 0}</span
+				>
 			</div>
 			<div class="platform-stat">
 				<span class="platform-stat__label">Wishlist Items</span>
-				<span class="platform-stat__value" style="color: oklch(var(--s));">{data.stats?.wishlistItems || 0}</span>
+				<span class="platform-stat__value" style="color: oklch(var(--s));"
+					>{data.stats?.wishlistItems || 0}</span
+				>
 			</div>
 		</div>
 	</div>
@@ -165,26 +169,62 @@
 		<h2 class="platform-card__title" style="margin-bottom: 1.25rem;">Account Actions</h2>
 		<div class="actions-stack">
 			<a href="/account/settings" class="platform-action-btn">
-				<svg viewBox="0 0 24 24" class="action-icon" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M3 5h18v14H3V5zM3 5l9 7 9-7"/>
+				<svg
+					viewBox="0 0 24 24"
+					class="action-icon"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path d="M3 5h18v14H3V5zM3 5l9 7 9-7" />
 				</svg>
 				Email Preferences
 			</a>
 			<a href="/account/settings" class="platform-action-btn">
-				<svg viewBox="0 0 24 24" class="action-icon" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M15 17h5l-1.4-1.4A6 6 0 0018 11V8a6 6 0 00-12 0v3c0 1.3-.4 2.5-1.2 3.6L4 17h5m6 0v1a3 3 0 01-6 0v-1m6 0H9"/>
+				<svg
+					viewBox="0 0 24 24"
+					class="action-icon"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path
+						d="M15 17h5l-1.4-1.4A6 6 0 0018 11V8a6 6 0 00-12 0v3c0 1.3-.4 2.5-1.2 3.6L4 17h5m6 0v1a3 3 0 01-6 0v-1m6 0H9"
+					/>
 				</svg>
 				Notification Settings
 			</a>
 			<a href="/account/settings" class="platform-action-btn">
-				<svg viewBox="0 0 24 24" class="action-icon" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+				<svg
+					viewBox="0 0 24 24"
+					class="action-icon"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
 				</svg>
 				Theme Preferences
 			</a>
 			<button class="platform-action-btn platform-action-btn--danger">
-				<svg viewBox="0 0 24 24" class="action-icon" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+				<svg
+					viewBox="0 0 24 24"
+					class="action-icon"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path
+						d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+					/>
 				</svg>
 				Delete Account
 			</button>

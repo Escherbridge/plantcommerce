@@ -34,10 +34,15 @@
 			{#if message}
 				<p class={unavailable ? 'text-warning' : ''} role="status">{message}</p>
 			{/if}
-			<button class="btn btn-primary mt-4" type="button" onclick={requestVerification} disabled={loading}>
+			<button
+				class="btn mt-4 btn-primary"
+				type="button"
+				onclick={requestVerification}
+				disabled={loading}
+			>
 				{loading ? 'Sending…' : 'Send verification email'}
 			</button>
-			<a class="btn btn-ghost mt-2" href="/login">Back to login</a>
+			<a class="btn mt-2 btn-ghost" href="/login">Back to login</a>
 		</div>
 	</section>
 </main>

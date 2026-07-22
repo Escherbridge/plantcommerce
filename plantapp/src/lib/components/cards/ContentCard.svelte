@@ -22,6 +22,34 @@
 	}: Props = $props();
 </script>
 
+<a
+	{href}
+	class="content-card block border border-base-300 bg-base-100 hover:border-primary/30 {className}"
+>
+	{#if image}
+		<div class="content-card__image-wrap">
+			<img src={image} alt={title} class="content-card__image" loading="lazy" />
+		</div>
+	{/if}
+
+	<div class="flex flex-col gap-3 p-5">
+		<div class="flex items-center justify-between gap-2">
+			<span class="font-mono text-xs tracking-widest text-secondary uppercase">{category}</span>
+			{#if date}
+				<span class="font-mono text-xs text-base-content/50">{date}</span>
+			{/if}
+		</div>
+
+		<h3 class="content-card__title font-display line-clamp-2 text-xl font-bold text-base-content">
+			{title}
+		</h3>
+
+		<p class="line-clamp-3 font-sans text-base text-base-content/70">{excerpt}</p>
+
+		<span class="mt-auto font-mono text-xs text-base-content/50">{readingTime}</span>
+	</div>
+</a>
+
 <style>
 	.content-card {
 		border-radius: var(--radius-lg, 0.75rem);
@@ -61,31 +89,3 @@
 		transition: color 200ms ease;
 	}
 </style>
-
-<a
-	{href}
-	class="content-card block border border-base-300 bg-base-100 hover:border-primary/30 {className}"
->
-	{#if image}
-		<div class="content-card__image-wrap">
-			<img src={image} alt={title} class="content-card__image" loading="lazy" />
-		</div>
-	{/if}
-
-	<div class="p-5 flex flex-col gap-3">
-		<div class="flex items-center justify-between gap-2">
-			<span class="font-mono text-xs uppercase tracking-widest text-secondary">{category}</span>
-			{#if date}
-				<span class="font-mono text-xs text-base-content/50">{date}</span>
-			{/if}
-		</div>
-
-		<h3 class="content-card__title font-display text-xl font-bold text-base-content line-clamp-2">
-			{title}
-		</h3>
-
-		<p class="font-sans text-base text-base-content/70 line-clamp-3">{excerpt}</p>
-
-		<span class="font-mono text-xs text-base-content/50 mt-auto">{readingTime}</span>
-	</div>
-</a>

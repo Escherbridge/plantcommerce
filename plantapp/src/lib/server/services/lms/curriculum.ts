@@ -146,9 +146,7 @@ export class CurriculumService {
 		const mod = moduleResult[0];
 
 		// Delete (cascades to lessons and content blocks)
-		await db
-			.delete(lmsTable.lmsModule)
-			.where(eq(lmsTable.lmsModule.id, moduleId));
+		await db.delete(lmsTable.lmsModule).where(eq(lmsTable.lmsModule.id, moduleId));
 
 		// Reorder remaining modules to fill gap
 		await db.execute(
@@ -285,7 +283,8 @@ export class CurriculumService {
 		if (params.description !== undefined) updateData.description = params.description;
 		if (params.isPublished !== undefined) updateData.isPublished = params.isPublished;
 		if (params.isPreview !== undefined) updateData.isPreview = params.isPreview;
-		if (params.estimatedMinutes !== undefined) updateData.estimatedMinutes = params.estimatedMinutes;
+		if (params.estimatedMinutes !== undefined)
+			updateData.estimatedMinutes = params.estimatedMinutes;
 
 		const result = await db
 			.update(lmsTable.lmsLesson)
@@ -315,9 +314,7 @@ export class CurriculumService {
 		const lesson = lessonResult[0];
 
 		// Delete (cascades to content blocks)
-		await db
-			.delete(lmsTable.lmsLesson)
-			.where(eq(lmsTable.lmsLesson.id, lessonId));
+		await db.delete(lmsTable.lmsLesson).where(eq(lmsTable.lmsLesson.id, lessonId));
 
 		// Reorder remaining lessons in module
 		await db.execute(

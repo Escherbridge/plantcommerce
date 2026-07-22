@@ -12,7 +12,10 @@ export const POST: RequestHandler = async ({ locals, cookies }) => {
 	}
 
 	if (env.SECURE_CHECKOUT_ENABLED !== 'true') {
-		throw error(503, 'Checkout is temporarily unavailable while secure payment processing is being updated.');
+		throw error(
+			503,
+			'Checkout is temporarily unavailable while secure payment processing is being updated.'
+		);
 	}
 
 	const buyer = locals.user

@@ -14,14 +14,16 @@
 	const curriculum = $derived(data.curriculum ?? { modules: [] });
 
 	const totalLessons = $derived(
-		(curriculum.modules ?? []).reduce(
-			(sum: number, m: any) => sum + (m.lessons?.length ?? 0),
-			0
-		)
+		(curriculum.modules ?? []).reduce((sum: number, m: any) => sum + (m.lessons?.length ?? 0), 0)
 	);
 
 	const formattedPrice = $derived.by(() => {
-		if (course.pricingType === 'free' || !course.price || course.price === '0' || course.price === '0.00') {
+		if (
+			course.pricingType === 'free' ||
+			!course.price ||
+			course.price === '0' ||
+			course.price === '0.00'
+		) {
 			return 'Free';
 		}
 		return `$${course.price}`;
@@ -78,12 +80,22 @@
 </svelte:head>
 
 <!-- Hero -->
-<section class="bg-primary text-primary-content w-full py-16 lg:py-24">
+<section class="w-full bg-primary py-16 text-primary-content lg:py-24">
 	<Container>
-		<div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-			<div class="lg:col-span-2 space-y-6">
-				<a href="/courses" class="inline-flex items-center gap-2 text-primary-content/70 hover:text-primary-content font-mono text-sm tracking-wider uppercase">
-					<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+		<div class="grid grid-cols-1 items-start gap-12 lg:grid-cols-3">
+			<div class="space-y-6 lg:col-span-2">
+				<a
+					href="/courses"
+					class="inline-flex items-center gap-2 font-mono text-sm tracking-wider text-primary-content/70 uppercase hover:text-primary-content"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-4 w-4"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						stroke-width="2"
+					>
 						<path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
 					</svg>
 					<span>Back to Catalog</span>
@@ -91,45 +103,89 @@
 
 				<div class="flex flex-wrap items-center gap-3">
 					{#if course.difficulty}
-						<span class="badge badge-secondary uppercase font-mono tracking-wider">{course.difficulty}</span>
+						<span class="badge font-mono tracking-wider uppercase badge-secondary"
+							>{course.difficulty}</span
+						>
 					{/if}
 					{#if course.isFeatured}
-						<span class="badge badge-outline border-primary-content/50 text-primary-content uppercase font-mono tracking-wider">Featured</span>
+						<span
+							class="badge badge-outline border-primary-content/50 font-mono tracking-wider text-primary-content uppercase"
+							>Featured</span
+						>
 					{/if}
 					{#if course.courseType}
-						<span class="badge badge-outline border-primary-content/50 text-primary-content uppercase font-mono tracking-wider">
+						<span
+							class="badge badge-outline border-primary-content/50 font-mono tracking-wider text-primary-content uppercase"
+						>
 							{course.courseType.replace('_', ' ')}
 						</span>
 					{/if}
 				</div>
 
-				<h1 class="font-display text-4xl lg:text-6xl font-bold uppercase tracking-tight">{course.title}</h1>
+				<h1 class="font-display text-4xl font-bold tracking-tight uppercase lg:text-6xl">
+					{course.title}
+				</h1>
 
 				{#if course.description}
-					<p class="text-lg lg:text-xl text-primary-content/80 font-light leading-relaxed max-w-3xl">
+					<p
+						class="max-w-3xl text-lg leading-relaxed font-light text-primary-content/80 lg:text-xl"
+					>
 						{course.description}
 					</p>
 				{/if}
 
 				<div class="flex flex-wrap items-center gap-6 pt-4">
 					<div class="flex items-center gap-2 text-primary-content/70">
-						<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="1.5"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+							/>
 						</svg>
 						<span class="font-mono text-sm">{instructorDisplayName}</span>
 					</div>
 					{#if course.enrollmentCount !== undefined}
 						<div class="flex items-center gap-2 text-primary-content/70">
-							<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-5 w-5"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								stroke-width="1.5"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+								/>
 							</svg>
 							<span class="font-mono text-sm">{course.enrollmentCount} enrolled</span>
 						</div>
 					{/if}
 					{#if course.durationEstimate}
 						<div class="flex items-center gap-2 text-primary-content/70">
-							<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-5 w-5"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								stroke-width="1.5"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+								/>
 							</svg>
 							<span class="font-mono text-sm">{course.durationEstimate} min</span>
 						</div>
@@ -139,32 +195,34 @@
 
 			<!-- Enroll Card -->
 			<div class="lg:col-span-1">
-				<div class="rounded-3xl bg-base-100 text-base-content p-8 shadow-2xl sticky top-8">
+				<div class="sticky top-8 rounded-3xl bg-base-100 p-8 text-base-content shadow-2xl">
 					{#if course.thumbnailFileId}
-						<div class="aspect-video rounded-2xl overflow-hidden mb-6 bg-base-200">
+						<div class="mb-6 aspect-video overflow-hidden rounded-2xl bg-base-200">
 							<img
 								src="/api/files/serve/{course.thumbnailFileId}"
 								alt={course.title}
-								class="w-full h-full object-cover"
+								class="h-full w-full object-cover"
 							/>
 						</div>
 					{/if}
 
-					<div class="text-center mb-6">
+					<div class="mb-6 text-center">
 						<div class="font-display text-5xl font-bold text-primary">{formattedPrice}</div>
 						{#if course.pricingType !== 'free'}
-							<p class="text-xs font-mono text-base-content/50 tracking-wider uppercase mt-2">One-time purchase</p>
+							<p class="mt-2 font-mono text-xs tracking-wider text-base-content/50 uppercase">
+								One-time purchase
+							</p>
 						{/if}
 					</div>
 
 					<button
 						type="button"
-						class="btn btn-primary btn-lg w-full font-display uppercase tracking-wider rounded-2xl"
+						class="font-display btn w-full rounded-2xl tracking-wider uppercase btn-lg btn-primary"
 						onclick={handleEnroll}
 						disabled={enrolling}
 					>
 						{#if enrolling}
-							<span class="loading loading-spinner loading-sm"></span>
+							<span class="loading loading-sm loading-spinner"></span>
 							Enrolling...
 						{:else if course.pricingType === 'free'}
 							Enroll Free
@@ -174,24 +232,45 @@
 					</button>
 
 					{#if enrollError}
-						<div class="mt-4 text-sm text-error text-center">{enrollError}</div>
+						<div class="mt-4 text-center text-sm text-error">{enrollError}</div>
 					{/if}
 
-					<div class="mt-6 pt-6 border-t border-base-200 space-y-3 text-sm">
+					<div class="mt-6 space-y-3 border-t border-base-200 pt-6 text-sm">
 						<div class="flex items-center gap-3">
-							<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-5 w-5 text-primary"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								stroke-width="2"
+							>
 								<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
 							</svg>
 							<span class="text-base-content/70">Lifetime access</span>
 						</div>
 						<div class="flex items-center gap-3">
-							<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-5 w-5 text-primary"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								stroke-width="2"
+							>
 								<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
 							</svg>
 							<span class="text-base-content/70">Certificate of completion</span>
 						</div>
 						<div class="flex items-center gap-3">
-							<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-5 w-5 text-primary"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								stroke-width="2"
+							>
 								<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
 							</svg>
 							<span class="text-base-content/70">{totalLessons} lessons</span>
@@ -204,41 +283,52 @@
 </section>
 
 <!-- Curriculum -->
-<section class="bg-base-100 w-full py-16 lg:py-24">
+<section class="w-full bg-base-100 py-16 lg:py-24">
 	<Container>
-		<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+		<div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
 			<div class="lg:col-span-2">
-				<span class="text-editorial text-secondary font-mono tracking-widest">CURRICULUM</span>
-				<h2 class="font-display text-3xl lg:text-4xl font-bold uppercase tracking-tight mt-2 mb-8">
+				<span class="text-editorial font-mono tracking-widest text-secondary">CURRICULUM</span>
+				<h2 class="font-display mt-2 mb-8 text-3xl font-bold tracking-tight uppercase lg:text-4xl">
 					Course Content
 				</h2>
 
 				{#if curriculum.modules && curriculum.modules.length > 0}
 					<div class="space-y-4">
 						{#each curriculum.modules as mod, idx}
-							<div class="rounded-3xl border border-base-200/50 bg-base-100 overflow-hidden">
+							<div class="overflow-hidden rounded-3xl border border-base-200/50 bg-base-100">
 								<button
 									type="button"
-									class="w-full p-6 flex items-center justify-between gap-4 hover:bg-base-200/30 transition-colors text-left"
+									class="flex w-full items-center justify-between gap-4 p-6 text-left transition-colors hover:bg-base-200/30"
 									onclick={() => toggleModule(mod.id)}
 								>
-									<div class="flex items-start gap-4 flex-1 min-w-0">
-										<span class="font-mono text-xs text-base-content/40 tracking-wider mt-1">
+									<div class="flex min-w-0 flex-1 items-start gap-4">
+										<span class="mt-1 font-mono text-xs tracking-wider text-base-content/40">
 											{String(idx + 1).padStart(2, '0')}
 										</span>
-										<div class="flex-1 min-w-0">
-											<h3 class="font-display text-lg font-bold uppercase tracking-tight">{mod.title}</h3>
+										<div class="min-w-0 flex-1">
+											<h3 class="font-display text-lg font-bold tracking-tight uppercase">
+												{mod.title}
+											</h3>
 											{#if mod.description}
-												<p class="text-sm text-base-content/60 font-light mt-1 line-clamp-2">{mod.description}</p>
+												<p class="mt-1 line-clamp-2 text-sm font-light text-base-content/60">
+													{mod.description}
+												</p>
 											{/if}
-											<p class="text-xs font-mono text-base-content/40 tracking-wider uppercase mt-2">
-												{mod.lessons?.length ?? 0} {(mod.lessons?.length ?? 0) === 1 ? 'lesson' : 'lessons'}
+											<p
+												class="mt-2 font-mono text-xs tracking-wider text-base-content/40 uppercase"
+											>
+												{mod.lessons?.length ?? 0}
+												{(mod.lessons?.length ?? 0) === 1 ? 'lesson' : 'lessons'}
 											</p>
 										</div>
 									</div>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
-										class="w-5 h-5 text-base-content/40 flex-shrink-0 transition-transform {openModuleIds.has(mod.id) ? 'rotate-180' : ''}"
+										class="h-5 w-5 flex-shrink-0 text-base-content/40 transition-transform {openModuleIds.has(
+											mod.id
+										)
+											? 'rotate-180'
+											: ''}"
 										fill="none"
 										viewBox="0 0 24 24"
 										stroke="currentColor"
@@ -248,19 +338,39 @@
 									</svg>
 								</button>
 								{#if openModuleIds.has(mod.id) && mod.lessons && mod.lessons.length > 0}
-									<div class="border-t border-base-200/50 divide-y divide-base-200/50">
+									<div class="divide-y divide-base-200/50 border-t border-base-200/50">
 										{#each mod.lessons as lesson}
-											<div class="p-5 pl-12 flex items-center gap-3">
-												<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-													<path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-													<path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+											<div class="flex items-center gap-3 p-5 pl-12">
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													class="h-4 w-4 text-base-content/40"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+													stroke-width="1.5"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+													/>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+													/>
 												</svg>
 												<span class="flex-1 text-sm">{lesson.title}</span>
 												{#if lesson.isPreview}
-													<span class="badge badge-ghost badge-sm uppercase font-mono tracking-wider">Preview</span>
+													<span
+														class="badge badge-ghost badge-sm font-mono tracking-wider uppercase"
+														>Preview</span
+													>
 												{/if}
 												{#if lesson.estimatedMinutes}
-													<span class="text-xs font-mono text-base-content/40">{lesson.estimatedMinutes}m</span>
+													<span class="font-mono text-xs text-base-content/40"
+														>{lesson.estimatedMinutes}m</span
+													>
 												{/if}
 											</div>
 										{/each}
@@ -271,31 +381,49 @@
 					</div>
 				{:else}
 					<div class="rounded-3xl border border-base-200/50 bg-base-100 p-12 text-center">
-						<p class="text-base-content/60 font-light">Curriculum details will be available after enrollment.</p>
+						<p class="font-light text-base-content/60">
+							Curriculum details will be available after enrollment.
+						</p>
 					</div>
 				{/if}
 			</div>
 
 			<!-- Instructor Card -->
 			<div class="lg:col-span-1">
-				<span class="text-editorial text-secondary font-mono tracking-widest">INSTRUCTOR</span>
-				<h2 class="font-display text-2xl lg:text-3xl font-bold uppercase tracking-tight mt-2 mb-6">
+				<span class="text-editorial font-mono tracking-widest text-secondary">INSTRUCTOR</span>
+				<h2 class="font-display mt-2 mb-6 text-2xl font-bold tracking-tight uppercase lg:text-3xl">
 					About the Teacher
 				</h2>
 				<div class="rounded-3xl border border-base-200/50 bg-base-100 p-6 shadow-sm">
-					<div class="flex items-center gap-4 mb-4">
-						<div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-							<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+					<div class="mb-4 flex items-center gap-4">
+						<div
+							class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-primary/10"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-8 w-8 text-primary"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								stroke-width="1.5"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+								/>
 							</svg>
 						</div>
 						<div>
 							<h3 class="font-display text-lg font-bold">{instructorDisplayName}</h3>
-							<p class="text-xs font-mono text-base-content/50 tracking-wider uppercase">Course Instructor</p>
+							<p class="font-mono text-xs tracking-wider text-base-content/50 uppercase">
+								Course Instructor
+							</p>
 						</div>
 					</div>
-					<p class="text-sm text-base-content/60 font-light leading-relaxed">
-						Expert in sustainable agriculture with years of hands-on experience sharing practical knowledge with learners worldwide.
+					<p class="text-sm leading-relaxed font-light text-base-content/60">
+						Expert in sustainable agriculture with years of hands-on experience sharing practical
+						knowledge with learners worldwide.
 					</p>
 				</div>
 			</div>

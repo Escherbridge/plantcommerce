@@ -56,11 +56,7 @@ export class LmsMediaService {
 		}
 	}
 
-	private static generateBucketPath(
-		courseId: string,
-		mediaType: string,
-		filename: string
-	): string {
+	private static generateBucketPath(courseId: string, mediaType: string, filename: string): string {
 		const date = new Date();
 		const y = date.getFullYear();
 		const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -115,11 +111,7 @@ export class LmsMediaService {
 	}
 
 	static async confirmUpload(fileId: string, fileSize: number): Promise<void> {
-		const [file] = await db
-			.select()
-			.from(table.file)
-			.where(eq(table.file.id, fileId))
-			.limit(1);
+		const [file] = await db.select().from(table.file).where(eq(table.file.id, fileId)).limit(1);
 		if (!file) throw new Error('File not found');
 
 		const meta = file.metadata ? JSON.parse(file.metadata) : {};
@@ -180,11 +172,7 @@ export class LmsMediaService {
 	}
 
 	static async deleteMedia(fileId: string, userId: string): Promise<void> {
-		const [file] = await db
-			.select()
-			.from(table.file)
-			.where(eq(table.file.id, fileId))
-			.limit(1);
+		const [file] = await db.select().from(table.file).where(eq(table.file.id, fileId)).limit(1);
 		if (!file) throw new Error('File not found');
 		await FileService.deleteFile(fileId);
 	}

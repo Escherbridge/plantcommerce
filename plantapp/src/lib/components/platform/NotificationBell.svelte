@@ -102,7 +102,16 @@
 		aria-label="Notifications{unreadCount > 0 ? ` (${unreadCount} unread)` : ''}"
 		aria-expanded={open}
 	>
-		<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+		<svg
+			viewBox="0 0 24 24"
+			width="24"
+			height="24"
+			stroke="currentColor"
+			stroke-width="1.5"
+			fill="none"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+		>
 			<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
 			<path d="M13.73 21a2 2 0 0 1-3.46 0" />
 		</svg>
@@ -140,8 +149,21 @@
 								{/if}
 								<div class="notif-meta">
 									<span class="notif-time">{formatRelativeTime(notif.createdAt)}</span>
-									<button class="notif-dismiss" onclick={() => markRead(notif.id)} aria-label="Mark as read">
-										<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+									<button
+										class="notif-dismiss"
+										onclick={() => markRead(notif.id)}
+										aria-label="Mark as read"
+									>
+										<svg
+											viewBox="0 0 24 24"
+											width="14"
+											height="14"
+											stroke="currentColor"
+											stroke-width="2"
+											fill="none"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+										>
 											<polyline points="20 6 9 17 4 12" />
 										</svg>
 									</button>
@@ -176,7 +198,10 @@
 		background: transparent;
 		color: oklch(var(--bc) / 0.7);
 		cursor: pointer;
-		transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
+		transition:
+			border-color 150ms ease,
+			color 150ms ease,
+			background-color 150ms ease;
 	}
 
 	.bell-btn:hover {
@@ -351,7 +376,9 @@
 		background: transparent;
 		color: oklch(var(--bc) / 0.4);
 		cursor: pointer;
-		transition: background 150ms ease, color 150ms ease;
+		transition:
+			background 150ms ease,
+			color 150ms ease;
 	}
 
 	.notif-dismiss:hover {

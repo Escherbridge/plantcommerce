@@ -13,7 +13,12 @@ import {
 } from './checkoutDraft';
 import { StripeCheckoutService } from './stripeCheckout';
 
-const ACTIVE_ATTEMPT_STATUSES = ['pending_session', 'checkout_created', 'quarantined', 'paid'] as const;
+const ACTIVE_ATTEMPT_STATUSES = [
+	'pending_session',
+	'checkout_created',
+	'quarantined',
+	'paid'
+] as const;
 const STRIPE_SESSION_SAFETY_MARGIN_MS = 31 * 60 * 1000;
 
 export interface CheckoutSessionResult {
@@ -37,10 +42,14 @@ function stableProviderIdempotencyKey(draftId: string, attemptNumber: number): s
 	return `aevani:checkout:${draftId}:${attemptNumber}`;
 }
 
-function draftBelongsToBuyer(draft: typeof table.checkoutDraft.$inferSelect, buyer: CheckoutBuyer): boolean {
+function draftBelongsToBuyer(
+	draft: typeof table.checkoutDraft.$inferSelect,
+	buyer: CheckoutBuyer
+): boolean {
 	return buyer.kind === 'user'
 		? draft.userId === buyer.userId && draft.guestSubjectHash === null
-		: draft.userId === null && draft.guestSubjectHash === hashGuestCheckoutSubject(buyer.guestCartSessionId);
+		: draft.userId === null &&
+				draft.guestSubjectHash === hashGuestCheckoutSubject(buyer.guestCartSessionId);
 }
 
 function checkoutUrls(reference: string): { successUrl: string; cancelUrl: string } {
@@ -71,7 +80,12 @@ function paymentIntentId(session: Stripe.Checkout.Session): string | null {
 }
 
 function providerFailureCode(error: unknown): string {
-	if (typeof error === 'object' && error !== null && 'type' in error && typeof error.type === 'string') {
+	if (
+		typeof error === 'object' &&
+		error !== null &&
+		'type' in error &&
+		typeof error.type === 'string'
+	) {
 		return error.type;
 	}
 
@@ -80,9 +94,11 @@ function providerFailureCode(error: unknown): string {
 
 function isConfirmedProviderCreationFailure(error: unknown): boolean {
 	const type = providerFailureCode(error);
-	return type === 'StripeInvalidRequestError'
-		|| type === 'StripeAuthenticationError'
-		|| type === 'StripePermissionError';
+	return (
+		type === 'StripeInvalidRequestError' ||
+		type === 'StripeAuthenticationError' ||
+		type === 'StripePermissionError'
+	);
 }
 
 function providerSessionIntegrityError(
@@ -90,12 +106,14 @@ function providerSessionIntegrityError(
 	draft: typeof table.checkoutDraft.$inferSelect,
 	attempt: typeof table.checkoutPaymentAttempt.$inferSelect
 ): string | null {
-	if (session.mode !== 'payment'
-		|| session.metadata?.checkout_draft_reference !== draft.reference
-		|| session.amount_total !== attempt.amountMinor
-		|| session.currency !== attempt.currency
-		|| !session.expires_at
-		|| session.expires_at * 1000 > draft.expiresAt.getTime()) {
+	if (
+		session.mode !== 'payment' ||
+		session.metadata?.checkout_draft_reference !== draft.reference ||
+		session.amount_total !== attempt.amountMinor ||
+		session.currency !== attempt.currency ||
+		!session.expires_at ||
+		session.expires_at * 1000 > draft.expiresAt.getTime()
+	) {
 		return 'stripe_session_integrity_mismatch';
 	}
 
@@ -165,7 +183,9 @@ export class CheckoutPaymentService {
 		const prepared = await this.prepareAttempt(snapshot.id, buyer);
 		if (!prepared) {
 			if (!allowDraftRefresh) {
-				throw new Error('Checkout draft does not have enough remaining lifetime for Stripe Checkout');
+				throw new Error(
+					'Checkout draft does not have enough remaining lifetime for Stripe Checkout'
+				);
 			}
 			return await this.createOrReuseSession(buyer, false);
 		}
@@ -182,7 +202,10 @@ export class CheckoutPaymentService {
 			lineItems = immutableStripeLineItems(prepared.draft, prepared.items);
 			urls = checkoutUrls(prepared.draft.reference);
 		} catch {
-			await this.failPendingAttempt(prepared.attempt.id, 'checkout_draft_provider_configuration_invalid');
+			await this.failPendingAttempt(
+				prepared.attempt.id,
+				'checkout_draft_provider_configuration_invalid'
+			);
 			throw new Error('Unable to start secure checkout. Please try again.');
 		}
 
@@ -204,20 +227,33 @@ export class CheckoutPaymentService {
 			throw new Error('Unable to start secure checkout. Please try again.');
 		}
 
-		const integrityError = providerSessionIntegrityError(providerSession, prepared.draft, prepared.attempt);
-		const persisted = await this.persistProviderSession(prepared.attempt.id, providerSession, integrityError);
+		const integrityError = providerSessionIntegrityError(
+			providerSession,
+			prepared.draft,
+			prepared.attempt
+		);
+		const persisted = await this.persistProviderSession(
+			prepared.attempt.id,
+			providerSession,
+			integrityError
+		);
 		if (integrityError) {
 			await this.expireQuarantinedSession(persisted.attempt.id, providerSession.id);
-			throw new Error('Unable to start secure checkout. Please contact support if the issue persists.');
+			throw new Error(
+				'Unable to start secure checkout. Please contact support if the issue persists.'
+			);
 		}
-		if (persisted.stripeSessionId !== providerSession.id) {
+		if (persisted.attempt.stripeSessionId !== providerSession.id) {
 			return await this.resolveExistingSession(persisted.draft, persisted.attempt);
 		}
 
 		return this.toSessionResult(persisted.draft, persisted.attempt, providerSession);
 	}
 
-	private static async prepareAttempt(draftId: string, buyer: CheckoutBuyer): Promise<PreparedAttempt | null> {
+	private static async prepareAttempt(
+		draftId: string,
+		buyer: CheckoutBuyer
+	): Promise<PreparedAttempt | null> {
 		return await db.transaction(async (tx) => {
 			const [draft] = await tx
 				.select()
@@ -228,7 +264,13 @@ export class CheckoutPaymentService {
 			if (!draft || !draftBelongsToBuyer(draft, buyer)) {
 				throw new Error('Checkout draft was not found');
 			}
-			if (draft.status === 'quarantined' || draft.status === 'paid' || draft.status === 'fulfilled' || draft.status === 'expired' || draft.status === 'failed') {
+			if (
+				draft.status === 'quarantined' ||
+				draft.status === 'paid' ||
+				draft.status === 'fulfilled' ||
+				draft.status === 'expired' ||
+				draft.status === 'failed'
+			) {
 				throw new Error('Checkout draft is not eligible for a payment session');
 			}
 
@@ -318,10 +360,12 @@ export class CheckoutPaymentService {
 			const [attempt] = await tx
 				.select()
 				.from(table.checkoutPaymentAttempt)
-				.where(and(
-					eq(table.checkoutPaymentAttempt.id, attemptId),
-					eq(table.checkoutPaymentAttempt.draftId, unlockedAttempt.draftId)
-				))
+				.where(
+					and(
+						eq(table.checkoutPaymentAttempt.id, attemptId),
+						eq(table.checkoutPaymentAttempt.draftId, unlockedAttempt.draftId)
+					)
+				)
 				.for('update');
 
 			if (!draft || !attempt) {
@@ -347,9 +391,9 @@ export class CheckoutPaymentService {
 					status: nextStatus,
 					...(integrityError
 						? {
-							lastErrorCode: integrityError,
-							lastErrorMessage: 'Stripe session failed immutable checkout verification'
-						}
+								lastErrorCode: integrityError,
+								lastErrorMessage: 'Stripe session failed immutable checkout verification'
+							}
 						: {}),
 					updatedAt: now
 				})
@@ -384,13 +428,20 @@ export class CheckoutPaymentService {
 			const [attempt] = await tx
 				.select()
 				.from(table.checkoutPaymentAttempt)
-				.where(and(
-					eq(table.checkoutPaymentAttempt.id, attemptId),
-					eq(table.checkoutPaymentAttempt.draftId, unlockedAttempt.draftId)
-				))
+				.where(
+					and(
+						eq(table.checkoutPaymentAttempt.id, attemptId),
+						eq(table.checkoutPaymentAttempt.draftId, unlockedAttempt.draftId)
+					)
+				)
 				.for('update');
 
-			if (!draft || !attempt || attempt.status !== 'pending_session' || draft.status !== 'pending_session') {
+			if (
+				!draft ||
+				!attempt ||
+				attempt.status !== 'pending_session' ||
+				draft.status !== 'pending_session'
+			) {
 				return false;
 			}
 
@@ -429,7 +480,10 @@ export class CheckoutPaymentService {
 		return this.toSessionResult(draft, attempt, session);
 	}
 
-	private static async expireQuarantinedSession(attemptId: string, stripeSessionId: string): Promise<void> {
+	private static async expireQuarantinedSession(
+		attemptId: string,
+		stripeSessionId: string
+	): Promise<void> {
 		try {
 			const expiredSession = await StripeCheckoutService.expireCheckoutSession(stripeSessionId);
 			if (expiredSession.status !== 'expired') {
@@ -468,12 +522,15 @@ export class CheckoutPaymentService {
 			const [attempt] = await tx
 				.select()
 				.from(table.checkoutPaymentAttempt)
-				.where(and(
-					eq(table.checkoutPaymentAttempt.id, attemptId),
-					eq(table.checkoutPaymentAttempt.draftId, unlockedAttempt.draftId)
-				))
+				.where(
+					and(
+						eq(table.checkoutPaymentAttempt.id, attemptId),
+						eq(table.checkoutPaymentAttempt.draftId, unlockedAttempt.draftId)
+					)
+				)
 				.for('update');
-			const attemptIsExpirable = attempt?.status === 'checkout_created' || attempt?.status === 'quarantined';
+			const attemptIsExpirable =
+				attempt?.status === 'checkout_created' || attempt?.status === 'quarantined';
 			if (!draft || !attempt || !attemptIsExpirable || attempt.status !== draft.status) {
 				return false;
 			}

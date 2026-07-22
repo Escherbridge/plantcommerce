@@ -5,11 +5,14 @@ import { hash, verify } from '@node-rs/argon2';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase64url, encodeHexLowerCase } from '@oslojs/encoding';
 import { accountCapabilitiesEnabled } from '../auth';
-import { assertPublicCatalogAvailable, getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
+import {
+	assertPublicCatalogAvailable,
+	getPublicCatalogAvailability
+} from '../catalogTruth/publicCatalog';
 
 // Generate a random ID
 function generateId(length: number = 15): string {
-	const bytes = crypto.getRandomValues(new Uint8Array(Math.ceil(length * 3 / 4)));
+	const bytes = crypto.getRandomValues(new Uint8Array(Math.ceil((length * 3) / 4)));
 	return encodeBase64url(bytes).slice(0, length);
 }
 
@@ -101,7 +104,9 @@ export class UserService {
 
 		const user = await db.transaction(async (tx) => {
 			for (const identifier of [username, normalizedEmail].sort()) {
-				await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${`login-identifier:${identifier}`}))`);
+				await tx.execute(
+					sql`SELECT pg_advisory_xact_lock(hashtext(${`login-identifier:${identifier}`}))`
+				);
 			}
 
 			const [existingUser] = await tx
@@ -165,12 +170,7 @@ export class UserService {
 		const userResult = await db
 			.select()
 			.from(table.user)
-			.where(
-				and(
-					loginCondition,
-					eq(table.user.isActive, true)
-				)
-			)
+			.where(and(loginCondition, eq(table.user.isActive, true)))
 			.limit(2);
 
 		const user = userResult.length === 1 ? userResult[0] : null;
@@ -199,11 +199,7 @@ export class UserService {
 	 * Get user profile by ID
 	 */
 	static async getUserById(userId: string): Promise<UserProfile | null> {
-		const userResult = await db
-			.select()
-			.from(table.user)
-			.where(eq(table.user.id, userId))
-			.limit(1);
+		const userResult = await db.select().from(table.user).where(eq(table.user.id, userId)).limit(1);
 
 		if (userResult.length === 0) {
 			return null;
@@ -315,7 +311,9 @@ export class UserService {
 				if (isEmailLoginIdentifier(username)) {
 					throw new Error('Username cannot be an email address');
 				}
-				await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${`login-identifier:${username}`}))`);
+				await tx.execute(
+					sql`SELECT pg_advisory_xact_lock(hashtext(${`login-identifier:${username}`}))`
+				);
 
 				const [existing] = await tx
 					.select()
@@ -386,9 +384,13 @@ export class UserService {
 				throw new Error('Current password is incorrect');
 			}
 
-			const identifiers = [...new Set([normalizedNewEmail, ...(username === undefined ? [] : [username])])].sort();
+			const identifiers = [
+				...new Set([normalizedNewEmail, ...(username === undefined ? [] : [username])])
+			].sort();
 			for (const identifier of identifiers) {
-				await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${`login-identifier:${identifier}`}))`);
+				await tx.execute(
+					sql`SELECT pg_advisory_xact_lock(hashtext(${`login-identifier:${identifier}`}))`
+				);
 			}
 
 			const conflictingIdentifiers = [
@@ -426,8 +428,12 @@ export class UserService {
 				.returning();
 			if (!updatedUser) throw new Error('User not found');
 
-			await tx.delete(table.emailVerificationToken).where(eq(table.emailVerificationToken.userId, userId));
-			await tx.delete(table.emailChangeCapability).where(eq(table.emailChangeCapability.userId, userId));
+			await tx
+				.delete(table.emailVerificationToken)
+				.where(eq(table.emailVerificationToken.userId, userId));
+			await tx
+				.delete(table.emailChangeCapability)
+				.where(eq(table.emailChangeCapability.userId, userId));
 			await tx.delete(table.passwordResetToken).where(eq(table.passwordResetToken.userId, userId));
 
 			return {
@@ -466,19 +472,32 @@ export class UserService {
 
 			await tx
 				.update(table.user)
-				.set({ passwordHash: await hashPassword(newPassword), pendingEmail: null, updatedAt: new Date() })
+				.set({
+					passwordHash: await hashPassword(newPassword),
+					pendingEmail: null,
+					updatedAt: new Date()
+				})
 				.where(eq(table.user.id, userId));
 			await tx.delete(table.session).where(eq(table.session.userId, userId));
 			if (accountCapabilitiesEnabled()) {
-				await tx.delete(table.passwordResetToken).where(eq(table.passwordResetToken.userId, userId));
-				await tx.delete(table.emailChangeCapability).where(eq(table.emailChangeCapability.userId, userId));
+				await tx
+					.delete(table.passwordResetToken)
+					.where(eq(table.passwordResetToken.userId, userId));
+				await tx
+					.delete(table.emailChangeCapability)
+					.where(eq(table.emailChangeCapability.userId, userId));
 			}
-			await tx.delete(table.emailVerificationToken).where(eq(table.emailVerificationToken.userId, userId));
+			await tx
+				.delete(table.emailVerificationToken)
+				.where(eq(table.emailVerificationToken.userId, userId));
 		});
 	}
 
 	/** Consume a recovery capability and reset the password in one transaction. */
-	static async resetPasswordWithRecoveryToken(token: string, newPassword: string): Promise<string | null> {
+	static async resetPasswordWithRecoveryToken(
+		token: string,
+		newPassword: string
+	): Promise<string | null> {
 		if (!recoveryTokenPattern.test(token)) {
 			return null;
 		}
@@ -513,11 +532,15 @@ export class UserService {
 			}
 
 			if (Date.now() >= storedToken.expiresAt.getTime()) {
-				await tx.delete(table.passwordResetToken).where(eq(table.passwordResetToken.id, storedToken.id));
+				await tx
+					.delete(table.passwordResetToken)
+					.where(eq(table.passwordResetToken.id, storedToken.id));
 				return null;
 			}
 			if (!currentUser.isActive || currentUser.email !== storedToken.email) {
-				await tx.delete(table.passwordResetToken).where(eq(table.passwordResetToken.id, storedToken.id));
+				await tx
+					.delete(table.passwordResetToken)
+					.where(eq(table.passwordResetToken.id, storedToken.id));
 				return null;
 			}
 
@@ -534,7 +557,9 @@ export class UserService {
 			}
 
 			await tx.delete(table.session).where(eq(table.session.userId, storedToken.userId));
-			await tx.delete(table.passwordResetToken).where(eq(table.passwordResetToken.userId, storedToken.userId));
+			await tx
+				.delete(table.passwordResetToken)
+				.where(eq(table.passwordResetToken.userId, storedToken.userId));
 			await tx
 				.delete(table.emailVerificationToken)
 				.where(eq(table.emailVerificationToken.userId, storedToken.userId));
@@ -576,18 +601,16 @@ export class UserService {
 
 		const baseQuery = db.select().from(table.user);
 
-		const users = conditions.length > 0 
-			? await baseQuery
-				.where(and(...conditions))
-				.orderBy(desc(table.user.createdAt))
-				.limit(limit)
-				.offset(offset)
-			: await baseQuery
-				.orderBy(desc(table.user.createdAt))
-				.limit(limit)
-				.offset(offset);
+		const users =
+			conditions.length > 0
+				? await baseQuery
+						.where(and(...conditions))
+						.orderBy(desc(table.user.createdAt))
+						.limit(limit)
+						.offset(offset)
+				: await baseQuery.orderBy(desc(table.user.createdAt)).limit(limit).offset(offset);
 
-		return users.map(user => ({
+		return users.map((user) => ({
 			id: user.id,
 			username: user.username,
 			email: user.email,
@@ -612,10 +635,16 @@ export class UserService {
 			await tx.delete(table.session).where(eq(table.session.userId, userId));
 			if (!isActive) {
 				if (accountCapabilitiesEnabled()) {
-					await tx.delete(table.passwordResetToken).where(eq(table.passwordResetToken.userId, userId));
-					await tx.delete(table.emailChangeCapability).where(eq(table.emailChangeCapability.userId, userId));
+					await tx
+						.delete(table.passwordResetToken)
+						.where(eq(table.passwordResetToken.userId, userId));
+					await tx
+						.delete(table.emailChangeCapability)
+						.where(eq(table.emailChangeCapability.userId, userId));
 				}
-				await tx.delete(table.emailVerificationToken).where(eq(table.emailVerificationToken.userId, userId));
+				await tx
+					.delete(table.emailVerificationToken)
+					.where(eq(table.emailVerificationToken.userId, userId));
 			}
 		});
 	}
@@ -623,7 +652,10 @@ export class UserService {
 	/**
 	 * Update user role (admin only)
 	 */
-	static async updateUserRole(userId: string, role: 'admin' | 'customer' | 'affiliate' | 'instructor'): Promise<void> {
+	static async updateUserRole(
+		userId: string,
+		role: 'admin' | 'customer' | 'affiliate' | 'instructor'
+	): Promise<void> {
 		await db.transaction(async (tx) => {
 			await tx
 				.update(table.user)
@@ -631,8 +663,12 @@ export class UserService {
 				.where(eq(table.user.id, userId));
 			await tx.delete(table.session).where(eq(table.session.userId, userId));
 			if (accountCapabilitiesEnabled()) {
-				await tx.delete(table.passwordResetToken).where(eq(table.passwordResetToken.userId, userId));
-				await tx.delete(table.emailChangeCapability).where(eq(table.emailChangeCapability.userId, userId));
+				await tx
+					.delete(table.passwordResetToken)
+					.where(eq(table.passwordResetToken.userId, userId));
+				await tx
+					.delete(table.emailChangeCapability)
+					.where(eq(table.emailChangeCapability.userId, userId));
 			}
 		});
 	}
@@ -697,10 +733,7 @@ export class UserService {
 		await db
 			.delete(table.wishlistItem)
 			.where(
-				and(
-					eq(table.wishlistItem.userId, userId),
-					eq(table.wishlistItem.productId, productId)
-				)
+				and(eq(table.wishlistItem.userId, userId), eq(table.wishlistItem.productId, productId))
 			);
 	}
 

@@ -233,31 +233,40 @@
 	<!-- Typography Demo -->
 	<Section spacing="lg">
 		<h2 class="mb-8 text-center text-3xl font-bold">Typography System</h2>
-		<div class="bg-base-200 rounded-2xl p-8">
+		<div class="rounded-2xl bg-base-200 p-8">
 			<div class="space-y-6">
 				<div>
-					<h1 class="font-display mb-2 text-4xl font-bold uppercase tracking-tight">Display — Barlow Condensed</h1>
-					<p class="text-base-content/70 text-sm">font-display class — for hero headings, section titles, CTAs</p>
+					<h1 class="font-display mb-2 text-4xl font-bold tracking-tight uppercase">
+						Display — Barlow Condensed
+					</h1>
+					<p class="text-sm text-base-content/70">
+						font-display class — for hero headings, section titles, CTAs
+					</p>
 				</div>
 				<div>
-					<h2 class="font-sans mb-2 text-3xl font-semibold">Body — Inter</h2>
-					<p class="text-base-content/70 text-sm">font-sans class (default) — for body text, UI elements, descriptions</p>
+					<h2 class="mb-2 font-sans text-3xl font-semibold">Body — Inter</h2>
+					<p class="text-sm text-base-content/70">
+						font-sans class (default) — for body text, UI elements, descriptions
+					</p>
 				</div>
 				<div>
-					<h3 class="font-mono mb-2 text-2xl font-medium">Mono — JetBrains Mono</h3>
-					<p class="text-base-content/70 text-sm">font-mono class — for editorial accents, category labels, data</p>
+					<h3 class="mb-2 font-mono text-2xl font-medium">Mono — JetBrains Mono</h3>
+					<p class="text-sm text-base-content/70">
+						font-mono class — for editorial accents, category labels, data
+					</p>
 				</div>
 				<div>
 					<p class="text-lg leading-relaxed">
-						This is a sample paragraph demonstrating the Inter font family. The variable font provides
-						excellent readability and a modern, clean appearance that works well for body text
-						and UI elements. It's configured as the default font throughout the application.
+						This is a sample paragraph demonstrating the Inter font family. The variable font
+						provides excellent readability and a modern, clean appearance that works well for body
+						text and UI elements. It's configured as the default font throughout the application.
 					</p>
 				</div>
 				<div class="flex gap-4">
-					<span class="badge badge-primary font-display uppercase tracking-wide">Display Badge</span>
+					<span class="font-display badge tracking-wide uppercase badge-primary">Display Badge</span
+					>
 					<span class="badge badge-secondary">Body Badge</span>
-					<span class="badge badge-accent font-mono">Mono Badge</span>
+					<span class="badge font-mono badge-accent">Mono Badge</span>
 				</div>
 			</div>
 		</div>
@@ -322,7 +331,7 @@
 				<h4 class="mb-4 text-lg font-medium">Asymmetric Grid Layout</h4>
 				<Grid columns={{ sm: 1, md: 3, lg: 4 }} gap="lg">
 					<GridItem span={{ sm: 1, md: 2, lg: 2 }}>
-						<div class="card bg-base-100 h-full shadow-xl">
+						<div class="card h-full bg-base-100 shadow-xl">
 							<div class="card-body">
 								<h3 class="card-title text-2xl">Featured Content</h3>
 								<p class="text-lg">
@@ -345,20 +354,20 @@
 						</div>
 					</GridItem>
 					<GridItem>
-						<div class="card bg-base-100 h-full shadow-xl">
+						<div class="card h-full bg-base-100 shadow-xl">
 							<div class="card-body">
 								<h3 class="card-title">Quick Stats</h3>
 								<div class="space-y-4">
 									<div class="flex items-center gap-3">
-										<div class="bg-success h-3 w-3 rounded-full"></div>
+										<div class="h-3 w-3 rounded-full bg-success"></div>
 										<span>Active Users</span>
 									</div>
 									<div class="flex items-center gap-3">
-										<div class="bg-warning h-3 w-3 rounded-full"></div>
+										<div class="h-3 w-3 rounded-full bg-warning"></div>
 										<span>Pending Tasks</span>
 									</div>
 									<div class="flex items-center gap-3">
-										<div class="bg-error h-3 w-3 rounded-full"></div>
+										<div class="h-3 w-3 rounded-full bg-error"></div>
 										<span>Issues</span>
 									</div>
 								</div>
@@ -366,13 +375,13 @@
 						</div>
 					</GridItem>
 					<GridItem>
-						<div class="card bg-base-100 h-full shadow-xl">
+						<div class="card h-full bg-base-100 shadow-xl">
 							<div class="card-body">
 								<h3 class="card-title">Actions</h3>
 								<div class="space-y-2">
-									<button class="btn btn-primary btn-sm w-full">Primary Action</button>
-									<button class="btn btn-outline btn-sm w-full">Secondary</button>
-									<button class="btn btn-ghost btn-sm w-full">Tertiary</button>
+									<button class="btn w-full btn-sm btn-primary">Primary Action</button>
+									<button class="btn w-full btn-outline btn-sm">Secondary</button>
+									<button class="btn w-full btn-ghost btn-sm">Tertiary</button>
 								</div>
 							</div>
 						</div>
@@ -388,7 +397,7 @@
 						<div class="card bg-base-100 shadow-xl">
 							<figure class="px-10 pt-10">
 								<div
-									class="from-primary to-secondary flex h-48 w-full items-center justify-center rounded-lg bg-gradient-to-br"
+									class="flex h-48 w-full items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary"
 								>
 									<span class="text-4xl">📊</span>
 								</div>
@@ -406,7 +415,7 @@
 						<div class="card bg-base-100 shadow-xl">
 							<figure class="px-10 pt-10">
 								<div
-									class="from-accent to-info flex h-48 w-full items-center justify-center rounded-lg bg-gradient-to-br"
+									class="flex h-48 w-full items-center justify-center rounded-lg bg-gradient-to-br from-accent to-info"
 								>
 									<span class="text-4xl">👥</span>
 								</div>
@@ -424,7 +433,7 @@
 						<div class="card bg-base-100 shadow-xl">
 							<figure class="px-10 pt-10">
 								<div
-									class="from-warning to-error flex h-48 w-full items-center justify-center rounded-lg bg-gradient-to-br"
+									class="flex h-48 w-full items-center justify-center rounded-lg bg-gradient-to-br from-warning to-error"
 								>
 									<span class="text-4xl">⚙️</span>
 								</div>
@@ -452,7 +461,7 @@
 				<div class="space-y-6">
 					<!-- Justify Between -->
 					<div>
-						<p class="text-base-content/70 mb-2 text-sm">Justify Between</p>
+						<p class="mb-2 text-sm text-base-content/70">Justify Between</p>
 						<Flex justify="between" align="center" className="p-4 bg-base-200 rounded-lg">
 							<div class="flex items-center gap-3">
 								<div class="avatar">
@@ -466,7 +475,7 @@
 								</div>
 							</div>
 							<div class="flex gap-2">
-								<button class="btn btn-sm btn-outline">Message</button>
+								<button class="btn btn-outline btn-sm">Message</button>
 								<button class="btn btn-sm btn-primary">Follow</button>
 							</div>
 						</Flex>
@@ -474,18 +483,18 @@
 
 					<!-- Justify Around -->
 					<div>
-						<p class="text-base-content/70 mb-2 text-sm">Justify Around</p>
+						<p class="mb-2 text-sm text-base-content/70">Justify Around</p>
 						<Flex justify="around" align="center" className="p-4 bg-base-200 rounded-lg">
 							<div class="text-center">
-								<div class="text-primary text-2xl font-bold">1.2K</div>
+								<div class="text-2xl font-bold text-primary">1.2K</div>
 								<div class="text-sm">Followers</div>
 							</div>
 							<div class="text-center">
-								<div class="text-secondary text-2xl font-bold">340</div>
+								<div class="text-2xl font-bold text-secondary">340</div>
 								<div class="text-sm">Following</div>
 							</div>
 							<div class="text-center">
-								<div class="text-accent text-2xl font-bold">89</div>
+								<div class="text-2xl font-bold text-accent">89</div>
 								<div class="text-sm">Posts</div>
 							</div>
 						</Flex>
@@ -493,7 +502,7 @@
 
 					<!-- Justify Evenly -->
 					<div>
-						<p class="text-base-content/70 mb-2 text-sm">Justify Evenly</p>
+						<p class="mb-2 text-sm text-base-content/70">Justify Evenly</p>
 						<Flex justify="evenly" align="center" className="p-4 bg-base-200 rounded-lg">
 							<div class="flex items-center gap-2">
 								<input type="checkbox" class="checkbox checkbox-primary" checked />
@@ -524,10 +533,10 @@
 						>
 							<div class="mb-4 text-4xl">🎯</div>
 							<h3 class="mb-2 text-xl font-bold">Goal Setting</h3>
-							<p class="text-base-content/70 mb-4 text-center">
+							<p class="mb-4 text-center text-base-content/70">
 								Set and track your personal and professional goals with our intuitive interface.
 							</p>
-							<button class="btn btn-primary mt-auto">Get Started</button>
+							<button class="btn mt-auto btn-primary">Get Started</button>
 						</Flex>
 					</GridItem>
 					<GridItem>
@@ -538,10 +547,10 @@
 						>
 							<div class="mb-4 text-4xl">📈</div>
 							<h3 class="mb-2 text-xl font-bold">Progress Tracking</h3>
-							<p class="text-base-content/70 mb-4 text-center">
+							<p class="mb-4 text-center text-base-content/70">
 								Monitor your progress with detailed analytics and visual representations.
 							</p>
-							<button class="btn btn-secondary mt-auto">View Progress</button>
+							<button class="btn mt-auto btn-secondary">View Progress</button>
 						</Flex>
 					</GridItem>
 					<GridItem>
@@ -552,10 +561,10 @@
 						>
 							<div class="mb-4 text-4xl">🏆</div>
 							<h3 class="mb-2 text-xl font-bold">Achievements</h3>
-							<p class="text-base-content/70 mb-4 text-center">
+							<p class="mb-4 text-center text-base-content/70">
 								Celebrate your milestones and unlock new achievements as you progress.
 							</p>
-							<button class="btn btn-accent mt-auto">View Achievements</button>
+							<button class="btn mt-auto btn-accent">View Achievements</button>
 						</Flex>
 					</GridItem>
 				</Grid>
@@ -646,7 +655,7 @@
 				<Grid columns={{ sm: 1, md: 4, lg: 6 }} gap="xl">
 					<!-- Sidebar -->
 					<GridItem span={{ sm: 1, md: 1, lg: 1 }}>
-						<div class="bg-base-200 h-full rounded-xl p-6 shadow-sm">
+						<div class="h-full rounded-xl bg-base-200 p-6 shadow-sm">
 							<h5 class="mb-6 text-lg font-bold text-primary">Navigation</h5>
 							<div class="space-y-3">
 								<div
@@ -656,19 +665,19 @@
 									<span class="text-sm font-medium">Dashboard</span>
 								</div>
 								<div
-									class="hover:bg-base-300 flex cursor-pointer items-center gap-3 rounded-lg p-3 text-secondary transition-colors"
+									class="flex cursor-pointer items-center gap-3 rounded-lg p-3 text-secondary transition-colors hover:bg-base-300"
 								>
 									<span>👥</span>
 									<span class="text-sm font-medium">Users</span>
 								</div>
 								<div
-									class="hover:bg-base-300 flex cursor-pointer items-center gap-3 rounded-lg p-3 text-secondary transition-colors"
+									class="flex cursor-pointer items-center gap-3 rounded-lg p-3 text-secondary transition-colors hover:bg-base-300"
 								>
 									<span>📈</span>
 									<span class="text-sm font-medium">Analytics</span>
 								</div>
 								<div
-									class="hover:bg-base-300 flex cursor-pointer items-center gap-3 rounded-lg p-3 text-secondary transition-colors"
+									class="flex cursor-pointer items-center gap-3 rounded-lg p-3 text-secondary transition-colors hover:bg-base-300"
 								>
 									<span>⚙️</span>
 									<span class="text-sm font-medium">Settings</span>
@@ -682,16 +691,16 @@
 						<div class="space-y-6">
 							<!-- Header -->
 							<div
-								class="border-base-200 flex items-center justify-between rounded-xl border bg-base-100 p-6 shadow-sm"
+								class="flex items-center justify-between rounded-xl border border-base-200 bg-base-100 p-6 shadow-sm"
 							>
 								<h3 class="text-2xl font-bold text-primary">Dashboard Overview</h3>
 								<div class="flex gap-3">
 									<button
-										class="btn btn-sm btn-outline border-secondary text-secondary hover:bg-secondary hover:text-secondary-content"
+										class="btn border-secondary text-secondary btn-outline btn-sm hover:bg-secondary hover:text-secondary-content"
 										>Export</button
 									>
 									<button
-										class="btn btn-sm border-accent bg-accent text-accent-content hover:bg-accent/90"
+										class="btn border-accent bg-accent text-accent-content btn-sm hover:bg-accent/90"
 										>Add New</button
 									>
 								</div>
@@ -700,7 +709,7 @@
 							<!-- Stats Grid -->
 							<Grid columns={{ sm: 2, md: 4, lg: 4 }} gap="lg">
 								<GridItem>
-									<div class="stat bg-base-100 rounded-lg shadow">
+									<div class="stat rounded-lg bg-base-100 shadow">
 										<div class="stat-figure text-primary">
 											<span class="text-2xl">📊</span>
 										</div>
@@ -710,7 +719,7 @@
 									</div>
 								</GridItem>
 								<GridItem>
-									<div class="stat bg-base-100 rounded-lg shadow">
+									<div class="stat rounded-lg bg-base-100 shadow">
 										<div class="stat-figure text-secondary">
 											<span class="text-2xl">👥</span>
 										</div>
@@ -720,7 +729,7 @@
 									</div>
 								</GridItem>
 								<GridItem>
-									<div class="stat bg-base-100 rounded-lg shadow">
+									<div class="stat rounded-lg bg-base-100 shadow">
 										<div class="stat-figure text-accent">
 											<span class="text-2xl">📈</span>
 										</div>
@@ -730,7 +739,7 @@
 									</div>
 								</GridItem>
 								<GridItem>
-									<div class="stat bg-base-100 rounded-lg shadow">
+									<div class="stat rounded-lg bg-base-100 shadow">
 										<div class="stat-figure text-info">
 											<span class="text-2xl">🎯</span>
 										</div>
@@ -743,61 +752,61 @@
 
 							<!-- Content Area -->
 							<div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-								<div class="bg-base-100 rounded-lg p-4 shadow">
+								<div class="rounded-lg bg-base-100 p-4 shadow">
 									<h4 class="mb-3 font-semibold">Recent Activity</h4>
 									<div class="space-y-3">
 										<div class="flex items-center gap-3">
 											<div
-												class="bg-primary text-primary-content flex h-8 w-8 items-center justify-center rounded-full text-sm"
+												class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm text-primary-content"
 											>
 												JD
 											</div>
 											<div class="flex-1">
 												<div class="text-sm font-medium">John Doe completed a purchase</div>
-												<div class="text-base-content/70 text-xs">2 minutes ago</div>
+												<div class="text-xs text-base-content/70">2 minutes ago</div>
 											</div>
 										</div>
 										<div class="flex items-center gap-3">
 											<div
-												class="bg-secondary text-secondary-content flex h-8 w-8 items-center justify-center rounded-full text-sm"
+												class="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-sm text-secondary-content"
 											>
 												AS
 											</div>
 											<div class="flex-1">
 												<div class="text-sm font-medium">Alice Smith updated profile</div>
-												<div class="text-base-content/70 text-xs">5 minutes ago</div>
+												<div class="text-xs text-base-content/70">5 minutes ago</div>
 											</div>
 										</div>
 										<div class="flex items-center gap-3">
 											<div
-												class="bg-accent text-accent-content flex h-8 w-8 items-center justify-center rounded-full text-sm"
+												class="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-sm text-accent-content"
 											>
 												BJ
 											</div>
 											<div class="flex-1">
 												<div class="text-sm font-medium">Bob Johnson signed up</div>
-												<div class="text-base-content/70 text-xs">10 minutes ago</div>
+												<div class="text-xs text-base-content/70">10 minutes ago</div>
 											</div>
 										</div>
 									</div>
 								</div>
 
-								<div class="bg-base-100 rounded-lg p-4 shadow">
+								<div class="rounded-lg bg-base-100 p-4 shadow">
 									<h4 class="mb-3 font-semibold">Quick Actions</h4>
 									<div class="space-y-2">
-										<button class="btn btn-primary btn-sm w-full justify-start">
+										<button class="btn w-full justify-start btn-sm btn-primary">
 											<span>📊</span>
 											View Analytics
 										</button>
-										<button class="btn btn-outline btn-sm w-full justify-start">
+										<button class="btn w-full justify-start btn-outline btn-sm">
 											<span>👥</span>
 											Manage Users
 										</button>
-										<button class="btn btn-outline btn-sm w-full justify-start">
+										<button class="btn w-full justify-start btn-outline btn-sm">
 											<span>📧</span>
 											Send Newsletter
 										</button>
-										<button class="btn btn-outline btn-sm w-full justify-start">
+										<button class="btn w-full justify-start btn-outline btn-sm">
 											<span>⚙️</span>
 											System Settings
 										</button>
@@ -819,7 +828,7 @@
 								<h3 class="card-title">Short Card</h3>
 								<p>This is a shorter card with minimal content.</p>
 								<div class="card-actions justify-end">
-									<button class="btn btn-primary btn-sm">Action</button>
+									<button class="btn btn-sm btn-primary">Action</button>
 								</div>
 							</div>
 						</div>
@@ -843,7 +852,7 @@
 									</div>
 								</div>
 								<div class="card-actions justify-end">
-									<button class="btn btn-primary btn-sm">Action</button>
+									<button class="btn btn-sm btn-primary">Action</button>
 								</div>
 							</div>
 						</div>
@@ -877,7 +886,7 @@
 									</div>
 								</div>
 								<div class="card-actions justify-end">
-									<button class="btn btn-primary btn-sm">View All</button>
+									<button class="btn btn-sm btn-primary">View All</button>
 								</div>
 							</div>
 						</div>
@@ -1000,7 +1009,7 @@
 	<!-- Image Gallery Demo -->
 	<Section spacing="lg">
 		<h2 class="mb-8 text-3xl font-bold">Image Gallery</h2>
-		<p class="text-base-content/70 mb-8 text-center">
+		<p class="mb-8 text-center text-base-content/70">
 			Performance optimized images with lazy loading and lightbox functionality
 		</p>
 		<ImageGallery
@@ -1015,14 +1024,14 @@
 	<Section spacing="lg" background="base" className="mt-16">
 		<div class="text-center">
 			<h3 class="mb-4 text-2xl font-bold">Ready to Use</h3>
-			<p class="text-base-content/70 mb-6">
+			<p class="mb-6 text-base-content/70">
 				All components are fully typed, accessible, and ready for production use.
 			</p>
 			<div class="flex flex-wrap justify-center gap-4">
-				<div class="badge badge-primary badge-lg">TypeScript</div>
-				<div class="badge badge-secondary badge-lg">Accessible</div>
-				<div class="badge badge-accent badge-lg">Responsive</div>
-				<div class="badge badge-neutral badge-lg">DaisyUI</div>
+				<div class="badge badge-lg badge-primary">TypeScript</div>
+				<div class="badge badge-lg badge-secondary">Accessible</div>
+				<div class="badge badge-lg badge-accent">Responsive</div>
+				<div class="badge badge-lg badge-neutral">DaisyUI</div>
 			</div>
 		</div>
 	</Section>

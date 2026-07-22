@@ -5,7 +5,8 @@ export const load: PageLoad = async (event) => {
 	const trpc = createCallerClient(event.fetch);
 	try {
 		const courses = await trpc.lms.course.adminList.query({ limit: 100 }).catch(() => []);
-		const firstCourseId = Array.isArray(courses) && courses.length > 0 ? (courses[0] as any).id : null;
+		const firstCourseId =
+			Array.isArray(courses) && courses.length > 0 ? (courses[0] as any).id : null;
 		let enrollments: any[] = [];
 		if (firstCourseId) {
 			enrollments = (await trpc.lms.enrollment.courseEnrollments

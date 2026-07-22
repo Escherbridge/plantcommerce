@@ -31,7 +31,7 @@ export type PlantGeoConfiguration =
 			serviceIdentity: string;
 			apiToken: string;
 			identifierHashSecret: string;
-		}>;
+	  }>;
 
 export type PlantGeoCatalogReadDisabledReason =
 	| 'catalog-read-disabled'
@@ -139,11 +139,21 @@ export function readPlantGeoCatalogReadConfiguration(
 }
 
 export function getPlantGeoConfiguration(): PlantGeoConfiguration {
-	return readPlantGeoConfiguration(env);
+	return readPlantGeoConfiguration({
+		PLANTGEO_INTEGRATION_ENABLED: env.PLANTGEO_INTEGRATION_ENABLED,
+		PLANTGEO_EVENTS_ENDPOINT: env.PLANTGEO_EVENTS_ENDPOINT,
+		PLANTGEO_SERVICE_IDENTITY: env.PLANTGEO_SERVICE_IDENTITY,
+		PLANTGEO_API_TOKEN: env.PLANTGEO_API_TOKEN,
+		PLANTGEO_IDENTIFIER_HASH_SECRET: env.PLANTGEO_IDENTIFIER_HASH_SECRET
+	});
 }
 
 export function getPlantGeoCatalogReadConfiguration(): PlantGeoCatalogReadConfiguration {
-	return readPlantGeoCatalogReadConfiguration(env);
+	return readPlantGeoCatalogReadConfiguration({
+		PLANTGEO_CATALOG_READ_ENABLED: env.PLANTGEO_CATALOG_READ_ENABLED,
+		PLANTGEO_SERVICE_IDENTITY: env.PLANTGEO_SERVICE_IDENTITY,
+		PLANTGEO_CATALOG_READ_TOKEN: env.PLANTGEO_CATALOG_READ_TOKEN
+	});
 }
 
 export function isPlantGeoIntegrationEnabled(): boolean {

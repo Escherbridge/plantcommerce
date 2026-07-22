@@ -71,7 +71,11 @@ export class AdminAnalyticsService {
 
 		// Drop-off analysis: for each module, count learners who have progress
 		const modules = await db
-			.select({ id: lmsTable.lmsModule.id, title: lmsTable.lmsModule.title, sortOrder: lmsTable.lmsModule.sortOrder })
+			.select({
+				id: lmsTable.lmsModule.id,
+				title: lmsTable.lmsModule.title,
+				sortOrder: lmsTable.lmsModule.sortOrder
+			})
 			.from(lmsTable.lmsModule)
 			.where(eq(lmsTable.lmsModule.courseId, courseId))
 			.orderBy(lmsTable.lmsModule.sortOrder);
@@ -98,7 +102,11 @@ export class AdminAnalyticsService {
 		};
 	}
 
-	static async getEnrollmentTrends(startDate: Date, endDate: Date, granularity: 'day' | 'week' | 'month' = 'day') {
+	static async getEnrollmentTrends(
+		startDate: Date,
+		endDate: Date,
+		granularity: 'day' | 'week' | 'month' = 'day'
+	) {
 		const dateFormat =
 			granularity === 'month'
 				? `TO_CHAR(${lmsTable.lmsEnrollment.enrolledAt}, 'YYYY-MM')`
@@ -135,13 +143,13 @@ export class AdminAnalyticsService {
 		const passed = finalized.filter((attempt) => attempt.passed === true);
 		const scored = finalized.filter((attempt) => (attempt.totalPoints ?? 0) > 0);
 
-		const passRate = finalized.length > 0 ? Math.round((passed.length / finalized.length) * 100) : 0;
+		const passRate =
+			finalized.length > 0 ? Math.round((passed.length / finalized.length) * 100) : 0;
 		const averageScore =
 			scored.length > 0
 				? Math.round(
 						scored.reduce(
-							(sum, attempt) =>
-								sum + (((attempt.score ?? 0) / (attempt.totalPoints ?? 1)) * 100),
+							(sum, attempt) => sum + ((attempt.score ?? 0) / (attempt.totalPoints ?? 1)) * 100,
 							0
 						) / scored.length
 					)

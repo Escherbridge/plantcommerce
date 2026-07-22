@@ -108,15 +108,15 @@
 			</div>
 
 			<!-- Custom Progress Tracker -->
-			<div class="relative pb-2 pt-4">
+			<div class="relative pt-4 pb-2">
 				<!-- Background Line -->
 				<div
-					class="absolute left-0 top-1/2 h-1 w-full -translate-y-1/2 rounded-full bg-info/30"
+					class="absolute top-1/2 left-0 h-1 w-full -translate-y-1/2 rounded-full bg-info/30"
 				></div>
 
 				<!-- Active Progress Line -->
 				<div
-					class="absolute left-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-primary transition-all duration-500 ease-out"
+					class="absolute top-1/2 left-0 h-1 -translate-y-1/2 rounded-full bg-primary transition-all duration-500 ease-out"
 					style="width: {progressPercentage}%"
 				></div>
 
@@ -155,7 +155,7 @@
 
 							<!-- Step Title -->
 							<span
-								class="absolute top-10 whitespace-nowrap text-xs font-semibold tracking-wide transition-colors duration-300
+								class="absolute top-10 text-xs font-semibold tracking-wide whitespace-nowrap transition-colors duration-300
                 {isCurrent ? 'text-primary' : 'text-secondary/70'}"
 							>
 								{step.title}
@@ -182,7 +182,7 @@
 	</div>
 
 	<!-- Navigation Buttons -->
-	<div class="border-base-200 flex items-center justify-between border-t pt-6">
+	<div class="flex items-center justify-between border-t border-base-200 pt-6">
 		<div>
 			{#if canGoBack}
 				<button
@@ -218,7 +218,7 @@
 				}}
 			>
 				{#if formState.isSubmitting}
-					<span class="loading loading-spinner loading-sm"></span>
+					<span class="loading loading-sm loading-spinner"></span>
 					Processing...
 				{:else if isLastStep}
 					{config.submitButtonText || 'Submit'}

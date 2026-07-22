@@ -29,9 +29,7 @@
 	let open = $state(false);
 	let wrapRef: HTMLDivElement;
 
-	const selectedLabel = $derived(
-		options.find((o) => o.value === value)?.label || placeholder
-	);
+	const selectedLabel = $derived(options.find((o) => o.value === value)?.label || placeholder);
 
 	function toggle() {
 		if (!disabled) open = !open;
@@ -98,7 +96,17 @@
 		<span class="custom-select__label" class:placeholder={!value}>
 			{selectedLabel}
 		</span>
-		<svg class="custom-select__chevron" class:open viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+		<svg
+			class="custom-select__chevron"
+			class:open
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			aria-hidden="true"
+		>
 			<polyline points="6 9 12 15 18 9"></polyline>
 		</svg>
 	</button>
@@ -116,7 +124,16 @@
 				>
 					{opt.label}
 					{#if opt.value === value}
-						<svg class="custom-select__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<svg
+							class="custom-select__check"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2.5"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+						>
 							<polyline points="20 6 9 17 4 12"></polyline>
 						</svg>
 					{/if}

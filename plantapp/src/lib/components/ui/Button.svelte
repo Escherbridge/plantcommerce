@@ -27,11 +27,13 @@
 
 	const isDisabled = $derived(disabled || loading);
 
-	const sizeClasses = $derived({
-		sm: 'h-8 px-3 text-xs',
-		md: 'h-10 px-5 text-sm',
-		lg: 'h-12 px-8 text-base'
-	}[size]);
+	const sizeClasses = $derived(
+		{
+			sm: 'h-8 px-3 text-xs',
+			md: 'h-10 px-5 text-sm',
+			lg: 'h-12 px-8 text-base'
+		}[size]
+	);
 
 	const baseClasses = $derived(
 		[
@@ -52,14 +54,30 @@
 	);
 </script>
 
+{#if href}
+	<a {href} class={baseClasses} aria-disabled={isDisabled} {...restProps}>
+		{#if loading}
+			<span class="btn-spinner" aria-hidden="true"></span>
+			<span class="sr-only">Loading...</span>
+		{:else}
+			{@render children()}
+		{/if}
+	</a>
+{:else}
+	<button {type} class={baseClasses} disabled={isDisabled} {...restProps}>
+		{#if loading}
+			<span class="btn-spinner" aria-hidden="true"></span>
+			<span class="sr-only">Loading...</span>
+		{:else}
+			{@render children()}
+		{/if}
+	</button>
+{/if}
+
 <style>
 	/* Primary variant — Frutiger Aero glass-tinted */
 	.btn-plant--primary {
-		background: linear-gradient(
-			180deg,
-			oklch(var(--p) / 0.92) 0%,
-			oklch(var(--p)) 100%
-		);
+		background: linear-gradient(180deg, oklch(var(--p) / 0.92) 0%, oklch(var(--p)) 100%);
 		color: oklch(var(--pc));
 		border: 1px solid oklch(var(--p) / 0.7);
 		border-radius: var(--input-radius, 10px);
@@ -75,12 +93,10 @@
 
 	.btn-plant--primary:not(:disabled):hover {
 		transform: scale(1.02);
-		box-shadow: var(--shadow-glow-md), 0 1px 0 oklch(var(--pc) / 0.15) inset;
-		background: linear-gradient(
-			180deg,
-			oklch(var(--p) / 0.85) 0%,
-			oklch(var(--p) / 0.95) 100%
-		);
+		box-shadow:
+			var(--shadow-glow-md),
+			0 1px 0 oklch(var(--pc) / 0.15) inset;
+		background: linear-gradient(180deg, oklch(var(--p) / 0.85) 0%, oklch(var(--p) / 0.95) 100%);
 	}
 
 	.btn-plant--primary:not(:disabled):active {
@@ -170,23 +186,3 @@
 		}
 	}
 </style>
-
-{#if href}
-	<a {href} class={baseClasses} aria-disabled={isDisabled} {...restProps}>
-		{#if loading}
-			<span class="btn-spinner" aria-hidden="true"></span>
-			<span class="sr-only">Loading...</span>
-		{:else}
-			{@render children()}
-		{/if}
-	</a>
-{:else}
-	<button {type} class={baseClasses} disabled={isDisabled} {...restProps}>
-		{#if loading}
-			<span class="btn-spinner" aria-hidden="true"></span>
-			<span class="sr-only">Loading...</span>
-		{:else}
-			{@render children()}
-		{/if}
-	</button>
-{/if}

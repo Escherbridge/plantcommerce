@@ -8,30 +8,30 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	// Guest cart identities are server-issued and never accepted from request payloads.
 	event.locals.guestCartSessionId = readGuestCartSessionId(event.cookies);
 
-    const sessionToken = event.cookies.get(auth.sessionCookieName);
-    if (!sessionToken) {
-        event.locals.user = null;
-        event.locals.session = null;
-        return resolve(event);
-    }
+	const sessionToken = event.cookies.get(auth.sessionCookieName);
+	if (!sessionToken) {
+		event.locals.user = null;
+		event.locals.session = null;
+		return resolve(event);
+	}
 
-    try {
-        const { session, user } = await auth.validateSessionToken(sessionToken);
+	try {
+		const { session, user } = await auth.validateSessionToken(sessionToken);
 
-        if (session) {
-            auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
-        } else {
-            auth.deleteSessionTokenCookie(event);
-        }
+		if (session) {
+			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+		} else {
+			auth.deleteSessionTokenCookie(event);
+		}
 
-        event.locals.user = user;
-        event.locals.session = session;
-    } catch (error) {
-        console.error('🔐 hooks.server.ts: Error:', error);
-        await handleError(error, 'hooks.server.ts:handleAuth');
-    }
+		event.locals.user = user;
+		event.locals.session = session;
+	} catch (error) {
+		console.error('🔐 hooks.server.ts: Error:', error);
+		await handleError(error, 'hooks.server.ts:handleAuth');
+	}
 
-    return resolve(event);
+	return resolve(event);
 };
 
 const securityHeaders = {

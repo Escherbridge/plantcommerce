@@ -122,11 +122,7 @@
 </script>
 
 <!-- Desktop Sidebar -->
-<aside
-	class="platform-sidebar"
-	class:collapsed
-	aria-label="Platform navigation"
->
+<aside class="platform-sidebar" class:collapsed aria-label="Platform navigation">
 	<!-- User Profile Widget -->
 	<div class="sidebar-profile">
 		<div class="sidebar-avatar">
@@ -188,11 +184,7 @@
 	<div class="sidebar-footer">
 		<PortalSwitcher role={user.role} {currentPath} {collapsed} />
 		<div class="sidebar-divider"></div>
-		<a
-			href="/"
-			class="sidebar-footer-item"
-			title={collapsed ? 'Back to Store' : undefined}
-		>
+		<a href="/" class="sidebar-footer-item" title={collapsed ? 'Back to Store' : undefined}>
 			<svg
 				viewBox="0 0 24 24"
 				class="nav-icon"
@@ -361,7 +353,10 @@
 		{#if onlogout}
 			<button
 				class="sidebar-footer-item sidebar-logout"
-				onclick={() => { onlogout?.(); closeMobile(); }}
+				onclick={() => {
+					onlogout?.();
+					closeMobile();
+				}}
 			>
 				<svg
 					viewBox="0 0 24 24"
@@ -534,7 +529,9 @@
 		color: oklch(var(--bc) / 0.5);
 		cursor: pointer;
 		border-radius: calc(var(--input-radius, 10px) - 2px);
-		transition: color 150ms ease, background 150ms ease;
+		transition:
+			color 150ms ease,
+			background 150ms ease;
 		flex-shrink: 0;
 	}
 
@@ -606,7 +603,9 @@
 		font-weight: 500;
 		white-space: nowrap;
 		overflow: hidden;
-		transition: background 150ms ease, color 150ms ease;
+		transition:
+			background 150ms ease,
+			color 150ms ease;
 		cursor: pointer;
 		border: none;
 		background: transparent;
@@ -693,7 +692,9 @@
 		font-weight: 500;
 		white-space: nowrap;
 		overflow: hidden;
-		transition: background 150ms ease, color 150ms ease;
+		transition:
+			background 150ms ease,
+			color 150ms ease;
 		cursor: pointer;
 		border: none;
 		background: transparent;
@@ -729,7 +730,9 @@
 		background: transparent;
 		cursor: pointer;
 		width: 100%;
-		transition: background 150ms ease, color 150ms ease;
+		transition:
+			background 150ms ease,
+			color 150ms ease;
 	}
 
 	.sidebar-collapse-btn:hover {

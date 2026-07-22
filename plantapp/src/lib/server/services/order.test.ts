@@ -32,6 +32,8 @@ describe('OrderService authorization boundary', () => {
 		vi.spyOn(OrderService, 'getOrderByNumber').mockResolvedValue(order);
 
 		await expect(OrderService.getOrderByNumberForUser('ORD-42', 'owner-user')).resolves.toBe(order);
-		await expect(OrderService.getOrderByNumberForUser('ORD-42', 'admin-user', true)).resolves.toBe(order);
+		await expect(OrderService.getOrderByNumberForUser('ORD-42', 'admin-user', true)).resolves.toBe(
+			order
+		);
 	});
 });

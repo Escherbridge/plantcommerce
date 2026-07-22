@@ -13,6 +13,10 @@
 	let registeredEmail = $state('');
 	let verificationEmailSent = $state(false);
 
+	function validEmail(value: string): boolean {
+		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+	}
+
 	const passwordErrors = $derived(() => {
 		const errors: string[] = [];
 		if (password) {
@@ -40,8 +44,14 @@
 			return;
 		}
 
-		if (username.length < 3) {
+		const normalizedUsername = username.trim();
+		const normalizedEmail = email.trim();
+		if (normalizedUsername.length < 3) {
 			errorMessage = 'Username must be at least 3 characters';
+			return;
+		}
+		if (!validEmail(normalizedEmail)) {
+			errorMessage = 'Enter a valid email address';
 			return;
 		}
 
@@ -49,21 +59,24 @@
 
 		try {
 			const result = await trpc.auth.register.mutate({
-				username,
-				email,
+				username: normalizedUsername,
+				email: normalizedEmail,
 				password,
-				firstName: firstName || undefined,
-				lastName: lastName || undefined
+				firstName: firstName.trim() || undefined,
+				lastName: lastName.trim() || undefined
 			});
 
 			if (result.user) {
-				registeredEmail = email;
+				registeredEmail = normalizedEmail;
 				verificationEmailSent = result.verificationEmailSent;
 				registrationComplete = true;
+			} else {
+				errorMessage =
+					'We could not complete account creation. Please try signing in or contact support.';
 			}
-		} catch (error: any) {
-			console.error('Registration error:', error);
-			errorMessage = error.message || 'Registration failed. Please try again.';
+		} catch {
+			errorMessage =
+				'We could not create an account with those details. Please review them and try again.';
 		} finally {
 			isLoading = false;
 		}
@@ -82,9 +95,17 @@
 				<div class="register-header">
 					<a href="/" class="register-wordmark">AEVANI</a>
 					<div class="register-success-icon">
-						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-							<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-							<polyline points="22 4 12 14.01 9 11.01"/>
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+						>
+							<path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+							<polyline points="22 4 12 14.01 9 11.01" />
 						</svg>
 					</div>
 					<h1 class="register-title">Account Created</h1>
@@ -94,178 +115,226 @@
 
 				<div class="register-next-steps">
 					{#if verificationEmailSent}
-						<p class="register-step-text">Check your inbox and confirm the verification request. You can start browsing right away.</p>
+						<p class="register-step-text">
+							Check your inbox and confirm the verification request. Your account is ready, while
+							catalog and checkout availability continue to be verified.
+						</p>
 					{:else}
-						<p class="register-step-text">Your account was created, but verification email delivery is not available yet. Please contact support before relying on email verification.</p>
+						<p class="register-step-text">
+							Your account was created, but verification email delivery is not available yet. Please
+							contact support before relying on email verification.
+						</p>
 					{/if}
 					<div class="register-success-actions">
-						<a href="/products" class="btn btn-primary w-full font-display uppercase tracking-wider">
-							Browse Products
-						</a>
-						<a href="/account/profile" class="btn btn-outline w-full font-display uppercase tracking-wider">
+						<a
+							href="/account/profile"
+							class="font-display btn w-full tracking-wider uppercase btn-primary"
+						>
 							Go to My Account
+						</a>
+						<a
+							href="/products"
+							class="font-display btn w-full tracking-wider uppercase btn-outline"
+						>
+							View Catalog Status
 						</a>
 					</div>
 				</div>
 
 				{#if verificationEmailSent}
 					<div class="register-footer">
-						<p class="register-legal">Didn't receive the email? Check your spam folder or contact support.</p>
+						<p class="register-legal">
+							Didn't receive the email? Check your spam folder or contact support.
+						</p>
 					</div>
 				{/if}
 			{:else}
-			<!-- Header -->
-			<div class="register-header">
-				<a href="/" class="register-wordmark">AEVANI</a>
-				<h1 class="register-title">Create Your Account</h1>
-				<p class="register-subtitle">Join our community of sustainable growers.</p>
-			</div>
-
-			<!-- Error -->
-			{#if errorMessage}
-				<div class="register-error">
-					<svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-						<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-					</svg>
-					<span>{errorMessage}</span>
+				<!-- Header -->
+				<div class="register-header">
+					<a href="/" class="register-wordmark">AEVANI</a>
+					<h1 class="register-title">Create Your Account</h1>
+					<p class="register-subtitle">Join our community of sustainable growers.</p>
 				</div>
-			{/if}
 
-			<!-- Form -->
-			<form onsubmit={handleSubmit} class="register-form" novalidate>
-				<div class="register-row">
-					<div class="form-control">
-						<label class="label" for="firstName">
-							<span class="label-text">First Name</span>
-						</label>
-						<input
-							id="firstName"
-							type="text"
-							placeholder="First name"
-							class="input input-bordered w-full"
-							bind:value={firstName}
-							disabled={isLoading}
-						/>
+				<!-- Error -->
+				{#if errorMessage}
+					<div id="register-form-error" class="register-error" role="alert" aria-live="assertive">
+						<svg
+							class="h-4 w-4 shrink-0"
+							fill="currentColor"
+							viewBox="0 0 20 20"
+							aria-hidden="true"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+								clip-rule="evenodd"
+							/>
+						</svg>
+						<span>{errorMessage}</span>
 					</div>
+				{/if}
 
-					<div class="form-control">
-						<label class="label" for="lastName">
-							<span class="label-text">Last Name</span>
-						</label>
-						<input
-							id="lastName"
-							type="text"
-							placeholder="Last name"
-							class="input input-bordered w-full"
-							bind:value={lastName}
-							disabled={isLoading}
-						/>
-					</div>
-				</div>
-
-				<div class="form-control">
-					<label class="label" for="username">
-						<span class="label-text">Username</span>
-					</label>
-					<input
-						id="username"
-						type="text"
-						placeholder="Choose a username"
-						class="input input-bordered w-full"
-						bind:value={username}
-						required
-						disabled={isLoading}
-						minlength="3"
-						maxlength="50"
-					/>
-					<div class="register-hint">Must be 3-50 characters</div>
-				</div>
-
-				<div class="form-control">
-					<label class="label" for="email">
-						<span class="label-text">Email</span>
-					</label>
-					<input
-						id="email"
-						type="email"
-						placeholder="your.email@example.com"
-						class="input input-bordered w-full"
-						bind:value={email}
-						required
-						disabled={isLoading}
-					/>
-				</div>
-
-				<div class="form-control">
-					<label class="label" for="password">
-						<span class="label-text">Password</span>
-					</label>
-					<input
-						id="password"
-						type="password"
-						placeholder="Create a strong password"
-						class="input input-bordered w-full"
-						bind:value={password}
-						required
-						disabled={isLoading}
-						minlength="8"
-					/>
-					{#if passwordErrors().length > 0 && password}
-						<div class="register-field-errors">
-							{#each passwordErrors() as error}
-								<span class="register-field-error">{error}</span>
-							{/each}
+				<!-- Form -->
+				<form onsubmit={handleSubmit} class="register-form" novalidate aria-busy={isLoading}>
+					<div class="register-row">
+						<div class="form-control">
+							<label class="label" for="firstName">
+								<span class="label-text">First Name</span>
+							</label>
+							<input
+								id="firstName"
+								name="firstName"
+								type="text"
+								autocomplete="given-name"
+								placeholder="First name"
+								class="input-bordered input w-full"
+								bind:value={firstName}
+								disabled={isLoading}
+							/>
 						</div>
-					{:else}
-						<div class="register-hint">Must be at least 8 characters</div>
-					{/if}
-				</div>
 
-				<div class="form-control">
-					<label class="label" for="confirmPassword">
-						<span class="label-text">Confirm Password</span>
-					</label>
-					<input
-						id="confirmPassword"
-						type="password"
-						placeholder="Re-enter your password"
-						class="input input-bordered w-full"
-						bind:value={confirmPassword}
-						required
-						disabled={isLoading}
-						minlength="8"
-					/>
-				</div>
+						<div class="form-control">
+							<label class="label" for="lastName">
+								<span class="label-text">Last Name</span>
+							</label>
+							<input
+								id="lastName"
+								name="lastName"
+								type="text"
+								autocomplete="family-name"
+								placeholder="Last name"
+								class="input-bordered input w-full"
+								bind:value={lastName}
+								disabled={isLoading}
+							/>
+						</div>
+					</div>
 
-				<div class="register-actions">
-					<button
-						type="submit"
-						class="btn btn-primary w-full font-display uppercase tracking-wider"
-						disabled={isLoading || passwordErrors().length > 0}
-					>
-						{#if isLoading}
-							<span class="loading loading-spinner loading-sm"></span>
-							Creating account...
+					<div class="form-control">
+						<label class="label" for="username">
+							<span class="label-text">Username</span>
+						</label>
+						<input
+							id="username"
+							name="username"
+							type="text"
+							autocomplete="username"
+							autocapitalize="none"
+							spellcheck="false"
+							placeholder="Choose a username"
+							class="input-bordered input w-full"
+							bind:value={username}
+							required
+							disabled={isLoading}
+							aria-invalid={Boolean(errorMessage)}
+							aria-describedby={errorMessage ? 'register-form-error' : undefined}
+							minlength="3"
+							maxlength="50"
+						/>
+						<div class="register-hint">Must be 3-50 characters</div>
+					</div>
+
+					<div class="form-control">
+						<label class="label" for="email">
+							<span class="label-text">Email</span>
+						</label>
+						<input
+							id="email"
+							name="email"
+							type="email"
+							autocomplete="email"
+							autocapitalize="none"
+							spellcheck="false"
+							placeholder="your.email@example.com"
+							class="input-bordered input w-full"
+							bind:value={email}
+							required
+							disabled={isLoading}
+							aria-invalid={Boolean(errorMessage)}
+							aria-describedby={errorMessage ? 'register-form-error' : undefined}
+						/>
+					</div>
+
+					<div class="form-control">
+						<label class="label" for="password">
+							<span class="label-text">Password</span>
+						</label>
+						<input
+							id="password"
+							name="password"
+							type="password"
+							autocomplete="new-password"
+							placeholder="Create a strong password"
+							class="input-bordered input w-full"
+							bind:value={password}
+							required
+							disabled={isLoading}
+							aria-invalid={Boolean(errorMessage) || passwordErrors().length > 0}
+							aria-describedby={errorMessage ? 'register-form-error' : undefined}
+							minlength="8"
+						/>
+						{#if passwordErrors().length > 0 && password}
+							<div class="register-field-errors">
+								{#each passwordErrors() as error}
+									<span class="register-field-error">{error}</span>
+								{/each}
+							</div>
 						{:else}
-							Create Account
+							<div class="register-hint">Must be at least 8 characters</div>
 						{/if}
-					</button>
-				</div>
-			</form>
+					</div>
 
-			<!-- Footer -->
-			<div class="register-footer">
-				<p>
-					Already have an account?
-					<a href="/login" class="link link-primary font-semibold">Login here</a>
-				</p>
-				<p class="register-legal">
-					By creating an account, you agree to our
-					<a href="/terms" class="link link-primary">Terms of Service</a>
-					and
-					<a href="/privacy" class="link link-primary">Privacy Policy</a>
-				</p>
-			</div>
+					<div class="form-control">
+						<label class="label" for="confirmPassword">
+							<span class="label-text">Confirm Password</span>
+						</label>
+						<input
+							id="confirmPassword"
+							name="confirmPassword"
+							type="password"
+							autocomplete="new-password"
+							placeholder="Re-enter your password"
+							class="input-bordered input w-full"
+							bind:value={confirmPassword}
+							required
+							disabled={isLoading}
+							aria-invalid={Boolean(errorMessage) || passwordErrors().length > 0}
+							aria-describedby={errorMessage ? 'register-form-error' : undefined}
+							minlength="8"
+						/>
+					</div>
+
+					<div class="register-actions">
+						<button
+							type="submit"
+							class="font-display btn w-full tracking-wider uppercase btn-primary"
+							disabled={isLoading || passwordErrors().length > 0}
+							aria-busy={isLoading}
+						>
+							{#if isLoading}
+								<span class="loading loading-sm loading-spinner" aria-hidden="true"></span>
+								Creating account...
+							{:else}
+								Create Account
+							{/if}
+						</button>
+					</div>
+				</form>
+
+				<!-- Footer -->
+				<div class="register-footer">
+					<p>
+						Already have an account?
+						<a href="/login" class="link font-semibold link-primary">Login here</a>
+					</p>
+					<p class="register-legal">
+						By creating an account, you agree to our
+						<a href="/terms" class="link link-primary">Terms of Service</a>
+						and
+						<a href="/privacy" class="link link-primary">Privacy Policy</a>
+					</p>
+				</div>
 			{/if}
 		</div>
 	</div>

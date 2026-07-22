@@ -7,7 +7,11 @@ export class ProgressService {
 	static async updateContentBlockProgress(
 		enrollmentId: string,
 		contentBlockId: string,
-		data: { status?: string; progressPercent?: number; metadata?: Record<string, any> }
+		data: {
+			status?: 'not_started' | 'in_progress' | 'completed';
+			progressPercent?: number;
+			metadata?: Record<string, unknown>;
+		}
 	) {
 		// Check if progress record exists
 		const [existing] = await db

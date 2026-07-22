@@ -47,7 +47,10 @@ function recommendationEvent(): PlantGeoCommerceEvent {
 
 describe('PlantGeo configuration boundary', () => {
 	it('is disabled by default and refuses incomplete configuration', () => {
-		expect(readPlantGeoConfiguration({})).toEqual({ status: 'disabled', reason: 'feature-disabled' });
+		expect(readPlantGeoConfiguration({})).toEqual({
+			status: 'disabled',
+			reason: 'feature-disabled'
+		});
 		expect(
 			readPlantGeoConfiguration({
 				PLANTGEO_INTEGRATION_ENABLED: 'true',
@@ -58,10 +61,16 @@ describe('PlantGeo configuration boundary', () => {
 
 	it('requires a scoped identity, HTTPS endpoint, and real secret values', () => {
 		expect(
-			readPlantGeoConfiguration({ ...configuredEnvironment, PLANTGEO_SERVICE_IDENTITY: 'publisher' })
+			readPlantGeoConfiguration({
+				...configuredEnvironment,
+				PLANTGEO_SERVICE_IDENTITY: 'publisher'
+			})
 		).toEqual({ status: 'disabled', reason: 'invalid-service-identity' });
 		expect(
-			readPlantGeoConfiguration({ ...configuredEnvironment, PLANTGEO_EVENTS_ENDPOINT: 'http://events.plantgeo.test' })
+			readPlantGeoConfiguration({
+				...configuredEnvironment,
+				PLANTGEO_EVENTS_ENDPOINT: 'http://events.plantgeo.test'
+			})
 		).toEqual({ status: 'disabled', reason: 'invalid-events-endpoint' });
 		expect(readPlantGeoConfiguration(configuredEnvironment).status).toBe('enabled');
 	});
@@ -72,8 +81,12 @@ describe('PlantGeo data minimization', () => {
 		const subjectHash = hashPlantGeoSubject('account_12345678', hashSecret);
 		expect(subjectHash).toMatch(/^pgh1_[a-f0-9]{64}$/);
 		expect(subjectHash).not.toContain('account_12345678');
-		expect(() => hashPlantGeoSubject('person@example.com', hashSecret)).toThrow('opaque internal identifier');
-		expect(() => hashPlantGeoSubject('127.0.0.1', hashSecret)).toThrow('opaque internal identifier');
+		expect(() => hashPlantGeoSubject('person@example.com', hashSecret)).toThrow(
+			'opaque internal identifier'
+		);
+		expect(() => hashPlantGeoSubject('127.0.0.1', hashSecret)).toThrow(
+			'opaque internal identifier'
+		);
 	});
 
 	it('projects only the explicit catalog allowlist', () => {
@@ -96,7 +109,10 @@ describe('PlantGeo data minimization', () => {
 			stockQuantity: 99
 		} as Parameters<typeof projectPlantGeoCatalogProduct>[0]);
 
-		expect(product).toMatchObject({ id: 'product_7', price: { amountMinor: 2499, currency: 'USD' } });
+		expect(product).toMatchObject({
+			id: 'product_7',
+			price: { amountMinor: 2499, currency: 'USD' }
+		});
 		expect(product).not.toHaveProperty('sku');
 		expect(product).not.toHaveProperty('costPrice');
 		expect(product).not.toHaveProperty('stockQuantity');
@@ -135,9 +151,12 @@ describe('PlantGeo outbound client', () => {
 			return { ok: true, status: 202 };
 		};
 		const client = new PlantGeoClient(() => configuration, transport);
-		const event = { ...recommendationEvent(), email: 'person@example.com', session: 'raw-session' } as PlantGeoCommerceEvent;
+		const event = { ...recommendationEvent(), email: 'person@example.com', session: 'raw-session' };
 
-		await expect(client.sendCommerceEvent(event)).resolves.toEqual({ status: 'sent', responseStatus: 202 });
+		await expect(client.sendCommerceEvent(event)).resolves.toEqual({
+			status: 'sent',
+			responseStatus: 202
+		});
 		expect(sentInput).toBe(configuration.eventsEndpoint);
 		expect(sentInit).toEqual(expect.objectContaining({ credentials: 'omit', redirect: 'error' }));
 		const sentBody = JSON.parse(sentInit?.body as string) as Record<string, unknown>;

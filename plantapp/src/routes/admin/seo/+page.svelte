@@ -14,7 +14,8 @@
 					pageId: 'home',
 					pageType: 'page',
 					metaTitle: 'Aevani | Local Development Metadata Fixture',
-					metaDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+					metaDescription:
+						'Local development fixture only. Configure reviewed production metadata before publishing.',
 					ogTitle: 'Aevani | Local Development Metadata Fixture',
 					ogImage: '/images/AI-MockAssets/MAINHERO.png',
 					robots: 'noindex, nofollow',
@@ -25,7 +26,8 @@
 					pageId: 'products',
 					pageType: 'category',
 					metaTitle: 'Aevani Products | Local Development Metadata Fixture',
-					metaDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+					metaDescription:
+						'Local development fixture only. Configure reviewed production metadata before publishing.',
 					ogTitle: 'Aevani Products | Local Development Metadata Fixture',
 					ogImage: '/images/AI-MockAssets/MAINHERO.png',
 					robots: 'noindex, nofollow',
@@ -39,7 +41,6 @@
 			loading = false;
 		}
 	});
-
 </script>
 
 <div class="platform-content">
@@ -49,7 +50,8 @@
 	</div>
 	<div class="platform-card">
 		<p class="admin-seo-info-text">
-			The records below are local development fixtures only. They are not a source of published metadata and cannot be edited or previewed here.
+			The records below are local development fixtures only. They are not a source of published
+			metadata and cannot be edited or previewed here.
 		</p>
 	</div>
 
@@ -78,7 +80,9 @@
 						<tr>
 							<td>
 								<div class="font-semibold">{field.pageId}</div>
-								<div style="font-size: 0.75rem; color: oklch(var(--bc) / 0.45)">{field.pageType}</div>
+								<div style="font-size: 0.75rem; color: oklch(var(--bc) / 0.45)">
+									{field.pageType}
+								</div>
 							</td>
 							<td>
 								<div class="admin-seo-truncate" title={field.metaTitle}>
@@ -93,10 +97,18 @@
 							<td>{new Date(field.updatedAt).toLocaleDateString()}</td>
 							<td>
 								<div class="admin-action-group">
-									<button class="platform-action-btn admin-table-btn" disabled title="SEO publishing is unavailable">
+									<button
+										class="platform-action-btn admin-table-btn"
+										disabled
+										title="SEO publishing is unavailable"
+									>
 										Edit unavailable
 									</button>
-									<button class="platform-action-btn admin-table-btn" disabled title="SEO publishing is unavailable">
+									<button
+										class="platform-action-btn admin-table-btn"
+										disabled
+										title="SEO publishing is unavailable"
+									>
 										Preview unavailable
 									</button>
 								</div>
@@ -113,13 +125,15 @@
 				<h2 class="platform-card__title">About SEO Fields</h2>
 			</div>
 			<p class="admin-seo-info-text">
-				A reviewed, persisted SEO workflow is required before metadata can be changed.
-				Do not treat local fixtures as search or social metadata.
+				A reviewed, persisted SEO workflow is required before metadata can be changed. Do not treat
+				local fixtures as search or social metadata.
 			</p>
 			<div class="admin-seo-info-grid">
 				<div class="admin-seo-info-card">
 					<h3 class="admin-seo-info-title">Meta Title</h3>
-					<p class="admin-seo-info-desc">Appears in browser tabs and search results (50-60 chars)</p>
+					<p class="admin-seo-info-desc">
+						Appears in browser tabs and search results (50-60 chars)
+					</p>
 				</div>
 				<div class="admin-seo-info-card">
 					<h3 class="admin-seo-info-title">Meta Description</h3>

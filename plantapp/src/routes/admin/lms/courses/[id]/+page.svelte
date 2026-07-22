@@ -165,7 +165,11 @@
 				<p class="platform-header__subtitle">
 					{course?.slug || courseId}
 					{#if course?.status}
-						<span class="platform-badge platform-badge--{course.status === 'published' ? 'success' : 'ghost'}">
+						<span
+							class="platform-badge platform-badge--{course.status === 'published'
+								? 'success'
+								: 'ghost'}"
+						>
 							{course.status}
 						</span>
 					{/if}
@@ -174,7 +178,11 @@
 			<div class="admin-header-actions">
 				<a href="/admin/lms/courses" class="btn btn-ghost btn-sm">Back</a>
 				{#if course?.status !== 'published'}
-					<button class="platform-action-btn admin-header-btn" disabled={actionBusy} onclick={publishCourse}>
+					<button
+						class="platform-action-btn admin-header-btn"
+						disabled={actionBusy}
+						onclick={publishCourse}
+					>
 						Publish
 					</button>
 				{/if}
@@ -222,15 +230,15 @@
 			<div class="admin-form-grid">
 				<label class="admin-field admin-field--full">
 					<span class="admin-field__label">Title</span>
-					<input type="text" class="input input-bordered" bind:value={title} />
+					<input type="text" class="input-bordered input" bind:value={title} />
 				</label>
 				<label class="admin-field admin-field--full">
 					<span class="admin-field__label">Description</span>
-					<textarea class="textarea textarea-bordered" rows="4" bind:value={description}></textarea>
+					<textarea class="textarea-bordered textarea" rows="4" bind:value={description}></textarea>
 				</label>
 				<label class="admin-field">
 					<span class="admin-field__label">Difficulty</span>
-					<select class="select select-bordered" bind:value={difficulty}>
+					<select class="select-bordered select" bind:value={difficulty}>
 						<option value="beginner">Beginner</option>
 						<option value="intermediate">Intermediate</option>
 						<option value="advanced">Advanced</option>
@@ -238,7 +246,13 @@
 				</label>
 				<label class="admin-field">
 					<span class="admin-field__label">Passing Score</span>
-					<input type="number" min="0" max="100" class="input input-bordered" bind:value={passingScore} />
+					<input
+						type="number"
+						min="0"
+						max="100"
+						class="input-bordered input"
+						bind:value={passingScore}
+					/>
 				</label>
 			</div>
 			<div class="admin-form-actions">
@@ -257,13 +271,13 @@
 			<div class="admin-inline-form">
 				<input
 					type="text"
-					class="input input-bordered admin-inline-input"
+					class="input-bordered admin-inline-input input"
 					placeholder="Module title"
 					bind:value={newModuleTitle}
 				/>
 				<input
 					type="text"
-					class="input input-bordered admin-inline-input"
+					class="input-bordered admin-inline-input input"
 					placeholder="module-slug"
 					bind:value={newModuleSlug}
 				/>
@@ -285,7 +299,10 @@
 									<button class="btn btn-ghost btn-sm" onclick={() => startLessonDraft(mod.id)}>
 										Add Lesson
 									</button>
-									<button class="btn btn-ghost btn-sm" onclick={() => deleteModule(mod.id, mod.title)}>
+									<button
+										class="btn btn-ghost btn-sm"
+										onclick={() => deleteModule(mod.id, mod.title)}
+									>
 										Delete Module
 									</button>
 								</div>
@@ -299,7 +316,10 @@
 												<div class="admin-lesson__title">{lesson.title}</div>
 												<div class="admin-meta-text">{lesson.slug}</div>
 											</div>
-											<button class="btn btn-ghost btn-sm" onclick={() => deleteLesson(lesson.id, lesson.title)}>
+											<button
+												class="btn btn-ghost btn-sm"
+												onclick={() => deleteLesson(lesson.id, lesson.title)}
+											>
 												Remove
 											</button>
 										</li>
@@ -313,20 +333,26 @@
 								<div class="admin-inline-form admin-inline-form--nested">
 									<input
 										type="text"
-										class="input input-bordered admin-inline-input"
+										class="input-bordered admin-inline-input input"
 										placeholder="Lesson title"
 										bind:value={newLessonTitle}
 									/>
 									<input
 										type="text"
-										class="input input-bordered admin-inline-input"
+										class="input-bordered admin-inline-input input"
 										placeholder="lesson-slug"
 										bind:value={newLessonSlug}
 									/>
-									<button class="btn btn-primary btn-sm" disabled={creatingLesson} onclick={() => createLesson(mod.id)}>
+									<button
+										class="btn btn-sm btn-primary"
+										disabled={creatingLesson}
+										onclick={() => createLesson(mod.id)}
+									>
 										Save
 									</button>
-									<button class="btn btn-ghost btn-sm" onclick={() => (lessonDraftFor = null)}>Cancel</button>
+									<button class="btn btn-ghost btn-sm" onclick={() => (lessonDraftFor = null)}
+										>Cancel</button
+									>
 								</div>
 							{/if}
 						</div>
@@ -335,7 +361,9 @@
 			{:else}
 				<div class="platform-empty">
 					<p class="platform-empty__title">No Modules Yet</p>
-					<p class="platform-empty__text">Add your first module to start building the curriculum.</p>
+					<p class="platform-empty__text">
+						Add your first module to start building the curriculum.
+					</p>
 				</div>
 			{/if}
 		</div>
@@ -345,8 +373,8 @@
 				<h2 class="platform-card__title">Quizzes</h2>
 			</div>
 			<p class="admin-empty-hint">
-				Quizzes are attached to lessons or modules. Use the curriculum tab to navigate into a lesson and
-				add assessments there. Advanced quiz management UI coming soon.
+				Quizzes are attached to lessons or modules. Use the curriculum tab to navigate into a lesson
+				and add assessments there. Advanced quiz management UI coming soon.
 			</p>
 		</div>
 	{:else if activeTab === 'settings'}
@@ -355,7 +383,8 @@
 				<h2 class="platform-card__title">Danger Zone</h2>
 			</div>
 			<p class="admin-empty-hint">
-				Archive or delete this course from the main course list. Additional settings will be added here.
+				Archive or delete this course from the main course list. Additional settings will be added
+				here.
 			</p>
 		</div>
 	{/if}

@@ -2,7 +2,14 @@ import { eq, desc, and, or, inArray } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 
-export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
+export type OrderStatus =
+	| 'pending'
+	| 'confirmed'
+	| 'processing'
+	| 'shipped'
+	| 'delivered'
+	| 'cancelled'
+	| 'refunded';
 
 export interface OrderSummary {
 	id: number;
@@ -83,7 +90,7 @@ export class OrderService {
 			notes: order.notes,
 			createdAt: order.createdAt,
 			updatedAt: order.updatedAt,
-			items: items.map(item => ({
+			items: items.map((item) => ({
 				id: item.id,
 				productId: item.productId,
 				productName: item.productName,
@@ -148,9 +155,9 @@ export class OrderService {
 			.offset(offset);
 
 		// Get item counts for each order
-		const orderIds = orders.map(o => o.id);
+		const orderIds = orders.map((o) => o.id);
 		let itemCounts: { orderId: number; count: number }[] = [];
-		
+
 		if (orderIds.length > 0) {
 			itemCounts = await db
 				.select({
@@ -162,12 +169,15 @@ export class OrderService {
 		}
 
 		// Group counts by order
-		const countsByOrder = itemCounts.reduce((acc, item) => {
-			acc[item.orderId] = (acc[item.orderId] || 0) + item.count;
-			return acc;
-		}, {} as Record<number, number>);
+		const countsByOrder = itemCounts.reduce(
+			(acc, item) => {
+				acc[item.orderId] = (acc[item.orderId] || 0) + item.count;
+				return acc;
+			},
+			{} as Record<number, number>
+		);
 
-		return orders.map(order => ({
+		return orders.map((order) => ({
 			id: order.id,
 			orderNumber: order.orderNumber,
 			status: order.status as OrderStatus,
@@ -193,10 +203,7 @@ export class OrderService {
 		}
 		if (search) {
 			conditions.push(
-				or(
-					eq(table.order.orderNumber, search),
-					eq(table.order.customerEmail, search)
-				)
+				or(eq(table.order.orderNumber, search), eq(table.order.customerEmail, search))
 			);
 		}
 
@@ -211,21 +218,19 @@ export class OrderService {
 			})
 			.from(table.order);
 
-		const orders = conditions.length > 0
-			? await baseQuery
-				.where(and(...conditions))
-				.orderBy(desc(table.order.createdAt))
-				.limit(limit)
-				.offset(offset)
-			: await baseQuery
-				.orderBy(desc(table.order.createdAt))
-				.limit(limit)
-				.offset(offset);
+		const orders =
+			conditions.length > 0
+				? await baseQuery
+						.where(and(...conditions))
+						.orderBy(desc(table.order.createdAt))
+						.limit(limit)
+						.offset(offset)
+				: await baseQuery.orderBy(desc(table.order.createdAt)).limit(limit).offset(offset);
 
 		// Get item counts
-		const orderIds = orders.map(o => o.id);
+		const orderIds = orders.map((o) => o.id);
 		let itemCounts: { orderId: number; count: number }[] = [];
-		
+
 		if (orderIds.length > 0) {
 			itemCounts = await db
 				.select({
@@ -236,12 +241,15 @@ export class OrderService {
 				.where(inArray(table.orderItem.orderId, orderIds));
 		}
 
-		const countsByOrder = itemCounts.reduce((acc, item) => {
-			acc[item.orderId] = (acc[item.orderId] || 0) + item.count;
-			return acc;
-		}, {} as Record<number, number>);
+		const countsByOrder = itemCounts.reduce(
+			(acc, item) => {
+				acc[item.orderId] = (acc[item.orderId] || 0) + item.count;
+				return acc;
+			},
+			{} as Record<number, number>
+		);
 
-		return orders.map(order => ({
+		return orders.map((order) => ({
 			id: order.id,
 			orderNumber: order.orderNumber,
 			status: order.status as OrderStatus,
@@ -257,7 +265,7 @@ export class OrderService {
 	static async updateOrderStatus(orderId: number, status: OrderStatus): Promise<void> {
 		await db
 			.update(table.order)
-			.set({ 
+			.set({
 				status,
 				updatedAt: new Date()
 			})

@@ -13,7 +13,7 @@
 <Section>
 	<Container>
 		<div class="mb-8">
-			<h1 class="text-4xl font-bold mb-4">Hydroponics</h1>
+			<h1 class="mb-4 text-4xl font-bold">Hydroponics</h1>
 			<p class="text-lg text-base-content/70">
 				Explore our comprehensive selection of hydroponic growing systems, nutrients, lighting
 				solutions, and accessories for soil-free cultivation.
@@ -21,20 +21,20 @@
 		</div>
 
 		<!-- Category Navigation -->
-		<div class="flex flex-wrap gap-2 mb-8">
-			<a href="/products/hydroponics?filter=systems" class="btn btn-sm btn-outline">
+		<div class="mb-8 flex flex-wrap gap-2">
+			<a href="/products/hydroponics?filter=systems" class="btn btn-outline btn-sm">
 				Growing Systems
 			</a>
-			<a href="/products/hydroponics?filter=nutrients" class="btn btn-sm btn-outline">
+			<a href="/products/hydroponics?filter=nutrients" class="btn btn-outline btn-sm">
 				Nutrients & Supplements
 			</a>
-			<a href="/products/hydroponics?filter=lighting" class="btn btn-sm btn-outline">
+			<a href="/products/hydroponics?filter=lighting" class="btn btn-outline btn-sm">
 				Lighting Solutions
 			</a>
-			<a href="/products/hydroponics?filter=media" class="btn btn-sm btn-outline">
+			<a href="/products/hydroponics?filter=media" class="btn btn-outline btn-sm">
 				Growing Media
 			</a>
-			<a href="/products/hydroponics?filter=tools" class="btn btn-sm btn-outline">
+			<a href="/products/hydroponics?filter=tools" class="btn btn-outline btn-sm">
 				Tools & Accessories
 			</a>
 		</div>
@@ -48,13 +48,13 @@
 							<img
 								src={product.image || '/placeholder-product.jpg'}
 								alt={product.name}
-								class="object-cover w-full h-full"
+								class="h-full w-full object-cover"
 							/>
 						</figure>
 						<div class="card-body">
 							<h2 class="card-title">{product.name}</h2>
 							<p class="text-sm text-base-content/70">{product.shortDescription}</p>
-							<div class="card-actions justify-between items-center mt-4">
+							<div class="mt-4 card-actions items-center justify-between">
 								<span class="text-2xl font-bold">${product.price}</span>
 								<a href="/products/hydroponics/{product.slug}" class="btn btn-primary">
 									View Details
@@ -64,7 +64,7 @@
 					</div>
 				{/each}
 			{:else}
-				<div class="col-span-3 text-center py-12">
+				<div class="col-span-3 py-12 text-center">
 					<p class="text-xl text-base-content/70">No products available at this time.</p>
 				</div>
 			{/if}

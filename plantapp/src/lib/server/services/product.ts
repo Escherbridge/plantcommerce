@@ -149,12 +149,7 @@ export class ProductService {
 		const existingProduct = await db
 			.select()
 			.from(table.product)
-			.where(
-				or(
-					eq(table.product.slug, params.slug),
-					eq(table.product.sku, params.sku)
-				)
-			)
+			.where(or(eq(table.product.slug, params.slug), eq(table.product.sku, params.sku)))
 			.limit(1);
 
 		if (existingProduct.length > 0) {
@@ -205,7 +200,10 @@ export class ProductService {
 	/**
 	 * Update product
 	 */
-	static async updateProduct(productId: number, params: UpdateProductParams): Promise<table.Product> {
+	static async updateProduct(
+		productId: number,
+		params: UpdateProductParams
+	): Promise<table.Product> {
 		// Check if new slug or SKU conflicts with existing products
 		if (params.slug || params.sku) {
 			const conditions = [];
@@ -247,7 +245,7 @@ export class ProductService {
 		};
 
 		// Copy all defined parameters
-		Object.keys(params).forEach(key => {
+		Object.keys(params).forEach((key) => {
 			const value = params[key as keyof UpdateProductParams];
 			if (value !== undefined) {
 				if (key === 'dimensions' && value) {
@@ -317,14 +315,16 @@ export class ProductService {
 			images: images.flatMap(({ image, file }) => {
 				const url = publicProductImageUrl(file, productId);
 				return url
-					? [{
-						id: image.id,
-						fileId: image.fileId,
-						url,
-						altText: image.altText,
-						sortOrder: image.sortOrder,
-						isMain: image.isMain
-					}]
+					? [
+							{
+								id: image.id,
+								fileId: image.fileId,
+								url,
+								altText: image.altText,
+								sortOrder: image.sortOrder,
+								isMain: image.isMain
+							}
+						]
 					: [];
 			})
 		};
@@ -337,10 +337,7 @@ export class ProductService {
 		const productResult = await db
 			.select()
 			.from(table.product)
-			.where(and(
-				eq(table.product.slug, slug),
-				eq(table.product.isActive, true)
-			))
+			.where(and(eq(table.product.slug, slug), eq(table.product.isActive, true)))
 			.limit(1);
 
 		if (productResult.length === 0) {
@@ -371,7 +368,7 @@ export class ProductService {
 	static async updateStock(productId: number, quantity: number): Promise<void> {
 		const result = await db
 			.update(table.product)
-			.set({ 
+			.set({
 				stockQuantity: quantity,
 				updatedAt: new Date()
 			})
@@ -411,10 +408,9 @@ export class ProductService {
 			await db
 				.update(table.productImage)
 				.set({ isMain: false })
-				.where(and(
-					eq(table.productImage.productId, productId),
-					eq(table.productImage.isMain, true)
-				));
+				.where(
+					and(eq(table.productImage.productId, productId), eq(table.productImage.isMain, true))
+				);
 		}
 
 		// Get next sort order if not provided
@@ -495,10 +491,12 @@ export class ProductService {
 				await db
 					.update(table.productImage)
 					.set({ isMain: false })
-					.where(and(
-						eq(table.productImage.productId, existingImage.productId),
-						eq(table.productImage.isMain, true)
-					));
+					.where(
+						and(
+							eq(table.productImage.productId, existingImage.productId),
+							eq(table.productImage.isMain, true)
+						)
+					);
 			}
 		}
 
@@ -524,13 +522,15 @@ export class ProductService {
 	/**
 	 * Get low stock products
 	 */
-	static async getLowStockProducts(threshold: number = 10): Promise<Array<{
-		id: number;
-		name: string;
-		sku: string;
-		stockQuantity: number;
-		price: string;
-	}>> {
+	static async getLowStockProducts(threshold: number = 10): Promise<
+		Array<{
+			id: number;
+			name: string;
+			sku: string;
+			stockQuantity: number;
+			price: string;
+		}>
+	> {
 		const products = await db
 			.select({
 				id: table.product.id,
@@ -540,27 +540,31 @@ export class ProductService {
 				price: table.product.price
 			})
 			.from(table.product)
-			.where(and(
-				eq(table.product.isActive, true),
-				eq(table.product.trackInventory, true)
-				// Note: Would use lt() for less than comparison, but using a workaround
-			));
+			.where(
+				and(
+					eq(table.product.isActive, true),
+					eq(table.product.trackInventory, true)
+					// Note: Would use lt() for less than comparison, but using a workaround
+				)
+			);
 
 		// Filter in JavaScript for now (could be optimized with SQL function)
-		return products.filter(product => product.stockQuantity <= threshold);
+		return products.filter((product) => product.stockQuantity <= threshold);
 	}
 
 	/**
 	 * Get featured products
 	 */
-	static async getFeaturedProducts(limit: number = 10): Promise<Array<{
-		id: number;
-		name: string;
-		slug: string;
-		price: string;
-		shortDescription: string | null;
-		mainImage: string | null;
-	}>> {
+	static async getFeaturedProducts(limit: number = 10): Promise<
+		Array<{
+			id: number;
+			name: string;
+			slug: string;
+			price: string;
+			shortDescription: string | null;
+			mainImage: string | null;
+		}>
+	> {
 		const products = await db
 			.select({
 				product: table.product,
@@ -568,15 +572,12 @@ export class ProductService {
 				file: table.file
 			})
 			.from(table.product)
-			.leftJoin(table.productImage, and(
-				eq(table.product.id, table.productImage.productId),
-				eq(table.productImage.isMain, true)
-			))
+			.leftJoin(
+				table.productImage,
+				and(eq(table.product.id, table.productImage.productId), eq(table.productImage.isMain, true))
+			)
 			.leftJoin(table.file, eq(table.productImage.fileId, table.file.id))
-			.where(and(
-				eq(table.product.isActive, true),
-				eq(table.product.isFeatured, true)
-			))
+			.where(and(eq(table.product.isActive, true), eq(table.product.isFeatured, true)))
 			.orderBy(desc(table.product.updatedAt))
 			.limit(limit);
 
@@ -614,14 +615,16 @@ export class ProductService {
 	/**
 	 * Get products with filtering and pagination
 	 */
-	static async getProducts(filter: ProductFilter): Promise<Array<{
-		product: table.Product & { images?: Array<{ url: string; altText: string | null }> };
-		category: {
-			id: number;
-			name: string;
-			slug: string;
-		};
-	}>> {
+	static async getProducts(filter: ProductFilter): Promise<
+		Array<{
+			product: table.Product & { images?: Array<{ url: string; altText: string | null }> };
+			category: {
+				id: number;
+				name: string;
+				slug: string;
+			};
+		}>
+	> {
 		const {
 			categoryId,
 			categoryIds,
@@ -634,10 +637,7 @@ export class ProductService {
 		} = filter;
 
 		// Build all conditions
-		const conditions = [
-			eq(table.product.isActive, true),
-			eq(table.productCategory.isActive, true)
-		];
+		const conditions = [eq(table.product.isActive, true), eq(table.productCategory.isActive, true)];
 
 		if (categoryIds && categoryIds.length > 0) {
 			conditions.push(inArray(table.product.categoryId, categoryIds));
@@ -646,9 +646,7 @@ export class ProductService {
 		}
 
 		if (search) {
-			conditions.push(
-				like(table.product.name, `%${sanitizeLike(search)}%`)
-			);
+			conditions.push(like(table.product.name, `%${sanitizeLike(search)}%`));
 		}
 
 		if (featured !== undefined) {
@@ -656,9 +654,12 @@ export class ProductService {
 		}
 
 		// Apply sorting
-		const sortColumn = sortBy === 'name' ? table.product.name :
-						 sortBy === 'price' ? table.product.price :
-						 table.product.createdAt;
+		const sortColumn =
+			sortBy === 'name'
+				? table.product.name
+				: sortBy === 'price'
+					? table.product.price
+					: table.product.createdAt;
 
 		const rows = await db
 			.select({
@@ -673,10 +674,10 @@ export class ProductService {
 			})
 			.from(table.product)
 			.innerJoin(table.productCategory, eq(table.product.categoryId, table.productCategory.id))
-			.leftJoin(table.productImage, and(
-				eq(table.product.id, table.productImage.productId),
-				eq(table.productImage.isMain, true)
-			))
+			.leftJoin(
+				table.productImage,
+				and(eq(table.product.id, table.productImage.productId), eq(table.productImage.isMain, true))
+			)
 			.leftJoin(table.file, eq(table.productImage.fileId, table.file.id))
 			.where(and(...conditions))
 			.orderBy(sortOrder === 'asc' ? asc(sortColumn) : desc(sortColumn))
@@ -689,10 +690,14 @@ export class ProductService {
 			return {
 				product: {
 					...product,
-					images: url ? [{
-						url,
-						altText: image?.altText || product.shortDescription
-					}] : []
+					images: url
+						? [
+								{
+									url,
+									altText: image?.altText || product.shortDescription
+								}
+							]
+						: []
 				},
 				category
 			};
@@ -702,13 +707,15 @@ export class ProductService {
 	/**
 	 * Get all products for admin management
 	 */
-	static async getAllProducts(filter: AdminProductFilter): Promise<Array<{
-		product: table.Product;
-		category: {
-			id: number;
-			name: string;
-		};
-	}>> {
+	static async getAllProducts(filter: AdminProductFilter): Promise<
+		Array<{
+			product: table.Product;
+			category: {
+				id: number;
+				name: string;
+			};
+		}>
+	> {
 		const { limit = 50, offset = 0, search, categoryId, isActive } = filter;
 
 		// Apply filters
@@ -745,14 +752,11 @@ export class ProductService {
 
 		return conditions.length > 0
 			? await baseQuery
-				.where(and(...conditions))
-				.orderBy(desc(table.product.updatedAt))
-				.limit(limit)
-				.offset(offset)
-			: await baseQuery
-				.orderBy(desc(table.product.updatedAt))
-				.limit(limit)
-				.offset(offset);
+					.where(and(...conditions))
+					.orderBy(desc(table.product.updatedAt))
+					.limit(limit)
+					.offset(offset)
+			: await baseQuery.orderBy(desc(table.product.updatedAt)).limit(limit).offset(offset);
 	}
 
 	/**
@@ -783,14 +787,16 @@ export class ProductService {
 	/**
 	 * Get product images by product ID
 	 */
-	static async getProductImages(productId: number): Promise<Array<{
-		id: number;
-		url: string | null;
-		altText: string | null;
-		sortOrder: number;
-		isMain: boolean;
-		createdAt: Date;
-	}>> {
+	static async getProductImages(productId: number): Promise<
+		Array<{
+			id: number;
+			url: string | null;
+			altText: string | null;
+			sortOrder: number;
+			isMain: boolean;
+			createdAt: Date;
+		}>
+	> {
 		const images = await db
 			.select({
 				image: table.productImage,
@@ -812,11 +818,7 @@ export class ProductService {
 	}
 
 	private static async assertPublicProductFile(fileId: string, productId: number): Promise<void> {
-		const [file] = await db
-			.select()
-			.from(table.file)
-			.where(eq(table.file.id, fileId))
-			.limit(1);
+		const [file] = await db.select().from(table.file).where(eq(table.file.id, fileId)).limit(1);
 
 		if (
 			!file ||

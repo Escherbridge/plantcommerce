@@ -143,14 +143,23 @@
 					{#each enrollments as enrollment}
 						<tr>
 							<td class="font-semibold">
-								{enrollment.user?.firstName || ''} {enrollment.user?.lastName || ''}
+								{enrollment.user?.firstName || ''}
+								{enrollment.user?.lastName || ''}
 							</td>
 							<td>{enrollment.user?.email || '—'}</td>
 							<td>
 								<span class={getStatusBadgeClass(enrollment.status)}>{enrollment.status}</span>
 							</td>
-							<td>{enrollment.enrolledAt ? new Date(enrollment.enrolledAt).toLocaleDateString() : '—'}</td>
-							<td>{enrollment.progressPct != null ? `${Math.round(enrollment.progressPct)}%` : '—'}</td>
+							<td
+								>{enrollment.enrolledAt
+									? new Date(enrollment.enrolledAt).toLocaleDateString()
+									: '—'}</td
+							>
+							<td
+								>{enrollment.progressPct != null
+									? `${Math.round(enrollment.progressPct)}%`
+									: '—'}</td
+							>
 							<td>
 								<div class="admin-action-group">
 									{#if enrollment.status === 'pending'}
@@ -188,7 +197,9 @@
 		<div class="platform-empty">
 			<p class="platform-empty__title">No Enrollments</p>
 			<p class="platform-empty__text">
-				{selectedCourseId ? 'No learners match the current filters.' : 'Select a course to view its enrollments.'}
+				{selectedCourseId
+					? 'No learners match the current filters.'
+					: 'Select a course to view its enrollments.'}
 			</p>
 		</div>
 	{/if}

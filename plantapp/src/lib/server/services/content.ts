@@ -66,9 +66,7 @@ export class ContentService {
 		}
 
 		if (search) {
-			conditions.push(
-				like(table.contentPage.title, `%${search}%`)
-			);
+			conditions.push(like(table.contentPage.title, `%${search}%`));
 		}
 
 		return await db
@@ -78,7 +76,7 @@ export class ContentService {
 				slug: table.contentPage.slug,
 				excerpt: table.contentPage.excerpt,
 				type: table.contentPage.type,
-				featuredImageUrl: table.contentPage.featuredImageUrl,
+				featuredImageFileId: table.contentPage.featuredImageFileId,
 				publishedAt: table.contentPage.publishedAt,
 				author: {
 					username: table.user.username,
@@ -109,12 +107,7 @@ export class ContentService {
 			})
 			.from(table.contentPage)
 			.innerJoin(table.user, eq(table.contentPage.authorId, table.user.id))
-			.where(
-				and(
-					eq(table.contentPage.slug, slug),
-					eq(table.contentPage.status, 'published')
-				)
-			)
+			.where(and(eq(table.contentPage.slug, slug), eq(table.contentPage.status, 'published')))
 			.limit(1);
 
 		if (result.length === 0) {
@@ -142,7 +135,7 @@ export class ContentService {
 		const pageData: typeof table.contentPage.$inferInsert = {
 			...params,
 			tags: params.tags ? JSON.stringify(params.tags) : null,
-			publishedAt: params.status === 'published' ? (params.publishedAt || new Date()) : null
+			publishedAt: params.status === 'published' ? params.publishedAt || new Date() : null
 		};
 
 		const [page] = await db.insert(table.contentPage).values(pageData).returning();
@@ -152,7 +145,12 @@ export class ContentService {
 	/**
 	 * Update content page
 	 */
-	static async updatePage(pageId: number, params: UpdateContentParams, currentAuthorId: string, userRole: string): Promise<table.ContentPage> {
+	static async updatePage(
+		pageId: number,
+		params: UpdateContentParams,
+		currentAuthorId: string,
+		userRole: string
+	): Promise<table.ContentPage> {
 		// Check if page exists and user has permissions
 		const existingPage = await db
 			.select()
@@ -186,15 +184,20 @@ export class ContentService {
 
 		const updateData = {
 			...params,
-			tags: params.tags ? JSON.stringify(params.tags) : params.tags === undefined ? undefined : null,
-			publishedAt: params.status === 'published' && !page.publishedAt 
-				? (params.publishedAt || new Date()) 
-				: params.publishedAt,
+			tags: params.tags
+				? JSON.stringify(params.tags)
+				: params.tags === undefined
+					? undefined
+					: null,
+			publishedAt:
+				params.status === 'published' && !page.publishedAt
+					? params.publishedAt || new Date()
+					: params.publishedAt,
 			updatedAt: new Date()
 		};
 
 		// Remove undefined values
-		Object.keys(updateData).forEach(key => {
+		Object.keys(updateData).forEach((key) => {
 			if (updateData[key as keyof typeof updateData] === undefined) {
 				delete updateData[key as keyof typeof updateData];
 			}
@@ -212,7 +215,11 @@ export class ContentService {
 	/**
 	 * Delete content page
 	 */
-	static async deletePage(pageId: number, currentAuthorId: string, userRole: string): Promise<void> {
+	static async deletePage(
+		pageId: number,
+		currentAuthorId: string,
+		userRole: string
+	): Promise<void> {
 		// Check if page exists and user has permissions
 		const existingPage = await db
 			.select()
@@ -282,9 +289,7 @@ export class ContentService {
 		}
 
 		if (search) {
-			conditions.push(
-				like(table.contentPage.title, `%${search}%`)
-			);
+			conditions.push(like(table.contentPage.title, `%${search}%`));
 		}
 
 		const baseQuery = db
@@ -301,14 +306,11 @@ export class ContentService {
 
 		return conditions.length > 0
 			? await baseQuery
-				.where(and(...conditions))
-				.orderBy(desc(table.contentPage.updatedAt))
-				.limit(limit)
-				.offset(offset)
-			: await baseQuery
-				.orderBy(desc(table.contentPage.updatedAt))
-				.limit(limit)
-				.offset(offset);
+					.where(and(...conditions))
+					.orderBy(desc(table.contentPage.updatedAt))
+					.limit(limit)
+					.offset(offset)
+			: await baseQuery.orderBy(desc(table.contentPage.updatedAt)).limit(limit).offset(offset);
 	}
 }
 

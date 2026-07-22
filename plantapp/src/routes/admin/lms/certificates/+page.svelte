@@ -9,7 +9,9 @@
 
 	let showForm = $state(false);
 	let name = $state('');
-	let htmlTemplate = $state('<div class="certificate">\n  <h1>{{learnerName}}</h1>\n  <p>has completed {{courseTitle}}</p>\n</div>');
+	let htmlTemplate = $state(
+		'<div class="certificate">\n  <h1>{{learnerName}}</h1>\n  <p>has completed {{courseTitle}}</p>\n</div>'
+	);
 	let cssStyles = $state('.certificate { text-align: center; padding: 4rem; font-family: serif; }');
 	let isDefault = $state(false);
 	let saving = $state(false);
@@ -55,10 +57,20 @@
 		<div class="admin-header-row">
 			<div>
 				<h1 class="platform-header__title">Certificate Templates</h1>
-				<p class="platform-header__subtitle">HTML/CSS templates used to generate learner certificates</p>
+				<p class="platform-header__subtitle">
+					HTML/CSS templates used to generate learner certificates
+				</p>
 			</div>
 			<button class="platform-action-btn admin-header-btn" onclick={() => (showForm = !showForm)}>
-				<svg viewBox="0 0 24 24" class="w-5 h-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+				<svg
+					viewBox="0 0 24 24"
+					class="h-5 w-5"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
 					<path d="M12 5v14M5 12h14" />
 				</svg>
 				New Template
@@ -74,18 +86,34 @@
 			<div class="admin-form-grid">
 				<label class="admin-field admin-field--full">
 					<span class="admin-field__label">Name *</span>
-					<input type="text" class="input input-bordered" bind:value={name} placeholder="Default Certificate" />
+					<input
+						type="text"
+						class="input-bordered input"
+						bind:value={name}
+						placeholder="Default Certificate"
+					/>
 				</label>
 
 				<label class="admin-field admin-field--full">
 					<span class="admin-field__label">HTML Template *</span>
-					<textarea class="textarea textarea-bordered admin-code-textarea" rows="8" bind:value={htmlTemplate}></textarea>
-					<span class="admin-field__hint">Use Mustache-style placeholders like <code>&#123;&#123;learnerName&#125;&#125;</code></span>
+					<textarea
+						class="textarea-bordered admin-code-textarea textarea"
+						rows="8"
+						bind:value={htmlTemplate}
+					></textarea>
+					<span class="admin-field__hint"
+						>Use Mustache-style placeholders like <code>&#123;&#123;learnerName&#125;&#125;</code
+						></span
+					>
 				</label>
 
 				<label class="admin-field admin-field--full">
 					<span class="admin-field__label">CSS Styles</span>
-					<textarea class="textarea textarea-bordered admin-code-textarea" rows="6" bind:value={cssStyles}></textarea>
+					<textarea
+						class="textarea-bordered admin-code-textarea textarea"
+						rows="6"
+						bind:value={cssStyles}
+					></textarea>
 				</label>
 
 				<label class="admin-field">
@@ -102,7 +130,9 @@
 			{/if}
 
 			<div class="admin-form-actions">
-				<button type="button" class="btn btn-ghost" onclick={() => (showForm = false)}>Cancel</button>
+				<button type="button" class="btn btn-ghost" onclick={() => (showForm = false)}
+					>Cancel</button
+				>
 				<button type="submit" class="btn btn-primary" disabled={saving}>
 					{saving ? 'Saving...' : 'Save Template'}
 				</button>
@@ -154,7 +184,11 @@
 									{/if}
 								</td>
 								<td>{template.courseId || 'Global'}</td>
-								<td>{template.createdAt ? new Date(template.createdAt).toLocaleDateString() : '—'}</td>
+								<td
+									>{template.createdAt
+										? new Date(template.createdAt).toLocaleDateString()
+										: '—'}</td
+								>
 							</tr>
 						{/each}
 					</tbody>

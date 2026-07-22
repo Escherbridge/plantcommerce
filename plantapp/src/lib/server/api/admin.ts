@@ -2,9 +2,9 @@ import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { adminProcedure, router } from './trpc';
 import { ProductService } from '../services/product';
-import { OrderService } from '../services/order';
+import { OrderService, type OrderStatus } from '../services/order';
 import { UserService } from '../services/user';
-import { ContentService } from '../services/content';
+import { ContentService, type AdminContentFilter } from '../services/content';
 import AffiliateService, { AffiliateNotFoundError } from '../services/affiliate';
 import { db } from '../db';
 import { product, order, user as userTable, affiliate } from '../db/schema';
@@ -74,13 +74,13 @@ export const adminRouter = router({
 		.input(z.object({ limit: z.number().min(1).max(100).default(10) }))
 		.query(async ({ input }) => {
 			try {
-				return await OrderService.getRecentOrders(input.limit);
-		} catch (error) {
-			console.error('Error getting recent orders:', error);
-			throw new TRPCError({
-				code: 'INTERNAL_SERVER_ERROR',
-				message: 'Recent orders are unavailable'
-			});
+				return await OrderService.getAllOrders(input.limit);
+			} catch (error) {
+				console.error('Error getting recent orders:', error);
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Recent orders are unavailable'
+				});
 			}
 		}),
 
@@ -118,7 +118,11 @@ export const adminRouter = router({
 		)
 		.query(async ({ input }) => {
 			try {
-				return await OrderService.getAllOrders(input);
+				return await OrderService.getAllOrders(
+					input.limit,
+					input.offset,
+					input.status as OrderStatus | undefined
+				);
 			} catch (error) {
 				console.error('Error getting orders:', error);
 				return [];
@@ -138,7 +142,7 @@ export const adminRouter = router({
 		)
 		.query(async ({ input }) => {
 			try {
-				return await UserService.getAllUsers(input);
+				return await UserService.getAllUsers(input.limit, input.offset, input.role);
 			} catch (error) {
 				console.error('Error getting users:', error);
 				return [];
@@ -158,7 +162,10 @@ export const adminRouter = router({
 		)
 		.query(async ({ input }) => {
 			try {
-				return await ContentService.getAllContent(input);
+				return await ContentService.getAllPages({
+					...input,
+					type: input.type as AdminContentFilter['type']
+				});
 			} catch (error) {
 				console.error('Error getting content:', error);
 				return [];
@@ -284,9 +291,7 @@ export const adminRouter = router({
 					query = query.where(eq(affiliate.status, input.status)) as any;
 				}
 
-				const affiliates = await query
-					.limit(input.limit)
-					.offset(input.offset);
+				const affiliates = await query.limit(input.limit).offset(input.offset);
 
 				return affiliates;
 			} catch (error) {

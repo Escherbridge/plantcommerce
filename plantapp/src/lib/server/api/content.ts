@@ -30,30 +30,28 @@ export const contentRouter = router({
 	/**
 	 * Get single published page by slug (public)
 	 */
-	getPage: publicProcedure
-		.input(z.object({ slug: z.string() }))
-		.query(async ({ input }) => {
-			try {
-				const page = await ContentService.getPageBySlug(input.slug);
-				
-				if (!page) {
-					throw new TRPCError({
-						code: 'NOT_FOUND',
-						message: 'Page not found'
-					});
-				}
+	getPage: publicProcedure.input(z.object({ slug: z.string() })).query(async ({ input }) => {
+		try {
+			const page = await ContentService.getPageBySlug(input.slug);
 
-				return page;
-			} catch (error) {
-				if (error instanceof TRPCError) {
-					throw error;
-				}
+			if (!page) {
 				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Failed to retrieve page'
+					code: 'NOT_FOUND',
+					message: 'Page not found'
 				});
 			}
-		}),
+
+			return page;
+		} catch (error) {
+			if (error instanceof TRPCError) {
+				throw error;
+			}
+			throw new TRPCError({
+				code: 'INTERNAL_SERVER_ERROR',
+				message: 'Failed to retrieve page'
+			});
+		}
+	}),
 
 	/**
 	 * CMS pages are created by administrators.
@@ -81,7 +79,7 @@ export const contentRouter = router({
 					status: input.status,
 					authorId: ctx.user.id
 				});
-				
+
 				return page;
 			} catch (error) {
 				throw new TRPCError({

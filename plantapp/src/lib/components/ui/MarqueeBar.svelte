@@ -5,11 +5,7 @@
 		class?: string;
 	}
 
-	let {
-		messages,
-		divider = '•',
-		class: className = ''
-	}: Props = $props();
+	let { messages, divider = '•', class: className = '' }: Props = $props();
 
 	let dismissed = $state(false);
 	let mounted = $state(false);
@@ -44,8 +40,8 @@
 
 {#if mounted && !dismissed}
 	<div
-		class="marquee-bar relative overflow-hidden
-		       h-7 sm:h-8 flex items-center {className}"
+		class="marquee-bar relative flex
+		       h-7 items-center overflow-hidden sm:h-8 {className}"
 		role="region"
 		aria-label="Announcements"
 	>
@@ -57,13 +53,17 @@
 		<!-- Scrolling track (duplicated for seamless loop) -->
 		<div class="marquee-track flex items-center whitespace-nowrap" aria-hidden="true">
 			<!-- First copy -->
-			<span class="marquee-content inline-flex items-center gap-4 px-4 font-mono text-xs sm:text-sm">
+			<span
+				class="marquee-content inline-flex items-center gap-4 px-4 font-mono text-xs sm:text-sm"
+			>
 				{#each tokens as token}
 					<span>{token}</span>
 				{/each}
 			</span>
 			<!-- Duplicate for seamless loop -->
-			<span class="marquee-content inline-flex items-center gap-4 px-4 font-mono text-xs sm:text-sm">
+			<span
+				class="marquee-content inline-flex items-center gap-4 px-4 font-mono text-xs sm:text-sm"
+			>
 				{#each tokens as token}
 					<span>{token}</span>
 				{/each}
@@ -73,11 +73,18 @@
 		<!-- Dismiss button -->
 		<button
 			onclick={dismiss}
-			class="marquee-dismiss absolute right-0 top-0 bottom-0 px-3 flex items-center
-			       transition-colors z-10"
+			class="marquee-dismiss absolute top-0 right-0 bottom-0 z-10 flex items-center
+			       px-3 transition-colors"
 			aria-label="Dismiss announcements"
 		>
-			<svg class="w-3.5 h-3.5" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+			<svg
+				class="h-3.5 w-3.5"
+				viewBox="0 0 14 14"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+			>
 				<line x1="2" y1="2" x2="12" y2="12" />
 				<line x1="12" y1="2" x2="2" y2="12" />
 			</svg>
@@ -87,12 +94,12 @@
 
 <style>
 	.marquee-bar {
-		background-color: #1B2D4A;
-		color: #F7F5F0;
+		background-color: #1b2d4a;
+		color: #f7f5f0;
 	}
 
 	.marquee-dismiss {
-		background-color: #1B2D4A;
+		background-color: #1b2d4a;
 	}
 
 	.marquee-dismiss:hover {
@@ -104,8 +111,12 @@
 	}
 
 	@keyframes marquee {
-		from { transform: translateX(0); }
-		to   { transform: translateX(-50%); }
+		from {
+			transform: translateX(0);
+		}
+		to {
+			transform: translateX(-50%);
+		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {

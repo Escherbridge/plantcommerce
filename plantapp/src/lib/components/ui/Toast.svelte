@@ -16,17 +16,9 @@
 	};
 </script>
 
-<div
-	class="toast-container"
-	aria-live="polite"
-	aria-atomic="false"
->
+<div class="toast-container" aria-live="polite" aria-atomic="false">
 	{#each $toasts as toast (toast.id)}
-		<div
-			class="toast-item {variantClasses[toast.variant]}"
-			role="alert"
-			aria-live="assertive"
-		>
+		<div class="toast-item {variantClasses[toast.variant]}" role="alert" aria-live="assertive">
 			<span class="toast-icon" aria-hidden="true">{variantIcons[toast.variant]}</span>
 			<p class="toast-message">{toast.message}</p>
 			<button
@@ -76,7 +68,8 @@
 		border-radius: var(--radius-md, 0.5rem);
 		box-shadow: var(--shadow-lg);
 		pointer-events: all;
-		animation: toast-slide-in var(--duration-normal, 300ms) var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)) both;
+		animation: toast-slide-in var(--duration-normal, 300ms)
+			var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)) both;
 	}
 
 	@keyframes toast-slide-in {

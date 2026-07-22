@@ -70,7 +70,12 @@ export interface CourseFilter {
 }
 
 export interface CourseWithDetails extends LmsCourse {
-	instructor: { id: string; username: string; firstName: string | null; lastName: string | null } | null;
+	instructor: {
+		id: string;
+		username: string;
+		firstName: string | null;
+		lastName: string | null;
+	} | null;
 	moduleCount: number;
 	enrollmentCount: number;
 }
@@ -217,7 +222,10 @@ export class LmsCourseService {
 	/**
 	 * Get course by slug with instructor info, module count, and enrollment count
 	 */
-	static async getCourseBySlug(slug: string, includeUnpublished: boolean = false): Promise<CourseWithDetails | null> {
+	static async getCourseBySlug(
+		slug: string,
+		includeUnpublished: boolean = false
+	): Promise<CourseWithDetails | null> {
 		// Build conditions
 		const conditions = [eq(lmsTable.lmsCourse.slug, slug)];
 		if (!includeUnpublished) {
@@ -277,7 +285,9 @@ export class LmsCourseService {
 	/**
 	 * List courses with pagination and filters
 	 */
-	static async listCourses(filter: CourseFilter): Promise<{ courses: CourseListItem[]; total: number }> {
+	static async listCourses(
+		filter: CourseFilter
+	): Promise<{ courses: CourseListItem[]; total: number }> {
 		const {
 			status,
 			courseType,
@@ -401,7 +411,9 @@ export class LmsCourseService {
 				// Build instructor display name
 				let instructorName: string | null = null;
 				if (row.instructorFirstName || row.instructorLastName) {
-					instructorName = [row.instructorFirstName, row.instructorLastName].filter(Boolean).join(' ');
+					instructorName = [row.instructorFirstName, row.instructorLastName]
+						.filter(Boolean)
+						.join(' ');
 				} else if (row.instructorUsername) {
 					instructorName = row.instructorUsername;
 				}
@@ -432,7 +444,11 @@ export class LmsCourseService {
 	/**
 	 * Clone a course (deep copy without enrollments, progress, reviews, discussions)
 	 */
-	static async cloneCourse(courseId: string, newTitle: string, newSlug: string): Promise<LmsCourse> {
+	static async cloneCourse(
+		courseId: string,
+		newTitle: string,
+		newSlug: string
+	): Promise<LmsCourse> {
 		// Check slug uniqueness
 		const existingCourse = await db
 			.select()

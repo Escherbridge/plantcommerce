@@ -24,8 +24,16 @@
 				<p class="platform-header__subtitle">Create and manage blog posts, guides, and pages</p>
 			</div>
 			<a href="/admin/content/new" class="platform-action-btn admin-header-btn">
-				<svg viewBox="0 0 24 24" class="w-5 h-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M12 5v14M5 12h14"/>
+				<svg
+					viewBox="0 0 24 24"
+					class="h-5 w-5"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path d="M12 5v14M5 12h14" />
 				</svg>
 				Create Content
 			</a>
@@ -65,7 +73,9 @@
 							</td>
 							<td>{item.publishedAt ? new Date(item.publishedAt).toLocaleDateString() : '-'}</td>
 							<td>
-								<a href="/admin/content/{item.id}" class="platform-action-btn admin-table-btn">Edit</a>
+								<a href="/admin/content/{item.id}" class="platform-action-btn admin-table-btn"
+									>Edit</a
+								>
 							</td>
 						</tr>
 					{/each}

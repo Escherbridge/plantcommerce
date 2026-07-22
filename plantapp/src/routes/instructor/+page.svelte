@@ -54,13 +54,29 @@
 		</div>
 		<div class="admin-actions-grid">
 			<a href="/admin/lms/courses/new" class="platform-action-btn">
-				<svg viewBox="0 0 24 24" class="w-5 h-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+				<svg
+					viewBox="0 0 24 24"
+					class="h-5 w-5"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
 					<path d="M12 5v14M5 12h14" />
 				</svg>
 				New Course
 			</a>
 			<a href="/admin/lms/grading" class="platform-action-btn">
-				<svg viewBox="0 0 24 24" class="w-5 h-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+				<svg
+					viewBox="0 0 24 24"
+					class="h-5 w-5"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
 					<path d="M9 11l3 3L22 4" />
 					<path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
 				</svg>
@@ -81,7 +97,11 @@
 					<a href="/instructor/courses/{course.id}" class="instructor-course-card">
 						<div class="instructor-course-card__header">
 							<h3 class="instructor-course-card__title">{course.title}</h3>
-							<span class="platform-badge platform-badge--{course.status === 'published' ? 'success' : 'ghost'}">
+							<span
+								class="platform-badge platform-badge--{course.status === 'published'
+									? 'success'
+									: 'ghost'}"
+							>
 								{course.status || 'draft'}
 							</span>
 						</div>
@@ -168,7 +188,9 @@
 		border-radius: 12px;
 		text-decoration: none;
 		color: inherit;
-		transition: border-color 150ms ease, transform 150ms ease;
+		transition:
+			border-color 150ms ease,
+			transform 150ms ease;
 	}
 
 	.instructor-course-card:hover {

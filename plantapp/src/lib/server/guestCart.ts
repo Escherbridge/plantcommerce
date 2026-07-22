@@ -18,11 +18,7 @@ const guestCartCookieOptions = {
 
 function getConfiguredGuestCartCookieSecret(): string | null {
 	const secret = env.GUEST_CART_COOKIE_SECRET;
-	if (
-		!secret ||
-		secret.startsWith('replace-with-') ||
-		Buffer.byteLength(secret) < 32
-	) {
+	if (!secret || secret.startsWith('replace-with-') || Buffer.byteLength(secret) < 32) {
 		return null;
 	}
 
@@ -81,7 +77,11 @@ export function getOrCreateGuestCartSessionId(cookies: Cookies): string {
 	}
 
 	const sessionId = encodeBase64url(crypto.getRandomValues(new Uint8Array(32)));
-	cookies.set(guestCartCookieName, serializeGuestCartCookie(sessionId, secret), guestCartCookieOptions);
+	cookies.set(
+		guestCartCookieName,
+		serializeGuestCartCookie(sessionId, secret),
+		guestCartCookieOptions
+	);
 	return sessionId;
 }
 

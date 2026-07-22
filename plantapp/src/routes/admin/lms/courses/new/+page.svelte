@@ -97,7 +97,7 @@
 					<span class="admin-field__label">Title *</span>
 					<input
 						type="text"
-						class="input input-bordered"
+						class="input-bordered input"
 						bind:value={title}
 						oninput={onTitleInput}
 						placeholder="Introduction to Hydroponics"
@@ -108,7 +108,7 @@
 					<span class="admin-field__label">Slug *</span>
 					<input
 						type="text"
-						class="input input-bordered"
+						class="input-bordered input"
 						bind:value={slug}
 						placeholder="intro-to-hydroponics"
 					/>
@@ -117,7 +117,7 @@
 				<label class="admin-field admin-field--full">
 					<span class="admin-field__label">Description</span>
 					<textarea
-						class="textarea textarea-bordered"
+						class="textarea-bordered textarea"
 						rows="4"
 						bind:value={description}
 						placeholder="Brief summary of the course..."
@@ -126,7 +126,7 @@
 
 				<label class="admin-field">
 					<span class="admin-field__label">Course Type</span>
-					<select class="select select-bordered" bind:value={courseType}>
+					<select class="select-bordered select" bind:value={courseType}>
 						<option value="self_paced">Self-paced</option>
 						<option value="instructor_led">Instructor-led</option>
 						<option value="blended">Blended</option>
@@ -136,7 +136,7 @@
 
 				<label class="admin-field">
 					<span class="admin-field__label">Difficulty</span>
-					<select class="select select-bordered" bind:value={difficulty}>
+					<select class="select-bordered select" bind:value={difficulty}>
 						<option value="beginner">Beginner</option>
 						<option value="intermediate">Intermediate</option>
 						<option value="advanced">Advanced</option>
@@ -145,7 +145,7 @@
 
 				<label class="admin-field">
 					<span class="admin-field__label">Language</span>
-					<input type="text" class="input input-bordered" bind:value={language} />
+					<input type="text" class="input-bordered input" bind:value={language} />
 				</label>
 			</div>
 		</div>
@@ -158,7 +158,7 @@
 			<div class="admin-form-grid">
 				<label class="admin-field">
 					<span class="admin-field__label">Pricing Type</span>
-					<select class="select select-bordered" bind:value={pricingType}>
+					<select class="select-bordered select" bind:value={pricingType}>
 						<option value="free">Free</option>
 						<option value="one_time">One-time payment</option>
 					</select>
@@ -171,7 +171,7 @@
 							type="number"
 							step="0.01"
 							min="0"
-							class="input input-bordered"
+							class="input-bordered input"
 							bind:value={price}
 							placeholder="49.99"
 						/>
@@ -188,7 +188,7 @@
 			<div class="admin-form-grid">
 				<label class="admin-field">
 					<span class="admin-field__label">Enrollment Type</span>
-					<select class="select select-bordered" bind:value={enrollmentType}>
+					<select class="select-bordered select" bind:value={enrollmentType}>
 						<option value="open">Open</option>
 						<option value="approval">Approval required</option>
 						<option value="invite">Invite only</option>
@@ -201,7 +201,7 @@
 					<input
 						type="number"
 						min="1"
-						class="input input-bordered"
+						class="input-bordered input"
 						bind:value={maxEnrollment}
 						placeholder="Leave blank for unlimited"
 					/>
@@ -213,7 +213,7 @@
 						type="number"
 						min="0"
 						max="100"
-						class="input input-bordered"
+						class="input-bordered input"
 						bind:value={passingScore}
 					/>
 				</label>

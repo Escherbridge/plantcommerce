@@ -67,19 +67,29 @@ function clientAddress(event: RequestEvent): string {
 	}
 }
 
+/** Audit delivery must not turn a completed account or session change into a false failure. */
+async function recordAuthAuditEvent(userId: string, action: string): Promise<void> {
+	try {
+		await AuditLogService.log(userId, action);
+	} catch {
+		console.error(JSON.stringify({ level: 'error', event: 'auth_audit_write_failed', action }));
+	}
+}
+
 export const authRouter = router({
 	register: publicProcedure
 		.input(
 			z.object({
 				username: z
 					.string()
+					.trim()
 					.min(3)
 					.max(50)
 					.refine((value) => !isEmailLoginIdentifier(value), 'Username cannot be an email address'),
-				email: z.string().email(),
+				email: z.string().trim().email(),
 				password: z.string().min(8),
-				firstName: z.string().optional(),
-				lastName: z.string().optional()
+				firstName: z.string().trim().max(100).optional(),
+				lastName: z.string().trim().max(100).optional()
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
@@ -93,7 +103,7 @@ export const authRouter = router({
 				});
 			}
 
-			await AuditLogService.log(user.id, 'register', { email: user.email });
+			await recordAuthAuditEvent(user.id, 'register');
 
 			let verificationEmailSent = false;
 			if (accountCapabilitiesEnabled()) {
@@ -119,7 +129,7 @@ export const authRouter = router({
 	login: publicProcedure
 		.input(
 			z.object({
-				usernameOrEmail: z.string().min(1),
+				usernameOrEmail: z.string().trim().min(1),
 				password: z.string().min(1)
 			})
 		)
@@ -142,7 +152,7 @@ export const authRouter = router({
 			}
 
 			const { user } = loginResult;
-			await AuditLogService.log(user.id, 'login_success');
+			await recordAuthAuditEvent(user.id, 'login_success');
 
 			const sessionToken = generateSessionToken();
 			const session = await createSession(sessionToken, user.id);
@@ -153,19 +163,23 @@ export const authRouter = router({
 		}),
 
 	requestPasswordReset: publicProcedure
-		.input(z.object({ email: z.string().email() }))
+		.input(z.object({ email: z.string().trim().email() }))
 		.mutation(async ({ ctx, input }) => {
 			const ipAddress = clientAddress(ctx.event);
 			const requestedEmail = normalizeEmailAddress(input.email);
 			const deliveryAvailable = accountCapabilitiesEnabled() && EmailService.isConfigured();
 			try {
 				if (deliveryAvailable) {
-					const allowed = await LoginProtectionService.beginPasswordResetRequest(ipAddress, requestedEmail);
+					const allowed = await LoginProtectionService.beginPasswordResetRequest(
+						ipAddress,
+						requestedEmail
+					);
 					if (!allowed) {
 						return {
 							success: true,
 							deliveryAvailable: true,
-							message: 'If an eligible account exists, password reset instructions will arrive shortly.'
+							message:
+								'If an eligible account exists, password reset instructions will arrive shortly.'
 						};
 					}
 
@@ -175,7 +189,7 @@ export const authRouter = router({
 							const token = await generatePasswordResetToken(user.id, user.email);
 							if (token) {
 								await EmailService.sendPasswordResetEmail(user.email, token);
-								await AuditLogService.log(user.id, 'password_reset_requested');
+								await recordAuthAuditEvent(user.id, 'password_reset_requested');
 							}
 						} catch (error) {
 							console.error('Failed to send password reset email:', error);
@@ -215,7 +229,10 @@ export const authRouter = router({
 				deliveryAddress
 			);
 			if (!allowed) {
-				return { deliveryAvailable: true, message: 'Please wait before requesting another verification email.' };
+				return {
+					deliveryAvailable: true,
+					message: 'Please wait before requesting another verification email.'
+				};
 			}
 
 			if (ctx.user.pendingEmail) {
@@ -225,19 +242,22 @@ export const authRouter = router({
 					ctx.user.pendingEmail
 				);
 				if (capabilities) {
-					await EmailService.sendNewEmailChangeProof(ctx.user.pendingEmail, capabilities.newEmailToken);
+					await EmailService.sendNewEmailChangeProof(
+						ctx.user.pendingEmail,
+						capabilities.newEmailToken
+					);
 					await EmailService.sendExistingEmailChangeConfirmation(
 						ctx.user.email,
 						ctx.user.pendingEmail,
 						capabilities.existingEmailToken
 					);
-					await AuditLogService.log(ctx.user.id, 'email_verification_requested');
+					await recordAuthAuditEvent(ctx.user.id, 'email_verification_requested');
 				}
 			} else {
 				const token = await generateEmailVerificationToken(ctx.user.id, deliveryAddress);
 				if (token) {
 					await EmailService.sendVerificationEmail(deliveryAddress, token);
-					await AuditLogService.log(ctx.user.id, 'email_verification_requested');
+					await recordAuthAuditEvent(ctx.user.id, 'email_verification_requested');
 				}
 			}
 			return { deliveryAvailable: true, message: 'Verification instructions were sent.' };
@@ -262,7 +282,10 @@ export const authRouter = router({
 
 			let allowed = false;
 			try {
-				allowed = await LoginProtectionService.beginPasswordResetCompletion(clientAddress(ctx.event), input.token);
+				allowed = await LoginProtectionService.beginPasswordResetCompletion(
+					clientAddress(ctx.event),
+					input.token
+				);
 			} catch {
 				allowed = false;
 			}
@@ -281,15 +304,15 @@ export const authRouter = router({
 				});
 			}
 
-			await AuditLogService.log(userId, 'password_reset_completed');
+			await recordAuthAuditEvent(userId, 'password_reset_completed');
 			return { success: true };
 		}),
 
 	logout: protectedProcedure.mutation(async ({ ctx }) => {
 		if (ctx.session) {
 			await invalidateSession(ctx.session.id);
-			await AuditLogService.log(ctx.user.id, 'logout');
 			deleteSessionTokenCookie(ctx.event);
+			await recordAuthAuditEvent(ctx.user.id, 'logout');
 		}
 		return { success: true };
 	}),
@@ -300,8 +323,7 @@ export const authRouter = router({
 
 	refreshSession: protectedProcedure.mutation(async ({ ctx }) =>
 		formatUserResponse(ctx.user, ctx.session)
-	),
-
+	)
 });
 
 export type AuthRouter = typeof authRouter;

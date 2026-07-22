@@ -145,7 +145,8 @@
 		overflow-y: auto;
 		overscroll-behavior: contain;
 		outline: none;
-		animation: modal-in var(--duration-normal, 300ms) var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)) both;
+		animation: modal-in var(--duration-normal, 300ms)
+			var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)) both;
 	}
 
 	@keyframes modal-in {

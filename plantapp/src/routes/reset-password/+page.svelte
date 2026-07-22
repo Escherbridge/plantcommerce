@@ -47,22 +47,40 @@
 			<h1 class="card-title text-2xl">Choose a new password</h1>
 			{#if complete}
 				<p role="status">Your password has been reset. All existing sessions were signed out.</p>
-				<a class="btn btn-primary mt-4" href="/login">Log in</a>
+				<a class="btn mt-4 btn-primary" href="/login">Log in</a>
 			{:else if !$page.url.searchParams.get('token')}
 				<p class="text-error" role="alert">This password reset link is invalid or expired.</p>
-				<a class="btn btn-outline mt-4" href="/forgot-password">Request a new link</a>
+				<a class="btn mt-4 btn-outline" href="/forgot-password">Request a new link</a>
 			{:else}
 				<form class="mt-4 space-y-4" onsubmit={submit}>
 					<label class="form-control" for="password">
 						<span class="label-text">New password</span>
-						<input id="password" class="input input-bordered" type="password" bind:value={password} autocomplete="new-password" minlength="8" required disabled={loading} />
+						<input
+							id="password"
+							class="input-bordered input"
+							type="password"
+							bind:value={password}
+							autocomplete="new-password"
+							minlength="8"
+							required
+							disabled={loading}
+						/>
 					</label>
 					<label class="form-control" for="confirmation">
 						<span class="label-text">Confirm new password</span>
-						<input id="confirmation" class="input input-bordered" type="password" bind:value={confirmation} autocomplete="new-password" minlength="8" required disabled={loading} />
+						<input
+							id="confirmation"
+							class="input-bordered input"
+							type="password"
+							bind:value={confirmation}
+							autocomplete="new-password"
+							minlength="8"
+							required
+							disabled={loading}
+						/>
 					</label>
 					{#if error}<p class="text-error" role="alert">{error}</p>{/if}
-					<button class="btn btn-primary w-full" type="submit" disabled={loading}>
+					<button class="btn w-full btn-primary" type="submit" disabled={loading}>
 						{loading ? 'Resetting…' : 'Reset password'}
 					</button>
 				</form>

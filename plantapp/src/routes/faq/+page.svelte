@@ -17,7 +17,9 @@
 <Section>
 	<Container>
 		<div class="mb-8">
-			<h1 class="text-4xl font-display uppercase tracking-tight mb-4">Frequently Asked Questions</h1>
+			<h1 class="font-display mb-4 text-4xl tracking-tight uppercase">
+				Frequently Asked Questions
+			</h1>
 			<p class="text-lg text-base-content/70">
 				Find answers to common questions about our products, services, and sustainable agriculture
 				practices.
@@ -25,11 +27,13 @@
 		</div>
 
 		<!-- Category Tabs -->
-		<div role="tablist" class="tabs tabs-boxed mb-8">
+		<div role="tablist" class="tabs-boxed mb-8 tabs">
 			<a
 				href="/faq"
 				role="tab"
-				class="tab font-mono text-xs uppercase tracking-widest {!data.selectedCategory ? 'tab-active' : ''}"
+				class="tab font-mono text-xs tracking-widest uppercase {!data.selectedCategory
+					? 'tab-active'
+					: ''}"
 			>
 				All Questions
 			</a>
@@ -37,7 +41,10 @@
 				<a
 					href="/faq?category={category.slug}"
 					role="tab"
-					class="tab font-mono text-xs uppercase tracking-widest {data.selectedCategory === category.slug ? 'tab-active' : ''}"
+					class="tab font-mono text-xs tracking-widest uppercase {data.selectedCategory ===
+					category.slug
+						? 'tab-active'
+						: ''}"
 				>
 					{category.name}
 				</a>
@@ -55,10 +62,18 @@
 				}))}
 			/>
 		{:else}
-			<div class="text-center py-12">
-				<div class="flex justify-center mb-4">
-					<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" class="w-16 h-16 text-base-content/30">
-						<path d="M12 2a10 10 0 100 20 10 10 0 000-20zM9.1 9a3 3 0 015.8 1c0 2-3 3-3 3M12 17h0"/>
+			<div class="py-12 text-center">
+				<div class="mb-4 flex justify-center">
+					<svg
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						stroke-width="1.5"
+						fill="none"
+						class="h-16 w-16 text-base-content/30"
+					>
+						<path
+							d="M12 2a10 10 0 100 20 10 10 0 000-20zM9.1 9a3 3 0 015.8 1c0 2-3 3-3 3M12 17h0"
+						/>
 					</svg>
 				</div>
 				<p class="text-xl text-base-content/70">No FAQs available for this category.</p>
@@ -66,12 +81,14 @@
 		{/if}
 
 		<!-- Contact CTA -->
-		<div class="mt-12 p-8 bg-base-200 rounded-3xl border border-base-200/30 shadow-md text-center">
-			<h2 class="text-2xl font-display uppercase tracking-tight mb-4">Still have questions?</h2>
-			<p class="text-base-content/70 mb-6">
+		<div class="mt-12 rounded-3xl border border-base-200/30 bg-base-200 p-8 text-center shadow-md">
+			<h2 class="font-display mb-4 text-2xl tracking-tight uppercase">Still have questions?</h2>
+			<p class="mb-6 text-base-content/70">
 				Our support team is here to help you with any questions or concerns.
 			</p>
-			<a href="/contact" class="btn btn-primary font-display uppercase tracking-wider">Contact Support</a>
+			<a href="/contact" class="font-display btn tracking-wider uppercase btn-primary"
+				>Contact Support</a
+			>
 		</div>
 	</Container>
 </Section>

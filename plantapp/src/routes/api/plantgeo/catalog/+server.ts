@@ -1,5 +1,8 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { readPublishedPlantGeoCatalog, isPlantGeoCatalogRequestAuthorized } from '$lib/server/plantgeo/catalog';
+import {
+	readPublishedPlantGeoCatalog,
+	isPlantGeoCatalogRequestAuthorized
+} from '$lib/server/plantgeo/catalog';
 import { getPlantGeoCatalogReadConfiguration } from '$lib/server/plantgeo/config';
 import { plantGeoContractVersion } from '$lib/server/plantgeo/contracts';
 

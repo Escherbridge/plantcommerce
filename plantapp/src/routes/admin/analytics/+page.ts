@@ -9,7 +9,8 @@ export const load: PageLoad = async (event) => {
 	} catch (error) {
 		return {
 			analytics: null,
-			error: 'Analytics data could not be loaded. No zero-value fallback is being shown as a report.'
+			error:
+				'Analytics data could not be loaded. No zero-value fallback is being shown as a report.'
 		};
 	}
 };

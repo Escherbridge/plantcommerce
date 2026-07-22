@@ -10,7 +10,12 @@ export const catalogOfferingKinds = [
 
 export type CatalogOfferingKind = (typeof catalogOfferingKinds)[number];
 
-export const catalogTruthStatuses = ['unverified', 'verified', 'not_applicable', 'unavailable'] as const;
+export const catalogTruthStatuses = [
+	'unverified',
+	'verified',
+	'not_applicable',
+	'unavailable'
+] as const;
 export type CatalogTruthStatus = (typeof catalogTruthStatuses)[number];
 
 export type CatalogTruthEvidence = Readonly<{
@@ -32,14 +37,25 @@ export type CatalogTruthFact<T> = Readonly<{
 }>;
 
 export type CatalogOperationalTruth = Readonly<{
-	supplier: CatalogTruthFact<Readonly<{ name: string; relationship: 'manufacturer' | 'merchant' | 'provider' | 'wholesaler' }>>;
-	offer: CatalogTruthFact<Readonly<{ currency: string; priceMinor: number; offerReference: string }>>;
+	supplier: CatalogTruthFact<
+		Readonly<{
+			name: string;
+			relationship: 'manufacturer' | 'merchant' | 'provider' | 'wholesaler';
+		}>
+	>;
+	offer: CatalogTruthFact<
+		Readonly<{ currency: string; priceMinor: number; offerReference: string }>
+	>;
 	cost: CatalogTruthFact<Readonly<{ currency: string; amountMinor: number }>>;
 	minimumOrderQuantity: CatalogTruthFact<Readonly<{ quantity: number; unit: string }>>;
 	leadTime: CatalogTruthFact<Readonly<{ minimumDays: number; maximumDays: number }>>;
-	fulfillment: CatalogTruthFact<Readonly<{ model: 'merchant' | 'partner' | 'supplier' | 'digital'; regions: readonly string[] }>>;
+	fulfillment: CatalogTruthFact<
+		Readonly<{ model: 'merchant' | 'partner' | 'supplier' | 'digital'; regions: readonly string[] }>
+	>;
 	returns: CatalogTruthFact<Readonly<{ policyReference: string; windowDays: number | null }>>;
-	compliance: CatalogTruthFact<Readonly<{ standards: readonly string[]; reviewNote: string | null }>>;
+	compliance: CatalogTruthFact<
+		Readonly<{ standards: readonly string[]; reviewNote: string | null }>
+	>;
 }>;
 
 export type CatalogTruthRecord = Readonly<{
@@ -155,7 +171,10 @@ export function assertCatalogTruthRecord(record: CatalogTruthRecord): void {
 	facts.forEach((fact, index) => assertTruthFact(fact, operationalFactNames[index]));
 
 	if (record.lifecycle === 'research_only') {
-		if (record.customerVisibility !== 'not_customer_facing' || record.sellability !== 'not_sellable') {
+		if (
+			record.customerVisibility !== 'not_customer_facing' ||
+			record.sellability !== 'not_sellable'
+		) {
 			throw new Error('research-only records must remain not customer-facing and not sellable');
 		}
 		if (facts.some((fact) => fact.status === 'verified')) {
@@ -204,9 +223,7 @@ export function isCustomerFacingCatalogRecord(record: CatalogTruthRecord): boole
 		record.customerVisibility === 'customer_facing' &&
 		record.sellability === 'sellable' &&
 		facts.some((fact) => fact.status === 'verified') &&
-		facts.every(
-			(fact) => fact.status === 'verified' || fact.status === 'not_applicable'
-		)
+		facts.every((fact) => fact.status === 'verified' || fact.status === 'not_applicable')
 	);
 }
 

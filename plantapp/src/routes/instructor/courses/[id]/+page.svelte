@@ -98,7 +98,11 @@
 				<p class="platform-header__subtitle">
 					{course?.slug || courseId}
 					{#if course?.status}
-						<span class="platform-badge platform-badge--{course.status === 'published' ? 'success' : 'ghost'}">
+						<span
+							class="platform-badge platform-badge--{course.status === 'published'
+								? 'success'
+								: 'ghost'}"
+						>
 							{course.status}
 						</span>
 					{/if}
@@ -140,11 +144,11 @@
 			<div class="admin-form-grid">
 				<label class="admin-field admin-field--full">
 					<span class="admin-field__label">Title</span>
-					<input type="text" class="input input-bordered" bind:value={title} />
+					<input type="text" class="input-bordered input" bind:value={title} />
 				</label>
 				<label class="admin-field admin-field--full">
 					<span class="admin-field__label">Description</span>
-					<textarea class="textarea textarea-bordered" rows="5" bind:value={description}></textarea>
+					<textarea class="textarea-bordered textarea" rows="5" bind:value={description}></textarea>
 				</label>
 			</div>
 			<div class="admin-form-actions">
@@ -195,17 +199,22 @@
 							{#each enrollments as enrollment}
 								<tr>
 									<td class="font-semibold">
-										{enrollment.user?.firstName || ''} {enrollment.user?.lastName || ''}
+										{enrollment.user?.firstName || ''}
+										{enrollment.user?.lastName || ''}
 									</td>
 									<td>{enrollment.user?.email || '—'}</td>
 									<td>
 										<span class={getStatusBadgeClass(enrollment.status)}>{enrollment.status}</span>
 									</td>
 									<td>
-										{enrollment.progressPct != null ? `${Math.round(enrollment.progressPct)}%` : '—'}
+										{enrollment.progressPct != null
+											? `${Math.round(enrollment.progressPct)}%`
+											: '—'}
 									</td>
 									<td>
-										{enrollment.enrolledAt ? new Date(enrollment.enrolledAt).toLocaleDateString() : '—'}
+										{enrollment.enrolledAt
+											? new Date(enrollment.enrolledAt).toLocaleDateString()
+											: '—'}
 									</td>
 								</tr>
 							{/each}
@@ -227,7 +236,8 @@
 						<div class="admin-grade-header">
 							<div>
 								<div class="font-semibold">
-									{item.user?.firstName || ''} {item.user?.lastName || ''}
+									{item.user?.firstName || ''}
+									{item.user?.lastName || ''}
 								</div>
 								<div class="admin-meta-text">
 									{item.quiz?.title || 'Quiz'}
@@ -248,19 +258,20 @@
 
 						<div class="admin-grade-inputs">
 							<label class="admin-field">
-								<span class="admin-field__label">Score (out of {item.question?.points ?? 100})</span>
+								<span class="admin-field__label">Score (out of {item.question?.points ?? 100})</span
+								>
 								<input
 									type="number"
 									min="0"
 									max={item.question?.points ?? 100}
-									class="input input-bordered"
+									class="input-bordered input"
 									bind:value={grades[item.id]}
 								/>
 							</label>
 							<label class="admin-field admin-field--grow">
 								<span class="admin-field__label">Feedback</span>
 								<textarea
-									class="textarea textarea-bordered"
+									class="textarea-bordered textarea"
 									rows="3"
 									bind:value={feedbacks[item.id]}
 								></textarea>

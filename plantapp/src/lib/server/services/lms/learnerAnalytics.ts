@@ -43,8 +43,7 @@ export class LearnerAnalyticsService {
 			scoredAttempts.length > 0
 				? Math.round(
 						scoredAttempts.reduce(
-							(sum, attempt) =>
-								sum + (((attempt.score ?? 0) / (attempt.totalPoints ?? 1)) * 100),
+							(sum, attempt) => sum + ((attempt.score ?? 0) / (attempt.totalPoints ?? 1)) * 100,
 							0
 						) / scoredAttempts.length
 					)
@@ -70,7 +69,12 @@ export class LearnerAnalyticsService {
 		const activityDates = await db
 			.select({ activityDate: sql<string>`DATE(${lmsTable.lmsProgress.updatedAt})` })
 			.from(lmsTable.lmsProgress)
-			.where(inArray(lmsTable.lmsProgress.enrollmentId, enrollments.map(({ id }) => id)))
+			.where(
+				inArray(
+					lmsTable.lmsProgress.enrollmentId,
+					enrollments.map(({ id }) => id)
+				)
+			)
 			.groupBy(sql`DATE(${lmsTable.lmsProgress.updatedAt})`)
 			.orderBy(desc(sql`DATE(${lmsTable.lmsProgress.updatedAt})`));
 
@@ -111,7 +115,12 @@ export class LearnerAnalyticsService {
 				enrollmentId: lmsTable.lmsProgress.enrollmentId
 			})
 			.from(lmsTable.lmsProgress)
-			.where(inArray(lmsTable.lmsProgress.enrollmentId, enrollments.map(({ id }) => id)))
+			.where(
+				inArray(
+					lmsTable.lmsProgress.enrollmentId,
+					enrollments.map(({ id }) => id)
+				)
+			)
 			.orderBy(desc(lmsTable.lmsProgress.updatedAt))
 			.limit(limit);
 	}

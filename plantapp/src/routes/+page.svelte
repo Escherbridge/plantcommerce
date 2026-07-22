@@ -89,12 +89,12 @@
 />
 
 <!-- Section 2: Shop by Category — Editorial Showcase -->
-<section class="bg-base-100 w-full py-24 md:py-32">
+<section class="w-full bg-base-100 py-24 md:py-32">
 	<Container>
 		<div class="mb-16 space-y-4 text-center">
-			<h2 class="text-display uppercase tracking-widest">Explore Growing Systems</h2>
-			<div class="bg-primary mx-auto h-1 w-24"></div>
-			<p class="text-base-content/60 mx-auto max-w-2xl text-xl font-light">
+			<h2 class="text-display tracking-widest uppercase">Explore Growing Systems</h2>
+			<div class="mx-auto h-1 w-24 bg-primary"></div>
+			<p class="mx-auto max-w-2xl text-xl font-light text-base-content/60">
 				Browse learning pathways and research themes while catalog verification is in progress.
 			</p>
 		</div>
@@ -107,20 +107,22 @@
 				<!-- First card: spans 2 rows -->
 				<a
 					href={categories[0].href}
-					class="group relative overflow-hidden rounded-2xl md:row-span-2 min-h-[60vh]"
+					class="group relative min-h-[60vh] overflow-hidden rounded-2xl md:row-span-2"
 				>
 					<img
 						src={categories[0].image}
 						alt={categories[0].alt}
 						class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
 					/>
-					<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+					<div
+						class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
+					></div>
 					<div class="absolute inset-0 flex flex-col justify-end p-8 lg:p-12">
-						<h3 class="text-display text-white uppercase tracking-widest text-4xl lg:text-6xl mb-4">
+						<h3 class="text-display mb-4 text-4xl tracking-widest text-white uppercase lg:text-6xl">
 							{categories[0].label}
 						</h3>
 						<span
-							class="inline-block translate-y-4 text-white/0 font-semibold tracking-widest uppercase text-sm transition-all duration-300 group-hover:translate-y-0 group-hover:text-white"
+							class="inline-block translate-y-4 text-sm font-semibold tracking-widest text-white/0 uppercase transition-all duration-300 group-hover:translate-y-0 group-hover:text-white"
 						>
 							Explore guides &rarr;
 						</span>
@@ -131,7 +133,7 @@
 				{#each categories.slice(1) as category}
 					<a
 						href={category.href}
-						class="group relative overflow-hidden rounded-2xl min-h-[60vh] md:min-h-0"
+						class="group relative min-h-[60vh] overflow-hidden rounded-2xl md:min-h-0"
 						style="min-height: 280px;"
 					>
 						<img
@@ -139,15 +141,19 @@
 							alt={category.alt}
 							class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
 						/>
-						<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+						<div
+							class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
+						></div>
 						<div class="absolute inset-0 flex flex-col justify-end p-6 lg:p-8">
-							<h3 class="text-display text-white uppercase tracking-widest text-2xl lg:text-3xl mb-2">
+							<h3
+								class="text-display mb-2 text-2xl tracking-widest text-white uppercase lg:text-3xl"
+							>
 								{category.label}
 							</h3>
 							<span
-								class="inline-block translate-y-4 text-white/0 font-semibold tracking-widest uppercase text-sm transition-all duration-300 group-hover:translate-y-0 group-hover:text-white"
+								class="inline-block translate-y-4 text-sm font-semibold tracking-widest text-white/0 uppercase transition-all duration-300 group-hover:translate-y-0 group-hover:text-white"
 							>
-							Explore guides &rarr;
+								Explore guides &rarr;
 							</span>
 						</div>
 					</a>
@@ -162,7 +168,12 @@
 			>
 				View catalog status
 				<svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M14 5l7 7m0 0l-7 7m7-7H3"
+					/>
 				</svg>
 			</a>
 		</div>
@@ -170,14 +181,16 @@
 </section>
 
 <!-- Section 3: Core Values -->
-<section class="bg-primary text-primary-content relative w-full overflow-hidden py-32">
+<section class="relative w-full overflow-hidden bg-primary py-32 text-primary-content">
 	<PatternBackground pattern={MyceliumNetwork} opacity={0.05} class="absolute inset-0 z-0" />
 
 	<div class="relative z-10 mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-12">
 		<div class="mb-24 space-y-6 text-center">
-			<h2 class="text-display uppercase tracking-tight text-5xl lg:text-7xl xl:text-8xl">CORE VALUES</h2>
-			<div class="bg-primary mx-auto h-1.5 w-32"></div>
-			<p class="text-primary-content/60 mx-auto max-w-3xl text-xl font-light lg:text-2xl">
+			<h2 class="text-display text-5xl tracking-tight uppercase lg:text-7xl xl:text-8xl">
+				CORE VALUES
+			</h2>
+			<div class="mx-auto h-1.5 w-32 bg-primary"></div>
+			<p class="mx-auto max-w-3xl text-xl font-light text-primary-content/60 lg:text-2xl">
 				Building a sustainable future through diversity, education, and community
 			</p>
 		</div>
@@ -192,13 +205,21 @@
 						<img
 							src={sustainabilityImg}
 							alt="Hands nurturing rich soil with seedlings"
-							class="w-full h-80 lg:h-96 xl:h-[32rem] object-cover transition-transform duration-700 group-hover:scale-110"
+							class="h-80 w-full object-cover transition-transform duration-700 group-hover:scale-110 lg:h-96 xl:h-[32rem]"
 							loading="lazy"
 						/>
-						<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-						<div class="bg-primary/0 group-hover:bg-primary/10 absolute inset-0 transition-colors duration-500"></div>
-						<div class="absolute bottom-0 left-0 right-0 transform p-8 transition-transform duration-500 group-hover:translate-y-0 lg:p-12">
-							<h3 class="mb-4 text-4xl font-bold text-white lg:text-5xl xl:text-6xl">SUSTAINABILITY</h3>
+						<div
+							class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
+						></div>
+						<div
+							class="absolute inset-0 bg-primary/0 transition-colors duration-500 group-hover:bg-primary/10"
+						></div>
+						<div
+							class="absolute right-0 bottom-0 left-0 transform p-8 transition-transform duration-500 group-hover:translate-y-0 lg:p-12"
+						>
+							<h3 class="mb-4 text-4xl font-bold text-white lg:text-5xl xl:text-6xl">
+								SUSTAINABILITY
+							</h3>
 							<p class="max-w-xl text-lg font-light text-white/90 xl:text-2xl">
 								Nurturing the soil, growing resilient ecosystems
 							</p>
@@ -208,9 +229,20 @@
 
 				<!-- Education Card — inline SVG book icon -->
 				<div class="group xl:col-span-1">
-					<div class="bg-base-100 h-full rounded-3xl border border-base-200/30 p-10 shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-primary/20 lg:p-12">
+					<div
+						class="h-full rounded-3xl border border-base-200/30 bg-base-100 p-10 shadow-md transition-all duration-300 hover:-translate-y-2 hover:border-primary/20 hover:shadow-xl lg:p-12"
+					>
 						<div class="mb-8 transform transition-transform duration-300 group-hover:scale-110">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="text-primary h-14 w-14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 48 48"
+								class="h-14 w-14 text-primary"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.5"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
 								<path d="M4 8c0-1.1.9-2 2-2h14v36H6a2 2 0 01-2-2V8z" />
 								<path d="M44 8c0-1.1-.9-2-2-2H28v36h14a2 2 0 002-2V8z" />
 								<path d="M20 6h8" /><path d="M20 42h8" />
@@ -218,8 +250,12 @@
 								<path d="M30 14h8M30 20h8M30 26h6" />
 							</svg>
 						</div>
-						<h3 class="text-base-content mb-4 text-2xl font-bold font-display uppercase tracking-tight lg:text-3xl">EDUCATION</h3>
-						<p class="text-base-content/70 text-lg font-light leading-relaxed">
+						<h3
+							class="font-display mb-4 text-2xl font-bold tracking-tight text-base-content uppercase lg:text-3xl"
+						>
+							EDUCATION
+						</h3>
+						<p class="text-lg leading-relaxed font-light text-base-content/70">
 							Accessible, practical knowledge for growers at every level
 						</p>
 					</div>
@@ -231,12 +267,14 @@
 						<img
 							src={communityImg}
 							alt="Diverse community gardening together"
-							class="w-full h-72 lg:h-80 object-cover transition-transform duration-700 group-hover:scale-110"
+							class="h-72 w-full object-cover transition-transform duration-700 group-hover:scale-110 lg:h-80"
 							loading="lazy"
 						/>
 						<div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-						<div class="bg-primary/0 group-hover:bg-primary/10 absolute inset-0 transition-colors duration-500"></div>
-						<div class="absolute bottom-6 left-6 right-6">
+						<div
+							class="absolute inset-0 bg-primary/0 transition-colors duration-500 group-hover:bg-primary/10"
+						></div>
+						<div class="absolute right-6 bottom-6 left-6">
 							<h3 class="mb-2 text-2xl font-bold text-white lg:text-3xl">COMMUNITY</h3>
 							<p class="text-base font-light text-white/90">Growing together</p>
 						</div>
@@ -245,18 +283,22 @@
 
 				<!-- Diversity Block -->
 				<div class="group md:col-span-2 lg:col-span-2 xl:col-span-2">
-					<div class="from-secondary to-secondary/80 text-secondary-content hover:shadow-3xl relative h-full overflow-hidden rounded-2xl bg-gradient-to-br p-10 shadow-2xl transition-all duration-300 hover:-translate-y-1 lg:p-14 xl:p-20">
+					<div
+						class="hover:shadow-3xl relative h-full overflow-hidden rounded-2xl bg-gradient-to-br from-secondary to-secondary/80 p-10 text-secondary-content shadow-2xl transition-all duration-300 hover:-translate-y-1 lg:p-14 xl:p-20"
+					>
 						<div class="relative z-10 space-y-8">
 							<h3 class="text-4xl font-bold tracking-tight lg:text-6xl xl:text-7xl">DIVERSITY</h3>
-							<p class="max-w-2xl text-xl font-light leading-relaxed opacity-95 lg:text-2xl xl:text-3xl">
+							<p
+								class="max-w-2xl text-xl leading-relaxed font-light opacity-95 lg:text-2xl xl:text-3xl"
+							>
 								From monoculture to polyculture. Embrace biodiversity, complexity, and the
 								interconnectedness of all living things.
 							</p>
 							<a
 								href="/products"
-								class="btn btn-secondary btn-lg mt-4 inline-block text-base font-semibold tracking-wide transition-transform hover:scale-105"
+								class="btn mt-4 inline-block text-base font-semibold tracking-wide transition-transform btn-lg btn-secondary hover:scale-105"
 							>
-				EXPLORE LEARNING
+								EXPLORE LEARNING
 							</a>
 						</div>
 					</div>
@@ -264,9 +306,22 @@
 
 				<!-- Empowerment Card — inline SVG seedling icon -->
 				<div class="group xl:col-span-1">
-					<div class="bg-base-100 h-full rounded-3xl border border-base-200/30 p-10 text-center shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-primary/20 lg:p-12">
-						<div class="mb-8 flex justify-center transform transition-transform duration-300 group-hover:scale-110">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="text-primary h-14 w-14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+					<div
+						class="h-full rounded-3xl border border-base-200/30 bg-base-100 p-10 text-center shadow-md transition-all duration-300 hover:-translate-y-2 hover:border-primary/20 hover:shadow-xl lg:p-12"
+					>
+						<div
+							class="mb-8 flex transform justify-center transition-transform duration-300 group-hover:scale-110"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 48 48"
+								class="h-14 w-14 text-primary"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.5"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
 								<line x1="24" y1="42" x2="24" y2="20" />
 								<path d="M24 30c-6-1-11-7-9-14 4 4 8 9 9 14z" fill="currentColor" opacity="0.15" />
 								<path d="M24 30c-6-1-11-7-9-14 4 4 8 9 9 14" />
@@ -276,8 +331,12 @@
 								<path d="M24 42c3-1 5 1 8 0" />
 							</svg>
 						</div>
-						<h3 class="text-base-content mb-4 text-2xl font-bold font-display uppercase tracking-tight lg:text-3xl">EMPOWERMENT</h3>
-						<p class="text-base-content/70 text-base font-light leading-relaxed">
+						<h3
+							class="font-display mb-4 text-2xl font-bold tracking-tight text-base-content uppercase lg:text-3xl"
+						>
+							EMPOWERMENT
+						</h3>
+						<p class="text-base leading-relaxed font-light text-base-content/70">
 							Tools and knowledge to make a positive impact
 						</p>
 					</div>
@@ -288,71 +347,113 @@
 </section>
 
 <!-- Section 4: Featured Products — Editorial Grid -->
-<section class="bg-base-100 w-full py-32">
+<section class="w-full bg-base-100 py-32">
 	<Container>
 		<div class="mb-20 space-y-6 text-center">
-			<h2 class="text-display uppercase tracking-tight text-5xl lg:text-7xl xl:text-8xl">CATALOG VERIFICATION</h2>
-			<div class="bg-primary mx-auto h-1.5 w-32"></div>
-			<p class="text-base-content/60 mx-auto max-w-3xl text-xl font-light lg:text-2xl">
-				We do not publish product prices, availability, or claims until their operational evidence is reviewed.
+			<h2 class="text-display text-5xl tracking-tight uppercase lg:text-7xl xl:text-8xl">
+				CATALOG VERIFICATION
+			</h2>
+			<div class="mx-auto h-1.5 w-32 bg-primary"></div>
+			<p class="mx-auto max-w-3xl text-xl font-light text-base-content/60 lg:text-2xl">
+				We do not publish product prices, availability, or claims until their operational evidence
+				is reviewed.
 			</p>
 		</div>
 
 		<ScrollReveal animation="fade-up">
 			{#if featuredProducts.length > 0}
-			<div class="grid grid-cols-2 gap-6 lg:gap-10">
-				{#each featuredProducts as product, i}
-					<a
-						href="/products/{product.categorySlug || product.category?.slug || 'all'}/{product.slug}"
-						class="card bg-base-100 border-base-200 group overflow-hidden rounded-2xl border shadow-xl transition-all duration-500 hover:scale-[1.02] hover:shadow-xl {i === 0 ? 'col-span-2 md:col-span-1 md:row-span-2' : 'col-span-2 md:col-span-1'}"
-					>
-						<figure class="relative overflow-hidden {i === 0 ? 'h-80 md:h-[28rem]' : 'h-64'}">
-							{#if product.images && product.images.length > 0}
-								<img
-									src={product.images[0].url}
-									alt={product.images[0].altText}
-									class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-								/>
-								<div class="absolute inset-0 flex items-center justify-center bg-primary/0 opacity-0 transition-all duration-500 group-hover:bg-primary/20 group-hover:opacity-100">
-									<span class="text-white font-semibold tracking-widest uppercase text-sm">Quick View</span>
+				<div class="grid grid-cols-2 gap-6 lg:gap-10">
+					{#each featuredProducts as product, i}
+						<a
+							href="/products/{product.categorySlug ||
+								product.category?.slug ||
+								'all'}/{product.slug}"
+							class="group card overflow-hidden rounded-2xl border border-base-200 bg-base-100 shadow-xl transition-all duration-500 hover:scale-[1.02] hover:shadow-xl {i ===
+							0
+								? 'col-span-2 md:col-span-1 md:row-span-2'
+								: 'col-span-2 md:col-span-1'}"
+						>
+							<figure class="relative overflow-hidden {i === 0 ? 'h-80 md:h-[28rem]' : 'h-64'}">
+								{#if product.images && product.images.length > 0}
+									<img
+										src={product.images[0].url}
+										alt={product.images[0].altText}
+										class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+									/>
+									<div
+										class="absolute inset-0 flex items-center justify-center bg-primary/0 opacity-0 transition-all duration-500 group-hover:bg-primary/20 group-hover:opacity-100"
+									>
+										<span class="text-sm font-semibold tracking-widest text-white uppercase"
+											>Quick View</span
+										>
+									</div>
+								{:else}
+									<div class="flex h-full items-center justify-center bg-base-200">
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											class="h-16 w-16 text-base-content/30"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="1.5"
+												d="M12 3C7 3 3 7 3 12s4 9 9 9 9-4 9-9-4-9-9-9zm0 0v9m0-9c2 2 3 5 3 9m-3-9c-2 2-3 5-3 9"
+											/>
+										</svg>
+									</div>
+								{/if}
+							</figure>
+							<div class="card-body space-y-4 p-6 {i === 0 ? 'lg:p-10' : ''}">
+								<h3
+									class="card-title text-base-content transition-colors group-hover:text-primary {i ===
+									0
+										? 'text-2xl lg:text-3xl'
+										: 'text-xl'} leading-tight font-bold"
+								>
+									{product.name}
+								</h3>
+								{#if i === 0}
+									<p class="text-base leading-relaxed font-light text-base-content/70">
+										{product.shortDescription}
+									</p>
+								{:else}
+									<p class="line-clamp-2 text-sm leading-relaxed font-light text-base-content/70">
+										{product.shortDescription}
+									</p>
+								{/if}
+								<div
+									class="mt-4 card-actions items-center justify-between border-t border-base-200 pt-4"
+								>
+									<div
+										class="font-mono text-2xl font-bold text-primary {i === 0
+											? 'text-3xl lg:text-4xl'
+											: ''}"
+									>
+										${parseFloat(product.price).toFixed(2)}
+									</div>
+									<span
+										class="font-display btn text-xs tracking-widest uppercase transition-transform btn-sm btn-primary group-hover:scale-105 {i ===
+										0
+											? 'text-sm btn-md'
+											: ''}"
+									>
+										VIEW DETAILS
+									</span>
 								</div>
-							{:else}
-								<div class="flex h-full items-center justify-center bg-base-200">
-									<svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-base-content/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3C7 3 3 7 3 12s4 9 9 9 9-4 9-9-4-9-9-9zm0 0v9m0-9c2 2 3 5 3 9m-3-9c-2 2-3 5-3 9" />
-									</svg>
-								</div>
-							{/if}
-						</figure>
-						<div class="card-body space-y-4 p-6 {i === 0 ? 'lg:p-10' : ''}">
-							<h3 class="card-title text-base-content group-hover:text-primary transition-colors {i === 0 ? 'text-2xl lg:text-3xl' : 'text-xl'} font-bold leading-tight">
-								{product.name}
-							</h3>
-							{#if i === 0}
-								<p class="text-base-content/70 text-base font-light leading-relaxed">
-									{product.shortDescription}
-								</p>
-							{:else}
-								<p class="text-base-content/70 line-clamp-2 text-sm font-light leading-relaxed">
-									{product.shortDescription}
-								</p>
-							{/if}
-							<div class="card-actions border-base-200 mt-4 items-center justify-between border-t pt-4">
-								<div class="text-primary font-mono text-2xl font-bold {i === 0 ? 'text-3xl lg:text-4xl' : ''}">
-									${parseFloat(product.price).toFixed(2)}
-								</div>
-								<span class="btn btn-primary btn-sm font-display text-xs uppercase tracking-widest transition-transform group-hover:scale-105 {i === 0 ? 'btn-md text-sm' : ''}">
-									VIEW DETAILS
-								</span>
 							</div>
-						</div>
-					</a>
-				{/each}
-			</div>
+						</a>
+					{/each}
+				</div>
 			{:else}
-				<div class="mx-auto max-w-2xl rounded-3xl border border-base-300 bg-base-200/40 p-8 text-center">
-					<p class="text-base-content/70 text-lg leading-relaxed">
-						The product catalog is unavailable while supplier, offer, fulfillment, and claim evidence is verified.
+				<div
+					class="mx-auto max-w-2xl rounded-3xl border border-base-300 bg-base-200/40 p-8 text-center"
+				>
+					<p class="text-lg leading-relaxed text-base-content/70">
+						The product catalog is unavailable while supplier, offer, fulfillment, and claim
+						evidence is verified.
 					</p>
 				</div>
 			{/if}
@@ -361,7 +462,7 @@
 		<div class="mt-16 text-center">
 			<a
 				href="/products"
-				class="btn btn-outline btn-lg font-display text-sm uppercase tracking-widest transition-transform hover:scale-105"
+				class="font-display btn text-sm tracking-widest uppercase transition-transform btn-outline btn-lg hover:scale-105"
 			>
 				VIEW CATALOG STATUS
 			</a>
@@ -370,19 +471,22 @@
 </section>
 
 <!-- Section 5: Newsletter — Reimagined -->
-<section class="bg-primary text-primary-content relative w-full overflow-hidden py-32">
+<section class="relative w-full overflow-hidden bg-primary py-32 text-primary-content">
 	<PatternBackground pattern={RootSystem} opacity={0.08} class="absolute inset-0 z-0" />
 
-	<div class="relative z-10 mx-auto w-full max-w-[900px] px-4 sm:px-6 lg:px-12 text-center">
+	<div class="relative z-10 mx-auto w-full max-w-[900px] px-4 text-center sm:px-6 lg:px-12">
 		<ScrollReveal animation="fade-up">
-			<h2 class="text-display uppercase tracking-tight text-5xl lg:text-7xl xl:text-8xl mb-6">
+			<h2 class="text-display mb-6 text-5xl tracking-tight uppercase lg:text-7xl xl:text-8xl">
 				STAY CONNECTED
 			</h2>
-			<p class="text-primary-content/60 mx-auto max-w-2xl text-xl font-light leading-relaxed mb-6">
+			<p class="mx-auto mb-6 max-w-2xl text-xl leading-relaxed font-light text-primary-content/60">
 				Newsletter sign-up is currently unavailable.
 			</p>
-			<p class="text-primary-content/80 mx-auto max-w-xl text-lg font-light leading-relaxed">
-				For updates or support, <a href="/contact" class="underline decoration-accent underline-offset-4">contact Aevani</a>.
+			<p class="mx-auto max-w-xl text-lg leading-relaxed font-light text-primary-content/80">
+				For updates or support, <a
+					href="/contact"
+					class="underline decoration-accent underline-offset-4">contact Aevani</a
+				>.
 			</p>
 		</ScrollReveal>
 	</div>

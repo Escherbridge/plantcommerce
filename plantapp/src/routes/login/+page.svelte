@@ -10,8 +10,15 @@
 
 	function getRedirectUrl(): string {
 		const redirect = $page.url.searchParams.get('redirect');
-		if (redirect && redirect.startsWith('/')) {
-			return redirect;
+		if (redirect?.startsWith('/')) {
+			try {
+				const destination = new URL(redirect, $page.url.origin);
+				if (destination.origin === $page.url.origin) {
+					return `${destination.pathname}${destination.search}${destination.hash}`;
+				}
+			} catch {
+				// Fall through to the safe account landing page.
+			}
 		}
 		return '/account/profile';
 	}
@@ -21,7 +28,8 @@
 		loading = true;
 		error = '';
 
-		if (!email.trim() || !password.trim()) {
+		const usernameOrEmail = email.trim();
+		if (!usernameOrEmail || !password) {
 			error = 'Please enter your email and password.';
 			loading = false;
 			return;
@@ -29,7 +37,7 @@
 
 		try {
 			const result = await trpc.auth.login.mutate({
-				usernameOrEmail: email,
+				usernameOrEmail,
 				password: password
 			});
 
@@ -47,8 +55,6 @@
 			const message = err?.message || '';
 			if (message.includes('UNAUTHORIZED') || message.includes('Invalid')) {
 				error = 'Invalid email or password. Please try again.';
-			} else if (message.includes('FORBIDDEN') || message.includes('disabled')) {
-				error = 'Your account has been disabled. Please contact support.';
 			} else {
 				error = 'Something went wrong. Please try again later.';
 			}
@@ -74,16 +80,20 @@
 
 			<!-- Error -->
 			{#if error}
-				<div class="login-error">
+				<div id="login-form-error" class="login-error" role="alert" aria-live="assertive">
 					<svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-						<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+						<path
+							fill-rule="evenodd"
+							d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+							clip-rule="evenodd"
+						/>
 					</svg>
 					<span>{error}</span>
 				</div>
 			{/if}
 
 			<!-- Form -->
-			<form class="login-form" onsubmit={handleSubmit} novalidate>
+			<form class="login-form" onsubmit={handleSubmit} novalidate aria-busy={loading}>
 				<div class="form-control">
 					<label class="label" for="email-address">
 						<span class="label-text">Email address or username</span>
@@ -95,9 +105,11 @@
 						autocomplete="username"
 						required
 						bind:value={email}
-						class="input input-bordered w-full"
+						class="input-bordered input w-full"
 						placeholder="you@example.com or username"
 						disabled={loading}
+						aria-invalid={Boolean(error)}
+						aria-describedby={error ? 'login-form-error' : undefined}
 					/>
 				</div>
 
@@ -112,9 +124,11 @@
 						autocomplete="current-password"
 						required
 						bind:value={password}
-						class="input input-bordered w-full"
+						class="input-bordered input w-full"
 						placeholder="Enter your password"
 						disabled={loading}
+						aria-invalid={Boolean(error)}
+						aria-describedby={error ? 'login-form-error' : undefined}
 					/>
 				</div>
 
@@ -122,10 +136,11 @@
 					<button
 						type="submit"
 						disabled={loading}
-						class="btn btn-primary w-full font-display uppercase tracking-wider"
+						aria-busy={loading}
+						class="font-display btn w-full tracking-wider uppercase btn-primary"
 					>
 						{#if loading}
-							<span class="loading loading-spinner loading-sm"></span>
+							<span class="loading loading-sm loading-spinner" aria-hidden="true"></span>
 							Signing in...
 						{:else}
 							Sign in
@@ -137,14 +152,18 @@
 			<!-- Footer -->
 			<div class="login-footer">
 				<p>
-					<a href="/forgot-password" class="link link-primary font-semibold">Forgot your password?</a>
+					<a href="/forgot-password" class="link font-semibold link-primary"
+						>Forgot your password?</a
+					>
 				</p>
 				<p>
-					<a href="/resend-verification" class="link link-primary font-semibold">Resend verification email</a>
+					<a href="/resend-verification" class="link font-semibold link-primary"
+						>Resend verification email</a
+					>
 				</p>
 				<p>
 					Don't have an account?
-					<a href="/register" class="link link-primary font-semibold">Create one</a>
+					<a href="/register" class="link font-semibold link-primary">Create one</a>
 				</p>
 			</div>
 		</div>

@@ -1,0 +1,9 @@
+{
+  "id": "auth-journey-contracts_20260721",
+  "title": "Authentication Journey Contracts",
+  "status": "planned",
+  "priority": "P0",
+  "createdAt": "2026-07-21",
+  "dependencies": ["database-baseline-rehearsal"],
+  "tags": ["authentication", "sessions", "guest-cart", "accessibility", "abuse-prevention"]
+}

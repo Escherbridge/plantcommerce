@@ -36,9 +36,7 @@ export interface Cart {
 	totalItems: number;
 }
 
-type CartIdentity =
-	| { kind: 'user'; userId: string }
-	| { kind: 'guest'; sessionId: string };
+type CartIdentity = { kind: 'user'; userId: string } | { kind: 'guest'; sessionId: string };
 
 function requireCartIdentity(userId?: string, sessionId?: string): CartIdentity {
 	if (userId && sessionId) {
@@ -87,7 +85,9 @@ export class CartService {
 
 		return await db.transaction(async (tx) => {
 			// The lock protects current deployments before 0007's partial unique indexes are applied.
-			await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${cartAdvisoryLockSubject(identity)}))`);
+			await tx.execute(
+				sql`SELECT pg_advisory_xact_lock(hashtext(${cartAdvisoryLockSubject(identity)}))`
+			);
 			const existingCart = await tx
 				.select()
 				.from(table.cart)
@@ -148,17 +148,21 @@ export class CartService {
 			})
 			.from(table.cartItem)
 			.innerJoin(table.product, eq(table.cartItem.productId, table.product.id))
-			.leftJoin(table.productImage, and(
-				eq(table.product.id, table.productImage.productId),
-				eq(table.productImage.isMain, true)
-			))
+			.leftJoin(
+				table.productImage,
+				and(eq(table.product.id, table.productImage.productId), eq(table.productImage.isMain, true))
+			)
 			.leftJoin(table.file, eq(table.productImage.fileId, table.file.id))
 			.where(eq(table.cartItem.cartId, cart.id));
 
-		const cartItems: CartItem[] = items.map(item => {
-			const imageUrl = item.file && item.file.isPublic && item.file.entityType === 'product' && item.file.entityId === String(item.product.id)
-				? FileService.generatePublicUrl(item.file.bucketPath, true)
-				: null;
+		const cartItems: CartItem[] = items.map((item) => {
+			const imageUrl =
+				item.file &&
+				item.file.isPublic &&
+				item.file.entityType === 'product' &&
+				item.file.entityId === String(item.product.id)
+					? FileService.generatePublicUrl(item.file.bucketPath, true)
+					: null;
 
 			return {
 				id: item.id,
@@ -173,17 +177,22 @@ export class CartService {
 					price: item.product.price,
 					stockQuantity: item.product.stockQuantity,
 					trackInventory: item.product.trackInventory,
-					images: imageUrl ? [{
-						url: imageUrl,
-						altText: item.image?.altText || item.product.shortDescription,
-						isMain: item.image?.isMain || false
-					}] : []
+					images: imageUrl
+						? [
+								{
+									url: imageUrl,
+									altText: item.image?.altText || item.product.shortDescription,
+									isMain: item.image?.isMain || false
+								}
+							]
+						: []
 				}
 			};
 		});
 
-		const totalAmount = cartItems.reduce((sum, item) => 
-			sum + (parseFloat(item.unitPrice) * item.quantity), 0
+		const totalAmount = cartItems.reduce(
+			(sum, item) => sum + parseFloat(item.unitPrice) * item.quantity,
+			0
 		);
 		const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -215,10 +224,7 @@ export class CartService {
 		const productResult = await db
 			.select()
 			.from(table.product)
-			.where(and(
-				eq(table.product.id, productId),
-				eq(table.product.isActive, true)
-			))
+			.where(and(eq(table.product.id, productId), eq(table.product.isActive, true)))
 			.limit(1);
 
 		if (productResult.length === 0) {
@@ -242,23 +248,20 @@ export class CartService {
 		const existingItem = await db
 			.select()
 			.from(table.cartItem)
-			.where(and(
-				eq(table.cartItem.cartId, cartId),
-				eq(table.cartItem.productId, productId)
-			))
+			.where(and(eq(table.cartItem.cartId, cartId), eq(table.cartItem.productId, productId)))
 			.limit(1);
 
 		if (existingItem.length > 0) {
 			// Update existing item
 			const newQuantity = existingItem[0].quantity + quantity;
-			
+
 			if (product.trackInventory && product.stockQuantity < newQuantity) {
 				throw new Error('Insufficient stock');
 			}
 
 			await db
 				.update(table.cartItem)
-				.set({ 
+				.set({
 					quantity: newQuantity,
 					updatedAt: new Date()
 				})
@@ -276,10 +279,7 @@ export class CartService {
 		}
 
 		// Update cart timestamp
-		await db
-			.update(table.cart)
-			.set({ updatedAt: new Date() })
-			.where(eq(table.cart.id, cartId));
+		await db.update(table.cart).set({ updatedAt: new Date() }).where(eq(table.cart.id, cartId));
 
 		if (affiliateAttribution && !cartRecord.created) {
 			await db
@@ -347,7 +347,7 @@ export class CartService {
 			// Update quantity
 			await db
 				.update(table.cartItem)
-				.set({ 
+				.set({
 					quantity,
 					updatedAt: new Date()
 				})
@@ -355,10 +355,7 @@ export class CartService {
 		}
 
 		// Update cart timestamp
-		await db
-			.update(table.cart)
-			.set({ updatedAt: new Date() })
-			.where(eq(table.cart.id, cart.id));
+		await db.update(table.cart).set({ updatedAt: new Date() }).where(eq(table.cart.id, cart.id));
 	}
 
 	/**
@@ -385,9 +382,7 @@ export class CartService {
 		}
 
 		// Delete all cart items
-		await db
-			.delete(table.cartItem)
-			.where(eq(table.cartItem.cartId, cartResult[0].id));
+		await db.delete(table.cartItem).where(eq(table.cartItem.cartId, cartResult[0].id));
 
 		// Update cart timestamp
 		await db
@@ -434,7 +429,13 @@ export class CartService {
 			const [guestCart] = await tx
 				.select()
 				.from(table.cart)
-				.where(and(eq(table.cart.id, candidateGuestCart.id), eq(table.cart.sessionId, sessionId), isNull(table.cart.userId)))
+				.where(
+					and(
+						eq(table.cart.id, candidateGuestCart.id),
+						eq(table.cart.sessionId, sessionId),
+						isNull(table.cart.userId)
+					)
+				)
 				.for('update');
 			if (!guestCart) {
 				return;
@@ -443,10 +444,17 @@ export class CartService {
 			const activeDrafts = await tx
 				.select({ id: table.checkoutDraft.id })
 				.from(table.checkoutDraft)
-				.where(and(
-					eq(table.checkoutDraft.sourceCartId, guestCart.id),
-					inArray(table.checkoutDraft.status, ['pending_session', 'checkout_created', 'quarantined', 'paid'])
-				))
+				.where(
+					and(
+						eq(table.checkoutDraft.sourceCartId, guestCart.id),
+						inArray(table.checkoutDraft.status, [
+							'pending_session',
+							'checkout_created',
+							'quarantined',
+							'paid'
+						])
+					)
+				)
 				.for('update');
 			if (activeDrafts.length > 0) {
 				throw new Error('Guest cart ownership cannot change while checkout is active');
@@ -458,29 +466,31 @@ export class CartService {
 				.where(eq(table.cart.userId, userId))
 				.limit(1);
 
-			const userItems: Array<{ id: number; productId: number; quantity: number }> = candidateUserCart
-				? await tx
-					.select({
-						id: table.cartItem.id,
-						productId: table.cartItem.productId,
-						quantity: table.cartItem.quantity
-					})
-					.from(table.cartItem)
-					.where(eq(table.cartItem.cartId, candidateUserCart.id))
-					.for('update')
-				: [];
+			const userItems: Array<{ id: number; productId: number; quantity: number }> =
+				candidateUserCart
+					? await tx
+							.select({
+								id: table.cartItem.id,
+								productId: table.cartItem.productId,
+								quantity: table.cartItem.quantity
+							})
+							.from(table.cartItem)
+							.where(eq(table.cartItem.cartId, candidateUserCart.id))
+							.for('update')
+					: [];
 			const [userCart] = candidateUserCart
 				? await tx
-					.select()
-					.from(table.cart)
-					.where(eq(table.cart.id, candidateUserCart.id))
-					.for('update')
+						.select()
+						.from(table.cart)
+						.where(eq(table.cart.id, candidateUserCart.id))
+						.for('update')
 				: [];
 
 			if (userCart) {
-				const userItemByProduct = new Map<number, { id: number; productId: number; quantity: number }>(
-					userItems.map((item) => [item.productId, item])
-				);
+				const userItemByProduct = new Map<
+					number,
+					{ id: number; productId: number; quantity: number }
+				>(userItems.map((item) => [item.productId, item]));
 				for (const guestItem of guestItems) {
 					const matchingUserItem = userItemByProduct.get(guestItem.productId);
 					if (matchingUserItem) {

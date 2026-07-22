@@ -1,8 +1,5 @@
 <script lang="ts">
-	const {
-		type = 'website',
-		data = {}
-	} = $props<{
+	const { type = 'website', data = {} } = $props<{
 		type?: 'product' | 'website' | 'article' | 'breadcrumb' | 'organization';
 		data?: Record<string, unknown>;
 	}>();
@@ -50,8 +47,11 @@
 	}
 
 	const jsonString = $derived(serializeJsonLd(jsonLd));
+	const jsonLdScript = $derived(
+		'<' + 'script type="application/ld+json">' + jsonString + '<' + '/script>'
+	);
 </script>
 
 <svelte:head>
-	<script type="application/ld+json">{jsonString}</script>
+	{@html jsonLdScript}
 </svelte:head>

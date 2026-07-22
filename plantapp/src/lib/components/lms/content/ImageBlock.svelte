@@ -6,7 +6,7 @@
 	let { config, signedUrl }: Props = $props();
 </script>
 
-<figure class="rounded-2xl overflow-hidden">
+<figure class="overflow-hidden rounded-2xl">
 	{#if signedUrl}
 		<img
 			src={signedUrl}
@@ -14,14 +14,16 @@
 			width={config.width}
 			height={config.height}
 			loading="lazy"
-			class="w-full h-auto object-contain max-h-[600px]"
+			class="h-auto max-h-[600px] w-full object-contain"
 		/>
 	{:else}
-		<div class="flex items-center justify-center h-48 bg-base-200 text-base-content/40">
+		<div class="flex h-48 items-center justify-center bg-base-200 text-base-content/40">
 			<span>No image available</span>
 		</div>
 	{/if}
 	{#if config.caption}
-		<figcaption class="text-sm text-base-content/60 text-center mt-3 px-4">{config.caption}</figcaption>
+		<figcaption class="mt-3 px-4 text-center text-sm text-base-content/60">
+			{config.caption}
+		</figcaption>
 	{/if}
 </figure>

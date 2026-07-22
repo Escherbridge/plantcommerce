@@ -11,7 +11,10 @@ import { OrderService } from '../services/order';
 import { accountCapabilitiesEnabled, generateEmailChangeCapabilities } from '../auth';
 import { EmailService } from '../services/email';
 import { AuditLogService } from '../services/auditLog';
-import { assertPublicCatalogAvailable, getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
+import {
+	assertPublicCatalogAvailable,
+	getPublicCatalogAvailability
+} from '../catalogTruth/publicCatalog';
 
 export const usersRouter = router({
 	/**
@@ -94,7 +97,10 @@ export const usersRouter = router({
 							normalizedEmail
 						);
 						if (capabilities) {
-							await EmailService.sendNewEmailChangeProof(normalizedEmail, capabilities.newEmailToken);
+							await EmailService.sendNewEmailChangeProof(
+								normalizedEmail,
+								capabilities.newEmailToken
+							);
 							await EmailService.sendExistingEmailChangeConfirmation(
 								change.previousEmail,
 								normalizedEmail,
@@ -154,11 +160,7 @@ export const usersRouter = router({
 		)
 		.query(async ({ ctx, input }) => {
 			try {
-				const orders = await OrderService.getUserOrders(
-					ctx.user.id,
-					input.limit,
-					input.offset
-				);
+				const orders = await OrderService.getUserOrders(ctx.user.id, input.limit, input.offset);
 				return orders;
 			} catch (error) {
 				throw new TRPCError({
@@ -254,30 +256,28 @@ export const usersRouter = router({
 	/**
 	 * Get user by ID (admin only)
 	 */
-	getUserById: adminProcedure
-		.input(z.object({ userId: z.string() }))
-		.query(async ({ input }) => {
-			try {
-				const user = await UserService.getUserById(input.userId);
+	getUserById: adminProcedure.input(z.object({ userId: z.string() })).query(async ({ input }) => {
+		try {
+			const user = await UserService.getUserById(input.userId);
 
-				if (!user) {
-					throw new TRPCError({
-						code: 'NOT_FOUND',
-						message: 'User not found'
-					});
-				}
-
-				return user;
-			} catch (error) {
-				if (error instanceof TRPCError) {
-					throw error;
-				}
+			if (!user) {
 				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Failed to retrieve user'
+					code: 'NOT_FOUND',
+					message: 'User not found'
 				});
 			}
-		}),
+
+			return user;
+		} catch (error) {
+			if (error instanceof TRPCError) {
+				throw error;
+			}
+			throw new TRPCError({
+				code: 'INTERNAL_SERVER_ERROR',
+				message: 'Failed to retrieve user'
+			});
+		}
+	}),
 
 	/**
 	 * Update user status (admin only)
@@ -326,19 +326,17 @@ export const usersRouter = router({
 	/**
 	 * Delete user account (admin only)
 	 */
-	deleteUser: adminProcedure
-		.input(z.object({ userId: z.string() }))
-		.mutation(async ({ input }) => {
-			try {
-				await UserService.deleteUser(input.userId);
-				return { success: true };
-			} catch (error) {
-				throw new TRPCError({
-					code: 'BAD_REQUEST',
-					message: 'Failed to delete user'
-				});
-			}
-		}),
+	deleteUser: adminProcedure.input(z.object({ userId: z.string() })).mutation(async ({ input }) => {
+		try {
+			await UserService.deleteUser(input.userId);
+			return { success: true };
+		} catch (error) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'Failed to delete user'
+			});
+		}
+	}),
 
 	/**
 	 * Get user statistics (admin only)

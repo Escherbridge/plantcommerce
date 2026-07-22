@@ -1,7 +1,10 @@
 import { eq, and, desc, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
-import { assertPublicCatalogAvailable, getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
+import {
+	assertPublicCatalogAvailable,
+	getPublicCatalogAvailability
+} from '../catalogTruth/publicCatalog';
 import { encodeBase64url } from '@oslojs/encoding';
 import { invalidateUserSessions } from '../auth';
 
@@ -204,10 +207,12 @@ export class AffiliateService {
 	/**
 	 * Generate an affiliate link for a specific product
 	 */
-	static async createAffiliateLink(params: CreateAffiliateLinkParams): Promise<table.AffiliateLink> {
+	static async createAffiliateLink(
+		params: CreateAffiliateLinkParams
+	): Promise<table.AffiliateLink> {
 		const { affiliateId, productId, customCode } = params;
-		assertPublicCatalogAvailable();
 		await this.requireActiveAffiliateById(affiliateId);
+		assertPublicCatalogAvailable();
 
 		// Check if link already exists
 		const existing = await db
@@ -301,16 +306,15 @@ export class AffiliateService {
 			.orderBy(desc(table.affiliateLink.updatedAt))
 			.limit(10);
 
-		const conversionRate = affiliate.totalClicks > 0 
-			? (affiliate.totalConversions / affiliate.totalClicks) * 100 
-			: 0;
+		const conversionRate =
+			affiliate.totalClicks > 0 ? (affiliate.totalConversions / affiliate.totalClicks) * 100 : 0;
 
 		return {
 			totalEarnings: parseFloat(affiliate.totalEarnings),
 			totalClicks: affiliate.totalClicks,
 			totalConversions: affiliate.totalConversions,
 			conversionRate: Math.round(conversionRate * 100) / 100,
-			recentLinks: recentLinks.map(link => ({
+			recentLinks: recentLinks.map((link) => ({
 				id: link.id,
 				productName: link.productName,
 				clicks: link.clicks,
@@ -477,10 +481,10 @@ export class AffiliateService {
 		}
 
 		const newStatus = !link.isActive;
-		
+
 		await db
 			.update(table.affiliateLink)
-			.set({ 
+			.set({
 				isActive: newStatus,
 				updatedAt: new Date()
 			})

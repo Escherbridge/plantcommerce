@@ -1,4 +1,9 @@
-import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import {
+	S3Client,
+	PutObjectCommand,
+	DeleteObjectCommand,
+	GetObjectCommand
+} from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { eq, and, desc } from 'drizzle-orm';
 import { db } from '$lib/server/db';
@@ -6,11 +11,13 @@ import * as table from '$lib/server/db/schema';
 import { randomUUID } from 'crypto';
 import { env } from '$env/dynamic/private';
 
+type FileEntityType = (typeof table.file.$inferSelect)['entityType'];
+
 interface UploadFileParams {
 	buffer: Buffer;
 	originalFilename: string;
 	mimeType: string;
-	entityType: 'user' | 'product' | 'content' | 'general';
+	entityType: FileEntityType;
 	entityId?: string;
 	uploadedBy?: string;
 	isPublic?: boolean;
@@ -129,19 +136,21 @@ export class FileService {
 		const s3 = this.getS3Client();
 
 		try {
-			await s3.send(new PutObjectCommand({
-				Bucket: this.bucketName,
-				Key: bucketPath,
-				Body: buffer,
-				ContentType: mimeType,
-				CacheControl: 'max-age=31536000',
-				Metadata: {
-					originalFilename,
-					entityType,
-					entityId: entityId || '',
-					uploadedBy: uploadedBy || ''
-				}
-			}));
+			await s3.send(
+				new PutObjectCommand({
+					Bucket: this.bucketName,
+					Key: bucketPath,
+					Body: buffer,
+					ContentType: mimeType,
+					CacheControl: 'max-age=31536000',
+					Metadata: {
+						originalFilename,
+						entityType,
+						entityId: entityId || '',
+						uploadedBy: uploadedBy || ''
+					}
+				})
+			);
 
 			const fileData: typeof table.file.$inferInsert = {
 				id: fileId,
@@ -164,10 +173,12 @@ export class FileService {
 		} catch (error) {
 			// Clean up uploaded file if database operation fails
 			try {
-				await s3.send(new DeleteObjectCommand({
-					Bucket: this.bucketName,
-					Key: bucketPath
-				}));
+				await s3.send(
+					new DeleteObjectCommand({
+						Bucket: this.bucketName,
+						Key: bucketPath
+					})
+				);
 			} catch (deleteError) {
 				console.error('Failed to clean up uploaded file:', deleteError);
 			}
@@ -179,11 +190,7 @@ export class FileService {
 	 * Get file by ID
 	 */
 	static async getFileById(fileId: string): Promise<FileWithUrl | null> {
-		const fileResult = await db
-			.select()
-			.from(table.file)
-			.where(eq(table.file.id, fileId))
-			.limit(1);
+		const fileResult = await db.select().from(table.file).where(eq(table.file.id, fileId)).limit(1);
 
 		if (fileResult.length === 0) {
 			return null;
@@ -196,33 +203,25 @@ export class FileService {
 	 * Get files by entity
 	 */
 	static async getFilesByEntity(
-		entityType: string,
+		entityType: FileEntityType,
 		entityId: string,
 		limit: number = 50
 	): Promise<FileWithUrl[]> {
 		const files = await db
 			.select()
 			.from(table.file)
-			.where(
-				and(
-					eq(table.file.entityType, entityType),
-					eq(table.file.entityId, entityId)
-				)
-			)
+			.where(and(eq(table.file.entityType, entityType), eq(table.file.entityId, entityId)))
 			.orderBy(desc(table.file.createdAt))
 			.limit(limit);
 
-		return files.map(file => this.fileWithUrl(file));
+		return files.map((file) => this.fileWithUrl(file));
 	}
 
 	/**
 	 * Get files uploaded by a specific user. Authorization is enforced by the
 	 * caller before this storage-level query is made.
 	 */
-	static async getFilesByUploader(
-		uploadedBy: string,
-		limit: number = 50
-	): Promise<FileWithUrl[]> {
+	static async getFilesByUploader(uploadedBy: string, limit: number = 50): Promise<FileWithUrl[]> {
 		const files = await db
 			.select()
 			.from(table.file)
@@ -230,18 +229,14 @@ export class FileService {
 			.orderBy(desc(table.file.createdAt))
 			.limit(limit);
 
-		return files.map(file => this.fileWithUrl(file));
+		return files.map((file) => this.fileWithUrl(file));
 	}
 
 	/**
 	 * Delete file from both S3 and database
 	 */
 	static async deleteFile(fileId: string): Promise<void> {
-		const fileResult = await db
-			.select()
-			.from(table.file)
-			.where(eq(table.file.id, fileId))
-			.limit(1);
+		const fileResult = await db.select().from(table.file).where(eq(table.file.id, fileId)).limit(1);
 
 		if (fileResult.length === 0) {
 			throw new Error('File not found');
@@ -251,10 +246,12 @@ export class FileService {
 		const s3 = this.getS3Client();
 
 		try {
-			await s3.send(new DeleteObjectCommand({
-				Bucket: fileRecord.bucketName,
-				Key: fileRecord.bucketPath
-			}));
+			await s3.send(
+				new DeleteObjectCommand({
+					Bucket: fileRecord.bucketName,
+					Key: fileRecord.bucketPath
+				})
+			);
 		} catch (error) {
 			console.error('Failed to delete file from S3:', error);
 		}
@@ -265,15 +262,8 @@ export class FileService {
 	/**
 	 * Generate signed URL for private files
 	 */
-	static async generateSignedUrl(
-		fileId: string,
-		expiresIn: number = 3600
-	): Promise<string> {
-		const fileResult = await db
-			.select()
-			.from(table.file)
-			.where(eq(table.file.id, fileId))
-			.limit(1);
+	static async generateSignedUrl(fileId: string, expiresIn: number = 3600): Promise<string> {
+		const fileResult = await db.select().from(table.file).where(eq(table.file.id, fileId)).limit(1);
 
 		if (fileResult.length === 0) {
 			throw new Error('File not found');
@@ -340,11 +330,9 @@ export class FileService {
 			.orderBy(desc(table.file.createdAt))
 			.limit(limit);
 
-		const filteredFiles = files.filter(file =>
-			file.mimeType.includes(mimeTypePattern)
-		);
+		const filteredFiles = files.filter((file) => file.mimeType.includes(mimeTypePattern));
 
-		return filteredFiles.map(file => this.fileWithUrl(file));
+		return filteredFiles.map((file) => this.fileWithUrl(file));
 	}
 
 	/**

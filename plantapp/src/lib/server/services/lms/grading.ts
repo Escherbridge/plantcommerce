@@ -53,10 +53,7 @@ export class GradingService {
 				lmsTable.lmsQuizAttempt,
 				eq(lmsTable.lmsQuizAnswer.attemptId, lmsTable.lmsQuizAttempt.id)
 			)
-			.innerJoin(
-				lmsTable.lmsQuiz,
-				eq(lmsTable.lmsQuizAttempt.quizId, lmsTable.lmsQuiz.id)
-			)
+			.innerJoin(lmsTable.lmsQuiz, eq(lmsTable.lmsQuizAttempt.quizId, lmsTable.lmsQuiz.id))
 			.innerJoin(
 				lmsTable.lmsEnrollment,
 				eq(lmsTable.lmsQuizAttempt.enrollmentId, lmsTable.lmsEnrollment.id)

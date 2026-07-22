@@ -1,12 +1,11 @@
 <script lang="ts">
 	// Use $props() instead of export let in runes mode
 	import { publicSite, publicSiteUrl } from '$lib/config/site';
-	import defaultSocialImage from '$lib/images/AI-MockAssets/MAINHERO.png';
-	
+
 	const {
 		title = publicSite.defaultTitle,
 		description = publicSite.description,
-		image = defaultSocialImage,
+		image = null,
 		url = '',
 		type = 'website',
 		publishedTime = null,
@@ -16,7 +15,7 @@
 	} = $props<{
 		title?: string;
 		description?: string;
-		image?: string;
+		image?: string | null;
 		url?: string;
 		type?: string;
 		publishedTime?: string | null;
@@ -27,13 +26,17 @@
 
 	// Use $derived for runes mode
 	const safeTitle = $derived(title.length > 60 ? title.substring(0, 57) + '...' : title);
-	const safeDescription = $derived(description.length > 160 ? description.substring(0, 157) + '...' : description);
-	
+	const safeDescription = $derived(
+		description.length > 160 ? description.substring(0, 157) + '...' : description
+	);
+
 	const baseUrl = publicSite.origin;
 	const absoluteUrl = $derived(url ? (url.startsWith('http') ? url : publicSiteUrl(url)) : baseUrl);
 
-	const imagePath = image.startsWith('/') ? image : `/${image}`;
-	const absoluteImage = $derived(image.startsWith('http') ? image : publicSiteUrl(imagePath));
+	const imagePath = $derived(image ? (image.startsWith('/') ? image : `/${image}`) : null);
+	const absoluteImage = $derived(
+		image ? (image.startsWith('http') ? image : publicSiteUrl(imagePath!)) : null
+	);
 </script>
 
 <!-- Primary Meta Tags -->
@@ -46,14 +49,18 @@
 <meta property="og:url" content={absoluteUrl} />
 <meta property="og:title" content={safeTitle} />
 <meta property="og:description" content={safeDescription} />
-<meta property="og:image" content={absoluteImage} />
+{#if absoluteImage}
+	<meta property="og:image" content={absoluteImage} />
+{/if}
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={absoluteUrl} />
 <meta property="twitter:title" content={safeTitle} />
 <meta property="twitter:description" content={safeDescription} />
-<meta property="twitter:image" content={absoluteImage} />
+{#if absoluteImage}
+	<meta property="twitter:image" content={absoluteImage} />
+{/if}
 
 <!-- Article-specific tags -->
 {#if type === 'article' && publishedTime}

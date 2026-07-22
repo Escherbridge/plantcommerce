@@ -19,7 +19,9 @@
 		</div>
 		<div class="platform-empty">
 			<p class="platform-empty__text">
-				Aevani does not currently publish affiliate earnings, payout balances, payment schedules, thresholds, or exportable commission history. An account state does not create a right to payment.
+				Aevani does not currently publish affiliate earnings, payout balances, payment schedules,
+				thresholds, or exportable commission history. An account state does not create a right to
+				payment.
 			</p>
 			<a href="/affiliate/terms" class="platform-action-btn">Review program status</a>
 		</div>

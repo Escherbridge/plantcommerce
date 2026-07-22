@@ -9,27 +9,31 @@
 <Section>
 	<Container>
 		<div class="mb-8">
-			<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+			<div class="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
 				<div>
-					<h1 class="text-3xl font-bold mb-2">Order #{order.orderNumber}</h1>
+					<h1 class="mb-2 text-3xl font-bold">Order #{order.orderNumber}</h1>
 					<p class="text-base-content/70">
 						Placed on {new Date(order.createdAt).toLocaleDateString()} at {new Date(
 							order.createdAt
 						).toLocaleTimeString()}
 					</p>
 				</div>
-				<div class="badge badge-lg uppercase font-bold" class:badge-primary={order.status === 'confirmed'} class:badge-ghost={order.status === 'pending'}>
+				<div
+					class="badge badge-lg font-bold uppercase"
+					class:badge-primary={order.status === 'confirmed'}
+					class:badge-ghost={order.status === 'pending'}
+				>
 					{order.status}
 				</div>
 			</div>
 		</div>
 
-		<div class="grid lg:grid-cols-3 gap-8">
+		<div class="grid gap-8 lg:grid-cols-3">
 			<!-- Order Items -->
-			<div class="lg:col-span-2 space-y-6">
+			<div class="space-y-6 lg:col-span-2">
 				<div class="card bg-base-100 shadow-xl">
 					<div class="card-body">
-						<h2 class="card-title mb-4">Items</h2>
+						<h2 class="mb-4 card-title">Items</h2>
 						<div class="overflow-x-auto">
 							<table class="table">
 								<thead>
@@ -49,7 +53,8 @@
 											</td>
 											<td class="text-right">${parseFloat(item.unitPrice).toFixed(2)}</td>
 											<td class="text-center">{item.quantity}</td>
-											<td class="text-right font-bold">${parseFloat(item.totalPrice).toFixed(2)}</td>
+											<td class="text-right font-bold">${parseFloat(item.totalPrice).toFixed(2)}</td
+											>
 										</tr>
 									{/each}
 								</tbody>
@@ -59,12 +64,15 @@
 				</div>
 
 				<!-- Shipping & Billing -->
-				<div class="grid md:grid-cols-2 gap-6">
+				<div class="grid gap-6 md:grid-cols-2">
 					<div class="card bg-base-100 shadow-xl">
 						<div class="card-body">
-							<h3 class="card-title text-lg mb-2">Shipping Address</h3>
+							<h3 class="mb-2 card-title text-lg">Shipping Address</h3>
 							<div class="text-sm">
-								<p class="font-bold">{order.shippingAddress.firstName} {order.shippingAddress.lastName}</p>
+								<p class="font-bold">
+									{order.shippingAddress.firstName}
+									{order.shippingAddress.lastName}
+								</p>
 								<p>{order.shippingAddress.address1}</p>
 								{#if order.shippingAddress.address2}
 									<p>{order.shippingAddress.address2}</p>
@@ -80,9 +88,12 @@
 
 					<div class="card bg-base-100 shadow-xl">
 						<div class="card-body">
-							<h3 class="card-title text-lg mb-2">Billing Address</h3>
+							<h3 class="mb-2 card-title text-lg">Billing Address</h3>
 							<div class="text-sm">
-								<p class="font-bold">{order.billingAddress.firstName} {order.billingAddress.lastName}</p>
+								<p class="font-bold">
+									{order.billingAddress.firstName}
+									{order.billingAddress.lastName}
+								</p>
 								<p>{order.billingAddress.address1}</p>
 								{#if order.billingAddress.address2}
 									<p>{order.billingAddress.address2}</p>
@@ -102,7 +113,7 @@
 			<div class="lg:col-span-1">
 				<div class="card bg-base-100 shadow-xl">
 					<div class="card-body">
-						<h2 class="card-title mb-4">Summary</h2>
+						<h2 class="mb-4 card-title">Summary</h2>
 						<div class="space-y-2">
 							<div class="flex justify-between">
 								<span>Subtotal</span>
@@ -130,16 +141,16 @@
 						</div>
 
 						<div class="mt-6 space-y-3">
-							<a href="/products" class="btn btn-primary w-full">Continue Shopping</a>
-							<a href="/account/orders" class="btn btn-outline w-full">View All Orders</a>
+							<a href="/products" class="btn w-full btn-primary">Continue Shopping</a>
+							<a href="/account/orders" class="btn w-full btn-outline">View All Orders</a>
 						</div>
 					</div>
 				</div>
 
-				<div class="card bg-base-100 shadow-xl mt-6">
+				<div class="card mt-6 bg-base-100 shadow-xl">
 					<div class="card-body">
-						<h3 class="card-title text-lg mb-2">Need Help?</h3>
-						<p class="text-sm text-base-content/70 mb-4">
+						<h3 class="mb-2 card-title text-lg">Need Help?</h3>
+						<p class="mb-4 text-sm text-base-content/70">
 							If you have any questions about your order, please contact our support team.
 						</p>
 						<a href="/contact" class="btn btn-ghost btn-sm">Contact Support</a>

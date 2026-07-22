@@ -35,8 +35,18 @@
 	<div class="stats-grid">
 		<div class="platform-stat">
 			<div class="stat-icon">
-				<svg viewBox="0 0 24 24" class="stat-svg" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 12h6M9 16h4"/>
+				<svg
+					viewBox="0 0 24 24"
+					class="stat-svg"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path
+						d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 12h6M9 16h4"
+					/>
 				</svg>
 			</div>
 			<span class="platform-stat__label">Total Orders</span>
@@ -45,8 +55,18 @@
 
 		<div class="platform-stat">
 			<div class="stat-icon">
-				<svg viewBox="0 0 24 24" class="stat-svg" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+				<svg
+					viewBox="0 0 24 24"
+					class="stat-svg"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path
+						d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
+					/>
 				</svg>
 			</div>
 			<span class="platform-stat__label">Wishlist Items</span>
@@ -55,8 +75,18 @@
 
 		<div class="platform-stat">
 			<div class="stat-icon">
-				<svg viewBox="0 0 24 24" class="stat-svg" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+				<svg
+					viewBox="0 0 24 24"
+					class="stat-svg"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path
+						d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+					/>
 				</svg>
 			</div>
 			<span class="platform-stat__label">Member Since</span>
@@ -89,11 +119,23 @@
 			</div>
 		{:else}
 			<div class="platform-empty">
-				<svg viewBox="0 0 24 24" class="empty-svg" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+				<svg
+					viewBox="0 0 24 24"
+					class="empty-svg"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path
+						d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+					/>
 				</svg>
 				<p class="platform-empty__title">No orders yet</p>
-				<p class="platform-empty__text">The product catalog and ordering workflow are currently unavailable.</p>
+				<p class="platform-empty__text">
+					The product catalog and ordering workflow are currently unavailable.
+				</p>
 				<a href="/products" class="cta-btn">View Catalog Status</a>
 			</div>
 		{/if}
@@ -106,20 +148,46 @@
 		</div>
 		<div class="quick-actions">
 			<a href="/products" class="platform-action-btn">
-				<svg viewBox="0 0 24 24" class="action-svg" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M3 7l9-4 9 4v10l-9 4-9-4V7zM3 7l9 4M21 7l-9 4M12 22V11"/>
+				<svg
+					viewBox="0 0 24 24"
+					class="action-svg"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path d="M3 7l9-4 9 4v10l-9 4-9-4V7zM3 7l9 4M21 7l-9 4M12 22V11" />
 				</svg>
 				Catalog Status
 			</a>
 			<a href="/account/wishlist" class="platform-action-btn">
-				<svg viewBox="0 0 24 24" class="action-svg" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+				<svg
+					viewBox="0 0 24 24"
+					class="action-svg"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path
+						d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
+					/>
 				</svg>
 				View Wishlist
 			</a>
 			<a href="/account/profile" class="platform-action-btn">
-				<svg viewBox="0 0 24 24" class="action-svg" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20v-1a8 8 0 0116 0v1"/>
+				<svg
+					viewBox="0 0 24 24"
+					class="action-svg"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 20v-1a8 8 0 0116 0v1" />
 				</svg>
 				Edit Profile
 			</a>
@@ -131,13 +199,26 @@
 		<div class="platform-card affiliate-cta">
 			<div class="affiliate-cta__content">
 				<div class="affiliate-cta__icon">
-					<svg viewBox="0 0 24 24" class="affiliate-svg" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.93V18h-2v-1.07C9.39 16.57 8 15.4 8 14c0-.55.45-1 1-1s1 .45 1 1c0 .28.37.57 1 .57.63 0 1-.29 1-.57 0-.29-.28-.56-1-.75-1.45-.37-3-.99-3-2.68 0-1.37 1.13-2.44 2.5-2.75V7h2v1.07c1.38.31 2.5 1.38 2.5 2.75 0 .55-.45 1-1 1s-1-.45-1-1c0-.28-.37-.57-1-.57-.63 0-1 .29-1 .57 0 .29.28.56 1 .75 1.45.37 3 .99 3 2.68 0 1.37-1.13 2.44-2.5 2.75V16h-1V16z"/>
+					<svg
+						viewBox="0 0 24 24"
+						class="affiliate-svg"
+						stroke="currentColor"
+						stroke-width="1.5"
+						fill="none"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path
+							d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.93V18h-2v-1.07C9.39 16.57 8 15.4 8 14c0-.55.45-1 1-1s1 .45 1 1c0 .28.37.57 1 .57.63 0 1-.29 1-.57 0-.29-.28-.56-1-.75-1.45-.37-3-.99-3-2.68 0-1.37 1.13-2.44 2.5-2.75V7h2v1.07c1.38.31 2.5 1.38 2.5 2.75 0 .55-.45 1-1 1s-1-.45-1-1c0-.28-.37-.57-1-.57-.63 0-1 .29-1 .57 0 .29.28.56 1 .75 1.45.37 3 .99 3 2.68 0 1.37-1.13 2.44-2.5 2.75V16h-1V16z"
+						/>
 					</svg>
 				</div>
 				<div>
 					<h3 class="affiliate-cta__title">Affiliate Program Status</h3>
-					<p class="affiliate-cta__text">Applications may be recorded for manual review, but no commission, link, or payout terms are currently published.</p>
+					<p class="affiliate-cta__text">
+						Applications may be recorded for manual review, but no commission, link, or payout terms
+						are currently published.
+					</p>
 				</div>
 			</div>
 			<a href="/affiliate/terms" class="cta-btn cta-btn--secondary">Review Status</a>

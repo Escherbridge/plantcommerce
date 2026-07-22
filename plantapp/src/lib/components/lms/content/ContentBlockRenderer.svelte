@@ -22,8 +22,11 @@
 	let { block, onProgress }: Props = $props();
 
 	const parsedConfig = $derived(() => {
-		try { return JSON.parse(block.config); }
-		catch { return {}; }
+		try {
+			return JSON.parse(block.config);
+		} catch {
+			return {};
+		}
 	});
 
 	function handleProgress(percent: number) {

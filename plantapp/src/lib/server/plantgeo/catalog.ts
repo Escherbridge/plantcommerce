@@ -1,9 +1,6 @@
 import { timingSafeEqual } from 'node:crypto';
 import { getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
-import {
-	plantGeoContractVersion,
-	type PlantGeoCatalogProjection
-} from './contracts';
+import { plantGeoContractVersion, type PlantGeoCatalogProjection } from './contracts';
 import type { PlantGeoCatalogReadConfiguration } from './config';
 
 export type PlantGeoCatalogReadResult =

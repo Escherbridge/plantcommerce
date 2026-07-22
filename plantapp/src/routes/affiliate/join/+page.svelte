@@ -56,27 +56,32 @@
 		},
 		{
 			title: 'Terms Before Activation',
-			description: 'Commission, attribution, disclosure, and payout terms are not published until reviewed in writing.',
+			description:
+				'Commission, attribution, disclosure, and payout terms are not published until reviewed in writing.',
 			icon: 'M4 4h16v12H4zM8 20h8M12 16v4'
 		},
 		{
 			title: 'Application State',
-			description: 'An account or dashboard state does not represent approval, earnings, or a promotion right.',
+			description:
+				'An account or dashboard state does not represent approval, earnings, or a promotion right.',
 			icon: 'M3 20h18M6 16v4M10 12v8M14 8v12M18 4v16'
 		},
 		{
 			title: 'No Published Cookie Window',
-			description: 'Attribution policy applies only when it is included in a reviewed written agreement.',
+			description:
+				'Attribution policy applies only when it is included in a reviewed written agreement.',
 			icon: 'M12 2a10 10 0 100 20 10 10 0 000-20zM12 6v6l4 2'
 		},
 		{
 			title: 'No Published Payout Schedule',
-			description: 'Aevani does not currently publish a payment provider, threshold, or payout timeline.',
+			description:
+				'Aevani does not currently publish a payment provider, threshold, or payout timeline.',
 			icon: 'M2 7h20v12a2 2 0 01-2 2H4a2 2 0 01-2-2V7zM22 7l-2-4H4L2 7M8 12h8'
 		},
 		{
 			title: 'Questions and Support',
-			description: 'Contact support with program questions before relying on any affiliate-related arrangement.',
+			description:
+				'Contact support with program questions before relying on any affiliate-related arrangement.',
 			icon: 'M17 8a5 5 0 00-10 0c0 4 5 8 5 12 0-4 5-8 5-12zM12 20v2M8 22h8'
 		}
 	];
@@ -107,7 +112,8 @@
 			});
 
 			toasts.addToast({
-				message: 'Application recorded for manual review. It does not promise approval, terms, or a payout.',
+				message:
+					'Application recorded for manual review. It does not promise approval, terms, or a payout.',
 				variant: 'success',
 				duration: 5000
 			});
@@ -138,12 +144,18 @@
 			<span class="aff-hero__tag">Partner with us</span>
 			<h1 class="aff-hero__title">Grow With Aevani</h1>
 			<p class="aff-hero__subtitle">
-				Aevani accepts applications for manual review, but no public commission, attribution, or payout terms are available.
+				Aevani accepts applications for manual review, but no public commission, attribution, or
+				payout terms are available.
 			</p>
 			{#if data.user && data.isAffiliate}
 				<a href="/affiliate/dashboard" class="aff-hero__cta">Go to Dashboard</a>
 			{:else if data.user}
-				<button class="aff-hero__cta" onclick={() => { document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth' }) }}>
+				<button
+					class="aff-hero__cta"
+					onclick={() => {
+						document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth' });
+					}}
+				>
 					Apply Now
 				</button>
 			{:else}
@@ -158,14 +170,23 @@
 	<Container>
 		<div class="aff-section-header">
 			<h2 class="aff-section-title">Application Status</h2>
-			<p class="aff-section-desc">Applications are informational until a reviewed agreement is available.</p>
+			<p class="aff-section-desc">
+				Applications are informational until a reviewed agreement is available.
+			</p>
 		</div>
 
 		<div class="aff-benefits-grid">
 			{#each benefits as benefit}
 				<div class="aff-benefit">
 					<div class="aff-benefit__icon">
-						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
 							<path d={benefit.icon} />
 						</svg>
 					</div>
@@ -182,7 +203,9 @@
 	<Container>
 		<div class="aff-section-header">
 			<h2 class="aff-section-title">Program Terms</h2>
-			<p class="aff-section-desc">No commission rate, cookie window, tier, or payout schedule is currently published.</p>
+			<p class="aff-section-desc">
+				No commission rate, cookie window, tier, or payout schedule is currently published.
+			</p>
 		</div>
 
 		<div class="aff-tiers">
@@ -238,35 +261,56 @@
 			<!-- Already an affiliate -->
 			<div class="aff-apply__card">
 				<div class="aff-apply__icon-wrap aff-apply__icon-wrap--success">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-						<polyline points="22 4 12 14.01 9 11.01"/>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+						<polyline points="22 4 12 14.01 9 11.01" />
 					</svg>
 				</div>
 				<h2 class="aff-apply__title">You're an Affiliate</h2>
-				<p class="aff-apply__desc">Follow the written terms associated with your approval. This page does not represent a public commission or payout commitment.</p>
+				<p class="aff-apply__desc">
+					Follow the written terms associated with your approval. This page does not represent a
+					public commission or payout commitment.
+				</p>
 				<a href="/affiliate/dashboard" class="aff-hero__cta">Go to Dashboard</a>
 			</div>
-
 		{:else if data.user && step === 3}
 			<!-- Application submitted -->
 			<div class="aff-apply__card">
 				<div class="aff-apply__icon-wrap aff-apply__icon-wrap--success">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-						<polyline points="22 4 12 14.01 9 11.01"/>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+						<polyline points="22 4 12 14.01 9 11.01" />
 					</svg>
 				</div>
 				<h2 class="aff-apply__title">Application Submitted</h2>
-				<p class="aff-apply__desc">Your application was recorded for manual review. It does not constitute approval, an agreement, or a payout right.</p>
+				<p class="aff-apply__desc">
+					Your application was recorded for manual review. It does not constitute approval, an
+					agreement, or a payout right.
+				</p>
 				<a href="/account/profile" class="aff-hero__cta">Back to Account</a>
 			</div>
-
 		{:else if data.user}
 			<!-- Onboarding application form -->
 			<div class="aff-section-header">
 				<h2 class="aff-section-title">Apply Now</h2>
-				<p class="aff-section-desc">Tell us about your audience and promotion approach. An application is only a request for manual review.</p>
+				<p class="aff-section-desc">
+					Tell us about your audience and promotion approach. An application is only a request for
+					manual review.
+				</p>
 			</div>
 
 			<div class="aff-form-card">
@@ -281,7 +325,7 @@
 								<input
 									id="website"
 									type="url"
-									class="input input-bordered w-full"
+									class="input-bordered input w-full"
 									placeholder="https://yoursite.com"
 									bind:value={formData.website}
 								/>
@@ -294,7 +338,7 @@
 								<input
 									id="social"
 									type="url"
-									class="input input-bordered w-full"
+									class="input-bordered input w-full"
 									placeholder="https://instagram.com/yourhandle"
 									bind:value={formData.socialMedia}
 								/>
@@ -342,15 +386,14 @@
 
 						<div class="aff-form__actions">
 							<button
-								class="btn btn-primary font-display uppercase tracking-wider"
-								onclick={() => step = 2}
+								class="font-display btn tracking-wider uppercase btn-primary"
+								onclick={() => (step = 2)}
 								disabled={!formData.audience || !formData.monthlyTraffic}
 							>
 								Continue
 							</button>
 						</div>
 					</div>
-
 				{:else if step === 2}
 					<div class="aff-form-step">
 						<h3 class="aff-form__heading">Promotion Details</h3>
@@ -382,7 +425,7 @@
 								</label>
 								<textarea
 									id="why"
-									class="textarea textarea-bordered w-full"
+									class="textarea-bordered textarea w-full"
 									rows="4"
 									placeholder="Tell us why you're excited about sustainable agriculture and how Aevani fits your audience..."
 									bind:value={formData.whyJoin}
@@ -396,13 +439,9 @@
 									bind:checked={formData.agreeTerms}
 								/>
 								<span>
-									I understand that this application is not an affiliate agreement and does not promise approval,
-									commission, payout, or a promotion right. Read the
-									<button
-										type="button"
-										class="terms-link"
-										onclick={openTermsModal}
-									>
+									I understand that this application is not an affiliate agreement and does not
+									promise approval, commission, payout, or a promotion right. Read the
+									<button type="button" class="terms-link" onclick={openTermsModal}>
 										current program status
 									</button>
 								</span>
@@ -411,18 +450,21 @@
 
 						<div class="aff-form__actions aff-form__actions--split">
 							<button
-								class="btn btn-outline font-display uppercase tracking-wider"
-								onclick={() => step = 1}
+								class="font-display btn tracking-wider uppercase btn-outline"
+								onclick={() => (step = 1)}
 							>
 								Back
 							</button>
 							<button
-								class="btn btn-primary font-display uppercase tracking-wider"
+								class="font-display btn tracking-wider uppercase btn-primary"
 								onclick={handleSubmit}
-								disabled={isSubmitting || !formData.promotionMethod || !formData.whyJoin || !formData.agreeTerms}
+								disabled={isSubmitting ||
+									!formData.promotionMethod ||
+									!formData.whyJoin ||
+									!formData.agreeTerms}
 							>
 								{#if isSubmitting}
-									<span class="loading loading-spinner loading-sm"></span>
+									<span class="loading loading-sm loading-spinner"></span>
 									Submitting...
 								{:else}
 									Submit Application
@@ -439,12 +481,14 @@
 					<div class="aff-form__progress-dot" class:active={step >= 2}></div>
 				</div>
 			</div>
-
 		{:else}
 			<!-- Not logged in -->
 			<div class="aff-apply__card">
 				<h2 class="aff-apply__title">Ready to Get Started?</h2>
-				<p class="aff-apply__desc">Sign in or create an account to submit a request for manual review. No commission or payout terms are currently published.</p>
+				<p class="aff-apply__desc">
+					Sign in or create an account to submit a request for manual review. No commission or
+					payout terms are currently published.
+				</p>
 				<div class="aff-apply__buttons">
 					<a href="/login?redirect=/affiliate/join" class="aff-hero__cta">Sign In to Apply</a>
 					<a href="/register" class="aff-apply__secondary">Create an Account</a>
@@ -461,11 +505,14 @@
 
 <!-- Affiliate program status modal -->
 {#if showTermsModal}
-	<div class="terms-modal-overlay" onclick={(e) => {
-		if (e.target === e.currentTarget) {
-			closeTermsModal();
-		}
-	}}>
+	<div
+		class="terms-modal-overlay"
+		onclick={(e) => {
+			if (e.target === e.currentTarget) {
+				closeTermsModal();
+			}
+		}}
+	>
 		<div class="terms-modal-card">
 			<div class="terms-modal__header">
 				<h2 class="terms-modal__title">Affiliate Program Status</h2>
@@ -475,43 +522,53 @@
 					onclick={closeTermsModal}
 					aria-label="Close modal"
 				>
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<line x1="18" y1="6" x2="6" y2="18"/>
-						<line x1="6" y1="6" x2="18" y2="18"/>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<line x1="18" y1="6" x2="6" y2="18" />
+						<line x1="6" y1="6" x2="18" y2="18" />
 					</svg>
 				</button>
 			</div>
 
-			<div
-				class="terms-modal__content"
-				bind:this={termsModalElement}
-				onscroll={handleTermsScroll}
-			>
+			<div class="terms-modal__content" bind:this={termsModalElement} onscroll={handleTermsScroll}>
 				<section class="terms-section">
 					<h3 class="terms-heading">1. Current Boundary</h3>
 					<p>
-						Aevani has not published a finalized affiliate agreement, commission schedule, attribution policy, payout policy, or promotion workflow. This notice is not a legal agreement.
+						Aevani has not published a finalized affiliate agreement, commission schedule,
+						attribution policy, payout policy, or promotion workflow. This notice is not a legal
+						agreement.
 					</p>
 				</section>
 
 				<section class="terms-section">
 					<h3 class="terms-heading">2. Applications Are Not Approval</h3>
 					<p>
-						Submitting an application, creating an account, or seeing an application state does not create a right to approval, a commission, a payout, or a promotion right.
+						Submitting an application, creating an account, or seeing an application state does not
+						create a right to approval, a commission, a payout, or a promotion right.
 					</p>
 				</section>
 
 				<section class="terms-section">
 					<h3 class="terms-heading">3. Terms Before Activation</h3>
 					<p>
-						If the program becomes available, Aevani will provide explicit written terms before an approved participant receives any active promotional, attribution, commission, or payout arrangement.
+						If the program becomes available, Aevani will provide explicit written terms before an
+						approved participant receives any active promotional, attribution, commission, or payout
+						arrangement.
 					</p>
 				</section>
 
 				<section class="terms-section">
 					<h3 class="terms-heading">4. Questions</h3>
 					<p>
-						Contact support before relying on an affiliate-related arrangement. Do not publish links or make program claims until you have explicit active approval and finalized written terms.
+						Contact support before relying on an affiliate-related arrangement. Do not publish links
+						or make program claims until you have explicit active approval and finalized written
+						terms.
 					</p>
 				</section>
 			</div>
@@ -522,7 +579,7 @@
 				{/if}
 				<button
 					type="button"
-					class="btn btn-primary font-display uppercase tracking-wider"
+					class="font-display btn tracking-wider uppercase btn-primary"
 					onclick={acceptTerms}
 					disabled={!termsScrolled}
 				>
@@ -544,13 +601,13 @@
 	.aff-hero__bg {
 		position: absolute;
 		inset: 0;
-		background:
-			linear-gradient(160deg,
-				oklch(var(--p) / 0.06) 0%,
-				oklch(var(--s) / 0.04) 40%,
-				oklch(var(--su) / 0.03) 80%,
-				transparent 100%
-			);
+		background: linear-gradient(
+			160deg,
+			oklch(var(--p) / 0.06) 0%,
+			oklch(var(--s) / 0.04) 40%,
+			oklch(var(--su) / 0.03) 80%,
+			transparent 100%
+		);
 		z-index: 0;
 	}
 
@@ -604,7 +661,10 @@
 		border: none;
 		cursor: pointer;
 		box-shadow: 0 4px 16px oklch(var(--p) / 0.25);
-		transition: opacity 200ms ease, transform 200ms var(--ease-out-expo), box-shadow 200ms ease;
+		transition:
+			opacity 200ms ease,
+			transform 200ms var(--ease-out-expo),
+			box-shadow 200ms ease;
 	}
 
 	.aff-hero__cta:hover {
@@ -648,7 +708,10 @@
 		border: 1.5px solid var(--input-border);
 		border-radius: var(--radius-lg, 16px);
 		padding: 1.75rem;
-		transition: transform 250ms var(--ease-out-expo), box-shadow 250ms var(--ease-out-expo), border-color 250ms ease;
+		transition:
+			transform 250ms var(--ease-out-expo),
+			box-shadow 250ms var(--ease-out-expo),
+			border-color 250ms ease;
 	}
 
 	.aff-benefit:hover {
@@ -709,7 +772,9 @@
 		background: oklch(var(--b1));
 		border: 1.5px solid var(--input-border);
 		border-radius: var(--radius-lg, 16px);
-		transition: transform 250ms var(--ease-out-expo), box-shadow 250ms ease;
+		transition:
+			transform 250ms var(--ease-out-expo),
+			box-shadow 250ms ease;
 	}
 
 	.aff-tier:hover {
@@ -1079,7 +1144,9 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		transition: background 200ms ease, color 200ms ease;
+		transition:
+			background 200ms ease,
+			color 200ms ease;
 	}
 
 	.terms-modal__close:hover {

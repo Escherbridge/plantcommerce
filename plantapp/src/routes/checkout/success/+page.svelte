@@ -21,23 +21,38 @@
 </script>
 
 <svelte:head>
-	<title>Order {data.status === 'complete' ? 'Confirmed' : data.status === 'access_required' ? 'Details Protected' : 'Processing'} | Aevani</title>
+	<title
+		>Order {data.status === 'complete'
+			? 'Confirmed'
+			: data.status === 'access_required'
+				? 'Details Protected'
+				: 'Processing'} | Aevani</title
+	>
 </svelte:head>
 
 <div class="success-page">
 	{#if data.status === 'complete' && data.order}
 		<div class="success-container">
 			<div class="success-icon">
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-					<polyline points="22 4 12 14.01 9 11.01"/>
+				<svg
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+					<polyline points="22 4 12 14.01 9 11.01" />
 				</svg>
 			</div>
 
 			<h1>Order Confirmed</h1>
 			<p class="order-number">Order #{data.order.orderNumber}</p>
 			<p class="confirmation-text">
-				Thank you for your purchase! A confirmation email has been sent to <strong>{data.order.customerEmail}</strong>.
+				Thank you for your purchase! A confirmation email has been sent to <strong
+					>{data.order.customerEmail}</strong
+				>.
 			</p>
 
 			<!-- Order Summary -->
@@ -87,42 +102,50 @@
 				<a href="/account/orders" class="btn-orders">View Orders</a>
 			</div>
 		</div>
-
 	{:else if data.status === 'access_required'}
 		<div class="success-container processing">
 			<h1>Order Details Protected</h1>
 			<p class="confirmation-text">
-				We can’t display order details in this browser. If you completed a payment, it will still be processed and you’ll receive a confirmation email.
+				We can’t display order details in this browser. If you made a payment, wait for an
+				order-confirmation email before treating it as complete.
 			</p>
 			<a href="/products" class="btn-continue">Continue Shopping</a>
 		</div>
-
 	{:else if data.status === 'processing'}
 		<div class="success-container processing">
 			<div class="processing-icon">
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<circle cx="12" cy="12" r="10"/>
-					<polyline points="12 6 12 12 16 14"/>
+				<svg
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<circle cx="12" cy="12" r="10" />
+					<polyline points="12 6 12 12 16 14" />
 				</svg>
 			</div>
 			<h1>Processing Your Order</h1>
 			<p class="confirmation-text">
-				Your payment was successful! We're creating your order now. This usually takes just a moment...
+				We are confirming your checkout. Please do not submit another payment while this page
+				updates.
 			</p>
 			<div class="spinner"></div>
 			{#if retryCount >= maxRetries}
 				<p class="retry-message">
-					This is taking longer than expected. Your order has been placed and you'll receive a confirmation email shortly.
+					This is taking longer than expected. Wait for an order-confirmation email before
+					considering the order complete.
 				</p>
 				<a href="/products" class="btn-continue">Continue Shopping</a>
 			{/if}
 		</div>
-
 	{:else}
 		<div class="success-container error">
 			<h1>Something went wrong</h1>
 			<p class="confirmation-text">
-				We couldn't find your order. If you completed a payment, don't worry — your order will still be processed.
+				We couldn't find your order. If you completed a payment, don't worry — your order will still
+				be processed.
 			</p>
 			<a href="/products" class="btn-continue">Continue Shopping</a>
 		</div>
@@ -161,8 +184,12 @@
 	}
 
 	@keyframes spin {
-		from { transform: rotate(0deg); }
-		to { transform: rotate(360deg); }
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
 	}
 
 	h1 {

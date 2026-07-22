@@ -1,7 +1,4 @@
-import {
-	createResearchOnlyCandidate,
-	type CatalogTruthEvidence
-} from './contracts';
+import { createResearchOnlyCandidate, type CatalogTruthEvidence } from './contracts';
 
 function localEvidence(
 	id: string,

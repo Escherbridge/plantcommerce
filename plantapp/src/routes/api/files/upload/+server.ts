@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		}
 		// 2. Form Data Parsing
 		const formData = await request.formData();
-		const files = formData.getAll('files').filter(f => f instanceof File) as File[];
+		const files = formData.getAll('files').filter((f) => f instanceof File) as File[];
 
 		if (files.length === 0) {
 			throw error(400, 'No files provided');
@@ -70,7 +70,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const validatedFiles: Array<{ file: File; buffer: Buffer }> = [];
 		for (const file of files) {
 			if (file.size > MAX_FILE_SIZE) {
-				throw new AppError('FILE_TOO_LARGE', `File ${file.name} exceeds the ${MAX_FILE_SIZE / 1024 / 1024}MB limit.`, 400);
+				throw new AppError(
+					'FILE_TOO_LARGE',
+					`File ${file.name} exceeds the ${MAX_FILE_SIZE / 1024 / 1024}MB limit.`,
+					400
+				);
 			}
 
 			if (!ALLOWED_MIME_TYPES.includes(file.type)) {
@@ -80,7 +84,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			const buffer = Buffer.from(await file.arrayBuffer());
 
 			if (!validateFileSignature(buffer, file.type)) {
-				throw new AppError('INVALID_FILE_SIGNATURE', `File ${file.name} has an invalid signature for its type.`, 400);
+				throw new AppError(
+					'INVALID_FILE_SIGNATURE',
+					`File ${file.name} has an invalid signature for its type.`,
+					400
+				);
 			}
 
 			await scanForViruses(buffer);
@@ -107,7 +115,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			files: uploadedFiles,
 			message: `Successfully uploaded ${uploadedFiles.length} file(s)`
 		});
-
 	} catch (err) {
 		if (isHttpError(err)) {
 			throw err;

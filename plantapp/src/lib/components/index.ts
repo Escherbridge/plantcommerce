@@ -2,7 +2,7 @@
 // Re-export all form components
 export * from './forms/index.js';
 
-// Re-export all layout components  
+// Re-export all layout components
 export * from './layout/index.js';
 
 // Re-export all image components

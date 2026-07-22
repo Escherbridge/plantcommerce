@@ -132,11 +132,7 @@
 					{#if item.children}
 						<div class="nav-dropdown">
 							{#each item.children as child, j}
-								<a
-									href={child.href}
-									class="nav-dropdown-link"
-									style="transition-delay: {j * 50}ms"
-								>
+								<a href={child.href} class="nav-dropdown-link" style="transition-delay: {j * 50}ms">
 									{child.label}
 								</a>
 							{/each}
@@ -185,11 +181,7 @@
 						</div>
 						<hr class="dropdown-divider" />
 						{#each userNavigation as item, j}
-							<a
-								href={item.href}
-								class="user-dropdown-link"
-								style="transition-delay: {j * 50}ms"
-							>
+							<a href={item.href} class="user-dropdown-link" style="transition-delay: {j * 50}ms">
 								{item.label}
 							</a>
 						{/each}
@@ -441,9 +433,15 @@
 	}
 
 	@keyframes badge-pulse {
-		0% { transform: scale(1); }
-		40% { transform: scale(1.35); }
-		100% { transform: scale(1); }
+		0% {
+			transform: scale(1);
+		}
+		40% {
+			transform: scale(1.35);
+		}
+		100% {
+			transform: scale(1);
+		}
 	}
 
 	/* ---- User dropdown ---- */
@@ -581,11 +579,20 @@
 		height: 1.5px;
 		background-color: oklch(var(--nc));
 		border-radius: 9999px;
-		transition: transform 0.25s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)), opacity 0.2s ease, width 0.2s ease;
+		transition:
+			transform 0.25s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+			opacity 0.2s ease,
+			width 0.2s ease;
 		transform-origin: center;
 	}
 
-	.bar-1 { width: 100%; }
-	.bar-2 { width: 75%; }
-	.bar-3 { width: 100%; }
+	.bar-1 {
+		width: 100%;
+	}
+	.bar-2 {
+		width: 75%;
+	}
+	.bar-3 {
+		width: 100%;
+	}
 </style>

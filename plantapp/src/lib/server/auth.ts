@@ -3,7 +3,7 @@ import { dev } from '$app/environment';
 import { env } from '$env/dynamic/private';
 import { eq, or } from 'drizzle-orm';
 import { sha256 } from '@oslojs/crypto/sha2';
-import { encodeBase64url, encodeHexLowerCase } from '@oslojs/encoding';
+import { encodeBase64url, encodeBase64urlNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 
@@ -14,7 +14,15 @@ export const sessionCookieName = 'auth-session';
 
 export type PublicSessionUser = Pick<
 	table.User,
-	'id' | 'username' | 'email' | 'firstName' | 'lastName' | 'role' | 'isActive' | 'createdAt' | 'updatedAt'
+	| 'id'
+	| 'username'
+	| 'email'
+	| 'firstName'
+	| 'lastName'
+	| 'role'
+	| 'isActive'
+	| 'createdAt'
+	| 'updatedAt'
 >;
 
 export type PublicSession = Pick<table.Session, 'expiresAt'>;
@@ -45,37 +53,39 @@ export function accountCapabilitiesEnabled(): boolean {
 }
 
 export function generateSessionToken() {
-    const bytes = crypto.getRandomValues(new Uint8Array(18));
-    const token = encodeBase64url(bytes);
-    return token;
+	const bytes = crypto.getRandomValues(new Uint8Array(18));
+	const token = encodeBase64url(bytes);
+	return token;
 }
 
 export async function createSession(token: string, userId: string) {
-    const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-    const session: table.Session = {
-        id: sessionId,
-        userId,
-        expiresAt: new Date(Date.now() + DAY_IN_MS * 30)
-    };
-    await db.insert(table.session).values(session);
-    return session;
+	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	const createdAt = new Date();
+	const session: table.Session = {
+		id: sessionId,
+		userId,
+		expiresAt: new Date(createdAt.getTime() + DAY_IN_MS * 30),
+		rememberMe: false,
+		createdAt,
+		lastAccessedAt: createdAt
+	};
+	await db.insert(table.session).values(session);
+	return session;
 }
 
 export async function validateSessionToken(token: string) {
+	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 
-    const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-
-    return await db.transaction(async (tx) => {
-        const [session] = await tx
+	return await db.transaction(async (tx) => {
+		const [session] = await tx
 			.select()
 			.from(table.session)
 			.where(eq(table.session.id, sessionId))
 			.for('update');
 
-        if (!session) {
-
-            return { session: null, user: null };
-        }
+		if (!session) {
+			return { session: null, user: null };
+		}
 
 		// Lock only the session here; account mutations lock the user before revoking sessions.
 		const [user] = await tx
@@ -89,9 +99,8 @@ export async function validateSessionToken(token: string) {
 		}
 
 		const sessionExpired = Date.now() >= session.expiresAt.getTime();
-        if (sessionExpired) {
-
-            await tx.delete(table.session).where(eq(table.session.id, session.id));
+		if (sessionExpired) {
+			await tx.delete(table.session).where(eq(table.session.id, session.id));
 			return { session: null, user: null };
 		}
 
@@ -100,24 +109,23 @@ export async function validateSessionToken(token: string) {
 			return { session: null, user: null };
 		}
 
-        const renewSession = Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * 15;
-        if (renewSession) {
+		const renewSession = Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * 15;
+		if (renewSession) {
+			session.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
+			await tx
+				.update(table.session)
+				.set({ expiresAt: session.expiresAt })
+				.where(eq(table.session.id, session.id));
+		}
 
-            session.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
-            await tx
-                .update(table.session)
-                .set({ expiresAt: session.expiresAt })
-                .where(eq(table.session.id, session.id));
-        }
-
-        return { session, user };
-    });
+		return { session, user };
+	});
 }
 
 export type SessionValidationResult = Awaited<ReturnType<typeof validateSessionToken>>;
 
 export async function invalidateSession(sessionId: string) {
-    await db.delete(table.session).where(eq(table.session.id, sessionId));
+	await db.delete(table.session).where(eq(table.session.id, sessionId));
 }
 
 export async function invalidateUserSessions(userId: string) {
@@ -135,30 +143,42 @@ export function setSessionTokenCookie(event: RequestEvent, token: string, expire
 }
 
 export function deleteSessionTokenCookie(event: RequestEvent) {
-    event.cookies.delete(sessionCookieName, {
-        path: '/'
-    });
+	event.cookies.delete(sessionCookieName, {
+		path: '/'
+	});
 }
 
 function generateCapabilityToken(): string {
-	return encodeBase64url(crypto.getRandomValues(new Uint8Array(32)));
+	return encodeBase64urlNoPadding(crypto.getRandomValues(new Uint8Array(32)));
 }
 
 function hashCapabilityToken(token: string): string {
 	return encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 }
 
-export async function generateEmailVerificationToken(userId: string, email: string): Promise<string | null> {
+export async function generateEmailVerificationToken(
+	userId: string,
+	email: string
+): Promise<string | null> {
 	const token = generateCapabilityToken();
 	const expiresAt = new Date(Date.now() + DAY_IN_MS * 2);
 
 	return await db.transaction(async (tx) => {
 		const [currentUser] = await tx
-			.select({ email: table.user.email, pendingEmail: table.user.pendingEmail, isActive: table.user.isActive })
+			.select({
+				email: table.user.email,
+				pendingEmail: table.user.pendingEmail,
+				isActive: table.user.isActive
+			})
 			.from(table.user)
 			.where(eq(table.user.id, userId))
 			.for('update');
-		if (!currentUser || !currentUser.isActive || currentUser.pendingEmail !== null || email !== currentUser.email) {
+		if (
+			!currentUser ||
+			!currentUser.isActive ||
+			currentUser.pendingEmail !== null ||
+			email !== currentUser.email
+		) {
 			return null;
 		}
 
@@ -192,7 +212,11 @@ export async function generateEmailChangeCapabilities(
 
 	return await db.transaction(async (tx) => {
 		const [currentUser] = await tx
-			.select({ email: table.user.email, pendingEmail: table.user.pendingEmail, isActive: table.user.isActive })
+			.select({
+				email: table.user.email,
+				pendingEmail: table.user.pendingEmail,
+				isActive: table.user.isActive
+			})
 			.from(table.user)
 			.where(eq(table.user.id, userId))
 			.for('update');
@@ -205,8 +229,12 @@ export async function generateEmailChangeCapabilities(
 			return null;
 		}
 
-		await tx.delete(table.emailVerificationToken).where(eq(table.emailVerificationToken.userId, userId));
-		await tx.delete(table.emailChangeCapability).where(eq(table.emailChangeCapability.userId, userId));
+		await tx
+			.delete(table.emailVerificationToken)
+			.where(eq(table.emailVerificationToken.userId, userId));
+		await tx
+			.delete(table.emailChangeCapability)
+			.where(eq(table.emailChangeCapability.userId, userId));
 		await tx.insert(table.emailChangeCapability).values({
 			userId,
 			previousEmail,
@@ -237,7 +265,12 @@ async function verifyEmailChangeCapability(tokenId: string): Promise<string | nu
 		}
 
 		const [currentUser] = await tx
-			.select({ id: table.user.id, email: table.user.email, pendingEmail: table.user.pendingEmail, isActive: table.user.isActive })
+			.select({
+				id: table.user.id,
+				email: table.user.email,
+				pendingEmail: table.user.pendingEmail,
+				isActive: table.user.isActive
+			})
 			.from(table.user)
 			.where(eq(table.user.id, candidate.userId))
 			.for('update');
@@ -252,7 +285,9 @@ async function verifyEmailChangeCapability(tokenId: string): Promise<string | nu
 			.for('update');
 		if (!capability || Date.now() >= capability.expiresAt.getTime()) {
 			if (capability) {
-				await tx.delete(table.emailChangeCapability).where(eq(table.emailChangeCapability.userId, currentUser.id));
+				await tx
+					.delete(table.emailChangeCapability)
+					.where(eq(table.emailChangeCapability.userId, currentUser.id));
 			}
 			return null;
 		}
@@ -265,7 +300,9 @@ async function verifyEmailChangeCapability(tokenId: string): Promise<string | nu
 			currentUser.email !== capability.previousEmail ||
 			currentUser.pendingEmail !== capability.pendingEmail
 		) {
-			await tx.delete(table.emailChangeCapability).where(eq(table.emailChangeCapability.userId, currentUser.id));
+			await tx
+				.delete(table.emailChangeCapability)
+				.where(eq(table.emailChangeCapability.userId, currentUser.id));
 			return null;
 		}
 
@@ -283,18 +320,30 @@ async function verifyEmailChangeCapability(tokenId: string): Promise<string | nu
 		}
 
 		const newEmailProved = provesNewEmail || capability.newEmailProvedAt !== null;
-		const existingEmailConfirmed = confirmsExistingEmail || capability.previousEmailConfirmedAt !== null;
+		const existingEmailConfirmed =
+			confirmsExistingEmail || capability.previousEmailConfirmedAt !== null;
 		if (!newEmailProved || !existingEmailConfirmed) {
 			return currentUser.id;
 		}
 
 		await tx
 			.update(table.user)
-			.set({ email: capability.pendingEmail, pendingEmail: null, emailVerified: true, updatedAt: confirmedAt })
+			.set({
+				email: capability.pendingEmail,
+				pendingEmail: null,
+				emailVerified: true,
+				updatedAt: confirmedAt
+			})
 			.where(eq(table.user.id, currentUser.id));
-		await tx.delete(table.emailChangeCapability).where(eq(table.emailChangeCapability.userId, currentUser.id));
-		await tx.delete(table.emailVerificationToken).where(eq(table.emailVerificationToken.userId, currentUser.id));
-		await tx.delete(table.passwordResetToken).where(eq(table.passwordResetToken.userId, currentUser.id));
+		await tx
+			.delete(table.emailChangeCapability)
+			.where(eq(table.emailChangeCapability.userId, currentUser.id));
+		await tx
+			.delete(table.emailVerificationToken)
+			.where(eq(table.emailVerificationToken.userId, currentUser.id));
+		await tx
+			.delete(table.passwordResetToken)
+			.where(eq(table.passwordResetToken.userId, currentUser.id));
 		await tx.delete(table.session).where(eq(table.session.userId, currentUser.id));
 		return currentUser.id;
 	});
@@ -347,7 +396,9 @@ export async function verifyEmailWithCapability(token: string): Promise<string |
 		}
 
 		if (Date.now() >= storedToken.expiresAt.getTime()) {
-			await tx.delete(table.emailVerificationToken).where(eq(table.emailVerificationToken.id, storedToken.id));
+			await tx
+				.delete(table.emailVerificationToken)
+				.where(eq(table.emailVerificationToken.id, storedToken.id));
 			return null;
 		}
 
@@ -377,7 +428,10 @@ export async function verifyEmailWithCapability(token: string): Promise<string |
 }
 
 /** Issue a single-use reset capability; only its SHA-256 digest is persisted. */
-export async function generatePasswordResetToken(userId: string, requestedEmail: string): Promise<string | null> {
+export async function generatePasswordResetToken(
+	userId: string,
+	requestedEmail: string
+): Promise<string | null> {
 	const token = generateCapabilityToken();
 	const expiresAt = new Date(Date.now() + DAY_IN_MS);
 

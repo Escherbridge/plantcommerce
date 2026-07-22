@@ -10,9 +10,7 @@ const videoConfigSchema = z.object({
 	videoUrl: z.string().optional(),
 	duration: z.number().optional(),
 	thumbnailUrl: z.string().optional(),
-	captions: z
-		.array(z.object({ language: z.string(), fileId: z.string() }))
-		.optional()
+	captions: z.array(z.object({ language: z.string(), fileId: z.string() })).optional()
 });
 
 const textConfigSchema = z.object({
@@ -201,9 +199,7 @@ export class ContentBlockService {
 		const block = blockResult[0];
 
 		// Delete block
-		await db
-			.delete(lmsTable.lmsContentBlock)
-			.where(eq(lmsTable.lmsContentBlock.id, blockId));
+		await db.delete(lmsTable.lmsContentBlock).where(eq(lmsTable.lmsContentBlock.id, blockId));
 
 		// Reorder remaining blocks in lesson
 		await db.execute(
@@ -251,7 +247,7 @@ export class ContentBlockService {
 		const result = schema.safeParse(config);
 		if (!result.success) {
 			throw new Error(
-				`Invalid config for type "${type}": ${result.error.errors.map((e) => e.message).join(', ')}`
+				`Invalid config for type "${type}": ${result.error.issues.map((issue) => issue.message).join(', ')}`
 			);
 		}
 

@@ -10,8 +10,4 @@ export { default as CommandPalette } from './CommandPalette.svelte';
 export type { NavItem, NavGroup, NavigationConfig, PlatformUser } from './types';
 
 // Navigation Configs
-export {
-	accountNavigation,
-	affiliateNavigation,
-	adminNavigation
-} from './nav-configs';
+export { accountNavigation, affiliateNavigation, adminNavigation } from './nav-configs';

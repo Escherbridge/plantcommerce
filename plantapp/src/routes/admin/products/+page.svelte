@@ -21,9 +21,7 @@
 		if (searchQuery) {
 			const q = searchQuery.toLowerCase();
 			filtered = filtered.filter(
-				(p: any) =>
-					p.name?.toLowerCase().includes(q) ||
-					p.sku?.toLowerCase().includes(q)
+				(p: any) => p.name?.toLowerCase().includes(q) || p.sku?.toLowerCase().includes(q)
 			);
 		}
 		if (selectedCategory !== 'all') {
@@ -47,8 +45,16 @@
 				<p class="platform-header__subtitle">Manage your product catalog</p>
 			</div>
 			<a href="/admin/products/new" class="platform-action-btn admin-header-btn">
-				<svg viewBox="0 0 24 24" class="w-5 h-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M12 5v14M5 12h14"/>
+				<svg
+					viewBox="0 0 24 24"
+					class="h-5 w-5"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path d="M12 5v14M5 12h14" />
 				</svg>
 				Add Product
 			</a>
@@ -106,13 +112,20 @@
 								</span>
 							</td>
 							<td>
-								<span class="platform-badge {product.isActive ? 'platform-badge--success' : 'platform-badge--ghost'}">
+								<span
+									class="platform-badge {product.isActive
+										? 'platform-badge--success'
+										: 'platform-badge--ghost'}"
+								>
 									{product.isActive ? 'Active' : 'Inactive'}
 								</span>
 							</td>
 							<td>
 								<div class="admin-action-group">
-									<a href="/admin/products/{product.id}" class="platform-action-btn admin-table-btn">
+									<a
+										href="/admin/products/{product.id}"
+										class="platform-action-btn admin-table-btn"
+									>
 										Edit
 									</a>
 									<button class="platform-action-btn admin-table-btn">

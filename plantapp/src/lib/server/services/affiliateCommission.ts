@@ -56,20 +56,20 @@ function assertExistingCommissionMatches(
 	affiliateId: number
 ): void {
 	if (
-		commission.affiliateId !== affiliateId
-		|| commission.affiliateLinkId !== input.draft.affiliateLinkId
-		|| commission.sourceOrderId !== input.order.id
-		|| commission.sourceCheckoutDraftId !== input.draft.id
-		|| commission.sourceReference !== sourceReference(input.order.id)
-		|| commission.currency !== input.draft.currency
-		|| commission.quotedAmountMinor !== input.draft.affiliateCommissionMinor
-		|| commission.commissionRateBps !== input.draft.affiliateCommissionRateBps
-		|| commission.draftSnapshotHash !== input.draft.snapshotHash
-		|| commission.tierCode !== input.draft.affiliateTierCode
-		|| commission.tierVersion !== input.draft.affiliateTierVersion
-		|| commission.termsVersion !== input.draft.affiliateTermsVersion
-		|| commission.disclosureVersion !== input.draft.affiliateDisclosureVersion
-		|| commission.termsAcceptanceId !== input.draft.affiliateTermsAcceptanceId
+		commission.affiliateId !== affiliateId ||
+		commission.affiliateLinkId !== input.draft.affiliateLinkId ||
+		commission.sourceOrderId !== input.order.id ||
+		commission.sourceCheckoutDraftId !== input.draft.id ||
+		commission.sourceReference !== sourceReference(input.order.id) ||
+		commission.currency !== input.draft.currency ||
+		commission.quotedAmountMinor !== input.draft.affiliateCommissionMinor ||
+		commission.commissionRateBps !== input.draft.affiliateCommissionRateBps ||
+		commission.draftSnapshotHash !== input.draft.snapshotHash ||
+		commission.tierCode !== input.draft.affiliateTierCode ||
+		commission.tierVersion !== input.draft.affiliateTierVersion ||
+		commission.termsVersion !== input.draft.affiliateTermsVersion ||
+		commission.disclosureVersion !== input.draft.affiliateDisclosureVersion ||
+		commission.termsAcceptanceId !== input.draft.affiliateTermsAcceptanceId
 	) {
 		throw new Error('Immutable affiliate commission does not match its paid checkout draft');
 	}
@@ -109,7 +109,9 @@ export class AffiliateCommissionService {
 		assertCurrency(draft.currency);
 
 		if (draft.affiliateId === null || draft.affiliateCommissionRateBps === null) {
-			throw new Error('Attributed checkout draft is missing its immutable affiliate policy snapshot');
+			throw new Error(
+				'Attributed checkout draft is missing its immutable affiliate policy snapshot'
+			);
 		}
 		const [linkOwner] = await tx
 			.select({ affiliateId: table.affiliateLink.affiliateId })
@@ -217,11 +219,11 @@ export class AffiliateCommissionService {
 			.limit(1);
 		if (existing) {
 			if (
-				existing.commissionId !== commission.id
-				|| existing.eventType !== 'reversed'
-				|| existing.amountDeltaMinor !== -input.amountMinor
-				|| existing.currency !== commission.currency
-				|| existing.reasonCode !== input.reasonCode
+				existing.commissionId !== commission.id ||
+				existing.eventType !== 'reversed' ||
+				existing.amountDeltaMinor !== -input.amountMinor ||
+				existing.currency !== commission.currency ||
+				existing.reasonCode !== input.reasonCode
 			) {
 				throw new Error('Commission reversal idempotency reference was reused with different data');
 			}
@@ -237,7 +239,11 @@ export class AffiliateCommissionService {
 			.where(eq(table.affiliateCommissionLedgerEvent.commissionId, commission.id));
 		const reversedMinor = reversalEvents
 			.filter((event: { eventType: string }) => event.eventType === 'reversed')
-			.reduce((total: number, event: { amountDeltaMinor: number }) => total + Math.abs(event.amountDeltaMinor), 0);
+			.reduce(
+				(total: number, event: { amountDeltaMinor: number }) =>
+					total + Math.abs(event.amountDeltaMinor),
+				0
+			);
 		if (reversedMinor + input.amountMinor > commission.quotedAmountMinor) {
 			throw new Error('Commission reversal exceeds the immutable quoted commission');
 		}
@@ -266,12 +272,12 @@ export class AffiliateCommissionService {
 			.where(eq(table.affiliateCommissionLedgerEvent.eventReference, input.eventReference))
 			.limit(1);
 		if (
-			!winner
-			|| winner.commissionId !== commission.id
-			|| winner.eventType !== 'reversed'
-			|| winner.amountDeltaMinor !== -input.amountMinor
-			|| winner.currency !== commission.currency
-			|| winner.reasonCode !== input.reasonCode
+			!winner ||
+			winner.commissionId !== commission.id ||
+			winner.eventType !== 'reversed' ||
+			winner.amountDeltaMinor !== -input.amountMinor ||
+			winner.currency !== commission.currency ||
+			winner.reasonCode !== input.reasonCode
 		) {
 			throw new Error('Commission reversal idempotency reference was reused with different data');
 		}
@@ -308,13 +314,15 @@ export class AffiliateCommissionService {
 			.limit(1);
 		if (existing) {
 			if (
-				existing.commissionId !== commission.id
-				|| existing.eventType !== input.eventType
-				|| existing.amountDeltaMinor !== 0
-				|| existing.payoutId !== (input.payoutId ?? null)
-				|| existing.currency !== commission.currency
+				existing.commissionId !== commission.id ||
+				existing.eventType !== input.eventType ||
+				existing.amountDeltaMinor !== 0 ||
+				existing.payoutId !== (input.payoutId ?? null) ||
+				existing.currency !== commission.currency
 			) {
-				throw new Error('Commission lifecycle idempotency reference was reused with different data');
+				throw new Error(
+					'Commission lifecycle idempotency reference was reused with different data'
+				);
 			}
 			return existing;
 		}
@@ -325,7 +333,8 @@ export class AffiliateCommissionService {
 			})
 			.from(table.affiliateCommissionLedgerEvent)
 			.where(eq(table.affiliateCommissionLedgerEvent.commissionId, commission.id));
-		const hasEvent = (eventType: string) => events.some((event: { eventType: string }) => event.eventType === eventType);
+		const hasEvent = (eventType: string) =>
+			events.some((event: { eventType: string }) => event.eventType === eventType);
 		const netAmountMinor = events.reduce(
 			(total: number, event: { amountDeltaMinor: number }) => total + event.amountDeltaMinor,
 			0
@@ -333,10 +342,16 @@ export class AffiliateCommissionService {
 		if (!hasEvent('pending') || netAmountMinor <= 0) {
 			throw new Error('Commission is not eligible for a lifecycle transition');
 		}
-		if (input.eventType === 'approved' && (hasEvent('approved') || hasEvent('payable') || hasEvent('paid'))) {
+		if (
+			input.eventType === 'approved' &&
+			(hasEvent('approved') || hasEvent('payable') || hasEvent('paid'))
+		) {
 			throw new Error('Commission has already advanced beyond pending approval');
 		}
-		if (input.eventType === 'payable' && (!hasEvent('approved') || hasEvent('payable') || hasEvent('paid'))) {
+		if (
+			input.eventType === 'payable' &&
+			(!hasEvent('approved') || hasEvent('payable') || hasEvent('paid'))
+		) {
 			throw new Error('Commission must be approved exactly once before it becomes payable');
 		}
 		if (input.eventType === 'paid' && (!hasEvent('payable') || hasEvent('paid'))) {
@@ -349,7 +364,11 @@ export class AffiliateCommissionService {
 				.from(table.affiliatePayout)
 				.where(eq(table.affiliatePayout.id, input.payoutId))
 				.limit(1);
-			if (!payout || payout.affiliateId !== commission.affiliateId || payout.currency !== commission.currency) {
+			if (
+				!payout ||
+				payout.affiliateId !== commission.affiliateId ||
+				payout.currency !== commission.currency
+			) {
 				throw new Error('Commission payout does not match the affiliate or currency');
 			}
 		}
@@ -379,12 +398,12 @@ export class AffiliateCommissionService {
 			.where(eq(table.affiliateCommissionLedgerEvent.eventReference, input.eventReference))
 			.limit(1);
 		if (
-			!winner
-			|| winner.commissionId !== commission.id
-			|| winner.eventType !== input.eventType
-			|| winner.amountDeltaMinor !== 0
-			|| winner.payoutId !== (input.payoutId ?? null)
-			|| winner.currency !== commission.currency
+			!winner ||
+			winner.commissionId !== commission.id ||
+			winner.eventType !== input.eventType ||
+			winner.amountDeltaMinor !== 0 ||
+			winner.payoutId !== (input.payoutId ?? null) ||
+			winner.currency !== commission.currency
 		) {
 			throw new Error('Commission lifecycle idempotency reference was reused with different data');
 		}
@@ -408,9 +427,9 @@ export class AffiliateCommissionService {
 			.limit(1);
 		if (existing) {
 			if (
-				existing.affiliateId !== input.affiliateId
-				|| existing.currency !== input.currency
-				|| existing.amountMinor !== input.amountMinor
+				existing.affiliateId !== input.affiliateId ||
+				existing.currency !== input.currency ||
+				existing.amountMinor !== input.amountMinor
 			) {
 				throw new Error('Payout reference was reused with different data');
 			}
@@ -439,10 +458,10 @@ export class AffiliateCommissionService {
 			.where(eq(table.affiliatePayout.payoutReference, input.payoutReference))
 			.limit(1);
 		if (
-			!winner
-			|| winner.affiliateId !== input.affiliateId
-			|| winner.currency !== input.currency
-			|| winner.amountMinor !== input.amountMinor
+			!winner ||
+			winner.affiliateId !== input.affiliateId ||
+			winner.currency !== input.currency ||
+			winner.amountMinor !== input.amountMinor
 		) {
 			throw new Error('Payout reference was reused with different data');
 		}
@@ -471,9 +490,9 @@ export class AffiliateCommissionService {
 			.limit(1);
 		if (byReference) {
 			if (
-				byReference.affiliateId !== input.affiliateId
-				|| byReference.termsVersion !== input.termsVersion
-				|| byReference.disclosureVersion !== input.disclosureVersion
+				byReference.affiliateId !== input.affiliateId ||
+				byReference.termsVersion !== input.termsVersion ||
+				byReference.disclosureVersion !== input.disclosureVersion
 			) {
 				throw new Error('Terms acceptance reference was reused with different data');
 			}
@@ -483,7 +502,9 @@ export class AffiliateCommissionService {
 		const [byVersion] = await tx
 			.select()
 			.from(table.affiliateTermsAcceptance)
-			.where(sql`${table.affiliateTermsAcceptance.affiliateId} = ${input.affiliateId} AND ${table.affiliateTermsAcceptance.termsVersion} = ${input.termsVersion} AND ${table.affiliateTermsAcceptance.disclosureVersion} = ${input.disclosureVersion}`)
+			.where(
+				sql`${table.affiliateTermsAcceptance.affiliateId} = ${input.affiliateId} AND ${table.affiliateTermsAcceptance.termsVersion} = ${input.termsVersion} AND ${table.affiliateTermsAcceptance.disclosureVersion} = ${input.disclosureVersion}`
+			)
 			.limit(1);
 		if (byVersion) {
 			return byVersion;
@@ -512,9 +533,9 @@ export class AffiliateCommissionService {
 			.limit(1);
 		if (winnerByReference) {
 			if (
-				winnerByReference.affiliateId !== input.affiliateId
-				|| winnerByReference.termsVersion !== input.termsVersion
-				|| winnerByReference.disclosureVersion !== input.disclosureVersion
+				winnerByReference.affiliateId !== input.affiliateId ||
+				winnerByReference.termsVersion !== input.termsVersion ||
+				winnerByReference.disclosureVersion !== input.disclosureVersion
 			) {
 				throw new Error('Terms acceptance reference was reused with different data');
 			}
@@ -524,7 +545,9 @@ export class AffiliateCommissionService {
 		const [winner] = await tx
 			.select()
 			.from(table.affiliateTermsAcceptance)
-			.where(sql`${table.affiliateTermsAcceptance.affiliateId} = ${input.affiliateId} AND ${table.affiliateTermsAcceptance.termsVersion} = ${input.termsVersion} AND ${table.affiliateTermsAcceptance.disclosureVersion} = ${input.disclosureVersion}`)
+			.where(
+				sql`${table.affiliateTermsAcceptance.affiliateId} = ${input.affiliateId} AND ${table.affiliateTermsAcceptance.termsVersion} = ${input.termsVersion} AND ${table.affiliateTermsAcceptance.disclosureVersion} = ${input.disclosureVersion}`
+			)
 			.limit(1);
 		if (!winner) {
 			throw new Error('Unable to create or retrieve affiliate terms acceptance');
@@ -541,14 +564,16 @@ export class AffiliateCommissionService {
 		const [pending] = await tx
 			.select()
 			.from(table.affiliateCommissionLedgerEvent)
-			.where(eq(table.affiliateCommissionLedgerEvent.eventReference, pendingEventReference(order.id)))
+			.where(
+				eq(table.affiliateCommissionLedgerEvent.eventReference, pendingEventReference(order.id))
+			)
 			.limit(1);
 		if (
-			!pending
-			|| pending.commissionId !== commission.id
-			|| pending.eventType !== 'pending'
-			|| pending.amountDeltaMinor !== draft.affiliateCommissionMinor
-			|| pending.currency !== draft.currency
+			!pending ||
+			pending.commissionId !== commission.id ||
+			pending.eventType !== 'pending' ||
+			pending.amountDeltaMinor !== draft.affiliateCommissionMinor ||
+			pending.currency !== draft.currency
 		) {
 			throw new Error('Immutable affiliate commission is missing its pending accrual event');
 		}

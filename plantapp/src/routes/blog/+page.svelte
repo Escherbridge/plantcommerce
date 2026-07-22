@@ -17,7 +17,7 @@
 <Section>
 	<Container>
 		<div class="mb-8">
-			<h1 class="text-4xl font-bold mb-4">Blog</h1>
+			<h1 class="mb-4 text-4xl font-bold">Blog</h1>
 			<p class="text-lg text-base-content/70">
 				Stay updated with the latest news, insights, and stories from the sustainable agriculture
 				community.
@@ -25,14 +25,16 @@
 		</div>
 
 		<!-- Category Filter -->
-		<div class="flex flex-wrap gap-2 mb-8">
+		<div class="mb-8 flex flex-wrap gap-2">
 			<a href="/blog" class="btn btn-sm {!data.selectedCategory ? 'btn-primary' : 'btn-outline'}">
 				All Posts
 			</a>
 			{#each categories as category}
 				<a
 					href="/blog?category={category.slug}"
-					class="btn btn-sm {data.selectedCategory === category.slug ? 'btn-primary' : 'btn-outline'}"
+					class="btn btn-sm {data.selectedCategory === category.slug
+						? 'btn-primary'
+						: 'btn-outline'}"
 				>
 					{category.name}
 				</a>
@@ -46,15 +48,11 @@
 					<div class="card bg-base-100 shadow-xl">
 						{#if post.featuredImage}
 							<figure class="aspect-video">
-								<img
-									src={post.featuredImage}
-									alt={post.title}
-									class="object-cover w-full h-full"
-								/>
+								<img src={post.featuredImage} alt={post.title} class="h-full w-full object-cover" />
 							</figure>
 						{/if}
 						<div class="card-body">
-							<div class="text-sm text-base-content/60 mb-2">
+							<div class="mb-2 text-sm text-base-content/60">
 								{new Date(post.publishedAt).toLocaleDateString('en-US', {
 									year: 'numeric',
 									month: 'long',
@@ -62,16 +60,16 @@
 								})}
 							</div>
 							<h2 class="card-title">
-								<a href="/blog/{post.slug}" class="hover:text-primary transition-colors">
+								<a href="/blog/{post.slug}" class="transition-colors hover:text-primary">
 									{post.title}
 								</a>
 							</h2>
 							<p class="text-base-content/70">{post.excerpt}</p>
-							<div class="card-actions justify-between items-center mt-4">
+							<div class="mt-4 card-actions items-center justify-between">
 								<div class="flex gap-2">
 									{#if post.tags}
 										{#each post.tags.slice(0, 2) as tag}
-											<span class="badge badge-sm badge-outline">{tag}</span>
+											<span class="badge badge-outline badge-sm">{tag}</span>
 										{/each}
 									{/if}
 								</div>
@@ -81,7 +79,7 @@
 					</div>
 				{/each}
 			{:else}
-				<div class="col-span-2 text-center py-12">
+				<div class="col-span-2 py-12 text-center">
 					<p class="text-xl text-base-content/70">No blog posts available. Check back soon!</p>
 				</div>
 			{/if}

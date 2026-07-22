@@ -29,7 +29,14 @@ export interface CheckoutTotals {
 export interface CheckoutDraftSnapshot {
 	id: string;
 	reference: string;
-	status: 'pending_session' | 'checkout_created' | 'quarantined' | 'paid' | 'fulfilled' | 'expired' | 'failed';
+	status:
+		| 'pending_session'
+		| 'checkout_created'
+		| 'quarantined'
+		| 'paid'
+		| 'fulfilled'
+		| 'expired'
+		| 'failed';
 	currency: string;
 	expiresAt: Date;
 	totals: CheckoutTotals;
@@ -78,7 +85,9 @@ function assertSafeMinor(value: bigint, field: string): number {
 function decimalToScaledInteger(value: string, scale: number, field: string): bigint {
 	const match = /^(\d+)(?:\.(\d+))?$/.exec(value);
 	if (!match || (match[2]?.length ?? 0) > scale) {
-		throw new Error(`${field} must be a non-negative decimal with at most ${scale} fractional digits`);
+		throw new Error(
+			`${field} must be a non-negative decimal with at most ${scale} fractional digits`
+		);
 	}
 
 	const whole = BigInt(match[1]);
@@ -105,7 +114,12 @@ export function minorUnitsToDecimal(value: number): string {
 }
 
 function multiplyMinorUnits(unitPriceMinor: number, quantity: number): number {
-	if (!Number.isSafeInteger(unitPriceMinor) || unitPriceMinor < 0 || !Number.isSafeInteger(quantity) || quantity <= 0) {
+	if (
+		!Number.isSafeInteger(unitPriceMinor) ||
+		unitPriceMinor < 0 ||
+		!Number.isSafeInteger(quantity) ||
+		quantity <= 0
+	) {
 		throw new Error('Checkout line items require positive safe-integer quantities and prices');
 	}
 
@@ -127,7 +141,10 @@ export function calculateCheckoutTotals(subtotalMinor: number): CheckoutTotals {
 		divideRoundedHalfUp(subtotal * TAX_RATE_BASIS_POINTS, BASIS_POINTS_DENOMINATOR),
 		'Checkout tax'
 	);
-	const totalMinor = assertSafeMinor(subtotal + BigInt(taxMinor) + BigInt(SHIPPING_MINOR), 'Checkout total');
+	const totalMinor = assertSafeMinor(
+		subtotal + BigInt(taxMinor) + BigInt(SHIPPING_MINOR),
+		'Checkout total'
+	);
 
 	return {
 		subtotalMinor,
@@ -162,10 +179,14 @@ function buyerDraftCondition(buyer: CheckoutBuyer) {
 		: eq(table.checkoutDraft.guestSubjectHash, hashGuestCheckoutSubject(buyer.guestCartSessionId));
 }
 
-function draftBelongsToBuyer(draft: typeof table.checkoutDraft.$inferSelect, buyer: CheckoutBuyer): boolean {
+function draftBelongsToBuyer(
+	draft: typeof table.checkoutDraft.$inferSelect,
+	buyer: CheckoutBuyer
+): boolean {
 	return buyer.kind === 'user'
 		? draft.userId === buyer.userId && draft.guestSubjectHash === null
-		: draft.userId === null && draft.guestSubjectHash === hashGuestCheckoutSubject(buyer.guestCartSessionId);
+		: draft.userId === null &&
+				draft.guestSubjectHash === hashGuestCheckoutSubject(buyer.guestCartSessionId);
 }
 
 function newOpaqueId(prefix: string): string {
@@ -181,9 +202,10 @@ function snapshotHash(
 	affiliateCommissionMinor: number,
 	affiliatePolicy: AffiliateDraftPolicySnapshot | null
 ): string {
-	const buyerSnapshot = buyer.kind === 'user'
-		? { userId: buyer.userId }
-		: { guestSubjectHash: hashGuestCheckoutSubject(buyer.guestCartSessionId) };
+	const buyerSnapshot =
+		buyer.kind === 'user'
+			? { userId: buyer.userId }
+			: { guestSubjectHash: hashGuestCheckoutSubject(buyer.guestCartSessionId) };
 
 	return createHash('sha256')
 		.update(
@@ -254,7 +276,9 @@ async function releaseDraftReservationsInTransaction(
 		return false;
 	}
 	if (draft.status === 'quarantined' && !allowQuarantinedRelease) {
-		throw new Error('Quarantined checkout reservations require confirmed provider expiry before release');
+		throw new Error(
+			'Quarantined checkout reservations require confirmed provider expiry before release'
+		);
 	}
 
 	const reservations = await tx
@@ -269,7 +293,11 @@ async function releaseDraftReservationsInTransaction(
 		.for('update');
 
 	if (reservations.length > 0) {
-		const productIds = reservations.map((reservation: typeof table.checkoutInventoryReservation.$inferSelect) => reservation.productId)
+		const productIds = reservations
+			.map(
+				(reservation: typeof table.checkoutInventoryReservation.$inferSelect) =>
+					reservation.productId
+			)
 			.sort((left: number, right: number) => left - right);
 		const products = await tx
 			.select()
@@ -279,7 +307,9 @@ async function releaseDraftReservationsInTransaction(
 			.for('update');
 
 		for (const reservation of reservations) {
-			const product = products.find((candidate: typeof table.product.$inferSelect) => candidate.id === reservation.productId);
+			const product = products.find(
+				(candidate: typeof table.product.$inferSelect) => candidate.id === reservation.productId
+			);
 			if (!product || product.reservedQuantity < reservation.quantity) {
 				throw new Error('Inventory reservation cannot be released safely');
 			}
@@ -341,7 +371,10 @@ async function getAffiliateDraftPolicySnapshot(
 		})
 		.from(table.affiliateTermsAcceptance)
 		.where(eq(table.affiliateTermsAcceptance.affiliateId, attribution.affiliateId))
-		.orderBy(desc(table.affiliateTermsAcceptance.acceptedAt), desc(table.affiliateTermsAcceptance.createdAt))
+		.orderBy(
+			desc(table.affiliateTermsAcceptance.acceptedAt),
+			desc(table.affiliateTermsAcceptance.createdAt)
+		)
 		.limit(1);
 
 	return {
@@ -350,7 +383,8 @@ async function getAffiliateDraftPolicySnapshot(
 		affiliateTierCode: LEGACY_AFFILIATE_TIER_CODE,
 		affiliateTierVersion: LEGACY_AFFILIATE_TIER_VERSION,
 		affiliateTermsVersion: acceptance?.termsVersion ?? UNRECORDED_AFFILIATE_TERMS_VERSION,
-		affiliateDisclosureVersion: acceptance?.disclosureVersion ?? UNRECORDED_AFFILIATE_DISCLOSURE_VERSION,
+		affiliateDisclosureVersion:
+			acceptance?.disclosureVersion ?? UNRECORDED_AFFILIATE_DISCLOSURE_VERSION,
 		affiliateTermsAcceptanceId: acceptance?.id ?? null
 	};
 }
@@ -364,7 +398,13 @@ export class CheckoutDraftService {
 		now = new Date(),
 		allowQuarantinedRelease = false
 	): Promise<boolean> {
-		return await releaseDraftReservationsInTransaction(tx, draft, status, now, allowQuarantinedRelease);
+		return await releaseDraftReservationsInTransaction(
+			tx,
+			draft,
+			status,
+			now,
+			allowQuarantinedRelease
+		);
 	}
 
 	/** Freeze server-priced cart contents and reserve tracked inventory before payment begins. */
@@ -453,7 +493,10 @@ export class CheckoutDraftService {
 					throw new Error('Cart contains an invalid quantity');
 				}
 
-				quantitiesByProduct.set(item.productId, (quantitiesByProduct.get(item.productId) ?? 0) + item.quantity);
+				quantitiesByProduct.set(
+					item.productId,
+					(quantitiesByProduct.get(item.productId) ?? 0) + item.quantity
+				);
 			}
 
 			const productIds = [...quantitiesByProduct.keys()].sort((left, right) => left - right);
@@ -504,9 +547,10 @@ export class CheckoutDraftService {
 			const affiliateCommissionMinor = attribution
 				? calculateAffiliateCommissionMinor(subtotalMinor, attribution.commissionRate)
 				: 0;
-			const affiliatePolicy = attribution && AffiliateCommissionService.isEnabled()
-				? await getAffiliateDraftPolicySnapshot(tx, attribution)
-				: null;
+			const affiliatePolicy =
+				attribution && AffiliateCommissionService.isEnabled()
+					? await getAffiliateDraftPolicySnapshot(tx, attribution)
+					: null;
 			const draftId = newOpaqueId('draft');
 			const reference = newOpaqueId('cd');
 			const hash = snapshotHash(
@@ -523,9 +567,10 @@ export class CheckoutDraftService {
 				id: draftId,
 				reference,
 				userId: input.buyer.kind === 'user' ? input.buyer.userId : null,
-				guestSubjectHash: input.buyer.kind === 'guest'
-					? hashGuestCheckoutSubject(input.buyer.guestCartSessionId)
-					: null,
+				guestSubjectHash:
+					input.buyer.kind === 'guest'
+						? hashGuestCheckoutSubject(input.buyer.guestCartSessionId)
+						: null,
 				sourceCartId: cart.id,
 				sourceCartUpdatedAt: cart.updatedAt,
 				affiliateLinkId: attribution?.linkId ?? null,
@@ -588,7 +633,10 @@ export class CheckoutDraftService {
 	}
 
 	/** Release each active reservation at most once; repeated calls are safe. */
-	static async releaseReservations(draftId: string, status: 'expired' | 'failed' = 'expired'): Promise<boolean> {
+	static async releaseReservations(
+		draftId: string,
+		status: 'expired' | 'failed' = 'expired'
+	): Promise<boolean> {
 		return await db.transaction(async (tx) => {
 			const [draft] = await tx
 				.select()
@@ -655,7 +703,12 @@ export class CheckoutDraftService {
 			.where(
 				and(
 					buyerDraftCondition(buyer),
-					inArray(table.checkoutDraft.status, ['pending_session', 'checkout_created', 'quarantined', 'paid'])
+					inArray(table.checkoutDraft.status, [
+						'pending_session',
+						'checkout_created',
+						'quarantined',
+						'paid'
+					])
 				)
 			)
 			.orderBy(desc(table.checkoutDraft.createdAt))

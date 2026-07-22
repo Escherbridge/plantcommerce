@@ -122,7 +122,10 @@ export class EnrollmentService {
 	/**
 	 * Request enrollment for approval-required courses.
 	 */
-	static async requestEnrollment(userId: string, courseId: string): Promise<lmsTable.LmsEnrollment> {
+	static async requestEnrollment(
+		userId: string,
+		courseId: string
+	): Promise<lmsTable.LmsEnrollment> {
 		const course = await db
 			.select()
 			.from(lmsTable.lmsCourse)
@@ -214,9 +217,7 @@ export class EnrollmentService {
 			throw new Error('Enrollment is not pending approval');
 		}
 
-		await db
-			.delete(lmsTable.lmsEnrollment)
-			.where(eq(lmsTable.lmsEnrollment.id, enrollmentId));
+		await db.delete(lmsTable.lmsEnrollment).where(eq(lmsTable.lmsEnrollment.id, enrollmentId));
 	}
 
 	/**
@@ -392,9 +393,7 @@ export class EnrollmentService {
 				);
 
 			const progressPercent =
-				totalBlocks.count > 0
-					? Math.round((completedBlocks.count / totalBlocks.count) * 100)
-					: 0;
+				totalBlocks.count > 0 ? Math.round((completedBlocks.count / totalBlocks.count) * 100) : 0;
 
 			const instructorName =
 				row.instructorFirstName || row.instructorLastName

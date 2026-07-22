@@ -7,9 +7,4 @@ export { default as RichTextEditor } from './RichTextEditor.svelte';
 export { default as DatePicker } from './DatePicker.svelte';
 
 // Types
-export type {
-  FormFieldConfig,
-  FormStepConfig,
-  MultiFormConfig,
-  FormState
-} from './types.js';
+export type { FormFieldConfig, FormStepConfig, MultiFormConfig, FormState } from './types.js';

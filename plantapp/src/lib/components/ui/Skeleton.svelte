@@ -15,14 +15,10 @@
 		class: className = ''
 	}: Props = $props();
 
-	const lines = $derived(
-		variant === 'text' ? Array.from({ length: count }, (_, i) => i) : []
-	);
+	const lines = $derived(variant === 'text' ? Array.from({ length: count }, (_, i) => i) : []);
 
 	const customStyle = $derived(
-		variant === 'custom'
-			? `width: ${width}; height: ${height ?? '1rem'};`
-			: `width: ${width};`
+		variant === 'custom' ? `width: ${width}; height: ${height ?? '1rem'};` : `width: ${width};`
 	);
 </script>
 
@@ -79,7 +75,8 @@
 	}
 
 	@keyframes skeleton-pulse {
-		0%, 100% {
+		0%,
+		100% {
 			opacity: 1;
 		}
 		50% {

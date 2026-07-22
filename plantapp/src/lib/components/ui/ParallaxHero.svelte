@@ -37,9 +37,12 @@
 		titleDone = true;
 		setTimeout(() => {
 			subtitleVisible = true;
-			setTimeout(() => {
-				ctaVisible = true;
-			}, subtitleWords.length * 80 + 200);
+			setTimeout(
+				() => {
+					ctaVisible = true;
+				},
+				subtitleWords.length * 80 + 200
+			);
 		}, 100);
 	}
 
@@ -77,22 +80,19 @@
 
 <section
 	bind:this={heroEl}
-	class="relative overflow-hidden min-h-svh flex flex-col items-center justify-center"
+	class="relative flex min-h-svh flex-col items-center justify-center overflow-hidden"
 	aria-label="Hero section"
 >
 	<!-- Background image with parallax -->
 	{#if backgroundImage}
-		<div
-			class="absolute inset-0"
-			style="will-change: transform; z-index: 1;"
-		>
+		<div class="absolute inset-0" style="will-change: transform; z-index: 1;">
 			<img
 				bind:this={bgEl}
 				src={backgroundImage}
 				alt=""
 				aria-hidden="true"
 				loading="eager"
-				class="w-full h-[115%] object-cover object-center"
+				class="h-[115%] w-full object-cover object-center"
 				style="will-change: transform;"
 			/>
 		</div>
@@ -100,37 +100,36 @@
 
 	<!-- Dark overlay for text contrast + bottom fade to base-100 -->
 	<div
-		class="absolute inset-0 pointer-events-none"
+		class="pointer-events-none absolute inset-0"
 		style="background: linear-gradient(to bottom, rgba(27,45,74,0.3) 0%, rgba(27,45,74,0.2) 50%, rgba(27,45,74,0.35) 78%, rgba(247,245,240,0.9) 93%, rgba(247,245,240,1) 100%); z-index: 2;"
 	></div>
 
 	<!-- Content -->
-	<div class="relative flex flex-col items-center text-center px-6 gap-6 w-full max-w-7xl mx-auto text-white" style="z-index: 3;">
+	<div
+		class="relative mx-auto flex w-full max-w-7xl flex-col items-center gap-6 px-6 text-center text-white"
+		style="z-index: 3;"
+	>
 		<!-- Title -->
-		<h1 class="text-hero font-display uppercase tracking-tight leading-none m-0"
+		<h1
+			class="text-hero font-display m-0 leading-none tracking-tight uppercase"
 			style="font-size: clamp(3rem, 10vw, 10rem);"
 		>
-			<TextReveal
-				text={title}
-				mode="fade-up"
-				duration={900}
-				oncomplete={onTitleComplete}
-			/>
+			<TextReveal text={title} mode="fade-up" duration={900} oncomplete={onTitleComplete} />
 		</h1>
 
 		<!-- Subtitle: staggered word reveal -->
-		<p class="text-heading-2 font-sans max-w-xl" aria-label={subtitle}>
+		<p class="text-heading-2 max-w-xl font-sans" aria-label={subtitle}>
 			{#each subtitleWords as word, i}
 				<span
 					aria-hidden="true"
-					class="inline-block mr-[0.25em]"
+					class="mr-[0.25em] inline-block"
 					style="
 						opacity: {subtitleVisible || prefersReduced ? 1 : 0};
 						transform: {subtitleVisible || prefersReduced ? 'translateY(0)' : 'translateY(16px)'};
 						transition: opacity 500ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) {i * 80}ms,
 						            transform 500ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) {i * 80}ms;
-					"
-				>{word}</span>
+					">{word}</span
+				>
 			{/each}
 			<span class="sr-only">{subtitle}</span>
 		</p>
@@ -138,7 +137,7 @@
 		<!-- CTA buttons -->
 		{#if ctaLinks.length > 0}
 			<div
-				class="flex flex-wrap gap-4 justify-center"
+				class="flex flex-wrap justify-center gap-4"
 				style="
 					opacity: {ctaVisible || prefersReduced ? 1 : 0};
 					transform: {ctaVisible || prefersReduced ? 'translateY(0)' : 'translateY(20px)'};
@@ -149,7 +148,9 @@
 				{#each ctaLinks as cta}
 					<a
 						href={cta.href}
-						class={cta.variant === 'primary' ? 'btn btn-primary' : 'btn btn-outline border-white/40 text-white hover:bg-white/10 hover:border-white/60'}
+						class={cta.variant === 'primary'
+							? 'btn btn-primary'
+							: 'btn border-white/40 text-white btn-outline hover:border-white/60 hover:bg-white/10'}
 					>
 						{cta.label}
 					</a>
@@ -161,13 +162,13 @@
 	<!-- Scroll indicator -->
 	{#if scrollIndicatorVisible}
 		<div
-			class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/60"
+			class="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1 text-white/60"
 			style="z-index: 3;"
 			aria-hidden="true"
 		>
-			<span class="text-xs font-mono uppercase tracking-widest">Scroll</span>
+			<span class="font-mono text-xs tracking-widest uppercase">Scroll</span>
 			<svg
-				class="scroll-chevron w-5 h-5"
+				class="scroll-chevron h-5 w-5"
 				viewBox="0 0 20 20"
 				fill="none"
 				stroke="currentColor"
@@ -187,8 +188,15 @@
 	}
 
 	@keyframes chevron-pulse {
-		0%, 100% { transform: translateY(0); opacity: 0.6; }
-		50% { transform: translateY(4px); opacity: 1; }
+		0%,
+		100% {
+			transform: translateY(0);
+			opacity: 0.6;
+		}
+		50% {
+			transform: translateY(4px);
+			opacity: 1;
+		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {

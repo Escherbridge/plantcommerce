@@ -9,20 +9,32 @@
 		class?: string;
 	}
 
-	let {
-		image,
-		imageAlt,
-		title,
-		price,
-		href,
-		badge,
-		class: className = ''
-	}: Props = $props();
+	let { image, imageAlt, title, price, href, badge, class: className = '' }: Props = $props();
 
 	const formattedPrice = $derived(
 		new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
 	);
 </script>
+
+<a
+	{href}
+	class="product-card block border border-base-300 bg-base-100 hover:border-primary/30 {className}"
+>
+	<div class="product-card__image-wrap">
+		<img src={image} alt={imageAlt} class="product-card__image" loading="lazy" />
+		<div class="product-card__overlay">
+			<span class="product-card__cta">Quick View</span>
+		</div>
+		{#if badge}
+			<span class="product-card__badge">{badge}</span>
+		{/if}
+	</div>
+
+	<div class="p-4">
+		<h3 class="mb-1 line-clamp-2 font-sans text-lg font-semibold text-base-content">{title}</h3>
+		<p class="font-mono text-xl font-bold text-primary">{formattedPrice}</p>
+	</div>
+</a>
 
 <style>
 	.product-card {
@@ -105,23 +117,3 @@
 			opacity 300ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1));
 	}
 </style>
-
-<a
-	{href}
-	class="product-card block border border-base-300 bg-base-100 hover:border-primary/30 {className}"
->
-	<div class="product-card__image-wrap">
-		<img src={image} alt={imageAlt} class="product-card__image" loading="lazy" />
-		<div class="product-card__overlay">
-			<span class="product-card__cta">Quick View</span>
-		</div>
-		{#if badge}
-			<span class="product-card__badge">{badge}</span>
-		{/if}
-	</div>
-
-	<div class="p-4">
-		<h3 class="font-sans text-lg font-semibold text-base-content line-clamp-2 mb-1">{title}</h3>
-		<p class="font-mono text-xl font-bold text-primary">{formattedPrice}</p>
-	</div>
-</a>

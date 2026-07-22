@@ -3,6 +3,7 @@
 This directory contains the main Aevani application built with SvelteKit, Drizzle ORM, and tRPC.
 
 ### Setup
+
 ```bash
 npm install
 npm run db:start
@@ -11,6 +12,7 @@ npm run dev
 ```
 
 ### Documentation
+
 - **Complete Project Documentation**: [../README.md](../README.md)
 - **Affiliate System Guide**: [../documentation/AFFILIATE_SYSTEM_GUIDE.md](../documentation/AFFILIATE_SYSTEM_GUIDE.md)
 - **Information Architecture**: [../documentation/INFORMATION_ARCHITECTURE.md](../documentation/INFORMATION_ARCHITECTURE.md)
@@ -146,27 +148,32 @@ This is the main Aevani application. It contains a hardening-in-progress commerc
 ## Database Schema Overview
 
 ### Core Tables
+
 - `user` - User accounts with role-based access
 - `session` - Authentication sessions
 - `product` & `product_category` - Product catalog
 - `product_image` - Product media management
 
 ### E-commerce Tables
+
 - `cart` & `cart_item` - Shopping cart functionality
 - `order` & `order_item` - Order management
 - Affiliate attribution tracking in orders
 
 ### Affiliate System Tables
+
 - `affiliate` - Affiliate account details and statistics
 - `affiliate_link` - Generated affiliate links for products
 - `affiliate_click` - Detailed click tracking and analytics
 
 ### CMS Tables
+
 - `content_page` - Blog posts, guides, pages, and FAQs
 
 ## API Endpoints
 
 ### Affiliate System (`/api/trpc/affiliate.*`)
+
 - `createAffiliate` - Create affiliate account
 - `getStats` - Get affiliate statistics
 - `createLink` - Generate product affiliate links
@@ -175,6 +182,7 @@ This is the main Aevani application. It contains a hardening-in-progress commerc
 - `getLinkByCode` - Get link details for redirects (public)
 
 ### Product Management (`/api/trpc/products.*`)
+
 - `getProducts` - List products with filtering
 - `getProduct` - Get single product details
 - `createProduct` - Create new product (admin)
@@ -182,6 +190,7 @@ This is the main Aevani application. It contains a hardening-in-progress commerc
 - `deleteProduct` - Delete product (admin)
 
 ### Content Management (`/api/trpc/content.*`)
+
 - `getPublishedPages` - List published content
 - `getPage` - Get single page by slug
 - `createPage` - Create content page
@@ -191,29 +200,33 @@ This is the main Aevani application. It contains a hardening-in-progress commerc
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - PostgreSQL database
 - Docker (optional, for local database)
 
 ### Setup Instructions
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd <repository>/plantapp
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
    Create a `.env` file in the `plantapp` directory (copy from `.env.example` if it exists):
+
    ```
    DATABASE_URL="postgresql://plantcommerce:plantcommerce_dev_password@localhost:5432/plantcommerce"
    ```
-   
+
    For local development with Docker Compose, the default values are:
    - User: `plantcommerce`
    - Password: `plantcommerce_dev_password`
@@ -221,14 +234,16 @@ This is the main Aevani application. It contains a hardening-in-progress commerc
    - Port: `5432`
 
 4. **Start PostgreSQL database**
+
    ```bash
    # Using Docker Compose
    npm run db:start
-   
+
    # Or connect to your existing PostgreSQL instance
    ```
 
 5. **Reconcile the database baseline before applying schema changes**
+
    ```bash
    # This repository currently has unresolved Drizzle history.
    # Read drizzle/AGENTS.md; do not run db:push or db:migrate against a shared database.
@@ -246,6 +261,14 @@ This is the main Aevani application. It contains a hardening-in-progress commerc
 - `npm run db:push` - Do not use until the baseline is reconciled and a release procedure is approved
 - `npm run db:migrate` - Do not use until the baseline is reconciled and a release procedure is approved
 - `npm run db:studio` - Open Drizzle Studio (database GUI)
+
+## Continuous integration
+
+Pull requests and pushes to `main` and `codex/aevani-railway-release` run the
+locked dependency install, Prettier check, Svelte check, unit tests, and the
+production build from `plantapp`. CI keeps authentication capability flags
+disabled and does not run migrations, database seeds, or Railway deployment
+commands.
 
 ## Contributing
 

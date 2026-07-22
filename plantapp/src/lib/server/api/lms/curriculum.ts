@@ -185,7 +185,7 @@ export const lmsCurriculumRouter = router({
 				title: z.string().optional(),
 				content: z.string().optional(),
 				fileId: z.string().optional(),
-				config: z.record(z.unknown()).optional(),
+				config: z.record(z.string(), z.unknown()).optional(),
 				isRequired: z.boolean().default(true),
 				completionThreshold: z.number().min(0).max(100).default(100)
 			})
@@ -205,7 +205,7 @@ export const lmsCurriculumRouter = router({
 				title: z.string().optional(),
 				content: z.string().optional(),
 				fileId: z.string().optional(),
-				config: z.record(z.unknown()).optional(),
+				config: z.record(z.string(), z.unknown()).optional(),
 				isRequired: z.boolean().optional(),
 				completionThreshold: z.number().min(0).max(100).optional()
 			})

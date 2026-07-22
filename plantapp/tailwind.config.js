@@ -1,85 +1,90 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
-  theme: {
-    extend: {
-      fontFamily: {
-        'display': ['Barlow Condensed', 'Arial Narrow', 'sans-serif'],
-        'sans': ['Inter Variable', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
-        'mono': ['JetBrains Mono', 'Fira Mono', 'monospace'],
-      },
-    },
-  },
-  plugins: [
-    require('daisyui'),
-  ],
-  daisyui: {
-    themes: [
-      {
-        aevani: {
-          "primary": "#1B2D4A",
-          "primary-content": "#F7F5F0",
-          "secondary": "#457B9D",
-          "secondary-content": "#F7F5F0",
-          "accent": "#E63946",
-          "accent-content": "#FFFFFF",
-          "neutral": "#1A1A1A",
-          "neutral-content": "#F7F5F0",
-          "base-100": "#F7F5F0",
-          "base-200": "#EDE9E1",
-          "base-300": "#E8E5DE",
-          "base-content": "#1A1A1A",
-          "info": "#0A4B3E",
-          "info-content": "#F7F5F0",
-          "success": "#2D6A4F",
-          "success-content": "#F7F5F0",
-          "warning": "#CC9608",
-          "warning-content": "#1A1A1A",
-          "error": "#E63946",
-          "error-content": "#FFFFFF",
-          "--rounded-btn": "10px",
-          "--rounded-box": "16px",
-          "--animation-btn": "0.25s",
-          "--animation-input": "0.25s",
-          "--btn-focus-scale": "0.98",
-        },
-      },
-      {
-        "aevani-dark": {
-          "primary": "#6B9AC4",
-          "primary-content": "#1A1A1A",
-          "secondary": "#7BA7BC",
-          "secondary-content": "#1A1A1A",
-          "accent": "#E63946",
-          "accent-content": "#FFFFFF",
-          "neutral": "#2A2A2A",
-          "neutral-content": "#E8E5DE",
-          "base-100": "#1A1A1A",
-          "base-200": "#242424",
-          "base-300": "#2E2E2E",
-          "base-content": "#E8E5DE",
-          "info": "#3DB89A",
-          "info-content": "#1A1A1A",
-          "success": "#4DA375",
-          "success-content": "#1A1A1A",
-          "warning": "#E8B630",
-          "warning-content": "#1A1A1A",
-          "error": "#E63946",
-          "error-content": "#FFFFFF",
-          "--rounded-btn": "10px",
-          "--rounded-box": "16px",
-          "--animation-btn": "0.25s",
-          "--animation-input": "0.25s",
-          "--btn-focus-scale": "0.98",
-        },
-      },
-    ],
-    darkTheme: "aevani-dark",
-    base: true,
-    styled: true,
-    utils: true,
-    prefix: "",
-    logs: true,
-    themeRoot: ":root",
-  },
-}
+	content: ['./src/**/*.{html,js,svelte,ts}'],
+	theme: {
+		extend: {
+			fontFamily: {
+				display: ['Barlow Condensed', 'Arial Narrow', 'sans-serif'],
+				sans: [
+					'Inter Variable',
+					'Inter',
+					'-apple-system',
+					'BlinkMacSystemFont',
+					'Segoe UI',
+					'sans-serif'
+				],
+				mono: ['JetBrains Mono', 'Fira Mono', 'monospace']
+			}
+		}
+	},
+	plugins: [require('daisyui')],
+	daisyui: {
+		themes: [
+			{
+				aevani: {
+					primary: '#1B2D4A',
+					'primary-content': '#F7F5F0',
+					secondary: '#457B9D',
+					'secondary-content': '#F7F5F0',
+					accent: '#E63946',
+					'accent-content': '#FFFFFF',
+					neutral: '#1A1A1A',
+					'neutral-content': '#F7F5F0',
+					'base-100': '#F7F5F0',
+					'base-200': '#EDE9E1',
+					'base-300': '#E8E5DE',
+					'base-content': '#1A1A1A',
+					info: '#0A4B3E',
+					'info-content': '#F7F5F0',
+					success: '#2D6A4F',
+					'success-content': '#F7F5F0',
+					warning: '#CC9608',
+					'warning-content': '#1A1A1A',
+					error: '#E63946',
+					'error-content': '#FFFFFF',
+					'--rounded-btn': '10px',
+					'--rounded-box': '16px',
+					'--animation-btn': '0.25s',
+					'--animation-input': '0.25s',
+					'--btn-focus-scale': '0.98'
+				}
+			},
+			{
+				'aevani-dark': {
+					primary: '#6B9AC4',
+					'primary-content': '#1A1A1A',
+					secondary: '#7BA7BC',
+					'secondary-content': '#1A1A1A',
+					accent: '#E63946',
+					'accent-content': '#FFFFFF',
+					neutral: '#2A2A2A',
+					'neutral-content': '#E8E5DE',
+					'base-100': '#1A1A1A',
+					'base-200': '#242424',
+					'base-300': '#2E2E2E',
+					'base-content': '#E8E5DE',
+					info: '#3DB89A',
+					'info-content': '#1A1A1A',
+					success: '#4DA375',
+					'success-content': '#1A1A1A',
+					warning: '#E8B630',
+					'warning-content': '#1A1A1A',
+					error: '#E63946',
+					'error-content': '#FFFFFF',
+					'--rounded-btn': '10px',
+					'--rounded-box': '16px',
+					'--animation-btn': '0.25s',
+					'--animation-input': '0.25s',
+					'--btn-focus-scale': '0.98'
+				}
+			}
+		],
+		darkTheme: 'aevani-dark',
+		base: true,
+		styled: true,
+		utils: true,
+		prefix: '',
+		logs: true,
+		themeRoot: ':root'
+	}
+};

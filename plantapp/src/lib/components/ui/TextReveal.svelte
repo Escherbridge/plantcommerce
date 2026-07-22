@@ -79,7 +79,11 @@
 	});
 </script>
 
-<span class="text-reveal {className}" class:text-reveal--visible={visible} style="--reveal-duration: {duration}ms">
+<span
+	class="text-reveal {className}"
+	class:text-reveal--visible={visible}
+	style="--reveal-duration: {duration}ms"
+>
 	<span aria-hidden="true">{display}</span>
 	<span class="sr-only">{text}</span>
 </span>

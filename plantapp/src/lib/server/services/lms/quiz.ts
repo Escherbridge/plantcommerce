@@ -100,10 +100,7 @@ export class QuizService {
 	}
 
 	static async getQuizById(quizId: string) {
-		const [quiz] = await db
-			.select()
-			.from(lmsTable.lmsQuiz)
-			.where(eq(lmsTable.lmsQuiz.id, quizId));
+		const [quiz] = await db.select().from(lmsTable.lmsQuiz).where(eq(lmsTable.lmsQuiz.id, quizId));
 		if (!quiz) return null;
 
 		const [result] = await db
@@ -126,7 +123,10 @@ export class QuizService {
 
 		const needed = quiz.questionCount ?? quiz.availableQuestions;
 		if (needed < 1 || quiz.availableQuestions < 1) {
-			return { valid: false, reason: 'Add at least one question to this course before starting the quiz' };
+			return {
+				valid: false,
+				reason: 'Add at least one question to this course before starting the quiz'
+			};
 		}
 		if (quiz.availableQuestions < needed) {
 			return {

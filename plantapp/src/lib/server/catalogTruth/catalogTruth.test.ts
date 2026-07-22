@@ -9,9 +9,9 @@ import { researchOnlyCatalogCandidates } from './researchCandidates';
 
 describe('catalog truth research candidates', () => {
 	it('covers every commerce model without creating customer-facing or sellable inventory', () => {
-		expect(new Set(researchOnlyCatalogCandidates.map((candidate) => candidate.offeringKind))).toEqual(
-			new Set(catalogOfferingKinds)
-		);
+		expect(
+			new Set(researchOnlyCatalogCandidates.map((candidate) => candidate.offeringKind))
+		).toEqual(new Set(catalogOfferingKinds));
 		expect(customerFacingCatalogRecords(researchOnlyCatalogCandidates)).toEqual([]);
 
 		for (const candidate of researchOnlyCatalogCandidates) {

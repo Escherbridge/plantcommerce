@@ -81,8 +81,7 @@ function createCartStore() {
 			await trpc.cart.updateItemQuantity.mutate({ cartItemId, quantity });
 			await refresh();
 		} catch (error) {
-			const message =
-				error instanceof Error ? error.message : 'Failed to update cart';
+			const message = error instanceof Error ? error.message : 'Failed to update cart';
 			toasts.addToast({ message, variant: 'error', duration: 4000 });
 			update((s) => ({ ...s, loading: false }));
 		}
@@ -100,8 +99,7 @@ function createCartStore() {
 				duration: 2000
 			});
 		} catch (error) {
-			const message =
-				error instanceof Error ? error.message : 'Failed to remove item';
+			const message = error instanceof Error ? error.message : 'Failed to remove item';
 			toasts.addToast({ message, variant: 'error', duration: 4000 });
 			update((s) => ({ ...s, loading: false }));
 		}

@@ -47,23 +47,26 @@ function escapeHtml(value: string): string {
 }
 
 function decodeUrlEntities(value: string): string {
-	return value.replace(/&#x([0-9a-f]+);?|&#([0-9]+);?|&([a-z]+);?/gi, (match, hexadecimal, decimal, named) => {
-		if (hexadecimal || decimal) {
-			const codePoint = Number.parseInt(hexadecimal || decimal, hexadecimal ? 16 : 10);
-			if (
-				!Number.isSafeInteger(codePoint)
-				|| codePoint < 0
-				|| codePoint > 0x10ffff
-				|| (codePoint >= 0xd800 && codePoint <= 0xdfff)
-			) {
-				return '';
+	return value.replace(
+		/&#x([0-9a-f]+);?|&#([0-9]+);?|&([a-z]+);?/gi,
+		(match, hexadecimal, decimal, named) => {
+			if (hexadecimal || decimal) {
+				const codePoint = Number.parseInt(hexadecimal || decimal, hexadecimal ? 16 : 10);
+				if (
+					!Number.isSafeInteger(codePoint) ||
+					codePoint < 0 ||
+					codePoint > 0x10ffff ||
+					(codePoint >= 0xd800 && codePoint <= 0xdfff)
+				) {
+					return '';
+				}
+
+				return String.fromCodePoint(codePoint);
 			}
 
-			return String.fromCodePoint(codePoint);
+			return urlNamedEntities[named.toLowerCase()] ?? match;
 		}
-
-		return urlNamedEntities[named.toLowerCase()] ?? match;
-	});
+	);
 }
 
 function sanitizeHref(rawHref: string): string | null {
@@ -161,5 +164,8 @@ export function sanitizeRichText(content: string | null | undefined): string {
 	}
 
 	sanitized += escapeHtml(content.slice(textStart));
-	return `${sanitized}${openTags.reverse().map((tag) => `</${tag}>`).join('')}`;
+	return `${sanitized}${openTags
+		.reverse()
+		.map((tag) => `</${tag}>`)
+		.join('')}`;
 }

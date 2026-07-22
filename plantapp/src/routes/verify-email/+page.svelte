@@ -8,12 +8,12 @@
 
 <Section>
 	<Container>
-		<div class="max-w-md mx-auto text-center">
+		<div class="mx-auto max-w-md text-center">
 			{#if form?.success}
 				<div class="card bg-base-100 shadow-xl">
 					<div class="card-body items-center text-center">
-						<div class="text-success text-6xl mb-4" aria-hidden="true">✓</div>
-						<h1 class="card-title text-2xl mb-2">Email verified</h1>
+						<div class="mb-4 text-6xl text-success" aria-hidden="true">✓</div>
+						<h1 class="mb-2 card-title text-2xl">Email verified</h1>
 						<p class="mb-6">{form.message}</p>
 						<a href="/login" class="btn btn-primary">Log in</a>
 					</div>
@@ -21,7 +21,7 @@
 			{:else if data.token}
 				<div class="card bg-base-100 shadow-xl">
 					<div class="card-body items-center text-center">
-						<h1 class="card-title text-2xl mb-2">Verify your email</h1>
+						<h1 class="mb-2 card-title text-2xl">Verify your email</h1>
 						<p class="mb-6">Confirm that you want to verify this email address.</p>
 						<form method="POST">
 							<input type="hidden" name="token" value={data.token} />
@@ -35,8 +35,8 @@
 			{:else}
 				<div class="card bg-base-100 shadow-xl">
 					<div class="card-body items-center text-center">
-						<div class="text-error text-6xl mb-4" aria-hidden="true">×</div>
-						<h1 class="card-title text-2xl mb-2">Verification link required</h1>
+						<div class="mb-4 text-6xl text-error" aria-hidden="true">×</div>
+						<h1 class="mb-2 card-title text-2xl">Verification link required</h1>
 						<p class="mb-6">Open the verification link from your email to continue.</p>
 						<a href="/register" class="btn btn-outline">Back to registration</a>
 					</div>

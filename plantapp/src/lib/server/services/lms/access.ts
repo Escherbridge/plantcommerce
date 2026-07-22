@@ -416,12 +416,14 @@ export class LmsAccessService {
 		}
 	}
 
-	private static async findLmsFile(fileId: string) {
+	private static async findLmsFile(
+		fileId: string
+	): Promise<table.File & { entityType: 'lms'; entityId: string }> {
 		const [file] = await db.select().from(table.file).where(eq(table.file.id, fileId)).limit(1);
-		if (!file || String(file.entityType) !== 'lms' || !file.entityId) {
+		if (!file || file.entityType !== 'lms' || !file.entityId) {
 			notFound('LMS media not found');
 		}
-		return file;
+		return { ...file, entityType: 'lms', entityId: file.entityId };
 	}
 
 	private static async assertLearnerCanReadLmsFile(

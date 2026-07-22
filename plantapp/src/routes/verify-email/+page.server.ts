@@ -25,7 +25,8 @@ export const actions = {
 
 		return {
 			success: true,
-			message: 'Email confirmation recorded. A staged email change takes effect only after both email addresses confirm it.'
+			message:
+				'Email confirmation recorded. A staged email change takes effect only after both email addresses confirm it.'
 		};
 	}
 } satisfies Actions;

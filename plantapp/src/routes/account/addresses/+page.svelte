@@ -11,14 +11,32 @@
 
 	<!-- Empty State -->
 	<div class="platform-empty">
-		<svg viewBox="0 0 24 24" class="empty-svg" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-			<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/>
+		<svg
+			viewBox="0 0 24 24"
+			class="empty-svg"
+			stroke="currentColor"
+			stroke-width="1.5"
+			fill="none"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+		>
+			<path
+				d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"
+			/>
 		</svg>
 		<p class="platform-empty__title">No addresses saved yet</p>
 		<p class="platform-empty__text">Add a shipping or billing address to speed up checkout</p>
 		<button class="add-btn" disabled>
-			<svg viewBox="0 0 24 24" class="add-icon" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-				<path d="M12 5v14M5 12h14"/>
+			<svg
+				viewBox="0 0 24 24"
+				class="add-icon"
+				stroke="currentColor"
+				stroke-width="1.5"
+				fill="none"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<path d="M12 5v14M5 12h14" />
 			</svg>
 			Add Address
 		</button>

@@ -124,7 +124,10 @@ export class QuizAttemptService {
 
 		const quiz = await QuizService.getQuizById(attempt.quizId);
 		if (!quiz) throw new Error('Quiz not found');
-		const elapsedSeconds = Math.max(0, Math.floor((Date.now() - attempt.startedAt.getTime()) / 1000));
+		const elapsedSeconds = Math.max(
+			0,
+			Math.floor((Date.now() - attempt.startedAt.getTime()) / 1000)
+		);
 		if (quiz.timeLimit && elapsedSeconds > quiz.timeLimit) {
 			throw new Error('Time limit exceeded');
 		}
@@ -173,7 +176,9 @@ export class QuizAttemptService {
 		);
 
 		const totalScore = gradedAnswers.reduce((sum, answer) => sum + answer.result.score, 0);
-		const totalPoints = attempt.totalPoints ?? gradedAnswers.reduce((sum, answer) => sum + answer.result.maxPoints, 0);
+		const totalPoints =
+			attempt.totalPoints ??
+			gradedAnswers.reduce((sum, answer) => sum + answer.result.maxPoints, 0);
 		const needsManualGrading = gradedAnswers.some((answer) => answer.result.needsManualGrading);
 		const scorePercent = totalPoints > 0 ? Math.round((totalScore / totalPoints) * 100) : 0;
 		const passed = needsManualGrading ? null : scorePercent >= quiz.passingScore;
@@ -242,15 +247,33 @@ export class QuizAttemptService {
 			case 'true_false': {
 				const correctOption = options.find((option) => option.isCorrect);
 				const isCorrect = correctOption?.id === response;
-				return { isCorrect, score: isCorrect ? maxPoints : 0, maxPoints, feedback: null, needsManualGrading: false };
+				return {
+					isCorrect,
+					score: isCorrect ? maxPoints : 0,
+					maxPoints,
+					feedback: null,
+					needsManualGrading: false
+				};
 			}
 			case 'multi_select': {
-				const correctIds = new Set(options.filter((option) => option.isCorrect).map((option) => option.id));
+				const correctIds = new Set(
+					options.filter((option) => option.isCorrect).map((option) => option.id)
+				);
 				const selectedIds = new Set(Array.isArray(response) ? response : [response]);
-				if (correctIds.size === 0) return { isCorrect: false, score: 0, maxPoints, feedback: null, needsManualGrading: false };
+				if (correctIds.size === 0)
+					return {
+						isCorrect: false,
+						score: 0,
+						maxPoints,
+						feedback: null,
+						needsManualGrading: false
+					};
 				const correctSelected = [...selectedIds].filter((id) => correctIds.has(id)).length;
 				const incorrectSelected = [...selectedIds].filter((id) => !correctIds.has(id)).length;
-				const score = Math.max(0, Math.round(((correctSelected - incorrectSelected) / correctIds.size) * maxPoints));
+				const score = Math.max(
+					0,
+					Math.round(((correctSelected - incorrectSelected) / correctIds.size) * maxPoints)
+				);
 				return {
 					isCorrect: correctIds.size === selectedIds.size && correctSelected === correctIds.size,
 					score,
@@ -261,36 +284,76 @@ export class QuizAttemptService {
 			}
 			case 'fill_blank': {
 				const config = questionData.config ? JSON.parse(questionData.config) : {};
-				const acceptableAnswers: string[] = config.acceptableAnswers || options.filter((option) => option.isCorrect).map((option) => option.label);
+				const acceptableAnswers: string[] =
+					config.acceptableAnswers ||
+					options.filter((option) => option.isCorrect).map((option) => option.label);
 				const userAnswer = (typeof response === 'string' ? response : '').trim().toLowerCase();
-				const isCorrect = acceptableAnswers.some((answer) => answer.trim().toLowerCase() === userAnswer);
-				return { isCorrect, score: isCorrect ? maxPoints : 0, maxPoints, feedback: null, needsManualGrading: false };
+				const isCorrect = acceptableAnswers.some(
+					(answer) => answer.trim().toLowerCase() === userAnswer
+				);
+				return {
+					isCorrect,
+					score: isCorrect ? maxPoints : 0,
+					maxPoints,
+					feedback: null,
+					needsManualGrading: false
+				};
 			}
 			case 'matching': {
 				const pairs = parsedArray(response);
 				const config = questionData.config ? JSON.parse(questionData.config) : {};
 				const correctPairs: Array<{ left: string; right: string }> = config.pairs || [];
-				if (!pairs || correctPairs.length === 0) return { isCorrect: false, score: 0, maxPoints, feedback: null, needsManualGrading: false };
+				if (!pairs || correctPairs.length === 0)
+					return {
+						isCorrect: false,
+						score: 0,
+						maxPoints,
+						feedback: null,
+						needsManualGrading: false
+					};
 				const submittedPairs = pairs
 					.map((pair) => (typeof pair === 'object' && pair !== null ? leftRight(pair) : null))
 					.filter((pair): pair is { left: string; right: string } => pair !== null);
 				const correct = submittedPairs.filter((pair) =>
-					correctPairs.some((expected) => pair.left === expected.left && pair.right === expected.right)
+					correctPairs.some(
+						(expected) => pair.left === expected.left && pair.right === expected.right
+					)
 				).length;
 				const score = Math.round((correct / correctPairs.length) * maxPoints);
-				return { isCorrect: correct === correctPairs.length, score, maxPoints, feedback: null, needsManualGrading: false };
+				return {
+					isCorrect: correct === correctPairs.length,
+					score,
+					maxPoints,
+					feedback: null,
+					needsManualGrading: false
+				};
 			}
 			case 'ordering': {
 				const userOrder = parsedArray(response);
-				const correctOrder = [...options].sort((left, right) => left.sortOrder - right.sortOrder).map((option) => option.id);
-				const isCorrect = userOrder !== null && JSON.stringify(userOrder) === JSON.stringify(correctOrder);
-				return { isCorrect, score: isCorrect ? maxPoints : 0, maxPoints, feedback: null, needsManualGrading: false };
+				const correctOrder = [...options]
+					.sort((left, right) => left.sortOrder - right.sortOrder)
+					.map((option) => option.id);
+				const isCorrect =
+					userOrder !== null && JSON.stringify(userOrder) === JSON.stringify(correctOrder);
+				return {
+					isCorrect,
+					score: isCorrect ? maxPoints : 0,
+					maxPoints,
+					feedback: null,
+					needsManualGrading: false
+				};
 			}
 			case 'short_answer':
 			case 'essay':
 				return { isCorrect: null, score: 0, maxPoints, feedback: null, needsManualGrading: true };
 			default:
-				return { isCorrect: false, score: 0, maxPoints, feedback: 'Unknown question type', needsManualGrading: false };
+				return {
+					isCorrect: false,
+					score: 0,
+					maxPoints,
+					feedback: 'Unknown question type',
+					needsManualGrading: false
+				};
 		}
 	}
 
@@ -298,8 +361,13 @@ export class QuizAttemptService {
 		const [record] = await db
 			.select({ attempt: lmsTable.lmsQuizAttempt, enrollment: lmsTable.lmsEnrollment })
 			.from(lmsTable.lmsQuizAttempt)
-			.innerJoin(lmsTable.lmsEnrollment, eq(lmsTable.lmsQuizAttempt.enrollmentId, lmsTable.lmsEnrollment.id))
-			.where(and(eq(lmsTable.lmsQuizAttempt.id, attemptId), eq(lmsTable.lmsEnrollment.userId, userId)))
+			.innerJoin(
+				lmsTable.lmsEnrollment,
+				eq(lmsTable.lmsQuizAttempt.enrollmentId, lmsTable.lmsEnrollment.id)
+			)
+			.where(
+				and(eq(lmsTable.lmsQuizAttempt.id, attemptId), eq(lmsTable.lmsEnrollment.userId, userId))
+			)
 			.limit(1);
 		if (!record) throw new Error('Attempt not found');
 
@@ -312,9 +380,7 @@ export class QuizAttemptService {
 
 		return {
 			...record.attempt,
-			answers: quiz.showCorrectAnswers
-				? answers
-				: answers.map(({ isCorrect, ...answer }) => answer)
+			answers: quiz.showCorrectAnswers ? answers : answers.map(({ isCorrect, ...answer }) => answer)
 		};
 	}
 
@@ -322,8 +388,13 @@ export class QuizAttemptService {
 		const rows = await db
 			.select({ attempt: lmsTable.lmsQuizAttempt })
 			.from(lmsTable.lmsQuizAttempt)
-			.innerJoin(lmsTable.lmsEnrollment, eq(lmsTable.lmsQuizAttempt.enrollmentId, lmsTable.lmsEnrollment.id))
-			.where(and(eq(lmsTable.lmsQuizAttempt.quizId, quizId), eq(lmsTable.lmsEnrollment.userId, userId)))
+			.innerJoin(
+				lmsTable.lmsEnrollment,
+				eq(lmsTable.lmsQuizAttempt.enrollmentId, lmsTable.lmsEnrollment.id)
+			)
+			.where(
+				and(eq(lmsTable.lmsQuizAttempt.quizId, quizId), eq(lmsTable.lmsEnrollment.userId, userId))
+			)
 			.orderBy(desc(lmsTable.lmsQuizAttempt.startedAt));
 		return rows.map(({ attempt }) => attempt);
 	}

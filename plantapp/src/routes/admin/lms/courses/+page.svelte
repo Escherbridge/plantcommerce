@@ -16,8 +16,7 @@
 		if (searchQuery) {
 			const q = searchQuery.toLowerCase();
 			filtered = filtered.filter(
-				(c: any) =>
-					c.title?.toLowerCase().includes(q) || c.slug?.toLowerCase().includes(q)
+				(c: any) => c.title?.toLowerCase().includes(q) || c.slug?.toLowerCase().includes(q)
 			);
 		}
 		if (selectedStatus !== 'all') {
@@ -77,7 +76,15 @@
 				<p class="platform-header__subtitle">Manage your LMS course catalog</p>
 			</div>
 			<a href="/admin/lms/courses/new" class="platform-action-btn admin-header-btn">
-				<svg viewBox="0 0 24 24" class="w-5 h-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+				<svg
+					viewBox="0 0 24 24"
+					class="h-5 w-5"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
 					<path d="M12 5v14M5 12h14" />
 				</svg>
 				Create Course
@@ -134,7 +141,10 @@
 							<td>{course.enrollmentCount ?? 0}</td>
 							<td>
 								<div class="admin-action-group">
-									<a href="/admin/lms/courses/{course.id}" class="platform-action-btn admin-table-btn">
+									<a
+										href="/admin/lms/courses/{course.id}"
+										class="platform-action-btn admin-table-btn"
+									>
 										Edit
 									</a>
 									{#if course.status !== 'published'}

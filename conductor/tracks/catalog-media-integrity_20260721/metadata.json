@@ -1,0 +1,9 @@
+{
+  "id": "catalog-media-integrity_20260721",
+  "title": "Catalog & Media Integrity",
+  "status": "planned",
+  "priority": "P0",
+  "createdAt": "2026-07-21",
+  "dependencies": ["database-baseline-rehearsal"],
+  "tags": ["catalog", "media", "provenance", "seed-safety"]
+}

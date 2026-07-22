@@ -12,7 +12,10 @@ import {
 	clearAffiliateAttributionCookie,
 	clearLegacyAffiliateCookie
 } from '../affiliateAttribution';
-import { assertPublicCatalogAvailable, getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
+import {
+	assertPublicCatalogAvailable,
+	getPublicCatalogAvailability
+} from '../catalogTruth/publicCatalog';
 
 function getCartIdentity(ctx: Pick<Context, 'user' | 'event'>): {
 	userId?: string;
@@ -55,7 +58,10 @@ export const cartRouter = router({
 				clearLegacyAffiliateCookie(ctx.event.cookies);
 				let attribution = null;
 				try {
-					attribution = await AffiliateAttributionService.resolveForCart(ctx.event.cookies, ctx.user?.id);
+					attribution = await AffiliateAttributionService.resolveForCart(
+						ctx.event.cookies,
+						ctx.user?.id
+					);
 				} catch (error) {
 					// Cart availability takes precedence over optional attribution telemetry.
 					console.error('Unable to resolve affiliate attribution for cart:', error);
@@ -90,6 +96,7 @@ export const cartRouter = router({
 		)
 		.mutation(async ({ ctx, input }) => {
 			try {
+				assertPublicCatalogAvailable();
 				const identity = getCartIdentity(ctx);
 				await CartService.updateItemQuantity(
 					input.cartItemId,
@@ -110,6 +117,7 @@ export const cartRouter = router({
 		.input(z.object({ cartItemId: z.number() }))
 		.mutation(async ({ ctx, input }) => {
 			try {
+				assertPublicCatalogAvailable();
 				const identity = getCartIdentity(ctx);
 				await CartService.removeItem(input.cartItemId, identity.userId, identity.sessionId);
 				return { success: true };
@@ -123,6 +131,7 @@ export const cartRouter = router({
 
 	clearCart: publicProcedure.mutation(async ({ ctx }) => {
 		try {
+			assertPublicCatalogAvailable();
 			const identity = getCartIdentity(ctx);
 			await CartService.clearCart(identity.userId, identity.sessionId);
 			return { success: true };

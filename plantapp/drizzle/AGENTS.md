@@ -129,3 +129,9 @@ ledger, its events, payout instructions, and terms-acceptance evidence.
 release—it does not initiate a provider disbursement. Legacy affiliate/link
 earnings columns remain rebuildable display projections and are never payout
 authority.
+
+## `0008_catalog_seed_reconciler.sql`
+
+This source-only artifact establishes immutable manifest-to-category/product mappings and a bounded seed-run ledger. It must never be journaled or applied through `db:migrate`/`db:push` while the database baseline is unresolved. Run `preflight_catalog_seed_reconciler.sql` read-only, save the schema fingerprint and collision report, take a backup, and rehearse the exact DDL and catalog workflow on a disposable copy first.
+
+The production command is a manual Railway job only. Every command requires an exact reviewed manifest hash and runtime/expected Railway project, environment, service, database, release-ID, and release-commit pairs; `catalog:seed:plan` and `catalog:seed:verify` are read-only, while `catalog:seed:apply` and `catalog:seed:rollback` also require explicit command confirmation. Global duplicate category/product slug, SKU, and object-key scans fail the plan before writes. Existing managed-field hashes reject out-of-band edits rather than overwriting them. Newly created rows are deleted on rollback only when unreferenced; otherwise rollback stops and the backup/restore handle remains the final recovery boundary. Never run the destructive UAT fixture seed against production.

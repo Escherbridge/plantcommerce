@@ -7,7 +7,15 @@
 
 	const orders = $derived(data.orders || []);
 
-	const statusTabs = ['all', 'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'] as const;
+	const statusTabs = [
+		'all',
+		'pending',
+		'confirmed',
+		'processing',
+		'shipped',
+		'delivered',
+		'cancelled'
+	] as const;
 
 	const activeStatus = $derived($page.url.searchParams.get('status') || 'all');
 
@@ -27,13 +35,20 @@
 
 	function getStatusBadgeClass(status: string): string {
 		switch (status?.toLowerCase()) {
-			case 'delivered': return 'platform-badge platform-badge--success';
-			case 'processing': return 'platform-badge platform-badge--warning';
-			case 'pending': return 'platform-badge platform-badge--ghost';
-			case 'cancelled': return 'platform-badge platform-badge--error';
-			case 'shipped': return 'platform-badge platform-badge--primary';
-			case 'confirmed': return 'platform-badge platform-badge--secondary';
-			default: return 'platform-badge platform-badge--ghost';
+			case 'delivered':
+				return 'platform-badge platform-badge--success';
+			case 'processing':
+				return 'platform-badge platform-badge--warning';
+			case 'pending':
+				return 'platform-badge platform-badge--ghost';
+			case 'cancelled':
+				return 'platform-badge platform-badge--error';
+			case 'shipped':
+				return 'platform-badge platform-badge--primary';
+			case 'confirmed':
+				return 'platform-badge platform-badge--secondary';
+			default:
+				return 'platform-badge platform-badge--ghost';
 		}
 	}
 
@@ -48,7 +63,7 @@
 			new Date(order.createdAt).toLocaleDateString()
 		]);
 
-		const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+		const csvContent = [headers, ...rows].map((row) => row.join(',')).join('\n');
 		const blob = new Blob([csvContent], { type: 'text/csv' });
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement('a');
@@ -67,10 +82,18 @@
 				<p class="platform-header__subtitle">Review recorded customer orders</p>
 			</div>
 			<button class="platform-action-btn admin-header-btn" onclick={exportCSV}>
-				<svg viewBox="0 0 24 24" class="w-5 h-5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-					<polyline points="7 10 12 15 17 10"/>
-					<line x1="12" y1="15" x2="12" y2="3"/>
+				<svg
+					viewBox="0 0 24 24"
+					class="h-5 w-5"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+					<polyline points="7 10 12 15 17 10" />
+					<line x1="12" y1="15" x2="12" y2="3" />
 				</svg>
 				Export CSV
 			</button>
@@ -110,7 +133,7 @@
 							<td>
 								<svg
 									viewBox="0 0 24 24"
-									class="w-4 h-4 admin-expand-icon"
+									class="admin-expand-icon h-4 w-4"
 									class:admin-expand-icon--open={expandedRows[order.id]}
 									stroke="currentColor"
 									stroke-width="1.5"
@@ -118,7 +141,7 @@
 									stroke-linecap="round"
 									stroke-linejoin="round"
 								>
-									<polyline points="6 9 12 15 18 9"/>
+									<polyline points="6 9 12 15 18 9" />
 								</svg>
 							</td>
 							<td class="font-mono" style="font-size: 0.75rem">#{order.id}</td>

@@ -21,14 +21,20 @@
 	const src = $derived(signedUrl || config.url || '');
 </script>
 
-<div class="w-full rounded-2xl overflow-hidden bg-base-300">
+<div class="w-full overflow-hidden rounded-2xl bg-base-300">
 	<div class="relative" style="aspect-ratio: 16/9;">
 		{#if src}
-			<video bind:this={videoEl} {src} controls preload="metadata" class="w-full h-full object-contain">
+			<video
+				bind:this={videoEl}
+				{src}
+				controls
+				preload="metadata"
+				class="h-full w-full object-contain"
+			>
 				<track kind="captions" />
 			</video>
 		{:else}
-			<div class="flex items-center justify-center h-full text-base-content/40">
+			<div class="flex h-full items-center justify-center text-base-content/40">
 				<span>No video source available</span>
 			</div>
 		{/if}

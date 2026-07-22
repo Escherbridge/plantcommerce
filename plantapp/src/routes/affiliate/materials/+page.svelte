@@ -14,7 +14,10 @@
 	</div>
 	<div class="platform-card">
 		<div class="platform-empty">
-			<p class="platform-empty__text">Do not publish Aevani promotions, links, claims, or copied marketing materials until explicit approval and written program terms are provided.</p>
+			<p class="platform-empty__text">
+				Do not publish Aevani promotions, links, claims, or copied marketing materials until
+				explicit approval and written program terms are provided.
+			</p>
 			<a href="/affiliate/terms" class="platform-action-btn">Review program status</a>
 		</div>
 	</div>

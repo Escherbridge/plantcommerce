@@ -9,14 +9,16 @@ import { getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
 
 const activeAffiliateRequiredMessage = 'Your affiliate application must be active and approved';
 
-function withoutAffiliateOperations<T extends {
-	affiliateCode: string;
-	commissionRate: string;
-	totalEarnings: string;
-	totalClicks: number;
-	totalConversions: number;
-	isActive: boolean;
-}>(affiliate: T) {
+function withoutAffiliateOperations<
+	T extends {
+		affiliateCode: string;
+		commissionRate: string;
+		totalEarnings: string;
+		totalClicks: number;
+		totalConversions: number;
+		isActive: boolean;
+	}
+>(affiliate: T) {
 	return {
 		...affiliate,
 		affiliateCode: '',
@@ -280,9 +282,10 @@ export const affiliateRouter = router({
 					throw new TRPCError({ code: 'FORBIDDEN', message: 'Access denied' });
 				}
 
-				const affiliate = input.affiliateId !== undefined
-					? await AffiliateService.requireActiveAffiliateById(input.affiliateId)
-					: await getPortalAffiliate(ctx.user.id, ctx.user.role === 'admin');
+				const affiliate =
+					input.affiliateId !== undefined
+						? await AffiliateService.requireActiveAffiliateById(input.affiliateId)
+						: await getPortalAffiliate(ctx.user.id, ctx.user.role === 'admin');
 
 				if (!affiliate) {
 					throw new TRPCError({
@@ -354,7 +357,7 @@ export const affiliateRouter = router({
 					throw new TRPCError({ code: 'NOT_FOUND', message: 'Affiliate link not found' });
 				}
 				const linkWithProduct = await AffiliateService.getLinkWithProductByCode(input.linkCode);
-				
+
 				if (!linkWithProduct) {
 					throw new TRPCError({
 						code: 'NOT_FOUND',

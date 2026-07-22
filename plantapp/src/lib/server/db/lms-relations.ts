@@ -202,13 +202,16 @@ export const lmsQuizAnswerRelations = relations(lmsQuizAnswer, ({ one }) => ({
 	})
 }));
 
-export const lmsCertificateTemplateRelations = relations(lmsCertificateTemplate, ({ one, many }) => ({
-	course: one(lmsCourse, {
-		fields: [lmsCertificateTemplate.courseId],
-		references: [lmsCourse.id]
-	}),
-	certificates: many(lmsCertificate)
-}));
+export const lmsCertificateTemplateRelations = relations(
+	lmsCertificateTemplate,
+	({ one, many }) => ({
+		course: one(lmsCourse, {
+			fields: [lmsCertificateTemplate.courseId],
+			references: [lmsCourse.id]
+		}),
+		certificates: many(lmsCertificate)
+	})
+);
 
 export const lmsCertificateRelations = relations(lmsCertificate, ({ one }) => ({
 	enrollment: one(lmsEnrollment, {

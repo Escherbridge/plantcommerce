@@ -49,38 +49,49 @@
 	}
 </script>
 
-<div class="max-w-3xl mx-auto px-4 lg:px-8 py-16 lg:py-24">
-	<div class="text-center space-y-6">
-		<span class="text-editorial text-secondary font-mono tracking-widest">WELCOME</span>
-		<h1 class="font-display text-4xl lg:text-5xl font-bold uppercase tracking-tight">
+<div class="mx-auto max-w-3xl px-4 py-16 lg:px-8 lg:py-24">
+	<div class="space-y-6 text-center">
+		<span class="text-editorial font-mono tracking-widest text-secondary">WELCOME</span>
+		<h1 class="font-display text-4xl font-bold tracking-tight uppercase lg:text-5xl">
 			{course.title}
 		</h1>
 		{#if course.description}
-			<p class="text-lg text-base-content/70 font-light leading-relaxed">
+			<p class="text-lg leading-relaxed font-light text-base-content/70">
 				{course.description}
 			</p>
 		{/if}
 
 		<div class="pt-6">
 			{#if loading}
-				<button type="button" class="btn btn-primary btn-lg rounded-2xl font-display uppercase tracking-wider" disabled>
-					<span class="loading loading-spinner loading-sm"></span>
+				<button
+					type="button"
+					class="font-display btn rounded-2xl tracking-wider uppercase btn-lg btn-primary"
+					disabled
+				>
+					<span class="loading loading-sm loading-spinner"></span>
 					Loading
 				</button>
 			{:else if !firstLessonSlug && !resumeLessonSlug}
 				<div class="rounded-3xl border border-base-200/50 bg-base-100 p-8">
-					<p class="text-base-content/60 font-light">
+					<p class="font-light text-base-content/60">
 						Course content is being prepared. Check back soon.
 					</p>
 				</div>
 			{:else}
 				<button
 					type="button"
-					class="btn btn-primary btn-lg rounded-2xl font-display uppercase tracking-wider"
+					class="font-display btn rounded-2xl tracking-wider uppercase btn-lg btn-primary"
 					onclick={handleStart}
 				>
 					{resumeLessonSlug ? 'Resume Learning' : 'Start Learning'}
-					<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="ml-2 h-4 w-4"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						stroke-width="2"
+					>
 						<path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
 					</svg>
 				</button>

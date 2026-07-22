@@ -29,9 +29,24 @@
 		{ label: 'Profile Settings', href: '/account/profile', section: 'Account' },
 		{ label: 'Account Settings', href: '/account/settings', section: 'Account' },
 		{ label: 'Browse Products', href: '/products', section: 'Shop' },
-		{ label: 'Affiliate Dashboard', href: '/affiliate/dashboard', section: 'Affiliate', roles: ['affiliate', 'admin'] },
-		{ label: 'Affiliate Links', href: '/affiliate/links', section: 'Affiliate', roles: ['affiliate', 'admin'] },
-		{ label: 'Affiliate Earnings', href: '/affiliate/earnings', section: 'Affiliate', roles: ['affiliate', 'admin'] },
+		{
+			label: 'Affiliate Dashboard',
+			href: '/affiliate/dashboard',
+			section: 'Affiliate',
+			roles: ['affiliate', 'admin']
+		},
+		{
+			label: 'Affiliate Links',
+			href: '/affiliate/links',
+			section: 'Affiliate',
+			roles: ['affiliate', 'admin']
+		},
+		{
+			label: 'Affiliate Earnings',
+			href: '/affiliate/earnings',
+			section: 'Affiliate',
+			roles: ['affiliate', 'admin']
+		},
 		{ label: 'Admin Dashboard', href: '/admin', section: 'Admin', roles: ['admin'] },
 		{ label: 'Manage Products', href: '/admin/products', section: 'Admin', roles: ['admin'] },
 		{ label: 'Manage Orders', href: '/admin/orders', section: 'Admin', roles: ['admin'] },
@@ -39,15 +54,11 @@
 		{ label: 'Analytics', href: '/admin/analytics', section: 'Admin', roles: ['admin'] }
 	];
 
-	const availablePages = $derived(
-		allPages.filter((p) => !p.roles || p.roles.includes(userRole))
-	);
+	const availablePages = $derived(allPages.filter((p) => !p.roles || p.roles.includes(userRole)));
 
 	const filteredPages = $derived(
 		query.trim()
-			? availablePages.filter((p) =>
-					p.label.toLowerCase().includes(query.toLowerCase())
-				)
+			? availablePages.filter((p) => p.label.toLowerCase().includes(query.toLowerCase()))
 			: availablePages.slice(0, 6) // Quick links when no query
 	);
 
@@ -175,13 +186,35 @@
 
 {#if open}
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div class="palette-overlay" onkeydown={handleDialogKeydown} onclick={() => { open = false; query = ''; }}>
+	<div
+		class="palette-overlay"
+		onkeydown={handleDialogKeydown}
+		onclick={() => {
+			open = false;
+			query = '';
+		}}
+	>
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<!-- svelte-ignore a11y_interactive_supports_focus -->
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<div class="palette-dialog" onclick={(e) => e.stopPropagation()} role="dialog" aria-label="Command palette">
+		<div
+			class="palette-dialog"
+			onclick={(e) => e.stopPropagation()}
+			role="dialog"
+			aria-label="Command palette"
+		>
 			<div class="palette-input-wrap">
-				<svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+				<svg
+					class="search-icon"
+					viewBox="0 0 24 24"
+					width="20"
+					height="20"
+					stroke="currentColor"
+					stroke-width="1.5"
+					fill="none"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
 					<circle cx="11" cy="11" r="8" />
 					<line x1="21" y1="21" x2="16.65" y2="16.65" />
 				</svg>
@@ -208,8 +241,18 @@
 								onclick={() => selectResult(page)}
 								onmouseenter={() => (selectedIndex = idx)}
 							>
-								<svg class="result-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-									<path d="{sectionIcon(page.section)}" />
+								<svg
+									class="result-icon"
+									viewBox="0 0 24 24"
+									width="16"
+									height="16"
+									stroke="currentColor"
+									stroke-width="1.5"
+									fill="none"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<path d={sectionIcon(page.section)} />
 								</svg>
 								<span class="result-label">{page.label}</span>
 								<span class="result-badge">{page.section}</span>
@@ -229,8 +272,18 @@
 								onclick={() => selectResult(page)}
 								onmouseenter={() => (selectedIndex = currentFlatIndex)}
 							>
-								<svg class="result-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-									<path d="{sectionIcon(section)}" />
+								<svg
+									class="result-icon"
+									viewBox="0 0 24 24"
+									width="16"
+									height="16"
+									stroke="currentColor"
+									stroke-width="1.5"
+									fill="none"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<path d={sectionIcon(section)} />
 								</svg>
 								<span class="result-label">{page.label}</span>
 								<span class="result-badge">{section}</span>
@@ -272,8 +325,12 @@
 	}
 
 	@keyframes overlay-in {
-		from { opacity: 0; }
-		to { opacity: 1; }
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {

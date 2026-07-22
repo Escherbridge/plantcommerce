@@ -28,7 +28,9 @@ function configuredValue(value: string | undefined): string | null {
 function emailBaseUrl(): URL {
 	const rawBaseUrl = configuredValue(publicEnv.PUBLIC_BASE_URL);
 	if (!rawBaseUrl) {
-		throw new EmailConfigurationError('PUBLIC_BASE_URL must be configured before sending account email');
+		throw new EmailConfigurationError(
+			'PUBLIC_BASE_URL must be configured before sending account email'
+		);
 	}
 
 	let baseUrl: URL;
@@ -84,7 +86,9 @@ export class EmailService {
 		const apiKey = configuredValue(env.RESEND_API_KEY);
 		const from = configuredValue(env.EMAIL_FROM);
 		if (!apiKey || !from) {
-			throw new EmailConfigurationError('RESEND_API_KEY and EMAIL_FROM must be configured before sending account email');
+			throw new EmailConfigurationError(
+				'RESEND_API_KEY and EMAIL_FROM must be configured before sending account email'
+			);
 		}
 		return { apiKey, from };
 	}

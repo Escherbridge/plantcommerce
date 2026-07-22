@@ -1,6 +1,7 @@
 import type { PageLoad } from './$types';
 import { createCallerClient } from '$lib/trpc/client';
 import { error } from '@sveltejs/kit';
+import { getPublicProductImages } from '$lib/utils/productMedia';
 
 export const load: PageLoad = async (event) => {
 	const { params } = event;
@@ -49,11 +50,7 @@ function normalizeProduct(row: any) {
 	const cat = row.category ?? p.category;
 	const tags = typeof p.tags === 'string' ? JSON.parse(p.tags) : (p.tags ?? []);
 
-	function resolveImageUrl(img: any): string {
-		if (img?.url) return img.url;
-		const path = img?.bucketPath || 'AI-MockAssets/MAINHERO.png';
-		return `/api/files/serve?path=${encodeURIComponent(path)}`;
-	}
+	const images = getPublicProductImages(p.images, p.shortDescription);
 
 	return {
 		id: p.id,
@@ -68,12 +65,9 @@ function normalizeProduct(row: any) {
 		inStock: (p.stockQuantity ?? 0) > 0,
 		isFeatured: p.isFeatured,
 		tags,
-		category: cat ? { id: cat.id, name: cat.name, slug: cat.slug, description: cat.description ?? null } : null,
-		images: p.images?.length
-			? p.images.map((img: any) => ({
-				url: resolveImageUrl(img),
-				altText: img.altText || p.shortDescription
-			}))
-			: []
+		category: cat
+			? { id: cat.id, name: cat.name, slug: cat.slug, description: cat.description ?? null }
+			: null,
+		images
 	};
 }

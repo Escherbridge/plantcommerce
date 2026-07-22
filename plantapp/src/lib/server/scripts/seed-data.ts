@@ -81,7 +81,9 @@ export async function createDefaultAdmin() {
 
 		const password = process.env.AEVANI_DEV_ADMIN_PASSWORD;
 		if (!password || password.length < 16) {
-			throw new Error('Set a unique AEVANI_DEV_ADMIN_PASSWORD with at least 16 characters before seeding an admin.');
+			throw new Error(
+				'Set a unique AEVANI_DEV_ADMIN_PASSWORD with at least 16 characters before seeding an admin.'
+			);
 		}
 
 		const passwordHash = await hash(password, {
@@ -105,7 +107,6 @@ export async function createDefaultAdmin() {
 
 		await db.insert(table.user).values(adminUser);
 		console.log('Created development admin from the caller-supplied environment password');
-
 	} catch (error) {
 		console.error('❌ Error creating admin user:', error);
 		throw error;
@@ -117,7 +118,7 @@ export async function createDefaultAdmin() {
  */
 export async function seedDatabase() {
 	console.log('🚀 Starting database seeding...');
-	
+
 	try {
 		await seedDefaultCategories();
 		await createDefaultAdmin();

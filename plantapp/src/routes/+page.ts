@@ -15,8 +15,8 @@ export const load: PageLoad = async (event) => {
 		]);
 
 		const parentSlugMap = buildParentSlugMap(categories);
-		const featuredProducts = (Array.isArray(results) ? results : []).map(
-			(row: any) => normalizeProduct(row, parentSlugMap)
+		const featuredProducts = (Array.isArray(results) ? results : []).map((row: any) =>
+			normalizeProduct(row, parentSlugMap)
 		);
 
 		return { featuredProducts };
@@ -55,7 +55,7 @@ function normalizeProduct(row: any, parentSlugMap: Map<number, string>) {
 		return `/api/files/serve?path=${encodeURIComponent(path)}`;
 	}
 
-	const categorySlug = cat ? (parentSlugMap.get(cat.id) || cat.slug) : 'all';
+	const categorySlug = cat ? parentSlugMap.get(cat.id) || cat.slug : 'all';
 
 	return {
 		id: p.id,
@@ -74,9 +74,9 @@ function normalizeProduct(row: any, parentSlugMap: Map<number, string>) {
 		categorySlug,
 		images: p.images?.length
 			? p.images.map((img: any) => ({
-				url: resolveImageUrl(img),
-				altText: img.altText || p.shortDescription
-			}))
+					url: resolveImageUrl(img),
+					altText: img.altText || p.shortDescription
+				}))
 			: []
 	};
 }

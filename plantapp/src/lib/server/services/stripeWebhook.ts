@@ -19,12 +19,13 @@ type MatchedPayment = {
 	attempt: typeof table.checkoutPaymentAttempt.$inferSelect;
 };
 
-type ClaimResult =
-	| { kind: 'claimed' }
-	| { kind: 'complete' }
-	| { kind: 'in_progress' };
+type ClaimResult = { kind: 'claimed' } | { kind: 'complete' } | { kind: 'in_progress' };
 
-export type StripeWebhookProcessResult = 'processed' | 'ignored' | 'already_complete' | 'in_progress';
+export type StripeWebhookProcessResult =
+	| 'processed'
+	| 'ignored'
+	| 'already_complete'
+	| 'in_progress';
 
 function payloadDigest(payload: Buffer): string {
 	return createHash('sha256').update(payload).digest('hex');
@@ -37,7 +38,7 @@ function newOrderNumber(): string {
 function paymentIntentId(session: Stripe.Checkout.Session): string | null {
 	return typeof session.payment_intent === 'string'
 		? session.payment_intent
-		: session.payment_intent?.id ?? null;
+		: (session.payment_intent?.id ?? null);
 }
 
 function isUniqueViolation(error: unknown): boolean {
@@ -54,16 +55,23 @@ function webhookSessionId(event: Stripe.Event): string | null {
 	return typeof object.id === 'string' && object.id.length > 0 ? object.id : null;
 }
 
-function sessionIdentityMatchesPayment(session: Stripe.Checkout.Session, payment: MatchedPayment): boolean {
-	return session.mode === 'payment'
-		&& session.metadata?.checkout_draft_reference === payment.draft.reference
-		&& session.amount_total === payment.attempt.amountMinor
-		&& session.currency === payment.attempt.currency;
+function sessionIdentityMatchesPayment(
+	session: Stripe.Checkout.Session,
+	payment: MatchedPayment
+): boolean {
+	return (
+		session.mode === 'payment' &&
+		session.metadata?.checkout_draft_reference === payment.draft.reference &&
+		session.amount_total === payment.attempt.amountMinor &&
+		session.currency === payment.attempt.currency
+	);
 }
 
 function sessionMatchesPayment(session: Stripe.Checkout.Session, payment: MatchedPayment): boolean {
-	return sessionIdentityMatchesPayment(session, payment)
-		&& session.expires_at * 1000 <= payment.draft.expiresAt.getTime();
+	return (
+		sessionIdentityMatchesPayment(session, payment) &&
+		session.expires_at * 1000 <= payment.draft.expiresAt.getTime()
+	);
 }
 
 function providerCustomerData(session: Stripe.Checkout.Session) {
@@ -80,7 +88,10 @@ function providerCustomerData(session: Stripe.Checkout.Session) {
 	return {
 		email,
 		phone: customerDetails?.phone ?? null,
-		shippingAddress: JSON.stringify({ name: shippingDetails?.name ?? customerDetails?.name ?? null, address: shippingAddress }),
+		shippingAddress: JSON.stringify({
+			name: shippingDetails?.name ?? customerDetails?.name ?? null,
+			address: shippingAddress
+		}),
 		billingAddress: JSON.stringify({ name: customerDetails?.name ?? null, address: billingAddress })
 	};
 }
@@ -110,9 +121,9 @@ async function clearUnchangedSourceCart(
 
 	const buyerStillOwnsCart = draft.userId
 		? cart.userId === draft.userId
-		: cart.userId === null
-			&& cart.sessionId !== null
-			&& draft.guestSubjectHash === hashGuestCheckoutSubject(cart.sessionId);
+		: cart.userId === null &&
+			cart.sessionId !== null &&
+			draft.guestSubjectHash === hashGuestCheckoutSubject(cart.sessionId);
 	if (!buyerStillOwnsCart) {
 		return;
 	}
@@ -123,7 +134,10 @@ async function clearUnchangedSourceCart(
 
 export class StripeWebhookService {
 	/** Process a signature-verified raw Stripe event through a durable idempotency record. */
-	static async processVerifiedEvent(event: Stripe.Event, rawPayload: Buffer): Promise<StripeWebhookProcessResult> {
+	static async processVerifiedEvent(
+		event: Stripe.Event,
+		rawPayload: Buffer
+	): Promise<StripeWebhookProcessResult> {
 		const claim = await this.claimEvent(event.id, event.type, payloadDigest(rawPayload));
 		if (claim.kind === 'complete') {
 			return 'already_complete';
@@ -133,9 +147,11 @@ export class StripeWebhookService {
 		}
 
 		try {
-			if (event.type !== 'checkout.session.completed'
-				&& event.type !== 'checkout.session.async_payment_succeeded'
-				&& event.type !== 'checkout.session.expired') {
+			if (
+				event.type !== 'checkout.session.completed' &&
+				event.type !== 'checkout.session.async_payment_succeeded' &&
+				event.type !== 'checkout.session.expired'
+			) {
 				await this.finishEvent(event.id, 'ignored');
 				return 'ignored';
 			}
@@ -153,8 +169,10 @@ export class StripeWebhookService {
 				await this.finishEvent(event.id, 'ignored');
 				return 'ignored';
 			}
-			if (!sessionIdentityMatchesPayment(session, payment)
-				|| (event.type !== 'checkout.session.expired' && !sessionMatchesPayment(session, payment))) {
+			if (
+				!sessionIdentityMatchesPayment(session, payment) ||
+				(event.type !== 'checkout.session.expired' && !sessionMatchesPayment(session, payment))
+			) {
 				throw new Error('Stripe Checkout Session does not match its immutable payment attempt');
 			}
 
@@ -176,7 +194,11 @@ export class StripeWebhookService {
 		}
 	}
 
-	private static async claimEvent(eventId: string, eventType: string, digest: string): Promise<ClaimResult> {
+	private static async claimEvent(
+		eventId: string,
+		eventType: string,
+		digest: string
+	): Promise<ClaimResult> {
 		try {
 			await db.insert(table.stripeWebhookEvent).values({
 				id: eventId,
@@ -205,7 +227,10 @@ export class StripeWebhookService {
 				return { kind: 'complete' };
 			}
 			if (storedEvent.status === 'processing') {
-				if (!storedEvent.processingAt || Date.now() - storedEvent.processingAt.getTime() < STALE_WEBHOOK_PROCESSING_MS) {
+				if (
+					!storedEvent.processingAt ||
+					Date.now() - storedEvent.processingAt.getTime() < STALE_WEBHOOK_PROCESSING_MS
+				) {
 					return { kind: 'in_progress' };
 				}
 				await tx
@@ -237,7 +262,10 @@ export class StripeWebhookService {
 		const [payment] = await db
 			.select({ draft: table.checkoutDraft, attempt: table.checkoutPaymentAttempt })
 			.from(table.checkoutPaymentAttempt)
-			.innerJoin(table.checkoutDraft, eq(table.checkoutPaymentAttempt.draftId, table.checkoutDraft.id))
+			.innerJoin(
+				table.checkoutDraft,
+				eq(table.checkoutPaymentAttempt.draftId, table.checkoutDraft.id)
+			)
 			.where(eq(table.checkoutPaymentAttempt.stripeSessionId, sessionId))
 			.limit(1);
 		return payment ?? null;
@@ -254,7 +282,10 @@ export class StripeWebhookService {
 				throw new Error('Stripe webhook event is not available for payment linkage');
 			}
 			if (storedEvent.paymentAttemptId) {
-				if (storedEvent.paymentAttemptId !== payment.attempt.id || storedEvent.draftId !== payment.draft.id) {
+				if (
+					storedEvent.paymentAttemptId !== payment.attempt.id ||
+					storedEvent.draftId !== payment.draft.id
+				) {
 					throw new Error('Stripe webhook event is linked to a different payment attempt');
 				}
 				return;
@@ -286,10 +317,12 @@ export class StripeWebhookService {
 			const [attempt] = await tx
 				.select()
 				.from(table.checkoutPaymentAttempt)
-				.where(and(
-					eq(table.checkoutPaymentAttempt.id, payment.attempt.id),
-					eq(table.checkoutPaymentAttempt.draftId, payment.draft.id)
-				))
+				.where(
+					and(
+						eq(table.checkoutPaymentAttempt.id, payment.attempt.id),
+						eq(table.checkoutPaymentAttempt.draftId, payment.draft.id)
+					)
+				)
 				.for('update');
 			const [storedEvent] = await tx
 				.select()
@@ -300,8 +333,14 @@ export class StripeWebhookService {
 			if (!draft || !attempt || !storedEvent || storedEvent.status !== 'processing') {
 				throw new Error('Stripe webhook fulfillment state is unavailable');
 			}
-			if (storedEvent.paymentAttemptId !== attempt.id || storedEvent.draftId !== draft.id || !sessionMatchesPayment(session, { draft, attempt })) {
-				throw new Error('Stripe webhook fulfillment state does not match the immutable payment attempt');
+			if (
+				storedEvent.paymentAttemptId !== attempt.id ||
+				storedEvent.draftId !== draft.id ||
+				!sessionMatchesPayment(session, { draft, attempt })
+			) {
+				throw new Error(
+					'Stripe webhook fulfillment state does not match the immutable payment attempt'
+				);
 			}
 			const now = new Date();
 
@@ -344,10 +383,12 @@ export class StripeWebhookService {
 			const reservations = await tx
 				.select()
 				.from(table.checkoutInventoryReservation)
-				.where(and(
-					eq(table.checkoutInventoryReservation.draftId, draft.id),
-					eq(table.checkoutInventoryReservation.status, 'active')
-				))
+				.where(
+					and(
+						eq(table.checkoutInventoryReservation.draftId, draft.id),
+						eq(table.checkoutInventoryReservation.status, 'active')
+					)
+				)
 				.orderBy(asc(table.checkoutInventoryReservation.productId))
 				.for('update');
 			const trackedItems = items.filter((item) => item.trackInventory);
@@ -355,17 +396,30 @@ export class StripeWebhookService {
 				throw new Error('Checkout inventory reservations do not match the immutable draft items');
 			}
 
-			const products = reservations.length === 0
-				? []
-				: await tx
-					.select()
-					.from(table.product)
-					.where(inArray(table.product.id, reservations.map((reservation) => reservation.productId)))
-					.orderBy(asc(table.product.id))
-					.for('update');
+			const products =
+				reservations.length === 0
+					? []
+					: await tx
+							.select()
+							.from(table.product)
+							.where(
+								inArray(
+									table.product.id,
+									reservations.map((reservation) => reservation.productId)
+								)
+							)
+							.orderBy(asc(table.product.id))
+							.for('update');
 			for (const reservation of reservations) {
-				const product = products.find((candidate: typeof table.product.$inferSelect) => candidate.id === reservation.productId);
-				if (!product || !product.trackInventory || product.reservedQuantity < reservation.quantity || product.stockQuantity < reservation.quantity) {
+				const product = products.find(
+					(candidate: typeof table.product.$inferSelect) => candidate.id === reservation.productId
+				);
+				if (
+					!product ||
+					!product.trackInventory ||
+					product.reservedQuantity < reservation.quantity ||
+					product.stockQuantity < reservation.quantity
+				) {
 					throw new Error('Reserved inventory cannot be consumed safely');
 				}
 			}
@@ -420,19 +474,23 @@ export class StripeWebhookService {
 				stripeWebhookEventId: storedEvent.id,
 				now
 			});
-			await tx.insert(table.orderItem).values(items.map((item) => ({
-				orderId: order.id,
-				productId: item.productId,
-				productName: item.productName,
-				productSku: item.productSku,
-				quantity: item.quantity,
-				unitPrice: minorUnitsToDecimal(item.unitPriceMinor),
-				totalPrice: minorUnitsToDecimal(item.totalPriceMinor),
-				createdAt: now
-			})));
+			await tx.insert(table.orderItem).values(
+				items.map((item) => ({
+					orderId: order.id,
+					productId: item.productId,
+					productName: item.productName,
+					productSku: item.productSku,
+					quantity: item.quantity,
+					unitPrice: minorUnitsToDecimal(item.unitPriceMinor),
+					totalPrice: minorUnitsToDecimal(item.totalPriceMinor),
+					createdAt: now
+				}))
+			);
 
 			for (const reservation of reservations) {
-				const product = products.find((candidate: typeof table.product.$inferSelect) => candidate.id === reservation.productId);
+				const product = products.find(
+					(candidate: typeof table.product.$inferSelect) => candidate.id === reservation.productId
+				);
 				if (!product) {
 					throw new Error('Reserved product disappeared during fulfillment');
 				}
@@ -473,10 +531,12 @@ export class StripeWebhookService {
 			const [attempt] = await tx
 				.select()
 				.from(table.checkoutPaymentAttempt)
-				.where(and(
-					eq(table.checkoutPaymentAttempt.id, payment.attempt.id),
-					eq(table.checkoutPaymentAttempt.draftId, payment.draft.id)
-				))
+				.where(
+					and(
+						eq(table.checkoutPaymentAttempt.id, payment.attempt.id),
+						eq(table.checkoutPaymentAttempt.draftId, payment.draft.id)
+					)
+				)
 				.for('update');
 			const [storedEvent] = await tx
 				.select()
@@ -487,18 +547,22 @@ export class StripeWebhookService {
 			if (!draft || !attempt || !storedEvent || storedEvent.status !== 'processing') {
 				throw new Error('Stripe webhook expiry state is unavailable');
 			}
-			if (storedEvent.paymentAttemptId !== attempt.id
-				|| storedEvent.draftId !== draft.id
-				|| !sessionIdentityMatchesPayment(session, { draft, attempt })
-				|| session.status !== 'expired') {
+			if (
+				storedEvent.paymentAttemptId !== attempt.id ||
+				storedEvent.draftId !== draft.id ||
+				!sessionIdentityMatchesPayment(session, { draft, attempt }) ||
+				session.status !== 'expired'
+			) {
 				throw new Error('Stripe webhook expiry state does not match the immutable payment attempt');
 			}
 			if (attempt.status === 'paid' || draft.status === 'paid' || draft.status === 'fulfilled') {
 				await this.finishLockedEvent(tx, storedEvent.id, 'ignored');
 				return;
 			}
-			const attemptIsExpirable = attempt.status === 'checkout_created' || attempt.status === 'quarantined';
-			const draftIsExpirable = draft.status === 'checkout_created' || draft.status === 'quarantined';
+			const attemptIsExpirable =
+				attempt.status === 'checkout_created' || attempt.status === 'quarantined';
+			const draftIsExpirable =
+				draft.status === 'checkout_created' || draft.status === 'quarantined';
 			if (!attemptIsExpirable || !draftIsExpirable || attempt.status !== draft.status) {
 				throw new Error('Checkout payment attempt is not eligible for expiry release');
 			}
@@ -519,7 +583,10 @@ export class StripeWebhookService {
 		});
 	}
 
-	private static async finishEvent(eventId: string, status: 'processed' | 'ignored'): Promise<void> {
+	private static async finishEvent(
+		eventId: string,
+		status: 'processed' | 'ignored'
+	): Promise<void> {
 		await db.transaction(async (tx) => {
 			const [storedEvent] = await tx
 				.select()
@@ -533,7 +600,11 @@ export class StripeWebhookService {
 		});
 	}
 
-	private static async finishLockedEvent(tx: any, eventId: string, status: 'processed' | 'ignored'): Promise<void> {
+	private static async finishLockedEvent(
+		tx: any,
+		eventId: string,
+		status: 'processed' | 'ignored'
+	): Promise<void> {
 		await tx
 			.update(table.stripeWebhookEvent)
 			.set({
@@ -546,9 +617,13 @@ export class StripeWebhookService {
 	}
 
 	private static async failEvent(eventId: string, error: unknown): Promise<void> {
-		const errorCode = typeof error === 'object' && error !== null && 'code' in error && typeof error.code === 'string'
-			? error.code
-			: 'stripe_webhook_processing_failed';
+		const errorCode =
+			typeof error === 'object' &&
+			error !== null &&
+			'code' in error &&
+			typeof error.code === 'string'
+				? error.code
+				: 'stripe_webhook_processing_failed';
 		await db.transaction(async (tx) => {
 			const [storedEvent] = await tx
 				.select()

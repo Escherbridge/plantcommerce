@@ -48,11 +48,11 @@
 	});
 
 	// Current lesson from URL (lessonSlug is a child route param)
-	const currentLessonSlug = $derived((page.params as Record<string, string | undefined>).lessonSlug);
-
-	const currentLesson = $derived(
-		allLessons.find((l: any) => l.slug === currentLessonSlug) ?? null
+	const currentLessonSlug = $derived(
+		(page.params as Record<string, string | undefined>).lessonSlug
 	);
+
+	const currentLesson = $derived(allLessons.find((l: any) => l.slug === currentLessonSlug) ?? null);
 
 	const currentModule = $derived.by(() => {
 		if (!currentLesson) return null;
@@ -71,44 +71,67 @@
 </svelte:head>
 
 <!-- Progress Bar -->
-<div class="sticky top-0 z-40 bg-base-100 border-b border-base-200/50">
+<div class="sticky top-0 z-40 border-b border-base-200/50 bg-base-100">
 	<div class="h-1 bg-base-200">
-		<div class="h-full bg-primary transition-all duration-500" style="width: {progressPercent}%"></div>
+		<div
+			class="h-full bg-primary transition-all duration-500"
+			style="width: {progressPercent}%"
+		></div>
 	</div>
-	<div class="px-4 lg:px-8 py-3 flex items-center gap-3">
+	<div class="flex items-center gap-3 px-4 py-3 lg:px-8">
 		<button
 			type="button"
 			class="btn btn-ghost btn-sm lg:hidden"
 			onclick={() => (sidebarOpen = !sidebarOpen)}
 			aria-label="Toggle curriculum sidebar"
 		>
-			<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-5 w-5"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				stroke-width="2"
+			>
 				<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
 			</svg>
 		</button>
-		<a href="/learn/my-courses" class="text-xs font-mono text-base-content/50 hover:text-base-content tracking-wider uppercase hidden sm:flex items-center gap-1">
-			<svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+		<a
+			href="/learn/my-courses"
+			class="hidden items-center gap-1 font-mono text-xs tracking-wider text-base-content/50 uppercase hover:text-base-content sm:flex"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-3 w-3"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				stroke-width="2"
+			>
 				<path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
 			</svg>
 			Exit
 		</a>
-		<div class="flex-1 min-w-0">
-			<div class="text-xs font-mono text-base-content/50 tracking-wider uppercase truncate">
-				{#if currentModule}{currentModule.title} / {/if}{currentLesson?.title ?? course.title}
+		<div class="min-w-0 flex-1">
+			<div class="truncate font-mono text-xs tracking-wider text-base-content/50 uppercase">
+				{#if currentModule}{currentModule.title} /
+				{/if}{currentLesson?.title ?? course.title}
 			</div>
 		</div>
-		<div class="text-xs font-mono font-bold">{progressPercent}%</div>
+		<div class="font-mono text-xs font-bold">{progressPercent}%</div>
 	</div>
 </div>
 
 <div class="flex min-h-[calc(100vh-3.5rem)] bg-base-100">
 	<!-- Sidebar -->
 	<aside
-		class="fixed lg:sticky lg:top-14 lg:self-start lg:h-[calc(100vh-3.5rem)] inset-y-0 left-0 z-30 w-80 bg-base-100 border-r border-base-200/50 overflow-y-auto transition-transform lg:translate-x-0 {sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}"
+		class="fixed inset-y-0 left-0 z-30 w-80 overflow-y-auto border-r border-base-200/50 bg-base-100 transition-transform lg:sticky lg:top-14 lg:h-[calc(100vh-3.5rem)] lg:translate-x-0 lg:self-start {sidebarOpen
+			? 'translate-x-0'
+			: '-translate-x-full lg:translate-x-0'}"
 	>
-		<div class="p-6 border-b border-base-200/50">
-			<span class="text-editorial text-secondary font-mono text-xs tracking-widest">COURSE</span>
-			<h2 class="font-display text-lg font-bold uppercase tracking-tight mt-1 line-clamp-2">
+		<div class="border-b border-base-200/50 p-6">
+			<span class="text-editorial font-mono text-xs tracking-widest text-secondary">COURSE</span>
+			<h2 class="font-display mt-1 line-clamp-2 text-lg font-bold tracking-tight uppercase">
 				{course.title}
 			</h2>
 		</div>
@@ -116,9 +139,13 @@
 		<nav class="p-4">
 			{#each curriculum.modules ?? [] as mod, idx}
 				<div class="mb-6">
-					<div class="px-3 py-2 flex items-center gap-3">
-						<span class="font-mono text-xs text-base-content/40">{String(idx + 1).padStart(2, '0')}</span>
-						<h3 class="font-display text-sm font-bold uppercase tracking-wider flex-1">{mod.title}</h3>
+					<div class="flex items-center gap-3 px-3 py-2">
+						<span class="font-mono text-xs text-base-content/40"
+							>{String(idx + 1).padStart(2, '0')}</span
+						>
+						<h3 class="font-display flex-1 text-sm font-bold tracking-wider uppercase">
+							{mod.title}
+						</h3>
 					</div>
 					<ul class="space-y-1">
 						{#each mod.lessons ?? [] as lesson}
@@ -128,22 +155,44 @@
 								<a
 									href="/learn/course/{course.slug}/{lesson.slug}"
 									onclick={closeSidebar}
-									class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-colors {isActive ? 'bg-primary/10 text-primary font-medium' : 'text-base-content/70 hover:bg-base-200/50 hover:text-base-content'}"
+									class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors {isActive
+										? 'bg-primary/10 font-medium text-primary'
+										: 'text-base-content/70 hover:bg-base-200/50 hover:text-base-content'}"
 								>
-									<span class="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+									<span class="flex h-5 w-5 flex-shrink-0 items-center justify-center">
 										{#if isCompleted}
-											<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-												<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												class="h-5 w-5 text-success"
+												fill="none"
+												viewBox="0 0 24 24"
+												stroke="currentColor"
+												stroke-width="2.5"
+											>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+												/>
 											</svg>
 										{:else}
-											<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												class="h-4 w-4 text-base-content/40"
+												fill="none"
+												viewBox="0 0 24 24"
+												stroke="currentColor"
+												stroke-width="1.5"
+											>
 												<circle cx="12" cy="12" r="9" />
 											</svg>
 										{/if}
 									</span>
-									<span class="flex-1 line-clamp-2">{lesson.title}</span>
+									<span class="line-clamp-2 flex-1">{lesson.title}</span>
 									{#if lesson.estimatedMinutes}
-										<span class="text-xs font-mono text-base-content/40">{lesson.estimatedMinutes}m</span>
+										<span class="font-mono text-xs text-base-content/40"
+											>{lesson.estimatedMinutes}m</span
+										>
 									{/if}
 								</a>
 							</li>
@@ -158,14 +207,14 @@
 	{#if sidebarOpen}
 		<button
 			type="button"
-			class="fixed inset-0 bg-black/40 z-20 lg:hidden"
+			class="fixed inset-0 z-20 bg-black/40 lg:hidden"
 			onclick={closeSidebar}
 			aria-label="Close sidebar"
 		></button>
 	{/if}
 
 	<!-- Main content -->
-	<main class="flex-1 min-w-0">
+	<main class="min-w-0 flex-1">
 		{@render children()}
 	</main>
 </div>

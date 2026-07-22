@@ -54,12 +54,14 @@
 	}
 </script>
 
-<div class="max-w-3xl mx-auto px-4 lg:px-8 py-10 lg:py-16">
+<div class="mx-auto max-w-3xl px-4 py-10 lg:px-8 lg:py-16">
 	<!-- Breadcrumb -->
-	<div class="mb-6 text-xs font-mono text-base-content/50 tracking-wider uppercase flex items-center gap-2">
+	<div
+		class="mb-6 flex items-center gap-2 font-mono text-xs tracking-wider text-base-content/50 uppercase"
+	>
 		<a href="/learn/my-courses" class="hover:text-base-content">My Learning</a>
 		<span>/</span>
-		<a href="/courses/{course.slug}" class="hover:text-base-content line-clamp-1">{course.title}</a>
+		<a href="/courses/{course.slug}" class="line-clamp-1 hover:text-base-content">{course.title}</a>
 		{#if mod}
 			<span>/</span>
 			<span class="line-clamp-1">{mod.title}</span>
@@ -68,18 +70,31 @@
 
 	<!-- Lesson Header -->
 	<header class="mb-10">
-		<h1 class="font-display text-3xl lg:text-5xl font-bold uppercase tracking-tight">
+		<h1 class="font-display text-3xl font-bold tracking-tight uppercase lg:text-5xl">
 			{lesson.title}
 		</h1>
 		{#if lesson.description}
-			<p class="text-lg text-base-content/70 font-light mt-4 leading-relaxed">
+			<p class="mt-4 text-lg leading-relaxed font-light text-base-content/70">
 				{lesson.description}
 			</p>
 		{/if}
 		{#if lesson.estimatedMinutes}
-			<div class="mt-4 flex items-center gap-2 text-xs font-mono text-base-content/50 tracking-wider uppercase">
-				<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+			<div
+				class="mt-4 flex items-center gap-2 font-mono text-xs tracking-wider text-base-content/50 uppercase"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-4 w-4"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+					stroke-width="1.5"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+					/>
 				</svg>
 				<span>{lesson.estimatedMinutes} min read</span>
 			</div>
@@ -90,7 +105,7 @@
 	<article class="mb-12">
 		{#if blocks.length === 0}
 			<div class="rounded-3xl border border-base-200/50 bg-base-100 p-12 text-center">
-				<p class="text-base-content/60 font-light">This lesson has no content yet.</p>
+				<p class="font-light text-base-content/60">This lesson has no content yet.</p>
 			</div>
 		{:else}
 			{#each blocks as block (block.id)}
@@ -100,7 +115,9 @@
 	</article>
 
 	{#if markError}
-		<div class="mb-6 rounded-2xl border border-error/30 bg-error/5 p-4 text-sm text-error text-center">
+		<div
+			class="mb-6 rounded-2xl border border-error/30 bg-error/5 p-4 text-center text-sm text-error"
+		>
 			{markError}
 		</div>
 	{/if}
@@ -110,17 +127,24 @@
 		<div class="mb-10 text-center">
 			<button
 				type="button"
-				class="btn btn-primary btn-lg rounded-2xl font-display uppercase tracking-wider"
+				class="font-display btn rounded-2xl tracking-wider uppercase btn-lg btn-primary"
 				onclick={handleMarkComplete}
 				disabled={marking}
 			>
 				{#if marking}
-					<span class="loading loading-spinner loading-sm"></span>
+					<span class="loading loading-sm loading-spinner"></span>
 					Saving
 				{:else}
 					Mark Complete
 					{#if nextLesson}
-						<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="ml-2 h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="2"
+						>
 							<path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
 						</svg>
 					{/if}
@@ -130,19 +154,30 @@
 	{/if}
 
 	<!-- Navigation -->
-	<nav class="pt-8 border-t border-base-200/50 grid grid-cols-2 gap-4">
+	<nav class="grid grid-cols-2 gap-4 border-t border-base-200/50 pt-8">
 		{#if prevLesson}
 			<a
 				href="/learn/course/{course.slug}/{prevLesson.slug}"
-				class="group rounded-2xl border border-base-200/50 p-5 hover:border-primary/30 hover:bg-base-200/20 transition-colors text-left"
+				class="group rounded-2xl border border-base-200/50 p-5 text-left transition-colors hover:border-primary/30 hover:bg-base-200/20"
 			>
-				<span class="text-xs font-mono text-base-content/50 tracking-wider uppercase flex items-center gap-2">
-					<svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+				<span
+					class="flex items-center gap-2 font-mono text-xs tracking-wider text-base-content/50 uppercase"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-3 w-3"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						stroke-width="2"
+					>
 						<path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
 					</svg>
 					Previous
 				</span>
-				<div class="font-display text-sm font-bold mt-1 line-clamp-1 group-hover:text-primary transition-colors">
+				<div
+					class="font-display mt-1 line-clamp-1 text-sm font-bold transition-colors group-hover:text-primary"
+				>
 					{prevLesson.title}
 				</div>
 			</a>
@@ -153,15 +188,26 @@
 		{#if nextLesson}
 			<a
 				href="/learn/course/{course.slug}/{nextLesson.slug}"
-				class="group rounded-2xl border border-base-200/50 p-5 hover:border-primary/30 hover:bg-base-200/20 transition-colors text-right"
+				class="group rounded-2xl border border-base-200/50 p-5 text-right transition-colors hover:border-primary/30 hover:bg-base-200/20"
 			>
-				<span class="text-xs font-mono text-base-content/50 tracking-wider uppercase flex items-center gap-2 justify-end">
+				<span
+					class="flex items-center justify-end gap-2 font-mono text-xs tracking-wider text-base-content/50 uppercase"
+				>
 					Next
-					<svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-3 w-3"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						stroke-width="2"
+					>
 						<path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
 					</svg>
 				</span>
-				<div class="font-display text-sm font-bold mt-1 line-clamp-1 group-hover:text-primary transition-colors">
+				<div
+					class="font-display mt-1 line-clamp-1 text-sm font-bold transition-colors group-hover:text-primary"
+				>
 					{nextLesson.title}
 				</div>
 			</a>

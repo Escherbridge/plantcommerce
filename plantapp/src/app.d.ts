@@ -17,5 +17,6 @@ declare global {
 	// interface PageData {}
 	// interface PageState {}
 	// interface Platform {}
-	export {};
 }
+
+export {};

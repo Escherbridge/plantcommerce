@@ -28,9 +28,9 @@ export const load: PageServerLoad = async ({ cookies, url, locals }) => {
 		};
 	}
 
-	const isOwnerOrAdmin = Boolean(locals.user && (
-		locals.user.role === 'admin' || draft.userId === locals.user.id
-	));
+	const isOwnerOrAdmin = Boolean(
+		locals.user && (locals.user.role === 'admin' || draft.userId === locals.user.id)
+	);
 	const hasGuestAccess = isOwnerOrAdmin
 		? false
 		: await GuestOrderAccessService.hasDraftAccess(cookies, draft.id);

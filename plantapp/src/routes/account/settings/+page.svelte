@@ -26,7 +26,9 @@
 <div class="platform-content">
 	<div class="platform-header">
 		<h1 class="platform-header__title">Account Settings</h1>
-		<p class="platform-header__subtitle">Theme preference is the only setting currently saved on this page.</p>
+		<p class="platform-header__subtitle">
+			Theme preference is the only setting currently saved on this page.
+		</p>
 	</div>
 
 	<div class="platform-card">
@@ -35,7 +37,11 @@
 		</div>
 		<div class="flex flex-wrap gap-3">
 			{#each ['light', 'dark', 'system'] as option}
-				<button class="platform-action-btn" class:active={theme === option} onclick={() => setTheme(option)}>
+				<button
+					class="platform-action-btn"
+					class:active={theme === option}
+					onclick={() => setTheme(option)}
+				>
 					{option}
 				</button>
 			{/each}
@@ -47,7 +53,11 @@
 			<h2 class="platform-card__title">Unavailable settings</h2>
 		</div>
 		<div class="platform-empty">
-			<p class="platform-empty__text">Email subscriptions, marketing preferences, order notifications, push notifications, and account-deletion controls are not offered here until they are backed by persisted consent, delivery, and account-management workflows.</p>
+			<p class="platform-empty__text">
+				Email subscriptions, marketing preferences, order notifications, push notifications, and
+				account-deletion controls are not offered here until they are backed by persisted consent,
+				delivery, and account-management workflows.
+			</p>
 		</div>
 	</div>
 </div>

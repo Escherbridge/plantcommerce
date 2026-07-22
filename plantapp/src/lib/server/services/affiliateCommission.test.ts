@@ -91,16 +91,20 @@ describe('AffiliateCommissionService', () => {
 			now: new Date('2026-07-20T00:00:00.000Z')
 		});
 
-		expect(ledgerValues).toHaveBeenCalledWith(expect.objectContaining({
-			quotedAmountMinor: 425,
-			commissionRateBps: 500,
-			currency: 'usd',
-			sourceCheckoutDraftId: 'draft_1'
-		}));
-		expect(eventValues).toHaveBeenCalledWith(expect.objectContaining({
-			eventType: 'pending',
-			amountDeltaMinor: 425,
-			currency: 'usd'
-		}));
+		expect(ledgerValues).toHaveBeenCalledWith(
+			expect.objectContaining({
+				quotedAmountMinor: 425,
+				commissionRateBps: 500,
+				currency: 'usd',
+				sourceCheckoutDraftId: 'draft_1'
+			})
+		);
+		expect(eventValues).toHaveBeenCalledWith(
+			expect.objectContaining({
+				eventType: 'pending',
+				amountDeltaMinor: 425,
+				currency: 'usd'
+			})
+		);
 	});
 });

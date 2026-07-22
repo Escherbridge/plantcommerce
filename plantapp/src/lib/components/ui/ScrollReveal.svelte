@@ -1,7 +1,13 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	type Animation = 'fade-up' | 'fade-in' | 'slide-left' | 'slide-right' | 'scale-up' | 'stagger-children';
+	type Animation =
+		| 'fade-up'
+		| 'fade-in'
+		| 'slide-left'
+		| 'slide-right'
+		| 'scale-up'
+		| 'stagger-children';
 
 	interface Props {
 		animation?: Animation;

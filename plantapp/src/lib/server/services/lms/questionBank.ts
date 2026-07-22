@@ -121,7 +121,11 @@ export class QuestionBankService {
 		return { questions, total: total?.count || 0, page, limit };
 	}
 
-	static async getRandomQuestions(bankId: string, questionCount: number, excludeIds: string[] = []) {
+	static async getRandomQuestions(
+		bankId: string,
+		questionCount: number,
+		excludeIds: string[] = []
+	) {
 		return db
 			.select()
 			.from(lmsTable.lmsQuestion)

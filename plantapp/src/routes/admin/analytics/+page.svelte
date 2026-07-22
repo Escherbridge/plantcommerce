@@ -13,7 +13,7 @@
 	</div>
 
 	{#if data.error}
-		<div class="alert alert-error mb-6">
+		<div class="mb-6 alert alert-error">
 			<span>{data.error}</span>
 		</div>
 	{/if}
@@ -44,7 +44,10 @@
 				<h2 class="platform-card__title">Reporting Coverage</h2>
 			</div>
 			<div class="platform-empty">
-				<p class="platform-empty__text">Conversion, trend, status-distribution, ranking, and file-export reports are unavailable until verified reporting queries and generated-file workflows are implemented.</p>
+				<p class="platform-empty__text">
+					Conversion, trend, status-distribution, ranking, and file-export reports are unavailable
+					until verified reporting queries and generated-file workflows are implemented.
+				</p>
 			</div>
 		</div>
 	{/if}
@@ -68,5 +71,4 @@
 			grid-template-columns: repeat(4, 1fr);
 		}
 	}
-
 </style>

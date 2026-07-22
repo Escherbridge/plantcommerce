@@ -11,7 +11,7 @@ export const progressRouter = router({
 				contentBlockId: z.string(),
 				status: z.enum(['not_started', 'in_progress', 'completed']).optional(),
 				progressPercent: z.number().min(0).max(100).optional(),
-				metadata: z.record(z.any()).optional()
+				metadata: z.record(z.string(), z.unknown()).optional()
 			})
 		)
 		.mutation(async ({ ctx, input }) => {

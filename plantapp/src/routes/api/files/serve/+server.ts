@@ -32,8 +32,10 @@ export const GET: RequestHandler = async ({ url }) => {
 	try {
 		const filePath = resolve('src/lib/images', path);
 		const data = await readFile(filePath);
+		// Copy Node's Buffer into a web-compatible byte view for the Fetch response.
+		const body = new Uint8Array(data);
 
-		return new Response(data, {
+		return new Response(body, {
 			headers: {
 				'Content-Type': mime,
 				'Cache-Control': 'public, max-age=31536000, immutable'

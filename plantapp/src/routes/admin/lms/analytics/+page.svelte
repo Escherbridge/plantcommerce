@@ -33,11 +33,11 @@
 	<div class="admin-date-range">
 		<label class="admin-field">
 			<span class="admin-field__label">Start Date</span>
-			<input type="date" class="input input-bordered" bind:value={startDate} />
+			<input type="date" class="input-bordered input" bind:value={startDate} />
 		</label>
 		<label class="admin-field">
 			<span class="admin-field__label">End Date</span>
-			<input type="date" class="input input-bordered" bind:value={endDate} />
+			<input type="date" class="input-bordered input" bind:value={endDate} />
 		</label>
 	</div>
 
@@ -51,7 +51,8 @@
 		</div>
 		<div class="platform-stat">
 			<span class="platform-stat__label">Enrollments</span>
-			<span class="platform-stat__value">{(dashboard?.totalEnrollments ?? 0).toLocaleString()}</span>
+			<span class="platform-stat__value">{(dashboard?.totalEnrollments ?? 0).toLocaleString()}</span
+			>
 		</div>
 		<div class="platform-stat">
 			<span class="platform-stat__label">Completion Rate</span>
@@ -86,7 +87,11 @@
 							<tr>
 								<td class="font-semibold">{course.title}</td>
 								<td>
-									<span class="platform-badge platform-badge--{course.status === 'published' ? 'success' : 'ghost'}">
+									<span
+										class="platform-badge platform-badge--{course.status === 'published'
+											? 'success'
+											: 'ghost'}"
+									>
 										{course.status || 'draft'}
 									</span>
 								</td>

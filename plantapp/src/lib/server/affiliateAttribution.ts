@@ -53,19 +53,34 @@ function cookieOptions(maxAge: number) {
 	};
 }
 
-function signCookie(purpose: string, capability: string, expiresAtSeconds: string, secret: string): Buffer {
+function signCookie(
+	purpose: string,
+	capability: string,
+	expiresAtSeconds: string,
+	secret: string
+): Buffer {
 	return createHmac('sha256', secret)
 		.update(`${purpose}\0${COOKIE_VERSION}\0${capability}\0${expiresAtSeconds}`)
 		.digest();
 }
 
-function serializeCookie(purpose: string, capability: string, expiresAt: Date, secret: string): string {
+function serializeCookie(
+	purpose: string,
+	capability: string,
+	expiresAt: Date,
+	secret: string
+): string {
 	const expiresAtSeconds = Math.floor(expiresAt.getTime() / 1000).toString();
 	const signature = signCookie(purpose, capability, expiresAtSeconds, secret).toString('base64url');
 	return `${COOKIE_VERSION}.${capability}.${expiresAtSeconds}.${signature}`;
 }
 
-function readSignedCookie(cookies: Cookies, name: string, purpose: string, secret: string): SignedCookie | null {
+function readSignedCookie(
+	cookies: Cookies,
+	name: string,
+	purpose: string,
+	secret: string
+): SignedCookie | null {
 	const value = cookies.get(name);
 	if (!value) {
 		return null;
@@ -103,9 +118,7 @@ function newAttributionId(): string {
 }
 
 function hashValue(purpose: string, value: string, secret: string): string {
-	return createHmac('sha256', secret)
-		.update(`${purpose}\0${value}`)
-		.digest('hex');
+	return createHmac('sha256', secret).update(`${purpose}\0${value}`).digest('hex');
 }
 
 function clearCookie(cookies: Cookies, name: string): void {
@@ -216,7 +229,10 @@ export class AffiliateAttributionService {
 						lastClickedAt: issuedAt
 					})
 					.onConflictDoUpdate({
-						target: [table.affiliateClickDedupe.affiliateLinkId, table.affiliateClickDedupe.clientHash],
+						target: [
+							table.affiliateClickDedupe.affiliateLinkId,
+							table.affiliateClickDedupe.clientHash
+						],
 						set: { lastClickedAt: issuedAt },
 						where: lt(table.affiliateClickDedupe.lastClickedAt, dedupeCutoff)
 					})
@@ -280,7 +296,12 @@ export class AffiliateAttributionService {
 			return null;
 		}
 
-		const signed = readSignedCookie(cookies, affiliateAttributionCookieName, 'affiliate-attribution', secret);
+		const signed = readSignedCookie(
+			cookies,
+			affiliateAttributionCookieName,
+			'affiliate-attribution',
+			secret
+		);
 		if (!signed) {
 			clearCookie(cookies, affiliateAttributionCookieName);
 			return null;
@@ -331,6 +352,11 @@ export class AffiliateAttributionService {
 		await db
 			.update(table.affiliateAttribution)
 			.set({ consumedAt: new Date() })
-			.where(and(eq(table.affiliateAttribution.id, attributionId), isNull(table.affiliateAttribution.consumedAt)));
+			.where(
+				and(
+					eq(table.affiliateAttribution.id, attributionId),
+					isNull(table.affiliateAttribution.consumedAt)
+				)
+			);
 	}
 }

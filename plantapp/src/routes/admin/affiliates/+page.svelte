@@ -215,7 +215,7 @@
 							</td>
 							<td>
 								{#if aff.website}
-									<a href={aff.website} target="_blank" class="link link-primary text-xs">
+									<a href={aff.website} target="_blank" class="link text-xs link-primary">
 										{new URL(aff.website).hostname}
 									</a>
 								{:else}
@@ -224,7 +224,7 @@
 							</td>
 							<td>
 								{#if aff.socialMedia}
-									<a href={aff.socialMedia} target="_blank" class="link link-primary text-xs">
+									<a href={aff.socialMedia} target="_blank" class="link text-xs link-primary">
 										Profile
 									</a>
 								{:else}

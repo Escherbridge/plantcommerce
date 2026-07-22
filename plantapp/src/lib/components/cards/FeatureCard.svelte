@@ -11,6 +11,16 @@
 	let { title, description, icon, class: className = '' }: Props = $props();
 </script>
 
+<div
+	class="feature-card flex flex-col items-center border border-base-300 bg-base-100 p-6 text-center hover:border-primary/30 {className}"
+>
+	<div class="mb-4 flex h-16 w-16 items-center justify-center">
+		{@render icon()}
+	</div>
+	<h3 class="font-display mb-2 text-xl font-bold text-base-content uppercase">{title}</h3>
+	<p class="font-sans text-base text-base-content/70">{description}</p>
+</div>
+
 <style>
 	.feature-card {
 		border-radius: var(--radius-lg, 0.75rem);
@@ -26,11 +36,3 @@
 		box-shadow: var(--shadow-lg);
 	}
 </style>
-
-<div class="feature-card border border-base-300 bg-base-100 hover:border-primary/30 p-6 flex flex-col items-center text-center {className}">
-	<div class="w-16 h-16 flex items-center justify-center mb-4">
-		{@render icon()}
-	</div>
-	<h3 class="font-display text-xl font-bold uppercase text-base-content mb-2">{title}</h3>
-	<p class="font-sans text-base text-base-content/70">{description}</p>
-</div>

@@ -33,10 +33,13 @@ export function createCallerClient(eventFetch: typeof fetch) {
 			httpBatchLink({
 				url: '/api/trpc',
 				fetch(url, options) {
-					return eventFetch(url as any, {
-						...options,
-						credentials: 'include'
-					} as any);
+					return eventFetch(
+						url as any,
+						{
+							...options,
+							credentials: 'include'
+						} as any
+					);
 				}
 			})
 		]

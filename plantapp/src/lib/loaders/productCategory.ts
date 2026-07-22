@@ -1,15 +1,12 @@
 import type { LoadEvent } from '@sveltejs/kit';
 import { trpc } from '$lib/trpc/client';
+import { getPublicProductImages } from '$lib/utils/productMedia';
 
 function normalizeProduct(row: any) {
 	const p = row.product ?? row;
 	const cat = row.category ?? p.category;
 
-	function resolveImageUrl(img: any): string {
-		if (img?.url) return img.url;
-		const path = img?.bucketPath || 'AI-MockAssets/MAINHERO.png';
-		return `/api/files/serve?path=${encodeURIComponent(path)}`;
-	}
+	const images = getPublicProductImages(p.images, p.shortDescription);
 
 	return {
 		id: p.id,
@@ -24,13 +21,8 @@ function normalizeProduct(row: any) {
 		inStock: (p.stockQuantity ?? 0) > 0,
 		isFeatured: p.isFeatured,
 		category: cat ? { id: cat.id, name: cat.name, slug: cat.slug } : null,
-		image: p.images?.[0] ? resolveImageUrl(p.images[0]) : '/api/files/serve?path=AI-MockAssets%2FMAINHERO.png',
-		images: p.images?.length
-			? p.images.map((img: any) => ({
-				url: resolveImageUrl(img),
-				altText: img.altText || p.shortDescription
-			}))
-			: []
+		image: images[0]?.url ?? null,
+		images
 	};
 }
 
@@ -57,7 +49,9 @@ export async function loadProductsByCategory(event: LoadEvent, categorySlug: str
 			.map((c: any) => c.id);
 		const allCategoryIds = [category.id, ...childIds];
 
-		console.log(`[productCategory] slug="${categorySlug}" → category id=${category.id} name="${category.name}", childIds=[${childIds}], allCategoryIds=[${allCategoryIds}]`);
+		console.log(
+			`[productCategory] slug="${categorySlug}" → category id=${category.id} name="${category.name}", childIds=[${childIds}], allCategoryIds=[${allCategoryIds}]`
+		);
 
 		const result = await trpc.products.getProducts.query({
 			categoryIds: allCategoryIds,
@@ -67,7 +61,10 @@ export async function loadProductsByCategory(event: LoadEvent, categorySlug: str
 
 		const products = (Array.isArray(result) ? result : []).map(normalizeProduct);
 
-		console.log(`[productCategory] slug="${categorySlug}" → ${products.length} products:`, products.map((p: any) => p.name));
+		console.log(
+			`[productCategory] slug="${categorySlug}" → ${products.length} products:`,
+			products.map((p: any) => p.name)
+		);
 
 		return { products, category, catalogAvailability };
 	} catch (error) {

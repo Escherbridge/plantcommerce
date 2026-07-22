@@ -21,7 +21,9 @@
 		</div>
 		<div class="platform-empty">
 			<p class="platform-empty__text">
-				This dashboard does not represent a commission rate, attribution window, payout balance, payment schedule, active promotional link, or approval right. Use only the written terms associated with an explicit Aevani approval.
+				This dashboard does not represent a commission rate, attribution window, payout balance,
+				payment schedule, active promotional link, or approval right. Use only the written terms
+				associated with an explicit Aevani approval.
 			</p>
 			<a href="/affiliate/terms" class="platform-action-btn">Review program status</a>
 		</div>

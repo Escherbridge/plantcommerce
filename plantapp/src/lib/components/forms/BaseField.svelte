@@ -64,6 +64,163 @@
 	const labelFloat = $derived(focused || hasValue);
 </script>
 
+<div class="form-control w-full {config.containerClassName || ''}">
+	{#if config.type === 'textarea'}
+		<div class="field-outer">
+			<div class="field-wrap">
+				<textarea
+					id={config.id}
+					name={config.name}
+					class="field-input field-input--textarea {hasError ? 'field-input--error' : ''}"
+					placeholder=" "
+					required={config.required}
+					disabled={config.disabled}
+					bind:value
+					oninput={handleInput}
+					onchange={handleChange}
+					onfocus={() => (focused = true)}
+					onblur={() => (focused = false)}
+					minlength={config.validation?.minLength}
+					maxlength={config.validation?.maxLength}
+				></textarea>
+				<label
+					class="field-label field-label--textarea {labelFloat
+						? 'field-label--float'
+						: ''} {hasError ? 'field-label--error' : ''}"
+					for={config.id}
+				>
+					{config.label}{#if config.required}<span class="field-required">*</span>{/if}
+				</label>
+			</div>
+		</div>
+	{:else if config.type === 'select'}
+		<div class="field-outer">
+			<div class="field-wrap">
+				<select
+					id={config.id}
+					name={config.name}
+					class="field-input field-select {hasError ? 'field-input--error' : ''}"
+					required={config.required}
+					disabled={config.disabled}
+					bind:value
+					onchange={handleChange}
+					onfocus={() => (focused = true)}
+					onblur={() => (focused = false)}
+				>
+					{#if config.placeholder}
+						<option value="" disabled selected={!value}> </option>
+					{/if}
+					{#each config.options || [] as option}
+						<option value={option.value}>{option.label}</option>
+					{/each}
+				</select>
+				<label
+					class="field-label {labelFloat ? 'field-label--float' : ''} {hasError
+						? 'field-label--error'
+						: ''}"
+					for={config.id}
+				>
+					{config.label}{#if config.required}<span class="field-required">*</span>{/if}
+				</label>
+			</div>
+		</div>
+	{:else if config.type === 'checkbox'}
+		<div class="field-outer--inline">
+			<label class="field-check-wrap">
+				<input
+					type="checkbox"
+					id={config.id}
+					name={config.name}
+					class="field-check {hasError ? 'field-check--error' : ''}"
+					required={config.required}
+					disabled={config.disabled}
+					checked={value}
+					onchange={handleChange}
+				/>
+				<span class="field-check-label">
+					{config.placeholder || config.label}
+					{#if config.required}<span class="field-required">*</span>{/if}
+				</span>
+			</label>
+		</div>
+	{:else if config.type === 'radio'}
+		<div class="field-outer">
+			<p class="mb-2 font-sans text-base font-semibold text-primary">
+				{config.label}{#if config.required}<span class="field-required">*</span>{/if}
+			</p>
+			<div class="flex flex-col gap-1">
+				{#each config.options || [] as option}
+					<label class="field-check-wrap">
+						<input
+							type="radio"
+							name={config.name}
+							value={option.value}
+							class="field-check field-radio {hasError ? 'field-check--error' : ''}"
+							required={config.required}
+							disabled={config.disabled}
+							checked={value === option.value}
+							onchange={handleChange}
+						/>
+						<span class="field-check-label">{option.label}</span>
+					</label>
+				{/each}
+			</div>
+		</div>
+	{:else if config.type === 'file' || config.type === 'multifile'}
+		<FileUpload {config} onFileChange={handleFileChange} {error} />
+	{:else if config.type === 'richtext'}
+		<RichTextEditor {config} {value} onChange={handleRichTextChange} {error} />
+	{:else if config.type === 'date' || config.type === 'datetime-local' || config.type === 'time'}
+		<DatePicker {config} {value} onChange={handleDateChange} {error} />
+	{:else}
+		<div class="field-outer">
+			<div class="field-wrap">
+				<input
+					type={config.type}
+					id={config.id}
+					name={config.name}
+					class="field-input {hasError ? 'field-input--error' : ''}"
+					placeholder=" "
+					required={config.required}
+					disabled={config.disabled}
+					bind:value
+					oninput={handleInput}
+					onchange={handleChange}
+					onfocus={() => (focused = true)}
+					onblur={() => (focused = false)}
+					min={config.validation?.min}
+					max={config.validation?.max}
+					minlength={config.validation?.minLength}
+					maxlength={config.validation?.maxLength}
+					pattern={config.validation?.pattern}
+					accept={config.accept}
+				/>
+				<label
+					class="field-label {labelFloat ? 'field-label--float' : ''} {hasError
+						? 'field-label--error'
+						: ''}"
+					for={config.id}
+				>
+					{config.label}{#if config.required}<span class="field-required">*</span>{/if}
+				</label>
+			</div>
+		</div>
+	{/if}
+
+	{#if hasError}
+		<div class="field-error">
+			<svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+				<path
+					fill-rule="evenodd"
+					d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+					clip-rule="evenodd"
+				/>
+			</svg>
+			{error}
+		</div>
+	{/if}
+</div>
+
 <style>
 	/* ── Base field wrapper ── */
 	.field-wrap {
@@ -265,13 +422,28 @@
 
 	/* ── Shake animation ── */
 	@keyframes field-shake {
-		0%, 100% { transform: translateX(0); }
-		15% { transform: translateX(-6px); }
-		30% { transform: translateX(5px); }
-		45% { transform: translateX(-4px); }
-		60% { transform: translateX(3px); }
-		75% { transform: translateX(-2px); }
-		90% { transform: translateX(1px); }
+		0%,
+		100% {
+			transform: translateX(0);
+		}
+		15% {
+			transform: translateX(-6px);
+		}
+		30% {
+			transform: translateX(5px);
+		}
+		45% {
+			transform: translateX(-4px);
+		}
+		60% {
+			transform: translateX(3px);
+		}
+		75% {
+			transform: translateX(-2px);
+		}
+		90% {
+			transform: translateX(1px);
+		}
 	}
 
 	/* ── Outer container spacing for float label ── */
@@ -284,161 +456,3 @@
 		padding-top: 0.25rem;
 	}
 </style>
-
-<div class="form-control w-full {config.containerClassName || ''}">
-	{#if config.type === 'textarea'}
-		<div class="field-outer">
-			<div class="field-wrap">
-				<textarea
-					id={config.id}
-					name={config.name}
-					class="field-input field-input--textarea {hasError ? 'field-input--error' : ''}"
-					placeholder=" "
-					required={config.required}
-					disabled={config.disabled}
-					bind:value
-					oninput={handleInput}
-					onchange={handleChange}
-					onfocus={() => (focused = true)}
-					onblur={() => (focused = false)}
-					minlength={config.validation?.minLength}
-					maxlength={config.validation?.maxLength}
-				></textarea>
-				<label
-					class="field-label field-label--textarea {labelFloat ? 'field-label--float' : ''} {hasError ? 'field-label--error' : ''}"
-					for={config.id}
-				>
-					{config.label}{#if config.required}<span class="field-required">*</span>{/if}
-				</label>
-			</div>
-		</div>
-
-	{:else if config.type === 'select'}
-		<div class="field-outer">
-			<div class="field-wrap">
-				<select
-					id={config.id}
-					name={config.name}
-					class="field-input field-select {hasError ? 'field-input--error' : ''}"
-					required={config.required}
-					disabled={config.disabled}
-					bind:value
-					onchange={handleChange}
-					onfocus={() => (focused = true)}
-					onblur={() => (focused = false)}
-				>
-					{#if config.placeholder}
-						<option value="" disabled selected={!value}> </option>
-					{/if}
-					{#each config.options || [] as option}
-						<option value={option.value}>{option.label}</option>
-					{/each}
-				</select>
-				<label
-					class="field-label {labelFloat ? 'field-label--float' : ''} {hasError ? 'field-label--error' : ''}"
-					for={config.id}
-				>
-					{config.label}{#if config.required}<span class="field-required">*</span>{/if}
-				</label>
-			</div>
-		</div>
-
-	{:else if config.type === 'checkbox'}
-		<div class="field-outer--inline">
-			<label class="field-check-wrap">
-				<input
-					type="checkbox"
-					id={config.id}
-					name={config.name}
-					class="field-check {hasError ? 'field-check--error' : ''}"
-					required={config.required}
-					disabled={config.disabled}
-					checked={value}
-					onchange={handleChange}
-				/>
-				<span class="field-check-label">
-					{config.placeholder || config.label}
-					{#if config.required}<span class="field-required">*</span>{/if}
-				</span>
-			</label>
-		</div>
-
-	{:else if config.type === 'radio'}
-		<div class="field-outer">
-			<p class="font-sans text-base font-semibold text-primary mb-2">
-				{config.label}{#if config.required}<span class="field-required">*</span>{/if}
-			</p>
-			<div class="flex flex-col gap-1">
-				{#each config.options || [] as option}
-					<label class="field-check-wrap">
-						<input
-							type="radio"
-							name={config.name}
-							value={option.value}
-							class="field-check field-radio {hasError ? 'field-check--error' : ''}"
-							required={config.required}
-							disabled={config.disabled}
-							checked={value === option.value}
-							onchange={handleChange}
-						/>
-						<span class="field-check-label">{option.label}</span>
-					</label>
-				{/each}
-			</div>
-		</div>
-
-	{:else if config.type === 'file' || config.type === 'multifile'}
-		<FileUpload {config} onFileChange={handleFileChange} {error} />
-
-	{:else if config.type === 'richtext'}
-		<RichTextEditor {config} {value} onChange={handleRichTextChange} {error} />
-
-	{:else if config.type === 'date' || config.type === 'datetime-local' || config.type === 'time'}
-		<DatePicker {config} {value} onChange={handleDateChange} {error} />
-
-	{:else}
-		<div class="field-outer">
-			<div class="field-wrap">
-				<input
-					type={config.type}
-					id={config.id}
-					name={config.name}
-					class="field-input {hasError ? 'field-input--error' : ''}"
-					placeholder=" "
-					required={config.required}
-					disabled={config.disabled}
-					bind:value
-					oninput={handleInput}
-					onchange={handleChange}
-					onfocus={() => (focused = true)}
-					onblur={() => (focused = false)}
-					min={config.validation?.min}
-					max={config.validation?.max}
-					minlength={config.validation?.minLength}
-					maxlength={config.validation?.maxLength}
-					pattern={config.validation?.pattern}
-					accept={config.accept}
-				/>
-				<label
-					class="field-label {labelFloat ? 'field-label--float' : ''} {hasError ? 'field-label--error' : ''}"
-					for={config.id}
-				>
-					{config.label}{#if config.required}<span class="field-required">*</span>{/if}
-				</label>
-			</div>
-		</div>
-	{/if}
-
-	{#if hasError}
-		<div class="field-error">
-			<svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-				<path
-					fill-rule="evenodd"
-					d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-					clip-rule="evenodd"
-				/>
-			</svg>
-			{error}
-		</div>
-	{/if}
-</div>

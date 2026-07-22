@@ -3,8 +3,13 @@ import { sanitizeRichText } from './sanitizeRichText';
 
 describe('sanitizeRichText', () => {
 	it('keeps the documented semantic markup and safe links', () => {
-		expect(sanitizeRichText('<h2>Soil <strong>basics</strong></h2><a href="/learn?topic=soil&level=1">Read more</a>'))
-			.toBe('<h2>Soil <strong>basics</strong></h2><a href="/learn?topic=soil&amp;level=1" rel="noopener noreferrer">Read more</a>');
+		expect(
+			sanitizeRichText(
+				'<h2>Soil <strong>basics</strong></h2><a href="/learn?topic=soil&level=1">Read more</a>'
+			)
+		).toBe(
+			'<h2>Soil <strong>basics</strong></h2><a href="/learn?topic=soil&amp;level=1" rel="noopener noreferrer">Read more</a>'
+		);
 	});
 
 	it('escapes unsupported tags and attributes instead of emitting them', () => {
@@ -17,10 +22,16 @@ describe('sanitizeRichText', () => {
 	});
 
 	it('rejects dangerous and entity-obfuscated link protocols', () => {
-		const result = sanitizeRichText('<a href="java&#x73;cript:alert(1)">Unsafe</a><a href="https://example.com/docs">Safe</a>');
+		const result = sanitizeRichText(
+			'<a href="java&#x73;cript:alert(1)">Unsafe</a><a href="https://example.com/docs">Safe</a>'
+		);
 
-		expect(result).toContain('&lt;a href=&quot;java&amp;#x73;cript:alert(1)&quot;&gt;Unsafe&lt;/a&gt;');
-		expect(result).toContain('<a href="https://example.com/docs" rel="noopener noreferrer">Safe</a>');
+		expect(result).toContain(
+			'&lt;a href=&quot;java&amp;#x73;cript:alert(1)&quot;&gt;Unsafe&lt;/a&gt;'
+		);
+		expect(result).toContain(
+			'<a href="https://example.com/docs" rel="noopener noreferrer">Safe</a>'
+		);
 		expect(result).not.toContain('<a href="java');
 		expect(result).not.toContain('javascript:');
 	});

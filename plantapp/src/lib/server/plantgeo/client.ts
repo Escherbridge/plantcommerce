@@ -17,7 +17,11 @@ export type PlantGeoFetch = (
 export type PlantGeoDispatchResult =
 	| Readonly<{ status: 'skipped'; reason: PlantGeoDisabledReason }>
 	| Readonly<{ status: 'sent'; responseStatus: number }>
-	| Readonly<{ status: 'failed'; reason: 'invalid-payload' | 'remote-rejected' | 'transport-error'; responseStatus?: number }>;
+	| Readonly<{
+			status: 'failed';
+			reason: 'invalid-payload' | 'remote-rejected' | 'transport-error';
+			responseStatus?: number;
+	  }>;
 
 /** Best-effort event transport; callers must not place this on a checkout or fulfillment critical path. */
 export class PlantGeoClient {

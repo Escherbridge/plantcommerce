@@ -53,10 +53,13 @@
 					<div class="admin-grade-header">
 						<div>
 							<div class="admin-grade-learner">
-								{item.user?.firstName || ''} {item.user?.lastName || ''}
+								{item.user?.firstName || ''}
+								{item.user?.lastName || ''}
 							</div>
 							<div class="admin-meta-text">
-								{item.quiz?.title || 'Quiz'} • {item.submittedAt ? new Date(item.submittedAt).toLocaleString() : ''}
+								{item.quiz?.title || 'Quiz'} • {item.submittedAt
+									? new Date(item.submittedAt).toLocaleString()
+									: ''}
 							</div>
 						</div>
 						<span class="platform-badge platform-badge--warning">Pending</span>
@@ -79,14 +82,14 @@
 								type="number"
 								min="0"
 								max={item.question?.points ?? 100}
-								class="input input-bordered"
+								class="input-bordered input"
 								bind:value={grades[item.id]}
 							/>
 						</label>
 						<label class="admin-field admin-field--grow">
 							<span class="admin-field__label">Feedback</span>
 							<textarea
-								class="textarea textarea-bordered"
+								class="textarea-bordered textarea"
 								rows="3"
 								placeholder="Optional feedback for the learner..."
 								bind:value={feedbacks[item.id]}

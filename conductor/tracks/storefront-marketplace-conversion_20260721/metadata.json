@@ -1,0 +1,9 @@
+{
+  "id": "storefront-marketplace-conversion_20260721",
+  "title": "Storefront Marketplace Conversion",
+  "status": "planned",
+  "priority": "P0",
+  "createdAt": "2026-07-21",
+  "dependencies": ["catalog-media-integrity_20260721", "auth-journey-contracts_20260721"],
+  "tags": ["storefront", "pdp", "cart", "checkout", "affiliate", "grow-plans"]
+}

@@ -53,10 +53,7 @@ export class BadgeService {
 		return db
 			.select({ badge: lmsTable.lmsBadge, earnedAt: lmsTable.lmsLearnerBadge.earnedAt })
 			.from(lmsTable.lmsLearnerBadge)
-			.innerJoin(
-				lmsTable.lmsBadge,
-				eq(lmsTable.lmsLearnerBadge.badgeId, lmsTable.lmsBadge.id)
-			)
+			.innerJoin(lmsTable.lmsBadge, eq(lmsTable.lmsLearnerBadge.badgeId, lmsTable.lmsBadge.id))
 			.where(eq(lmsTable.lmsLearnerBadge.userId, userId))
 			.orderBy(desc(lmsTable.lmsLearnerBadge.earnedAt));
 	}

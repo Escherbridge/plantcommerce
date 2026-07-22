@@ -3,11 +3,12 @@ import { createCallerClient } from '$lib/trpc/client';
 
 export const load: PageLoad = async (event) => {
 	const trpc = createCallerClient(event.fetch);
+	type PublishedPages = Awaited<ReturnType<typeof trpc.content.getPublishedPages.query>>;
 	// Load featured content from each category
-	let guides = [];
-	let blog = [];
-	let faqs = [];
-	let resources = [];
+	let guides: PublishedPages = [];
+	let blog: PublishedPages = [];
+	let faqs: PublishedPages = [];
+	let resources: PublishedPages = [];
 
 	try {
 		guides = await trpc.content.getPublishedPages.query({ type: 'guide', limit: 3 });

@@ -8,12 +8,7 @@
 		children: Snippet;
 	}
 
-	let {
-		text,
-		placement = 'top',
-		class: className = '',
-		children
-	}: Props = $props();
+	let { text, placement = 'top', class: className = '', children }: Props = $props();
 
 	const tooltipId = `tooltip-${Math.random().toString(36).slice(2, 9)}`;
 	let visible = $state(false);
@@ -40,11 +35,7 @@
 	</div>
 
 	{#if visible}
-		<div
-			id={tooltipId}
-			class="tooltip-bubble tooltip-{placement}"
-			role="tooltip"
-		>
+		<div id={tooltipId} class="tooltip-bubble tooltip-{placement}" role="tooltip">
 			{text}
 			<div class="tooltip-arrow tooltip-arrow-{placement}" aria-hidden="true"></div>
 		</div>
@@ -74,7 +65,8 @@
 		white-space: normal;
 		word-break: break-word;
 		pointer-events: none;
-		animation: tooltip-in var(--duration-fast, 150ms) var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)) both;
+		animation: tooltip-in var(--duration-fast, 150ms)
+			var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)) both;
 	}
 
 	/* Placement positioning */

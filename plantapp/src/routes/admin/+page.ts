@@ -16,7 +16,8 @@ export const load: PageLoad = async (event) => {
 		return {
 			stats: null,
 			recentOrders: [],
-			error: 'Dashboard data could not be loaded. No zero-value fallback is being shown as a report.'
+			error:
+				'Dashboard data could not be loaded. No zero-value fallback is being shown as a report.'
 		};
 	}
 };

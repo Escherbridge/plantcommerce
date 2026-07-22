@@ -5,11 +5,7 @@
 		class?: string;
 	}
 
-	let {
-		variant = 'line',
-		text = '',
-		class: className = ''
-	}: Props = $props();
+	let { variant = 'line', text = '', class: className = '' }: Props = $props();
 </script>
 
 {#if variant === 'line'}

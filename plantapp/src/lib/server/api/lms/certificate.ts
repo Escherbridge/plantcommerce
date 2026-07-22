@@ -74,7 +74,7 @@ export const certificateRouter = router({
 				description: z.string().optional(),
 				iconFileId: z.string().optional(),
 				triggerType: z.string(),
-				triggerConfig: z.record(z.any()).optional()
+				triggerConfig: z.record(z.string(), z.unknown()).optional()
 			})
 		)
 		.mutation(async ({ ctx, input }) => {

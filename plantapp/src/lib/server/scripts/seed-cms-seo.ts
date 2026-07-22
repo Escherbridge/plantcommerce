@@ -10,16 +10,21 @@ export async function seedCmsSeoFields() {
 	console.log('🌱 Creating local-development CMS SEO fixtures (not for public publication)...');
 
 	// Local fixtures must be replaced with reviewed metadata before publication.
-	const origin = (process.env.PUBLIC_BASE_URL?.trim() || 'https://aevani.example').replace(/\/+$/, '');
+	const origin = (process.env.PUBLIC_BASE_URL?.trim() || 'https://aevani.example').replace(
+		/\/+$/,
+		''
+	);
 	const pages = [
 		{
 			id: '1',
 			pageId: 'home',
 			pageType: 'page',
 			metaTitle: 'Aevani | Local Development Metadata Fixture',
-			metaDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+			metaDescription:
+				'Local development fixture only. Configure reviewed production metadata before publishing.',
 			ogTitle: 'Aevani | Local Development Metadata Fixture',
-			ogDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+			ogDescription:
+				'Local development fixture only. Configure reviewed production metadata before publishing.',
 			ogImage: '/images/AI-MockAssets/MAINHERO.png',
 			robots: 'noindex, nofollow',
 			canonicalUrl: origin,
@@ -31,9 +36,11 @@ export async function seedCmsSeoFields() {
 			pageId: 'products',
 			pageType: 'category',
 			metaTitle: 'Aevani Products | Local Development Metadata Fixture',
-			metaDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+			metaDescription:
+				'Local development fixture only. Configure reviewed production metadata before publishing.',
 			ogTitle: 'Aevani Products | Local Development Metadata Fixture',
-			ogDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+			ogDescription:
+				'Local development fixture only. Configure reviewed production metadata before publishing.',
 			ogImage: '/images/AI-MockAssets/MAINHERO.png',
 			robots: 'noindex, nofollow',
 			canonicalUrl: `${origin}/products`,
@@ -45,9 +52,11 @@ export async function seedCmsSeoFields() {
 			pageId: 'products/hydroponics',
 			pageType: 'category',
 			metaTitle: 'Aevani Hydroponics | Local Development Metadata Fixture',
-			metaDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+			metaDescription:
+				'Local development fixture only. Configure reviewed production metadata before publishing.',
 			ogTitle: 'Aevani Hydroponics | Local Development Metadata Fixture',
-			ogDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+			ogDescription:
+				'Local development fixture only. Configure reviewed production metadata before publishing.',
 			ogImage: '/images/AI-MockAssets/HydroToolProduct-HydroponicGrowTentKit.png',
 			robots: 'noindex, nofollow',
 			canonicalUrl: `${origin}/products/hydroponics`,
@@ -59,9 +68,11 @@ export async function seedCmsSeoFields() {
 			pageId: 'blog',
 			pageType: 'category',
 			metaTitle: 'Aevani Resources | Local Development Metadata Fixture',
-			metaDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+			metaDescription:
+				'Local development fixture only. Configure reviewed production metadata before publishing.',
 			ogTitle: 'Aevani Resources | Local Development Metadata Fixture',
-			ogDescription: 'Local development fixture only. Configure reviewed production metadata before publishing.',
+			ogDescription:
+				'Local development fixture only. Configure reviewed production metadata before publishing.',
 			ogImage: '/images/AI-MockAssets/MAINHERO.png',
 			robots: 'noindex, nofollow',
 			canonicalUrl: `${origin}/blog`,

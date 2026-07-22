@@ -74,11 +74,7 @@ export const ordersRouter = router({
 		)
 		.query(async ({ ctx, input }) => {
 			try {
-				const orders = await OrderService.getUserOrders(
-					ctx.user.id,
-					input.limit,
-					input.offset
-				);
+				const orders = await OrderService.getUserOrders(ctx.user.id, input.limit, input.offset);
 				return orders;
 			} catch (error) {
 				throw new TRPCError({
@@ -91,14 +87,12 @@ export const ordersRouter = router({
 	/**
 	 * Cancellation requires the reconciled payment-refund workflow.
 	 */
-	cancelOrder: protectedProcedure
-		.input(z.object({ orderId: z.number() }))
-		.mutation(async () => {
-			throw new TRPCError({
-				code: 'PRECONDITION_FAILED',
-				message: 'Online order cancellation is temporarily unavailable. Please contact support.'
-			});
-		}),
+	cancelOrder: protectedProcedure.input(z.object({ orderId: z.number() })).mutation(async () => {
+		throw new TRPCError({
+			code: 'PRECONDITION_FAILED',
+			message: 'Online order cancellation is temporarily unavailable. Please contact support.'
+		});
+	}),
 
 	/**
 	 * Get all orders for admin management (admin only)
@@ -108,7 +102,17 @@ export const ordersRouter = router({
 			z.object({
 				limit: z.number().min(1).max(100).default(50),
 				offset: z.number().min(0).default(0),
-				status: z.enum(['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded']).optional(),
+				status: z
+					.enum([
+						'pending',
+						'confirmed',
+						'processing',
+						'shipped',
+						'delivered',
+						'cancelled',
+						'refunded'
+					])
+					.optional(),
 				search: z.string().optional()
 			})
 		)
@@ -136,7 +140,15 @@ export const ordersRouter = router({
 		.input(
 			z.object({
 				orderId: z.number(),
-				status: z.enum(['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'])
+				status: z.enum([
+					'pending',
+					'confirmed',
+					'processing',
+					'shipped',
+					'delivered',
+					'cancelled',
+					'refunded'
+				])
 			})
 		)
 		.mutation(async ({ input }) => {
@@ -149,10 +161,7 @@ export const ordersRouter = router({
 			}
 
 			try {
-				await OrderService.updateOrderStatus(
-					input.orderId,
-					input.status as OrderStatus
-				);
+				await OrderService.updateOrderStatus(input.orderId, input.status as OrderStatus);
 				return { success: true };
 			} catch (error) {
 				throw new TRPCError({

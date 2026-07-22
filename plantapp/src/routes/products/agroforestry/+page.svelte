@@ -13,7 +13,7 @@
 <Section>
 	<Container>
 		<div class="mb-8">
-			<h1 class="text-4xl font-bold mb-4">Agroforestry</h1>
+			<h1 class="mb-4 text-4xl font-bold">Agroforestry</h1>
 			<p class="text-lg text-base-content/70">
 				Cultivate diverse, productive ecosystems by integrating trees with crops and livestock for
 				enhanced sustainability and yields.
@@ -21,20 +21,20 @@
 		</div>
 
 		<!-- Category Navigation -->
-		<div class="flex flex-wrap gap-2 mb-8">
-			<a href="/products/agroforestry?filter=trees" class="btn btn-sm btn-outline">
+		<div class="mb-8 flex flex-wrap gap-2">
+			<a href="/products/agroforestry?filter=trees" class="btn btn-outline btn-sm">
 				Tree Varieties
 			</a>
-			<a href="/products/agroforestry?filter=tools" class="btn btn-sm btn-outline">
+			<a href="/products/agroforestry?filter=tools" class="btn btn-outline btn-sm">
 				Planting Tools
 			</a>
-			<a href="/products/agroforestry?filter=soil" class="btn btn-sm btn-outline">
+			<a href="/products/agroforestry?filter=soil" class="btn btn-outline btn-sm">
 				Soil Amendments
 			</a>
-			<a href="/products/agroforestry?filter=equipment" class="btn btn-sm btn-outline">
+			<a href="/products/agroforestry?filter=equipment" class="btn btn-outline btn-sm">
 				Maintenance Equipment
 			</a>
-			<a href="/products/agroforestry?filter=education" class="btn btn-sm btn-outline">
+			<a href="/products/agroforestry?filter=education" class="btn btn-outline btn-sm">
 				Educational Materials
 			</a>
 		</div>
@@ -48,13 +48,13 @@
 							<img
 								src={product.image || '/placeholder-product.jpg'}
 								alt={product.name}
-								class="object-cover w-full h-full"
+								class="h-full w-full object-cover"
 							/>
 						</figure>
 						<div class="card-body">
 							<h2 class="card-title">{product.name}</h2>
 							<p class="text-sm text-base-content/70">{product.shortDescription}</p>
-							<div class="card-actions justify-between items-center mt-4">
+							<div class="mt-4 card-actions items-center justify-between">
 								<span class="text-2xl font-bold">${product.price}</span>
 								<a href="/products/agroforestry/{product.slug}" class="btn btn-primary">
 									View Details
@@ -64,7 +64,7 @@
 					</div>
 				{/each}
 			{:else}
-				<div class="col-span-3 text-center py-12">
+				<div class="col-span-3 py-12 text-center">
 					<p class="text-xl text-base-content/70">No products available at this time.</p>
 				</div>
 			{/if}

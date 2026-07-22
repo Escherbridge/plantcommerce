@@ -14,7 +14,10 @@
 	</div>
 	<div class="platform-card">
 		<div class="platform-empty">
-			<p class="platform-empty__text">Aevani does not currently publish payout dates, thresholds, payment methods, balances, or processing times. An account state is not a payment commitment.</p>
+			<p class="platform-empty__text">
+				Aevani does not currently publish payout dates, thresholds, payment methods, balances, or
+				processing times. An account state is not a payment commitment.
+			</p>
 			<a href="/affiliate/terms" class="platform-action-btn">Review program status</a>
 		</div>
 	</div>

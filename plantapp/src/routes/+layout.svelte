@@ -2,7 +2,6 @@
 	import '../app.css';
 	import { Header } from '$lib/components/navigation';
 	import { RootSystem } from '$lib/components/patterns';
-	import MarqueeBar from '$lib/components/ui/MarqueeBar.svelte';
 	import Toast from '$lib/components/ui/Toast.svelte';
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/trpc/client';
@@ -38,7 +37,9 @@
 	// Drawer open state (mirrors the checkbox)
 	let drawerOpen = $state(false);
 
-	function closeDrawer() { drawerOpen = false; }
+	function closeDrawer() {
+		drawerOpen = false;
+	}
 
 	// Close drawer on route change
 	$effect(() => {
@@ -94,9 +95,7 @@
 	];
 
 	const footerLinks = {
-		shop: [
-			{ label: 'Catalog Status', href: '/products' }
-		],
+		shop: [{ label: 'Catalog Status', href: '/products' }],
 		learn: [
 			{ label: 'Guides', href: '/guides' },
 			{ label: 'Blog', href: '/blog' },
@@ -125,25 +124,15 @@
 </script>
 
 <svelte:head>
-	<SEO
-		title={publicSite.defaultTitle}
-		description={publicSite.description}
-		url={absoluteUrl}
-	/>
+	<SEO title={publicSite.defaultTitle} description={publicSite.description} url={absoluteUrl} />
 </svelte:head>
 
 <div class="swiss-layout">
 	<!-- Hidden checkbox for CSS-driven drawer fallback -->
-	<input
-		id="drawer-toggle"
-		type="checkbox"
-		class="drawer-toggle"
-		bind:checked={drawerOpen}
-	/>
+	<input id="drawer-toggle" type="checkbox" class="drawer-toggle" bind:checked={drawerOpen} />
 
 	<!-- Main content — scales/blurs when drawer is open -->
 	<div class="layout-content" class:drawer-active={drawerOpen}>
-		<MarqueeBar messages={["Growing tools and learning for resilient systems", "Explore Aevani resources"]} />
 		<Header />
 
 		<main class="main-content">
@@ -165,26 +154,81 @@
 
 					<nav class="user-bottom-bar__nav">
 						<a href="/account/profile" class="user-bottom-bar__link">
-							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+							<svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.5"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle
+									cx="12"
+									cy="7"
+									r="4"
+								/></svg
+							>
 							Profile
 						</a>
 						<a href="/account/orders" class="user-bottom-bar__link">
-							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+							<svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.5"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><line
+									x1="3"
+									y1="6"
+									x2="21"
+									y2="6"
+								/><path d="M16 10a4 4 0 01-8 0" /></svg
+							>
 							Orders
 						</a>
 						<a href="/account/wishlist" class="user-bottom-bar__link">
-							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"/></svg>
+							<svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.5"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><path
+									d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"
+								/></svg
+							>
 							Wishlist
 						</a>
 						<a href="/cart" class="user-bottom-bar__link">
-							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>
+							<svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.5"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path
+									d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"
+								/></svg
+							>
 							Cart
 						</a>
 					</nav>
 
 					<div class="user-bottom-bar__actions">
 						<a href="/affiliate/terms" class="user-bottom-bar__affiliate">
-							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.8-6.3-3.3-6.3 3.3 1.2-6.8-5-4.9 7-1z"/></svg>
+							<svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.5"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><path
+									d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.8-6.3-3.3-6.3 3.3 1.2-6.8-5-4.9 7-1z"
+								/></svg
+							>
 							Affiliate Status
 						</a>
 					</div>
@@ -223,20 +267,41 @@
 						<!-- Social icons (inline SVG) -->
 						<div class="social-row">
 							<a href="https://facebook.com/aevani" class="social-link" aria-label="Facebook">
-								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-									<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+								<svg
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.75"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
 								</svg>
 							</a>
 							<a href="https://twitter.com/aevani" class="social-link" aria-label="Twitter / X">
-								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-									<path d="M4 4l16 16M4 20 20 4"/>
+								<svg
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.75"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<path d="M4 4l16 16M4 20 20 4" />
 								</svg>
 							</a>
 							<a href="https://instagram.com/aevani" class="social-link" aria-label="Instagram">
-								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-									<rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-									<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-									<line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+								<svg
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.75"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+									<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+									<line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
 								</svg>
 							</a>
 						</div>
@@ -289,7 +354,14 @@
 						<a href="/cookies" class="footer-bottom-link">Cookie Policy</a>
 					</div>
 					<button class="scroll-top-btn" onclick={scrollToTop} aria-label="Scroll to top">
-						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
 							<polyline points="18 15 12 9 6 15"></polyline>
 						</svg>
 					</button>
@@ -299,7 +371,12 @@
 	</div>
 
 	<!-- ===== MOBILE DRAWER (full-screen overlay) ===== -->
-	<div class="drawer-overlay" class:open={drawerOpen} onclick={closeDrawer} aria-hidden="true"></div>
+	<div
+		class="drawer-overlay"
+		class:open={drawerOpen}
+		onclick={closeDrawer}
+		aria-hidden="true"
+	></div>
 
 	<div class="mobile-drawer" class:open={drawerOpen} aria-modal="true" role="dialog">
 		<!-- SVG pattern background -->
@@ -309,9 +386,16 @@
 
 		<!-- Close button -->
 		<button class="drawer-close" onclick={closeDrawer} aria-label="Close menu">
-			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-				<line x1="18" y1="6" x2="6" y2="18"/>
-				<line x1="6" y1="6" x2="18" y2="18"/>
+			<svg
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.75"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<line x1="18" y1="6" x2="6" y2="18" />
+				<line x1="6" y1="6" x2="18" y2="18" />
 			</svg>
 		</button>
 
@@ -321,10 +405,7 @@
 		<!-- Primary nav -->
 		<nav class="drawer-nav">
 			{#each mobileNavigation as item, i}
-				<div
-					class="drawer-nav-item"
-					style="transition-delay: {drawerOpen ? i * 50 : 0}ms"
-				>
+				<div class="drawer-nav-item" style="transition-delay: {drawerOpen ? i * 50 : 0}ms">
 					{#if item.children}
 						<details class="drawer-group">
 							<summary class="drawer-nav-link">{item.label}</summary>
@@ -333,7 +414,7 @@
 									<a
 										href={child.href}
 										class="drawer-sub-link"
-										style="transition-delay: {drawerOpen ? (i * 50 + j * 30) : 0}ms"
+										style="transition-delay: {drawerOpen ? i * 50 + j * 30 : 0}ms"
 										onclick={closeDrawer}
 									>
 										{child.label}
@@ -359,7 +440,10 @@
 					</div>
 					<a href="/account" class="drawer-action-btn" onclick={closeDrawer}>My Account</a>
 					<button
-						onclick={() => { closeDrawer(); handleLogout(); }}
+						onclick={() => {
+							closeDrawer();
+							handleLogout();
+						}}
 						class="drawer-action-btn"
 						disabled={isLoggingOut}
 					>
@@ -374,27 +458,51 @@
 			<!-- Newsletter -->
 			<div class="drawer-newsletter">
 				<p class="drawer-newsletter-unavailable">
-					Newsletter sign-up is currently unavailable. Review <a href="/support" onclick={closeDrawer}>support status</a>.
+					Newsletter sign-up is currently unavailable. Review <a
+						href="/support"
+						onclick={closeDrawer}>support status</a
+					>.
 				</p>
 			</div>
 
 			<!-- Social -->
 			<div class="drawer-social">
 				<a href="https://facebook.com/aevani" class="drawer-social-link" aria-label="Facebook">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.75"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
 					</svg>
 				</a>
 				<a href="https://twitter.com/aevani" class="drawer-social-link" aria-label="Twitter / X">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M4 4l16 16M4 20 20 4"/>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.75"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="M4 4l16 16M4 20 20 4" />
 					</svg>
 				</a>
 				<a href="https://instagram.com/aevani" class="drawer-social-link" aria-label="Instagram">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-						<rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-						<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-						<line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.75"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+						<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+						<line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
 					</svg>
 				</a>
 			</div>
@@ -803,7 +911,9 @@
 		border-radius: 0.375rem;
 		color: oklch(var(--nc) / 0.7);
 		cursor: pointer;
-		transition: color 0.2s, border-color 0.2s;
+		transition:
+			color 0.2s,
+			border-color 0.2s;
 		z-index: 1;
 	}
 
@@ -956,7 +1066,9 @@
 		background-color: oklch(var(--nc) / 0.07);
 		border: none;
 		cursor: pointer;
-		transition: background-color 0.2s, color 0.2s;
+		transition:
+			background-color 0.2s,
+			color 0.2s;
 	}
 
 	.drawer-action-btn:hover {
@@ -1103,7 +1215,9 @@
 		color: oklch(var(--bc) / 0.6);
 		text-decoration: none;
 		border-radius: var(--input-radius, 10px);
-		transition: background-color 150ms ease, color 150ms ease;
+		transition:
+			background-color 150ms ease,
+			color 150ms ease;
 	}
 
 	.user-bottom-bar__link:hover {
@@ -1150,7 +1264,9 @@
 		background: linear-gradient(135deg, oklch(var(--s)) 0%, oklch(var(--p)) 100%);
 		border-radius: var(--input-radius, 10px);
 		text-decoration: none;
-		transition: opacity 200ms ease, transform 200ms var(--ease-out-expo);
+		transition:
+			opacity 200ms ease,
+			transform 200ms var(--ease-out-expo);
 		box-shadow: 0 2px 8px rgba(69, 123, 157, 0.2);
 	}
 

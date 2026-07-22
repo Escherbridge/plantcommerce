@@ -27,7 +27,8 @@ ${allRoutes
 	.map((route) => {
 		const fullUrl = `${baseUrl}${route.startsWith('/') ? route : '/' + route}`;
 		const isProduct = route.match(/^\/products\/[^/]+\/[^/]+$/);
-		const priority = route === '' ? '1.0' : isProduct ? '0.7' : route.startsWith('/products/') ? '0.8' : '0.6';
+		const priority =
+			route === '' ? '1.0' : isProduct ? '0.7' : route.startsWith('/products/') ? '0.8' : '0.6';
 		return `
 	<url>
 		<loc>${fullUrl}</loc>

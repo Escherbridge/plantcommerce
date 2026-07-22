@@ -15,29 +15,29 @@
 
 /* ── Aevani Light Theme ── */
 @plugin "daisyui/theme" {
-	name: "aevani";
+	name: 'aevani';
 	default: true;
 	color-scheme: light;
 	--color-primary: oklch(29.72% 0.0582 259.57);
-	--color-primary-content: oklch(97.03% 0.0070 88.69);
+	--color-primary-content: oklch(97.03% 0.007 88.69);
 	--color-secondary: oklch(55.98% 0.0781 237.99);
-	--color-secondary-content: oklch(97.03% 0.0070 88.69);
+	--color-secondary-content: oklch(97.03% 0.007 88.69);
 	--color-accent: oklch(61.22% 0.2082 22.25);
-	--color-accent-content: oklch(100.00% 0.0000 135.81);
-	--color-neutral: oklch(21.78% 0.0000 135.81);
-	--color-neutral-content: oklch(97.03% 0.0070 88.69);
-	--color-base-100: oklch(97.03% 0.0070 88.69);
+	--color-accent-content: oklch(100% 0 135.81);
+	--color-neutral: oklch(21.78% 0 135.81);
+	--color-neutral-content: oklch(97.03% 0.007 88.69);
+	--color-base-100: oklch(97.03% 0.007 88.69);
 	--color-base-200: oklch(93.49% 0.0115 84.62);
 	--color-base-300: oklch(92.23% 0.0099 87.51);
-	--color-base-content: oklch(21.78% 0.0000 135.81);
+	--color-base-content: oklch(21.78% 0 135.81);
 	--color-info: oklch(37.08% 0.0654 175.16);
-	--color-info-content: oklch(97.03% 0.0070 88.69);
+	--color-info-content: oklch(97.03% 0.007 88.69);
 	--color-success: oklch(47.58% 0.0777 162.16);
-	--color-success-content: oklch(97.03% 0.0070 88.69);
-	--color-warning: oklch(70.62% 0.1440 82.48);
-	--color-warning-content: oklch(21.78% 0.0000 135.81);
+	--color-success-content: oklch(97.03% 0.007 88.69);
+	--color-warning: oklch(70.62% 0.144 82.48);
+	--color-warning-content: oklch(21.78% 0 135.81);
 	--color-error: oklch(61.22% 0.2082 22.25);
-	--color-error-content: oklch(100.00% 0.0000 135.81);
+	--color-error-content: oklch(100% 0 135.81);
 	--radius-selector: 0.5rem;
 	--radius-field: 0.625rem;
 	--radius-box: 1rem;
@@ -50,29 +50,29 @@
 
 /* ── Aevani Dark Theme ── */
 @plugin "daisyui/theme" {
-	name: "aevani-dark";
+	name: 'aevani-dark';
 	prefersdark: true;
 	color-scheme: dark;
-	--color-primary: oklch(70.00% 0.0900 237.00);
-	--color-primary-content: oklch(21.78% 0.0000 135.81);
-	--color-secondary: oklch(73.00% 0.0600 230.00);
-	--color-secondary-content: oklch(21.78% 0.0000 135.81);
+	--color-primary: oklch(70% 0.09 237);
+	--color-primary-content: oklch(21.78% 0 135.81);
+	--color-secondary: oklch(73% 0.06 230);
+	--color-secondary-content: oklch(21.78% 0 135.81);
 	--color-accent: oklch(61.22% 0.2082 22.25);
-	--color-accent-content: oklch(100.00% 0.0000 135.81);
-	--color-neutral: oklch(28.00% 0.0000 0.00);
+	--color-accent-content: oklch(100% 0 135.81);
+	--color-neutral: oklch(28% 0 0);
 	--color-neutral-content: oklch(92.23% 0.0099 87.51);
-	--color-base-100: oklch(21.78% 0.0000 135.81);
-	--color-base-200: oklch(26.00% 0.0000 0.00);
-	--color-base-300: oklch(30.00% 0.0000 0.00);
+	--color-base-100: oklch(21.78% 0 135.81);
+	--color-base-200: oklch(26% 0 0);
+	--color-base-300: oklch(30% 0 0);
 	--color-base-content: oklch(92.23% 0.0099 87.51);
-	--color-info: oklch(60.00% 0.1000 175.00);
-	--color-info-content: oklch(21.78% 0.0000 135.81);
-	--color-success: oklch(62.00% 0.1000 155.00);
-	--color-success-content: oklch(21.78% 0.0000 135.81);
-	--color-warning: oklch(78.00% 0.1200 82.00);
-	--color-warning-content: oklch(21.78% 0.0000 135.81);
+	--color-info: oklch(60% 0.1 175);
+	--color-info-content: oklch(21.78% 0 135.81);
+	--color-success: oklch(62% 0.1 155);
+	--color-success-content: oklch(21.78% 0 135.81);
+	--color-warning: oklch(78% 0.12 82);
+	--color-warning-content: oklch(21.78% 0 135.81);
 	--color-error: oklch(61.22% 0.2082 22.25);
-	--color-error-content: oklch(100.00% 0.0000 135.81);
+	--color-error-content: oklch(100% 0 135.81);
 	--radius-selector: 0.5rem;
 	--radius-field: 0.625rem;
 	--radius-box: 1rem;
@@ -110,7 +110,8 @@
 
 	/* ── Typography ── */
 	--font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
-	--font-body: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	--font-body:
+		'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 	--font-mono: 'JetBrains Mono', 'Fira Mono', monospace;
 
 	/* ── Fluid Type Scale ── */
@@ -168,10 +169,22 @@
 	--shadow-glow-focus: 0 0 0 3px rgba(69, 123, 157, 0.18), 0 0 12px rgba(69, 123, 157, 0.08);
 
 	/* Nature-inspired gradients */
-	--gradient-sky: linear-gradient(135deg, rgba(107, 154, 196, 0.08) 0%, rgba(69, 123, 157, 0.04) 100%);
+	--gradient-sky: linear-gradient(
+		135deg,
+		rgba(107, 154, 196, 0.08) 0%,
+		rgba(69, 123, 157, 0.04) 100%
+	);
 	--gradient-leaf: linear-gradient(135deg, rgba(45, 106, 79, 0.06) 0%, rgba(10, 75, 62, 0.03) 100%);
-	--gradient-warm: linear-gradient(135deg, rgba(247, 245, 240, 0.9) 0%, rgba(237, 233, 225, 0.7) 100%);
-	--gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.4) 100%);
+	--gradient-warm: linear-gradient(
+		135deg,
+		rgba(247, 245, 240, 0.9) 0%,
+		rgba(237, 233, 225, 0.7) 100%
+	);
+	--gradient-glass: linear-gradient(
+		135deg,
+		rgba(255, 255, 255, 0.7) 0%,
+		rgba(255, 255, 255, 0.4) 100%
+	);
 
 	/* Input-specific tokens */
 	--input-bg: rgba(255, 255, 255, 0.6);
@@ -192,7 +205,8 @@ body {
 	min-height: 100vh;
 }
 
-pre, code {
+pre,
+code {
 	font-family: var(--font-mono);
 }
 
@@ -252,7 +266,7 @@ pre, code {
 
 /* ── Layout Utilities ── */
 .text-column {
-	@apply flex max-w-4xl flex-col justify-center mx-auto;
+	@apply mx-auto flex max-w-4xl flex-col justify-center;
 	flex: 0.6;
 }
 
@@ -261,7 +275,7 @@ pre, code {
 }
 
 /* ── Dark mode Frutiger Aero overrides ── */
-[data-theme="aevani-dark"] {
+[data-theme='aevani-dark'] {
 	/* v4→v5 bridge for dark theme */
 	--p: 70% 0.09 237;
 	--pc: 21.78% 0 0;
@@ -291,8 +305,16 @@ pre, code {
 	--shadow-glow-md: 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
 	--shadow-glow-lg: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
 	--shadow-glow-focus: 0 0 0 3px rgba(107, 154, 196, 0.25), 0 0 12px rgba(107, 154, 196, 0.1);
-	--gradient-sky: linear-gradient(135deg, rgba(107, 154, 196, 0.1) 0%, rgba(69, 123, 157, 0.05) 100%);
-	--gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+	--gradient-sky: linear-gradient(
+		135deg,
+		rgba(107, 154, 196, 0.1) 0%,
+		rgba(69, 123, 157, 0.05) 100%
+	);
+	--gradient-glass: linear-gradient(
+		135deg,
+		rgba(255, 255, 255, 0.06) 0%,
+		rgba(255, 255, 255, 0.02) 100%
+	);
 	--input-bg: rgba(255, 255, 255, 0.06);
 	--input-border: rgba(255, 255, 255, 0.1);
 	--input-border-hover: rgba(107, 154, 196, 0.3);
@@ -309,13 +331,13 @@ pre, code {
 .input,
 .select,
 .textarea,
-input[type="text"].input-bordered,
-input[type="email"].input-bordered,
-input[type="password"].input-bordered,
-input[type="tel"].input-bordered,
-input[type="url"].input-bordered,
-input[type="number"].input-bordered,
-input[type="date"].input-bordered,
+input[type='text'].input-bordered,
+input[type='email'].input-bordered,
+input[type='password'].input-bordered,
+input[type='tel'].input-bordered,
+input[type='url'].input-bordered,
+input[type='number'].input-bordered,
+input[type='date'].input-bordered,
 select.select-bordered,
 textarea.textarea-bordered {
 	background: var(--input-bg) !important;
@@ -464,11 +486,15 @@ textarea.textarea-bordered {
 
 /* Primary button — solid, prominent */
 .btn-primary {
-	box-shadow: 0 2px 8px oklch(var(--p) / 0.2), 0 0 0 1px oklch(var(--p) / 0.05) inset !important;
+	box-shadow:
+		0 2px 8px oklch(var(--p) / 0.2),
+		0 0 0 1px oklch(var(--p) / 0.05) inset !important;
 }
 
 .btn-primary:hover:not(:disabled) {
-	box-shadow: 0 4px 16px oklch(var(--p) / 0.3), 0 0 0 1px oklch(var(--pc) / 0.08) inset !important;
+	box-shadow:
+		0 4px 16px oklch(var(--p) / 0.3),
+		0 0 0 1px oklch(var(--pc) / 0.08) inset !important;
 	filter: brightness(1.05);
 }
 
@@ -502,7 +528,9 @@ textarea.textarea-bordered {
 /* Focus-visible ring for accessibility */
 .btn:focus-visible {
 	outline: none !important;
-	box-shadow: var(--shadow-glow-focus), 0 2px 8px oklch(var(--p) / 0.15) !important;
+	box-shadow:
+		var(--shadow-glow-focus),
+		0 2px 8px oklch(var(--p) / 0.15) !important;
 }
 
 /* ── Select / Dropdown ── */
@@ -560,7 +588,9 @@ select option:checked,
 
 /* ── Reduced Motion ── */
 @media (prefers-reduced-motion: reduce) {
-	*, *::before, *::after {
+	*,
+	*::before,
+	*::after {
 		animation-duration: 0.01ms !important;
 		animation-iteration-count: 1 !important;
 		transition-duration: 0.01ms !important;

@@ -27,10 +27,14 @@
 
 	function getRoleBadgeClass(role: string): string {
 		switch (role?.toLowerCase()) {
-			case 'admin': return 'platform-badge platform-badge--primary';
-			case 'affiliate': return 'platform-badge platform-badge--secondary';
-			case 'customer': return 'platform-badge platform-badge--ghost';
-			default: return 'platform-badge platform-badge--ghost';
+			case 'admin':
+				return 'platform-badge platform-badge--primary';
+			case 'affiliate':
+				return 'platform-badge platform-badge--secondary';
+			case 'customer':
+				return 'platform-badge platform-badge--ghost';
+			default:
+				return 'platform-badge platform-badge--ghost';
 		}
 	}
 </script>
@@ -79,7 +83,11 @@
 								<span class={getRoleBadgeClass(user.role)}>{user.role}</span>
 							</td>
 							<td>
-								<span class="platform-badge {user.isActive ? 'platform-badge--success' : 'platform-badge--error'}">
+								<span
+									class="platform-badge {user.isActive
+										? 'platform-badge--success'
+										: 'platform-badge--error'}"
+								>
 									{user.isActive ? 'Active' : 'Inactive'}
 								</span>
 							</td>

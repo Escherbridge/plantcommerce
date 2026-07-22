@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { trpc } from '$lib/trpc/client';
-	
+
 	interface UploadedFile {
 		id: string;
 		filename: string;
@@ -40,7 +40,7 @@
 	async function handleFileUpload(event: Event) {
 		const target = event.target as HTMLInputElement;
 		const files = target.files;
-		
+
 		if (!files || files.length === 0) return;
 
 		// Validate file count
@@ -52,7 +52,9 @@
 		// Validate file sizes
 		for (const file of Array.from(files)) {
 			if (file.size > maxSizeBytes) {
-				onerror?.({ detail: `File "${file.name}" is too large. Maximum ${Math.round(maxSizeBytes / 1024 / 1024)}MB allowed` } as CustomEvent<string>);
+				onerror?.({
+					detail: `File "${file.name}" is too large. Maximum ${Math.round(maxSizeBytes / 1024 / 1024)}MB allowed`
+				} as CustomEvent<string>);
 				return;
 			}
 		}
@@ -62,7 +64,7 @@
 
 		try {
 			const formData = new FormData();
-			
+
 			// Add files
 			for (const file of Array.from(files)) {
 				formData.append('files', file);
@@ -88,10 +90,11 @@
 
 			// Clear the input
 			if (fileInput) fileInput.value = '';
-
 		} catch (error) {
 			console.error('Upload failed:', error);
-			onerror?.({ detail: error instanceof Error ? error.message : 'Upload failed' } as CustomEvent<string>);
+			onerror?.({
+				detail: error instanceof Error ? error.message : 'Upload failed'
+			} as CustomEvent<string>);
 		} finally {
 			uploading = false;
 			uploadProgress = 0;
@@ -118,7 +121,7 @@
 			disabled={uploading}
 			class="file-input"
 		/>
-		
+
 		<div class="upload-content">
 			{#if uploading}
 				<div class="upload-progress">
@@ -132,12 +135,19 @@
 				</div>
 			{:else}
 				<div class="upload-prompt">
-					<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+					<svg
+						width="48"
+						height="48"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+					>
+						<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
 					</svg>
 					<p>Click to upload or drag and drop</p>
 					<p class="upload-info">
-						{#if multiple}Up to {maxFiles} files,{/if} 
+						{#if multiple}Up to {maxFiles} files,{/if}
 						max {formatFileSize(maxSizeBytes)} each
 					</p>
 				</div>
@@ -223,8 +233,12 @@
 	}
 
 	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
 	}
 
 	.progress-bar {
