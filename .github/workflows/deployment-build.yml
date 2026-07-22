@@ -3,7 +3,7 @@ name: Deployment build
 on:
   pull_request:
   push:
-    branches: [codex/aevani-railway-deploy]
+    branches: [main, codex/aevani-railway-deploy]
 
 permissions:
   contents: read
@@ -17,6 +17,7 @@ jobs:
     env:
       DATABASE_URL: postgres://build:build@localhost:5432/build
       AEVANI_RELEASE_MODE: status
+      PUBLIC_BASE_URL: https://aevani-web-production.up.railway.app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
