@@ -46,33 +46,23 @@
 			{#if data.posts && data.posts.length > 0}
 				{#each data.posts as post}
 					<div class="card bg-base-100 shadow-xl">
-						{#if post.featuredImage}
-							<figure class="aspect-video">
-								<img src={post.featuredImage} alt={post.title} class="h-full w-full object-cover" />
-							</figure>
-						{/if}
 						<div class="card-body">
 							<div class="mb-2 text-sm text-base-content/60">
-								{new Date(post.publishedAt).toLocaleDateString('en-US', {
-									year: 'numeric',
-									month: 'long',
-									day: 'numeric'
-								})}
+								{post.publishedAt
+									? new Date(post.publishedAt).toLocaleDateString('en-US', {
+											year: 'numeric',
+											month: 'long',
+											day: 'numeric'
+										})
+									: 'Publication date unavailable'}
 							</div>
 							<h2 class="card-title">
 								<a href="/blog/{post.slug}" class="transition-colors hover:text-primary">
 									{post.title}
 								</a>
 							</h2>
-							<p class="text-base-content/70">{post.excerpt}</p>
+							<p class="text-base-content/70">{post.excerpt ?? 'No summary is available yet.'}</p>
 							<div class="mt-4 card-actions items-center justify-between">
-								<div class="flex gap-2">
-									{#if post.tags}
-										{#each post.tags.slice(0, 2) as tag}
-											<span class="badge badge-outline badge-sm">{tag}</span>
-										{/each}
-									{/if}
-								</div>
 								<a href="/blog/{post.slug}" class="btn btn-sm btn-primary">Read More</a>
 							</div>
 						</div>

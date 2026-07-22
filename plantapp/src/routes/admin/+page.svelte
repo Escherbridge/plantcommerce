@@ -145,8 +145,8 @@
 					<tbody>
 						{#each recentOrders.slice(0, 5) as order}
 							<tr>
-								<td class="font-mono text-xs">#{order.id}</td>
-								<td>{order.user?.firstName || 'Guest'} {order.user?.lastName || ''}</td>
+								<td class="font-mono text-xs">{order.orderNumber}</td>
+								<td>Customer details unavailable in this summary</td>
 								<td>
 									<span class={getStatusBadgeClass(order.status)}>{order.status}</span>
 								</td>

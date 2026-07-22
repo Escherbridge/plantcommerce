@@ -56,8 +56,8 @@
 			<Accordion
 				items={data.faqs.map((faq, index) => ({
 					id: `faq-${index}`,
-					title: faq.question,
-					content: faq.answer,
+					title: faq.title,
+					content: faq.excerpt ?? 'No answer summary is available yet.',
 					defaultOpen: index === 0
 				}))}
 			/>

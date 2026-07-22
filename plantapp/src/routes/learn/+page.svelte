@@ -142,7 +142,7 @@
 									{guide.title}
 								</h3>
 								<p class="line-clamp-3 text-sm leading-relaxed font-light text-base-content/60">
-									{guide.excerpt || guide.content?.substring(0, 150) + '...'}
+									{guide.excerpt ?? 'No summary is available yet.'}
 								</p>
 								<div class="mt-6 flex items-center gap-2 text-sm font-medium text-primary">
 									<span>Read More</span>
@@ -197,7 +197,7 @@
 									{post.title}
 								</h3>
 								<p class="line-clamp-3 text-sm leading-relaxed font-light text-base-content/60">
-									{post.excerpt || post.content?.substring(0, 150) + '...'}
+									{post.excerpt ?? 'No summary is available yet.'}
 								</p>
 								{#if post.publishedAt}
 									<p class="mt-3 font-mono text-xs text-base-content/40">
@@ -255,7 +255,7 @@
 								{faq.title}
 							</h3>
 							<p class="mt-2 line-clamp-2 text-sm font-light text-base-content/60">
-								{faq.excerpt || faq.content?.substring(0, 100) + '...'}
+								{faq.excerpt ?? 'No summary is available yet.'}
 							</p>
 						</a>
 					{/each}
@@ -290,7 +290,7 @@
 									{resource.title}
 								</h3>
 								<p class="mt-3 line-clamp-2 text-sm font-light text-base-content/60">
-									{resource.excerpt || resource.content?.substring(0, 100) + '...'}
+									{resource.excerpt ?? 'No summary is available yet.'}
 								</p>
 								<div class="mt-6 flex items-center gap-2 text-sm font-medium text-primary">
 									<span>Access</span>

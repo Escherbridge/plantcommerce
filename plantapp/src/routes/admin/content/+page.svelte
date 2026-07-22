@@ -3,16 +3,24 @@
 
 	let { data }: { data: PageData } = $props();
 
-	const content = $derived(data.content || []);
+	type AdminContentEntry = PageData['content'][number];
 
-	function getStatusBadgeClass(item: any): string {
-		if (item.isPublished) return 'platform-badge platform-badge--success';
+	const content = $derived(data.content ?? []);
+
+	function getStatusBadgeClass(item: AdminContentEntry): string {
+		if (item.page.status === 'published') return 'platform-badge platform-badge--success';
 		return 'platform-badge platform-badge--ghost';
 	}
 
-	function getStatusLabel(item: any): string {
-		if (item.isPublished) return 'Published';
-		return 'Draft';
+	function getStatusLabel(item: AdminContentEntry): string {
+		switch (item.page.status) {
+			case 'published':
+				return 'Published';
+			case 'archived':
+				return 'Archived';
+			default:
+				return 'Draft';
+		}
 	}
 </script>
 
@@ -43,7 +51,7 @@
 	<!-- Type Filter Tabs -->
 	<div class="admin-type-tabs">
 		<a href="/admin/content" class="platform-action-btn admin-tab-btn">All</a>
-		<a href="/admin/content?type=blog" class="platform-action-btn admin-tab-btn">Blog Posts</a>
+		<a href="/admin/content?type=blog_post" class="platform-action-btn admin-tab-btn">Blog Posts</a>
 		<a href="/admin/content?type=guide" class="platform-action-btn admin-tab-btn">Guides</a>
 		<a href="/admin/content?type=faq" class="platform-action-btn admin-tab-btn">FAQs</a>
 		<a href="/admin/content?type=page" class="platform-action-btn admin-tab-btn">Pages</a>
@@ -64,16 +72,18 @@
 				<tbody>
 					{#each content as item}
 						<tr>
-							<td class="font-semibold">{item.title}</td>
+							<td class="font-semibold">{item.page.title}</td>
 							<td>
-								<span class="platform-badge platform-badge--ghost">{item.type}</span>
+								<span class="platform-badge platform-badge--ghost">{item.page.type}</span>
 							</td>
 							<td>
 								<span class={getStatusBadgeClass(item)}>{getStatusLabel(item)}</span>
 							</td>
-							<td>{item.publishedAt ? new Date(item.publishedAt).toLocaleDateString() : '-'}</td>
 							<td>
-								<a href="/admin/content/{item.id}" class="platform-action-btn admin-table-btn"
+								{item.page.publishedAt ? new Date(item.page.publishedAt).toLocaleDateString() : '-'}
+							</td>
+							<td>
+								<a href="/admin/content/{item.page.id}" class="platform-action-btn admin-table-btn"
 									>Edit</a
 								>
 							</td>

@@ -5,6 +5,13 @@ import PolycultureGrid from '$lib/components/patterns/PolycultureGrid.svelte';
 import WaterRipple from '$lib/components/patterns/WaterRipple.svelte';
 import PatternGallery from './PatternGallery.svelte';
 
+type PatternProps = {
+	color?: string;
+	opacity?: number;
+	scale?: number;
+	animate?: boolean;
+};
+
 const patternArgTypes = {
 	color: {
 		control: { type: 'color' },
@@ -22,7 +29,7 @@ const patternArgTypes = {
 		control: { type: 'boolean' },
 		description: 'Enable ambient animation'
 	}
-};
+} satisfies NonNullable<Meta<PatternProps>['argTypes']>;
 
 const meta = {
 	title: 'Design System/Patterns',
@@ -44,10 +51,10 @@ const meta = {
 			}
 		}
 	}
-} satisfies Meta<typeof MyceliumNetwork>;
+} satisfies Meta<PatternProps>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<PatternProps>;
 
 export const MyceliumNetworkLight: Story = {
 	name: 'Mycelium Network — Light'

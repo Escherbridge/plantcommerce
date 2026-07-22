@@ -8,7 +8,7 @@ const config = {
 	// for more information about preprocessors
 	preprocess: [vitePreprocess(), mdsvex()],
 	kit: {
-		// Build the explicit Node server deployed by Railway.
+		// Railway runs the generated Node server via `npm run start`.
 		adapter: adapter(),
 		prerender: {
 			// Disable automatic prerendering since the app requires authentication and dynamic data

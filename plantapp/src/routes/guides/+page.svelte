@@ -109,17 +109,9 @@
 											{guide.title}
 										</a>
 									</h3>
-									<p class="mb-4 text-base-content/70">{guide.excerpt}</p>
-									<div class="flex gap-2">
-										{#if guide.tags}
-											{#each guide.tags as tag}
-												<span
-													class="badge badge-outline font-mono text-xs tracking-widest uppercase"
-													>{tag}</span
-												>
-											{/each}
-										{/if}
-									</div>
+									<p class="mb-4 text-base-content/70">
+										{guide.excerpt ?? 'No summary is available yet.'}
+									</p>
 								</div>
 								<a
 									href="/guides/{guide.slug}"

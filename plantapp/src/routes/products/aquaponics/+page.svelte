@@ -1,9 +1,17 @@
 <script lang="ts">
 	import { Container, Section } from '$lib/components/layout';
 	import { Grid } from '$lib/components/layout';
-	import type { PageData } from './$types';
 
-	let { data }: { data: PageData } = $props();
+	type ProductPreview = {
+		image?: string | null;
+		name: string;
+		price: string;
+		shortDescription?: string | null;
+		slug: string;
+	};
+
+	// This route redirects before rendering; preserve an explicit empty preview shape for type safety.
+	const products: ProductPreview[] = [];
 </script>
 
 <svelte:head>
@@ -39,8 +47,8 @@
 
 		<!-- Products Grid -->
 		<Grid columns={3} gap={6}>
-			{#if data.products && data.products.length > 0}
-				{#each data.products as product}
+			{#if products.length > 0}
+				{#each products as product}
 					<div class="card bg-base-100 shadow-xl">
 						<figure class="aspect-square">
 							<img

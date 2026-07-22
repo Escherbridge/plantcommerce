@@ -1,0 +1,29 @@
+name: Deployment build
+
+on:
+  pull_request:
+  push:
+    branches: [main, codex/aevani-railway-deploy]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plantapp
+    env:
+      DATABASE_URL: postgres://build:build@localhost:5432/build
+      AEVANI_RELEASE_MODE: status
+      PUBLIC_BASE_URL: https://aevani-web-production.up.railway.app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.1
+          cache: npm
+          cache-dependency-path: plantapp/package-lock.json
+      - run: npm ci
+      - run: npm run build

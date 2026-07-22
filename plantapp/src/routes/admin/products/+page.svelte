@@ -95,12 +95,8 @@
 					{#each filteredProducts() as product}
 						<tr>
 							<td>
-								<div class="admin-product-thumb">
-									<img
-										src={product.image || '/placeholder.jpg'}
-										alt={product.name}
-										class="admin-thumb-img"
-									/>
+								<div class="admin-product-thumb" aria-label="No verified product image">
+									<span class="admin-product-thumb__label">No image</span>
 								</div>
 							</td>
 							<td class="font-semibold">{product.name}</td>
@@ -204,6 +200,8 @@
 	}
 
 	.admin-product-thumb {
+		display: grid;
+		place-items: center;
 		width: 2.5rem;
 		height: 2.5rem;
 		border-radius: 6px;
@@ -211,10 +209,10 @@
 		border: 1px solid var(--input-border);
 	}
 
-	.admin-thumb-img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
+	.admin-product-thumb__label {
+		font-size: 0.625rem;
+		color: oklch(var(--bc) / 0.55);
+		text-align: center;
 	}
 
 	.admin-action-group {

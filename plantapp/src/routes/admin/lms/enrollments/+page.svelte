@@ -1,15 +1,30 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { trpc } from '$lib/trpc/client';
-	import { invalidateAll } from '$app/navigation';
 
 	let { data }: { data: PageData } = $props();
 
-	const courses = $derived((data.courses as any[]) || []);
+	type CourseEnrollmentsInput = Parameters<typeof trpc.lms.enrollment.courseEnrollments.query>[0];
+	type EnrollmentQueryResult = Awaited<
+		ReturnType<typeof trpc.lms.enrollment.courseEnrollments.query>
+	>;
+	type Enrollment = EnrollmentQueryResult['enrollments'][number];
+	type EnrollmentStatus = NonNullable<CourseEnrollmentsInput['status']>;
 
-	let selectedCourseId = $state<string>((data.selectedCourseId as string) || '');
-	let statusFilter = $state<string>('all');
-	let enrollments = $state<any[]>((data.enrollments as any[]) || []);
+	function getInitialEnrollments(value: unknown): Enrollment[] {
+		if (Array.isArray(value)) return value as Enrollment[];
+		if (typeof value === 'object' && value !== null && 'enrollments' in value) {
+			const result = value as { enrollments?: unknown };
+			return Array.isArray(result.enrollments) ? (result.enrollments as Enrollment[]) : [];
+		}
+		return [];
+	}
+
+	const courses = $derived(data.courses ?? []);
+
+	let selectedCourseId = $state(data.selectedCourseId ?? '');
+	let statusFilter = $state<EnrollmentStatus | 'all'>('all');
+	let enrollments = $state<Enrollment[]>(getInitialEnrollments(data.enrollments));
 	let loading = $state(false);
 	let busyId = $state<string | null>(null);
 
@@ -20,10 +35,13 @@
 		}
 		loading = true;
 		try {
-			const input: any = { courseId, limit: 100 };
-			if (statusFilter !== 'all') input.status = statusFilter;
+			const input: CourseEnrollmentsInput = {
+				courseId,
+				limit: 100,
+				...(statusFilter === 'all' ? {} : { status: statusFilter })
+			};
 			const result = await trpc.lms.enrollment.courseEnrollments.query(input);
-			enrollments = (result as any[]) || [];
+			enrollments = result.enrollments;
 		} catch (err) {
 			console.error('Load enrollments error:', err);
 			enrollments = [];
@@ -135,7 +153,7 @@
 						<th>Email</th>
 						<th>Status</th>
 						<th>Enrolled</th>
-						<th>Progress</th>
+						<th>Last activity</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -156,8 +174,8 @@
 									: '—'}</td
 							>
 							<td
-								>{enrollment.progressPct != null
-									? `${Math.round(enrollment.progressPct)}%`
+								>{enrollment.lastAccessedAt
+									? new Date(enrollment.lastAccessedAt).toLocaleDateString()
 									: '—'}</td
 							>
 							<td>

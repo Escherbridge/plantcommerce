@@ -76,28 +76,11 @@
 								</div>
 							</div>
 
-							<!-- Order Items -->
+							<!-- Order summary -->
 							<div class="divider"></div>
-							<div class="space-y-3">
-								{#each order.items as item}
-									<div class="flex gap-4">
-										<div class="avatar">
-											<div class="h-16 w-16 rounded">
-												<img
-													src={item.product?.image || '/placeholder-product.jpg'}
-													alt={item.product?.name}
-												/>
-											</div>
-										</div>
-										<div class="flex-1">
-											<h4 class="font-semibold">{item.product?.name}</h4>
-											<p class="text-sm text-base-content/60">Qty: {item.quantity}</p>
-										</div>
-										<div class="text-right">
-											<p class="font-semibold">${parseFloat(item.price).toFixed(2)}</p>
-										</div>
-									</div>
-								{/each}
+							<div class="text-sm text-base-content/60">
+								{order.itemCount}
+								{order.itemCount === 1 ? 'item' : 'items'} in this order
 							</div>
 
 							<!-- Order Actions -->

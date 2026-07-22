@@ -19,12 +19,6 @@
 
 	const activeStatus = $derived($page.url.searchParams.get('status') || 'all');
 
-	let expandedRows = $state<Record<string, boolean>>({});
-
-	function toggleRow(id: string) {
-		expandedRows = { ...expandedRows, [id]: !expandedRows[id] };
-	}
-
 	function setStatusFilter(status: string) {
 		if (status === 'all') {
 			goto('/admin/orders');
@@ -54,10 +48,10 @@
 
 	function exportCSV() {
 		const headers = ['Order #', 'Customer', 'Items', 'Total', 'Status', 'Date'];
-		const rows = orders.map((order: any) => [
-			`#${order.id}`,
-			order.user?.email || 'Guest',
-			order.items?.length || 0,
+		const rows = orders.map((order) => [
+			order.orderNumber,
+			'Customer details unavailable',
+			order.itemCount,
 			`$${parseFloat(order.totalAmount).toFixed(2)}`,
 			order.status,
 			new Date(order.createdAt).toLocaleDateString()
@@ -118,7 +112,6 @@
 			<table class="platform-table">
 				<thead>
 					<tr>
-						<th></th>
 						<th>Order #</th>
 						<th>Customer</th>
 						<th>Items</th>
@@ -129,63 +122,16 @@
 				</thead>
 				<tbody>
 					{#each orders as order}
-						<tr onclick={() => toggleRow(order.id)} style="cursor: pointer">
-							<td>
-								<svg
-									viewBox="0 0 24 24"
-									class="admin-expand-icon h-4 w-4"
-									class:admin-expand-icon--open={expandedRows[order.id]}
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<polyline points="6 9 12 15 18 9" />
-								</svg>
-							</td>
-							<td class="font-mono" style="font-size: 0.75rem">#{order.id}</td>
-							<td>{order.user?.email || 'Guest'}</td>
-							<td>{order.items?.length || 0}</td>
+						<tr>
+							<td class="font-mono" style="font-size: 0.75rem">{order.orderNumber}</td>
+							<td>Customer details unavailable</td>
+							<td>{order.itemCount}</td>
 							<td>${parseFloat(order.totalAmount).toFixed(2)}</td>
 							<td>
 								<span class={getStatusBadgeClass(order.status)}>{order.status}</span>
 							</td>
 							<td>{new Date(order.createdAt).toLocaleDateString()}</td>
 						</tr>
-						{#if expandedRows[order.id]}
-							<tr class="admin-expanded-row">
-								<td colspan="7">
-									<div class="admin-order-detail">
-										<div class="admin-detail-section">
-											<h4 class="admin-detail-title">Order Items</h4>
-											{#if order.items && order.items.length > 0}
-												{#each order.items as item}
-													<div class="admin-detail-item">
-														<span>{item.product?.name || 'Product'} x{item.quantity}</span>
-														<span>${parseFloat(item.price || '0').toFixed(2)}</span>
-													</div>
-												{/each}
-											{:else}
-												<p class="admin-detail-empty">No item details available</p>
-											{/if}
-										</div>
-										<div class="admin-detail-section">
-											<h4 class="admin-detail-title">Shipping Address</h4>
-											<p class="admin-detail-empty">Address details not available</p>
-										</div>
-										{#if order.affiliateCode}
-											<div class="admin-detail-section">
-												<h4 class="admin-detail-title">Affiliate</h4>
-												<p style="font-size: 0.875rem; color: oklch(var(--bc) / 0.7)">
-													Code: {order.affiliateCode}
-												</p>
-											</div>
-										{/if}
-									</div>
-								</td>
-							</tr>
-						{/if}
 					{/each}
 				</tbody>
 			</table>

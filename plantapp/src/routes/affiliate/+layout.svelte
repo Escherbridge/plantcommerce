@@ -19,8 +19,7 @@
 			? `${data.user.firstName}${data.user.lastName ? ' ' + data.user.lastName : ''}`
 			: data.user?.email || 'Affiliate',
 		email: data.user?.email || '',
-		role: (data.user?.role || 'affiliate') as PlatformUser['role'],
-		avatarUrl: data.user?.avatarUrl || undefined
+		role: (data.user?.role || 'affiliate') as PlatformUser['role']
 	});
 
 	let isLoggingOut = $state(false);

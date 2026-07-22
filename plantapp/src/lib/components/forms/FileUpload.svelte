@@ -10,8 +10,8 @@
 	let { config, onFileChange, error }: Props = $props();
 
 	let dragOver = $state(false);
-	let fileInput: HTMLInputElement = $state()!;
-	let selectedFiles: FileList | null = $state(null);
+	let fileInput = $state<HTMLInputElement | null>(null);
+	let selectedFiles = $state<FileList | null>(null);
 
 	function handleDragEnter(e: DragEvent) {
 		e.preventDefault();
@@ -51,7 +51,7 @@
 	}
 
 	function triggerFileInput() {
-		fileInput.click();
+		fileInput?.click();
 	}
 
 	function removeFile(index: number) {
@@ -59,8 +59,9 @@
 
 		const dt = new DataTransfer();
 		for (let i = 0; i < selectedFiles.length; i++) {
-			if (i !== index) {
-				dt.items.add(selectedFiles[i]);
+			const file = selectedFiles.item(i);
+			if (i !== index && file) {
+				dt.items.add(file);
 			}
 		}
 		selectedFiles = dt.files;
@@ -72,12 +73,12 @@
 		const k = 1024;
 		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
 		const i = Math.floor(Math.log(bytes) / Math.log(k));
-		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + (sizes[i] ?? 'Bytes');
 	}
 
 	const isDragDrop = $derived(config.dragDrop ?? false);
 	const isMultiple = $derived(config.multiple ?? false);
-	const hasFiles = $derived(selectedFiles !== null && selectedFiles.length > 0);
+	const hasFiles = $derived((selectedFiles?.length ?? 0) > 0);
 </script>
 
 <div class="w-full">

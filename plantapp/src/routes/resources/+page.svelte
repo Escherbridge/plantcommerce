@@ -110,33 +110,9 @@
 									<h3 class="font-display mb-2 card-title text-2xl tracking-tight uppercase">
 										{resource.title}
 									</h3>
-									<p class="mb-4 text-base-content/70">{resource.description}</p>
-									{#if resource.fileSize}
-										<p class="font-mono text-xs tracking-widest text-secondary uppercase">
-											Size: {resource.fileSize}
-										</p>
-									{/if}
-								</div>
-								<div class="flex flex-col gap-2">
-									{#if resource.downloadUrl}
-										<a
-											href={resource.downloadUrl}
-											download
-											class="font-display btn tracking-wider uppercase btn-sm btn-primary"
-										>
-											Download
-										</a>
-									{/if}
-									{#if resource.viewUrl}
-										<a
-											href={resource.viewUrl}
-											target="_blank"
-											rel="noopener noreferrer"
-											class="font-display btn tracking-wider uppercase btn-outline btn-sm"
-										>
-											View
-										</a>
-									{/if}
+									<p class="mb-4 text-base-content/70">
+										{resource.excerpt ?? 'No summary is available yet.'}
+									</p>
 								</div>
 							</div>
 						</div>
