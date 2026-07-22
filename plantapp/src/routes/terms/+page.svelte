@@ -17,11 +17,16 @@
 				warranty, or affiliate agreement.
 			</p>
 
-			<h2>Current commercial boundary</h2>
+			<h2>Catalogue and order status</h2>
 			<p>
-				Aevani is not currently publishing a verified catalog, price, payment method, order
-				acceptance process, shipping commitment, return commitment, warranty commitment, or
-				affiliate program agreement.
+				Catalogue listings, prices, and availability come from the active commerce provider.
+				Checkout is offered only when secure payment is enabled, and an order is not accepted until
+				its confirmation is displayed. Shipping, returns, warranty, and affiliate terms apply only
+				when they are explicitly stated for the relevant offer.
+			</p>
+			<p>
+				Local demo mode uses mock/test data, accepts no payment or personal information, and creates
+				no real order, account, email, fulfillment, inventory change, or production write.
 			</p>
 
 			<h2>Before relying on an arrangement</h2>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Container, Section } from '$lib/components/layout';
+	import Icon from '$lib/components/icons/Icon.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -109,22 +110,12 @@
 		{:else}
 			<div class="py-16 text-center">
 				<div class="mb-4 flex justify-center">
-					<svg
-						viewBox="0 0 24 24"
-						class="h-16 w-16 text-base-content/30"
-						stroke="currentColor"
-						stroke-width="1.5"
-						fill="none"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M3 7l9-4 9 4v10l-9 4-9-4V7zM3 7l9 4M21 7l-9 4M12 22V11" />
-					</svg>
+					<Icon name="package" size={64} class="h-16 w-16 text-base-content/30" />
 				</div>
 				<h3 class="font-display mb-2 text-2xl tracking-tight uppercase">No Orders Yet</h3>
 				<p class="mb-6 text-base-content/70">Start shopping to see your orders here.</p>
 				<a href="/products" class="font-display btn tracking-wider uppercase btn-primary"
-					>View Catalog Status</a
+					>Browse catalogue</a
 				>
 			</div>
 		{/if}

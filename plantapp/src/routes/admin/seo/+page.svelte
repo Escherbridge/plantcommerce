@@ -17,7 +17,7 @@
 					metaDescription:
 						'Local development fixture only. Configure reviewed production metadata before publishing.',
 					ogTitle: 'Aevani | Local Development Metadata Fixture',
-					ogImage: '/images/AI-MockAssets/MAINHERO.png',
+					ogImage: null,
 					robots: 'noindex, nofollow',
 					updatedAt: new Date().toISOString()
 				},
@@ -29,7 +29,7 @@
 					metaDescription:
 						'Local development fixture only. Configure reviewed production metadata before publishing.',
 					ogTitle: 'Aevani Products | Local Development Metadata Fixture',
-					ogImage: '/images/AI-MockAssets/MAINHERO.png',
+					ogImage: null,
 					robots: 'noindex, nofollow',
 					updatedAt: new Date().toISOString()
 				}

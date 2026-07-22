@@ -7,7 +7,6 @@ export { default as Select } from './Select.svelte';
 export { default as Divider } from './Divider.svelte';
 export { default as MarqueeBar } from './MarqueeBar.svelte';
 export { default as Modal } from './Modal.svelte';
-export { default as ParallaxHero } from './ParallaxHero.svelte';
 export { default as ScrollReveal } from './ScrollReveal.svelte';
 export { default as Skeleton } from './Skeleton.svelte';
 export { default as TextReveal } from './TextReveal.svelte';

@@ -53,9 +53,14 @@ function draftBelongsToBuyer(
 }
 
 function checkoutUrls(reference: string): { successUrl: string; cancelUrl: string } {
+	const configuredBaseUrl = publicEnv.PUBLIC_BASE_URL;
+	if (!configuredBaseUrl) {
+		throw new Error('PUBLIC_BASE_URL must be an absolute checkout URL');
+	}
+
 	let baseUrl: URL;
 	try {
-		baseUrl = new URL(publicEnv.PUBLIC_BASE_URL);
+		baseUrl = new URL(configuredBaseUrl);
 	} catch {
 		throw new Error('PUBLIC_BASE_URL must be an absolute checkout URL');
 	}

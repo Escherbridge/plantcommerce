@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Container } from '$lib/components/layout';
 	import type { PageData } from './$types';
+	import { Icon } from '$lib/components/icons';
 
 	let { data }: { data: PageData } = $props();
 
@@ -59,20 +60,7 @@
 					<span class="text-editorial font-mono text-xs tracking-widest text-secondary"
 						>ENROLLED</span
 					>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 text-primary/40"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						stroke-width="1.5"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-						/>
-					</svg>
+					<Icon name="book-open" size={20} class="text-primary/40" />
 				</div>
 				<div class="font-display text-3xl font-bold lg:text-4xl">{stats?.coursesEnrolled ?? 0}</div>
 				<p class="mt-1 text-xs text-base-content/50">Total courses</p>
@@ -83,20 +71,7 @@
 					<span class="text-editorial font-mono text-xs tracking-widest text-secondary"
 						>COMPLETED</span
 					>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 text-success/60"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						stroke-width="1.5"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-						/>
-					</svg>
+					<Icon name="check-circle" size={20} class="text-success/60" />
 				</div>
 				<div class="font-display text-3xl font-bold lg:text-4xl">
 					{stats?.coursesCompleted ?? 0}
@@ -108,25 +83,7 @@
 				<div class="mb-2 flex items-start justify-between">
 					<span class="text-editorial font-mono text-xs tracking-widest text-secondary">STREAK</span
 					>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 text-warning/70"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						stroke-width="1.5"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.24 17 7.317 17.627 8.75 18 10.332 18 12a8 8 0 01-.343 6.657z"
-						/>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"
-						/>
-					</svg>
+					<Icon name="zap" size={20} class="text-warning/70" />
 				</div>
 				<div class="font-display text-3xl font-bold lg:text-4xl">{stats?.currentStreak ?? 0}</div>
 				<p class="mt-1 text-xs text-base-content/50">
@@ -139,20 +96,7 @@
 					<span class="text-editorial font-mono text-xs tracking-widest text-secondary"
 						>QUIZ SCORE</span
 					>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 text-info/60"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						stroke-width="1.5"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-						/>
-					</svg>
+					<Icon name="bar-chart" size={20} class="text-info/60" />
 				</div>
 				<div class="font-display text-3xl font-bold lg:text-4xl">
 					{stats?.averageQuizScore ?? 0}%
@@ -184,20 +128,7 @@
 
 		{#if filteredEnrollments.length === 0}
 			<div class="rounded-3xl border border-base-200/50 bg-base-100 p-16 text-center">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="mx-auto mb-4 h-16 w-16 text-base-content/30"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-					stroke-width="1.5"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-					/>
-				</svg>
+				<Icon name="book-open" size={64} class="mx-auto mb-4 text-base-content/30" />
 				<h3 class="font-display mb-2 text-2xl font-bold tracking-tight uppercase">
 					{#if enrollments.length === 0}
 						Start Your Learning Journey
@@ -227,9 +158,7 @@
 					<div
 						class="group flex flex-col overflow-hidden rounded-3xl border border-base-200/30 bg-base-100 shadow-md transition-all duration-300 hover:border-primary/20 hover:shadow-xl"
 					>
-						<div
-							class="relative aspect-video overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/10"
-						>
+						<div class="relative aspect-video overflow-hidden bg-base-200">
 							{#if enrollment.course?.thumbnailFileId}
 								<img
 									src="/api/files/serve/{enrollment.course.thumbnailFileId}"
@@ -238,20 +167,7 @@
 								/>
 							{:else}
 								<div class="flex h-full w-full items-center justify-center">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										class="h-16 w-16 text-primary/30"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="1.5"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-										/>
-									</svg>
+									<Icon name="book-open" size={64} class="text-primary/30" />
 								</div>
 							{/if}
 							{#if enrollment.status === 'completed'}

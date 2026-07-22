@@ -2,6 +2,7 @@ import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { trpc } from '$lib/trpc/client';
 import { toasts } from './toast';
+import type { CommerceProduct } from '$lib/commerce/contracts';
 
 export interface CartState {
 	items: CartItem[];
@@ -11,17 +12,11 @@ export interface CartState {
 }
 
 export interface CartItem {
-	id: number;
-	productId: number;
+	id: string;
+	productId: string;
 	quantity: number;
 	unitPrice: string;
-	product?: {
-		id: number;
-		name: string;
-		slug: string;
-		shortDescription: string | null;
-		images: Array<{ url: string; altText: string | null }>;
-	};
+	product?: CommerceProduct;
 }
 
 function createCartStore() {
@@ -37,7 +32,13 @@ function createCartStore() {
 		try {
 			const cart = await trpc.cart.getCart.query();
 			if (cart && cart.items) {
-				const items = cart.items as CartItem[];
+				const items = cart.items.map((item) => ({
+					...item,
+					unitPrice:
+						typeof item.unitPrice === 'string'
+							? item.unitPrice
+							: (item.unitPrice.amountMinor / 100).toFixed(2)
+				})) as CartItem[];
 				set({
 					items,
 					totalItems: items.reduce((sum, item) => sum + item.quantity, 0),
@@ -56,7 +57,7 @@ function createCartStore() {
 		}
 	}
 
-	async function addItem(productId: number, quantity: number, productName?: string) {
+	async function addItem(productId: string | number, quantity: number, productName?: string) {
 		if (!browser) return;
 		update((s) => ({ ...s, loading: true }));
 		try {
@@ -74,7 +75,7 @@ function createCartStore() {
 		}
 	}
 
-	async function updateItemQuantity(cartItemId: number, quantity: number) {
+	async function updateItemQuantity(cartItemId: string | number, quantity: number) {
 		if (!browser) return;
 		update((s) => ({ ...s, loading: true }));
 		try {
@@ -87,7 +88,7 @@ function createCartStore() {
 		}
 	}
 
-	async function removeItem(cartItemId: number) {
+	async function removeItem(cartItemId: string | number) {
 		if (!browser) return;
 		update((s) => ({ ...s, loading: true }));
 		try {

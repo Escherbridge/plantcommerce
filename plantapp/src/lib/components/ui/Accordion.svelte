@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Icon } from '$lib/components/icons';
 	interface AccordionItem {
 		id: string;
 		title: string;
@@ -132,21 +133,11 @@
 					<span>{item.title}</span>
 
 					<!-- Custom arrow icon -->
-					<svg
-						class="h-4 w-4 transition-transform duration-200 {openItems.has(item.id)
-							? 'rotate-90'
-							: ''}"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M9 5l7 7-7 7"
-						/>
-					</svg>
+					<Icon
+						name="chevron-right"
+						size={16}
+						class="transition-transform duration-200 {openItems.has(item.id) ? 'rotate-90' : ''}"
+					/>
 				</div>
 			</div>
 
@@ -189,10 +180,5 @@
 	.collapse-title:focus {
 		outline: 2px solid hsl(var(--p));
 		outline-offset: 2px;
-	}
-
-	/* Smooth arrow transition */
-	.collapse-title svg {
-		transition: transform 0.2s ease-in-out;
 	}
 </style>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
+	import { Icon } from '$lib/components/icons';
 
 	interface Props {
 		config: { slides: Array<{ title?: string; content: string }>; theme?: string };
@@ -63,9 +64,7 @@
 			class="btn btn-ghost btn-sm"
 			aria-label="Previous slide"
 		>
-			<svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
-				><path d="M15 18l-6-6 6-6" /></svg
-			>
+			<Icon name="chevron-left" size={16} />
 		</button>
 		<div class="flex items-center gap-3">
 			<span class="text-sm text-base-content/60">{currentSlide + 1} / {total}</span>
@@ -74,14 +73,7 @@
 				class="btn btn-ghost btn-xs"
 				aria-label="Toggle overview"
 			>
-				<svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
-					><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect
-						x="3"
-						y="14"
-						width="7"
-						height="7"
-					/><rect x="14" y="14" width="7" height="7" /></svg
-				>
+				<Icon name="grid" size={16} />
 			</button>
 		</div>
 		<button
@@ -90,9 +82,7 @@
 			class="btn btn-ghost btn-sm"
 			aria-label="Next slide"
 		>
-			<svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2"
-				><path d="M9 18l6-6-6-6" /></svg
-			>
+			<Icon name="chevron-right" size={16} />
 		</button>
 	</div>
 </div>

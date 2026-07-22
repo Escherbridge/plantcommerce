@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { toasts, type Toast } from '$lib/stores/toast';
+	import { Icon } from '$lib/components/icons';
 
 	const variantClasses: Record<Toast['variant'], string> = {
 		success: 'bg-success text-success-content',
@@ -26,21 +27,7 @@
 				aria-label="Dismiss notification"
 				onclick={() => toasts.removeToast(toast.id)}
 			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="14"
-					height="14"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2.5"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					aria-hidden="true"
-				>
-					<line x1="18" y1="6" x2="6" y2="18" />
-					<line x1="6" y1="6" x2="18" y2="18" />
-				</svg>
+				<Icon name="x" size={14} />
 			</button>
 		</div>
 	{/each}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Icon } from '$lib/components/icons';
 	interface Props {
 		path: string;
 		overrides?: Record<string, string>;
@@ -34,14 +35,7 @@
 		{#each items as item, index}
 			{#if index > 0}
 				<li class="text-base-content/40" aria-hidden="true">
-					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M9 5l7 7-7 7"
-						/>
-					</svg>
+					<Icon name="chevron-right" size={16} />
 				</li>
 			{/if}
 			<li>

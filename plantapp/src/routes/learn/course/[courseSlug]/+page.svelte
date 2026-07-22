@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import { trpc } from '$lib/trpc/client';
 	import type { LayoutData } from './$types';
+	import { Icon } from '$lib/components/icons';
 
 	let { data }: { data: LayoutData } = $props();
 
@@ -84,16 +85,7 @@
 					onclick={handleStart}
 				>
 					{resumeLessonSlug ? 'Resume Learning' : 'Start Learning'}
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="ml-2 h-4 w-4"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						stroke-width="2"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-					</svg>
+					<Icon name="arrow-right" size={16} class="ml-2" />
 				</button>
 			{/if}
 		</div>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { FormFieldConfig } from './types.js';
+	import { Icon } from '$lib/components/icons';
 
 	interface Props {
 		config: FormFieldConfig;
@@ -104,29 +105,10 @@
 		>
 			<div class="flex flex-col items-center gap-4">
 				{#if dragOver}
-					<svg class="h-12 w-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-						/>
-					</svg>
+					<Icon name="upload-cloud" size={48} class="text-primary" />
 					<p class="font-medium text-primary">Drop files here</p>
 				{:else}
-					<svg
-						class="h-12 w-12 text-base-content/60"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-						/>
-					</svg>
+					<Icon name="upload-cloud" size={48} class="text-base-content/60" />
 					<div>
 						<p class="mb-2 text-lg font-medium">
 							Drag and drop {isMultiple ? 'files' : 'a file'} here
@@ -159,14 +141,7 @@
 		<!-- Button Interface -->
 		<div class="flex flex-col gap-2">
 			<button type="button" class="btn w-full btn-outline btn-primary" onclick={triggerFileInput}>
-				<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-					/>
-				</svg>
+				<Icon name="upload-cloud" size={20} />
 				Choose {isMultiple ? 'Files' : 'File'}
 			</button>
 
@@ -211,14 +186,7 @@
 							onclick={() => removeFile(index)}
 							aria-label="Remove file {file.name}"
 						>
-							<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M6 18L18 6M6 6l12 12"
-								/>
-							</svg>
+							<Icon name="x" size={16} />
 						</button>
 					</div>
 				{/each}

@@ -75,72 +75,47 @@
 {/if}
 
 <style>
-	/* Primary variant — Frutiger Aero glass-tinted */
+	/* Primary action */
 	.btn-plant--primary {
-		background: linear-gradient(180deg, oklch(var(--p) / 0.92) 0%, oklch(var(--p)) 100%);
+		background-color: oklch(var(--p));
 		color: oklch(var(--pc));
-		border: 1px solid oklch(var(--p) / 0.7);
+		border: 1px solid oklch(var(--p));
 		border-radius: var(--input-radius, 10px);
-		box-shadow:
-			var(--shadow-glow-sm),
-			0 1px 0 oklch(var(--pc) / 0.1) inset;
-		transform: translateY(0) scale(1);
+		box-shadow: var(--shadow-sm);
+		transform: translateY(0);
 		transition:
 			transform 250ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)),
 			box-shadow 250ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)),
-			background 250ms ease;
+			border-color 250ms ease;
 	}
 
 	.btn-plant--primary:not(:disabled):hover {
-		transform: scale(1.02);
-		box-shadow:
-			var(--shadow-glow-md),
-			0 1px 0 oklch(var(--pc) / 0.15) inset;
-		background: linear-gradient(180deg, oklch(var(--p) / 0.85) 0%, oklch(var(--p) / 0.95) 100%);
+		transform: translateY(-1px);
+		border-color: oklch(var(--s));
+		box-shadow: var(--shadow-md);
 	}
 
 	.btn-plant--primary:not(:disabled):active {
-		transform: scale(0.98);
+		transform: translateY(0);
 	}
 
-	/* Secondary variant — glass outline */
+	/* Secondary action */
 	.btn-plant--secondary {
 		background: var(--input-bg);
 		color: oklch(var(--p));
 		border: 1.5px solid var(--input-border-hover);
 		border-radius: var(--input-radius, 10px);
-		position: relative;
-		overflow: hidden;
-		backdrop-filter: blur(var(--glass-blur));
-		-webkit-backdrop-filter: blur(var(--glass-blur));
-		box-shadow: var(--shadow-glow-sm);
+		box-shadow: var(--shadow-sm);
 		transition:
-			color 300ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)),
+			color 250ms ease,
+			background-color 250ms ease,
 			box-shadow 250ms var(--ease-out-expo);
 	}
 
-	.btn-plant--secondary::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background-color: oklch(var(--p));
-		transform-origin: left center;
-		transform: scaleX(0);
-		transition: transform 300ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1));
-		z-index: 0;
-	}
-
 	.btn-plant--secondary:not(:disabled):hover {
+		background-color: oklch(var(--p));
 		color: oklch(var(--pc));
-	}
-
-	.btn-plant--secondary:not(:disabled):hover::before {
-		transform: scaleX(1);
-	}
-
-	.btn-plant--secondary :global(*) {
-		position: relative;
-		z-index: 1;
+		box-shadow: var(--shadow-md);
 	}
 
 	/* Ghost variant */

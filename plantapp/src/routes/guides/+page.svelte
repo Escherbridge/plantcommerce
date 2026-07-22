@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { Container, Section } from '$lib/components/layout';
 	import { Grid } from '$lib/components/layout';
+	import { Icon, type IconName } from '$lib/components/icons';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 
-	const categories = [
-		{ name: 'Getting Started', slug: 'getting-started', icon: 'seedling' },
+	const categories: Array<{ name: string; slug: string; icon: IconName }> = [
+		{ name: 'Getting Started', slug: 'getting-started', icon: 'sprout' },
 		{ name: 'System Setup', slug: 'system-setup', icon: 'wrench' },
-		{ name: 'Maintenance', slug: 'maintenance', icon: 'tools' },
+		{ name: 'Maintenance', slug: 'maintenance', icon: 'maintenance' },
 		{ name: 'Troubleshooting', slug: 'troubleshooting', icon: 'search' },
 		{ name: 'Seasonal Planning', slug: 'seasonal-planning', icon: 'calendar' }
 	];
@@ -25,80 +26,45 @@
 		</div>
 
 		<!-- Category Cards -->
-		<Grid columns={3} gap={6} class="mb-12">
-			{#each categories as category}
+		<Grid columns={{ sm: 1, md: 2, xl: 5 }} gap="md" class="editorial-category-grid mb-12">
+			{#each categories as category, index}
 				<a
 					href="/guides?category={category.slug}"
-					class="card rounded-3xl border border-base-200/30 bg-base-100 shadow-md transition-shadow hover:shadow-lg"
+					class="group flex min-h-52 w-full flex-col border border-base-content/30 bg-base-100 p-5 text-left transition-colors hover:border-primary hover:bg-base-200/60"
+					class:border-primary={data.selectedCategory === category.slug}
+					class:bg-base-200={data.selectedCategory === category.slug}
+					aria-current={data.selectedCategory === category.slug ? 'page' : undefined}
 				>
-					<div class="card-body items-center text-center">
-						<div class="mb-4">
-							{#if category.icon === 'seedling'}
-								<svg
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									class="h-12 w-12 text-primary"
-								>
-									<path d="M12 3c-4 4-8 9-8 14 0 3 2 5 5 5s5-2 5-5c0-5-4-10-8-14zM12 3v18" />
-								</svg>
-							{:else if category.icon === 'wrench'}
-								<svg
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									class="h-12 w-12 text-primary"
-								>
-									<path
-										d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.6-3.6a5 5 0 01-7.1 7.1L6 21l-3-3 8.2-8.2a5 5 0 017.1-7.1z"
-									/>
-								</svg>
-							{:else if category.icon === 'tools'}
-								<svg
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									class="h-12 w-12 text-primary"
-								>
-									<path
-										d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.6-3.6a5 5 0 01-7.1 7.1L6 21l-3-3 8.2-8.2a5 5 0 017.1-7.1z"
-									/>
-								</svg>
-							{:else if category.icon === 'search'}
-								<svg
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									class="h-12 w-12 text-primary"
-								>
-									<path d="M11 3a8 8 0 100 16 8 8 0 000-16zM21 21l-4.3-4.3" />
-								</svg>
-							{:else if category.icon === 'calendar'}
-								<svg
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									class="h-12 w-12 text-primary"
-								>
-									<path d="M4 5h16v16H4V5zM16 3v4M8 3v4M4 9h16" />
-								</svg>
-							{/if}
-						</div>
-						<p class="mb-1 font-mono text-xs tracking-widest text-secondary uppercase">Category</p>
-						<h2 class="font-display card-title tracking-tight uppercase">{category.name}</h2>
+					<div class="mb-8 flex items-start justify-between gap-4">
+						<span class="text-lime-ink font-mono text-xs font-semibold tracking-widest">
+							0{index + 1}
+						</span>
+						<span
+							class="flex h-12 w-12 items-center justify-center border border-primary bg-accent text-accent-content"
+						>
+							<Icon name={category.icon} size={32} />
+						</span>
 					</div>
+					<p class="text-lime-ink mb-2 font-mono text-xs font-semibold tracking-widest uppercase">
+						{data.selectedCategory === category.slug ? 'Selected category' : 'Category'}
+					</p>
+					<h2
+						class="font-display mt-auto text-xl leading-tight font-semibold tracking-tight uppercase"
+					>
+						{category.name}
+					</h2>
 				</a>
 			{/each}
 		</Grid>
 
 		<!-- Guides List -->
 		<div class="space-y-6">
-			{#if data.guides && data.guides.length > 0}
+			{#if data.loadStatus === 'error'}
+				<div class="border border-error bg-base-100 p-6" role="alert">
+					<h2 class="font-display text-2xl font-semibold uppercase">Guides could not be loaded</h2>
+					<p class="mt-2 text-base-content/75">Please try again later or contact support.</p>
+				</div>
+			{:else if data.guides && data.guides.length > 0}
 				{#each data.guides as guide}
 					<div class="card rounded-3xl border border-base-200/30 bg-base-100 shadow-md">
 						<div class="card-body">

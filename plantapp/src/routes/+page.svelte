@@ -1,50 +1,65 @@
 <script lang="ts">
 	import StructuredData from '$lib/components/StructuredData.svelte';
-	import { Container, Section, Grid, GridItem, OptimizedImage } from '$lib/components';
-	import { PatternBackground, MyceliumNetwork, RootSystem } from '$lib/components/patterns';
-	import ScrollReveal from '$lib/components/ui/ScrollReveal.svelte';
-	import ParallaxHero from '$lib/components/ui/ParallaxHero.svelte';
-	import { publicSite, publicSiteUrl } from '$lib/config/site';
+	import { Container } from '$lib/components/layout';
+	import { MockCommerceNotice } from '$lib/components/commerce';
+	import { Icon, type IconName } from '$lib/components/icons';
+	import { formatMoney } from '$lib/commerce/contracts';
+	import { PatternBackground, RootSystem } from '$lib/components/patterns';
+	import { publicSite } from '$lib/config/site';
 	import type { PageData } from './$types';
-
-	// Import images via Vite for proper bundling
-	import sustainabilityImg from '$lib/images/AI-MockAssets/SustainabilityHero.png';
-	import communityImg from '$lib/images/AI-MockAssets/CommunityHero.png';
-	import heroImg from '$lib/images/AI-MockAssets/MAINHERO.png';
-	import hydroImg from '$lib/images/AI-MockAssets/HydroToolProduct-VerticalTowerGardenSystem.png';
-	import aquaImg from '$lib/images/AI-MockAssets/ToolProduct-AquaPonic.png';
-	import silvoImg from '$lib/images/AI-MockAssets/Silvopasture&AgroforestryProducts-SilvopastureSeedMix.png';
-	import agroImg from '$lib/images/AI-MockAssets/Silvopasture&AgroforestryProducts-Nitrogen-FixingTreeSeeds.png';
 
 	let { data }: { data: PageData } = $props();
 
-	// Featured products from server load (database-backed)
-	const featuredProducts = data.featuredProducts;
+	const growingSystems: Array<{
+		name: string;
+		slug: string;
+		index: string;
+		icon: IconName;
+		description: string;
+	}> = [
+		{
+			name: 'Hydroponics',
+			slug: 'hydroponics',
+			index: '01',
+			icon: 'sprout',
+			description: 'Soilless growing systems, nutrient delivery, and controlled environments.'
+		},
+		{
+			name: 'Aquaponics',
+			slug: 'aquaponics',
+			index: '02',
+			icon: 'maintenance',
+			description: 'Integrated fish and plant systems built around careful water stewardship.'
+		},
+		{
+			name: 'Silvopasture & Agroforestry',
+			slug: 'silvopasture-agroforestry',
+			index: '03',
+			icon: 'calendar',
+			description: 'Field references for trees, forage, livestock, and layered land-use systems.'
+		}
+	];
 
-	const categories = [
+	const values: Array<{ name: string; icon: IconName; description: string }> = [
 		{
-			label: 'Hydroponics',
-			href: '/learn',
-			image: hydroImg,
-			alt: 'Vertical tower garden hydroponic system'
+			name: 'Stewardship',
+			icon: 'sprout',
+			description: 'Choices shaped by soil health, water care, and long-term resilience.'
 		},
 		{
-			label: 'Aquaponics',
-			href: '/learn',
-			image: aquaImg,
-			alt: 'Aquaponic system with fish and plants'
+			name: 'Education',
+			icon: 'book-open',
+			description: 'Practical knowledge made legible for growers at every level.'
 		},
 		{
-			label: 'Silvopasture',
-			href: '/learn',
-			image: silvoImg,
-			alt: 'Silvopasture seed mix products'
+			name: 'Community',
+			icon: 'message-circle',
+			description: 'Shared learning, transparent evidence, and support that stays human.'
 		},
 		{
-			label: 'Agroforestry',
-			href: '/learn',
-			image: agroImg,
-			alt: 'Nitrogen-fixing tree seeds for agroforestry'
+			name: 'Agency',
+			icon: 'wrench',
+			description: 'Tools and information that help people make informed decisions.'
 		}
 	];
 </script>
@@ -53,10 +68,9 @@
 	<title>{publicSite.name} | Sustainable Agriculture Marketplace</title>
 	<meta
 		name="description"
-		content="From monoculture to polyculture. Sustainable agriculture systems for a resilient future."
+		content="Field-tested tools and practical knowledge for more resilient growing systems."
 	/>
-
-	<!-- Add this StructuredData component -->
+	{#if data.context.isMock}<meta name="robots" content="noindex,nofollow" />{/if}
 	<StructuredData
 		type="website"
 		data={{
@@ -65,429 +79,181 @@
 			description: publicSite.description
 		}}
 	/>
-
-	<!-- Also add Organization schema -->
-	<StructuredData
-		type="organization"
-		data={{
-			name: publicSite.name,
-			url: publicSite.origin,
-			logo: publicSiteUrl(heroImg)
-		}}
-	/>
+	<StructuredData type="organization" data={{ name: publicSite.name, url: publicSite.origin }} />
 </svelte:head>
 
-<!-- Section 1: Parallax Hero -->
-<ParallaxHero
-	title="AEVANI"
-	subtitle="From monoculture to polyculture. Sustainable agriculture systems for a resilient future."
-	backgroundImage={heroImg}
-	ctaLinks={[
-		{ label: 'Catalog Status', href: '/products', variant: 'primary' },
-		{ label: 'Learn More', href: '/learn', variant: 'outline' }
-	]}
-/>
+{#if data.context.isMock}<MockCommerceNotice label={data.context.label} />{/if}
 
-<!-- Section 2: Shop by Category — Editorial Showcase -->
-<section class="w-full bg-base-100 py-24 md:py-32">
-	<Container>
-		<div class="mb-16 space-y-4 text-center">
-			<h2 class="text-display tracking-widest uppercase">Explore Growing Systems</h2>
-			<div class="mx-auto h-1 w-24 bg-primary"></div>
-			<p class="mx-auto max-w-2xl text-xl font-light text-base-content/60">
-				Browse learning pathways and research themes while catalog verification is in progress.
-			</p>
-		</div>
-
-		<ScrollReveal animation="stagger-children">
-			<div
-				class="grid grid-cols-1 gap-4 md:grid-cols-2 md:grid-rows-2"
-				style="grid-template-rows: auto auto;"
-			>
-				<!-- First card: spans 2 rows -->
-				<a
-					href={categories[0].href}
-					class="group relative min-h-[60vh] overflow-hidden rounded-2xl md:row-span-2"
+<section
+	class="relative isolate overflow-hidden bg-primary py-20 text-primary-content sm:py-28 lg:py-36"
+>
+	<PatternBackground pattern={RootSystem} opacity={0.08} class="absolute inset-0 -z-10" />
+	<Container size="xl">
+		<div class="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
+			<div class="max-w-5xl">
+				<p class="font-mono text-xs font-bold tracking-[0.2em] text-accent uppercase">
+					Field notes for resilient growing
+				</p>
+				<h1
+					class="font-display mt-6 text-7xl leading-[0.82] font-bold tracking-tight uppercase sm:text-8xl lg:text-[10rem]"
 				>
-					<img
-						src={categories[0].image}
-						alt={categories[0].alt}
-						class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-					/>
-					<div
-						class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
-					></div>
-					<div class="absolute inset-0 flex flex-col justify-end p-8 lg:p-12">
-						<h3 class="text-display mb-4 text-4xl tracking-widest text-white uppercase lg:text-6xl">
-							{categories[0].label}
-						</h3>
+					Aevani
+				</h1>
+				<p class="mt-8 max-w-2xl text-lg leading-relaxed text-primary-content/80 sm:text-xl">
+					From monoculture to polyculture: useful tools, careful evidence, and practical knowledge
+					for more resilient growing systems.
+				</p>
+			</div>
+			<div class="border-l border-accent pl-6">
+				<p class="font-mono text-xs font-bold tracking-widest text-accent uppercase">Start here</p>
+				<div class="mt-4 flex flex-col gap-3">
+					<a class="btn btn-accent" href="/products">
+						{data.context.isMock ? 'Explore test catalogue' : 'Explore catalogue'}
+					</a>
+					<a
+						class="btn border border-primary-content/60 bg-transparent text-primary-content hover:border-accent hover:bg-accent hover:text-accent-content"
+						href="/learn"
+					>
+						Browse learning
+					</a>
+				</div>
+			</div>
+		</div>
+	</Container>
+</section>
+
+<section class="bg-base-100 py-20 sm:py-28">
+	<Container size="xl">
+		<header
+			class="grid gap-5 border-b border-base-content/30 pb-8 lg:grid-cols-[1fr_32rem] lg:items-end"
+		>
+			<div>
+				<p class="text-lime-ink font-mono text-xs font-bold tracking-[0.18em] uppercase">
+					Three systems
+				</p>
+				<h2 class="font-display mt-3 text-5xl font-bold tracking-tight uppercase sm:text-7xl">
+					Explore growing systems
+				</h2>
+			</div>
+			<p class="text-lg leading-relaxed text-base-content/70">
+				Browse the catalogue and field references through clear, system-led pathways.
+			</p>
+		</header>
+
+		<div class="mt-8 grid gap-px border border-base-content/30 bg-base-content/30 md:grid-cols-3">
+			{#each growingSystems as system}
+				<a class="group min-w-0 bg-base-100 p-6 hover:bg-base-200" href="/products/{system.slug}">
+					<div class="flex items-start justify-between gap-4">
+						<span class="text-lime-ink font-mono text-xs font-bold">{system.index}</span>
 						<span
-							class="inline-block translate-y-4 text-sm font-semibold tracking-widest text-white/0 uppercase transition-all duration-300 group-hover:translate-y-0 group-hover:text-white"
+							class="grid h-12 w-12 place-items-center border border-primary bg-accent text-accent-content"
 						>
-							Explore guides &rarr;
+							<Icon name={system.icon} size={32} />
 						</span>
 					</div>
-				</a>
-
-				<!-- Cards 2–4: single cells -->
-				{#each categories.slice(1) as category}
-					<a
-						href={category.href}
-						class="group relative min-h-[60vh] overflow-hidden rounded-2xl md:min-h-0"
-						style="min-height: 280px;"
+					<h3 class="font-display mt-12 text-3xl font-bold uppercase">{system.name}</h3>
+					<p class="mt-3 text-sm leading-relaxed text-base-content/70">{system.description}</p>
+					<span
+						class="mt-8 inline-block font-mono text-xs font-bold tracking-wider uppercase group-hover:underline"
 					>
-						<img
-							src={category.image}
-							alt={category.alt}
-							class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-						/>
+						Explore system
+					</span>
+				</a>
+			{/each}
+		</div>
+	</Container>
+</section>
+
+<section class="bg-secondary py-20 text-secondary-content sm:py-28">
+	<Container size="xl">
+		<p class="font-mono text-xs font-bold tracking-[0.18em] text-accent uppercase">
+			Working principles
+		</p>
+		<h2 class="font-display mt-3 text-5xl font-bold uppercase sm:text-7xl">
+			Cultivate with intent
+		</h2>
+		<div class="mt-12 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
+			{#each values as value}
+				<article class="border-t border-secondary-content/40 pt-5">
+					<Icon name={value.icon} size={32} class="text-accent" />
+					<h3 class="font-display mt-8 text-2xl font-bold uppercase">{value.name}</h3>
+					<p class="mt-3 leading-relaxed text-secondary-content/75">{value.description}</p>
+				</article>
+			{/each}
+		</div>
+	</Container>
+</section>
+
+<section class="bg-base-100 py-20 sm:py-28">
+	<Container size="xl">
+		<header class="max-w-3xl">
+			<p class="text-lime-ink font-mono text-xs font-bold tracking-[0.18em] uppercase">
+				{data.context.isMock ? 'Test catalogue selection' : 'Catalogue selection'}
+			</p>
+			<h2 class="font-display mt-3 text-5xl font-bold uppercase sm:text-7xl">Current field kit</h2>
+			<p class="mt-5 text-lg leading-relaxed text-base-content/70">
+				{data.context.isMock
+					? 'These fictional mock/test listings exercise the local catalogue journey only.'
+					: 'A current selection from the active Aevani catalogue.'}
+			</p>
+		</header>
+
+		{#if data.featuredProducts.length}
+			<div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+				{#each data.featuredProducts as product}
+					<a
+						class="flex min-w-0 flex-col border border-base-content/30 bg-base-100 p-5 hover:border-primary"
+						href="/products/{product.category.slug}/{product.slug}"
+					>
+						{#if data.context.isMock}
+							<p class="text-lime-ink font-mono text-xs font-bold tracking-wider uppercase">
+								Mock/test item
+							</p>
+						{/if}
+						<p class="mt-8 text-xs font-bold tracking-wider text-base-content/75 uppercase">
+							{product.category.name}
+						</p>
+						<h3 class="font-display mt-2 text-2xl font-bold uppercase">{product.name}</h3>
+						<p class="mt-3 line-clamp-3 text-sm leading-relaxed text-base-content/70">
+							{product.shortDescription}
+						</p>
 						<div
-							class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
-						></div>
-						<div class="absolute inset-0 flex flex-col justify-end p-6 lg:p-8">
-							<h3
-								class="text-display mb-2 text-2xl tracking-widest text-white uppercase lg:text-3xl"
-							>
-								{category.label}
-							</h3>
-							<span
-								class="inline-block translate-y-4 text-sm font-semibold tracking-widest text-white/0 uppercase transition-all duration-300 group-hover:translate-y-0 group-hover:text-white"
-							>
-								Explore guides &rarr;
+							class="mt-8 flex items-end justify-between gap-4 border-t border-base-content/20 pt-4"
+						>
+							<span>
+								{#if data.context.isMock}<small class="block font-bold uppercase">Test price</small
+									>{/if}
+								<strong class="font-mono text-xl">{formatMoney(product.price)}</strong>
 							</span>
+							<span class="font-mono text-xs font-bold tracking-wider uppercase">Details</span>
 						</div>
 					</a>
 				{/each}
 			</div>
-		</ScrollReveal>
-
-		<div class="mt-12 text-center">
-			<a
-				href="/products"
-				class="inline-flex items-center text-lg font-medium text-primary hover:underline"
-			>
-				View catalog status
-				<svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M14 5l7 7m0 0l-7 7m7-7H3"
-					/>
-				</svg>
-			</a>
-		</div>
-	</Container>
-</section>
-
-<!-- Section 3: Core Values -->
-<section class="relative w-full overflow-hidden bg-primary py-32 text-primary-content">
-	<PatternBackground pattern={MyceliumNetwork} opacity={0.05} class="absolute inset-0 z-0" />
-
-	<div class="relative z-10 mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-12">
-		<div class="mb-24 space-y-6 text-center">
-			<h2 class="text-display text-5xl tracking-tight uppercase lg:text-7xl xl:text-8xl">
-				CORE VALUES
-			</h2>
-			<div class="mx-auto h-1.5 w-32 bg-primary"></div>
-			<p class="mx-auto max-w-3xl text-xl font-light text-primary-content/60 lg:text-2xl">
-				Building a sustainable future through diversity, education, and community
-			</p>
-		</div>
-
-		<ScrollReveal animation="stagger-children">
-			<div
-				class="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-10 xl:grid-cols-4"
-			>
-				<!-- Sustainability - Large Feature Card -->
-				<div class="group md:col-span-2 lg:col-span-2 xl:col-span-2">
-					<div class="relative h-full overflow-hidden rounded-2xl shadow-2xl">
-						<img
-							src={sustainabilityImg}
-							alt="Hands nurturing rich soil with seedlings"
-							class="h-80 w-full object-cover transition-transform duration-700 group-hover:scale-110 lg:h-96 xl:h-[32rem]"
-							loading="lazy"
-						/>
-						<div
-							class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
-						></div>
-						<div
-							class="absolute inset-0 bg-primary/0 transition-colors duration-500 group-hover:bg-primary/10"
-						></div>
-						<div
-							class="absolute right-0 bottom-0 left-0 transform p-8 transition-transform duration-500 group-hover:translate-y-0 lg:p-12"
-						>
-							<h3 class="mb-4 text-4xl font-bold text-white lg:text-5xl xl:text-6xl">
-								SUSTAINABILITY
-							</h3>
-							<p class="max-w-xl text-lg font-light text-white/90 xl:text-2xl">
-								Nurturing the soil, growing resilient ecosystems
-							</p>
-						</div>
-					</div>
-				</div>
-
-				<!-- Education Card — inline SVG book icon -->
-				<div class="group xl:col-span-1">
-					<div
-						class="h-full rounded-3xl border border-base-200/30 bg-base-100 p-10 shadow-md transition-all duration-300 hover:-translate-y-2 hover:border-primary/20 hover:shadow-xl lg:p-12"
-					>
-						<div class="mb-8 transform transition-transform duration-300 group-hover:scale-110">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 48 48"
-								class="h-14 w-14 text-primary"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<path d="M4 8c0-1.1.9-2 2-2h14v36H6a2 2 0 01-2-2V8z" />
-								<path d="M44 8c0-1.1-.9-2-2-2H28v36h14a2 2 0 002-2V8z" />
-								<path d="M20 6h8" /><path d="M20 42h8" />
-								<path d="M10 14h8M10 20h8M10 26h6" />
-								<path d="M30 14h8M30 20h8M30 26h6" />
-							</svg>
-						</div>
-						<h3
-							class="font-display mb-4 text-2xl font-bold tracking-tight text-base-content uppercase lg:text-3xl"
-						>
-							EDUCATION
-						</h3>
-						<p class="text-lg leading-relaxed font-light text-base-content/70">
-							Accessible, practical knowledge for growers at every level
-						</p>
-					</div>
-				</div>
-
-				<!-- Community Card -->
-				<div class="group md:col-span-1 lg:col-span-1 xl:col-span-1">
-					<div class="relative h-full overflow-hidden rounded-2xl shadow-2xl">
-						<img
-							src={communityImg}
-							alt="Diverse community gardening together"
-							class="h-72 w-full object-cover transition-transform duration-700 group-hover:scale-110 lg:h-80"
-							loading="lazy"
-						/>
-						<div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-						<div
-							class="absolute inset-0 bg-primary/0 transition-colors duration-500 group-hover:bg-primary/10"
-						></div>
-						<div class="absolute right-6 bottom-6 left-6">
-							<h3 class="mb-2 text-2xl font-bold text-white lg:text-3xl">COMMUNITY</h3>
-							<p class="text-base font-light text-white/90">Growing together</p>
-						</div>
-					</div>
-				</div>
-
-				<!-- Diversity Block -->
-				<div class="group md:col-span-2 lg:col-span-2 xl:col-span-2">
-					<div
-						class="hover:shadow-3xl relative h-full overflow-hidden rounded-2xl bg-gradient-to-br from-secondary to-secondary/80 p-10 text-secondary-content shadow-2xl transition-all duration-300 hover:-translate-y-1 lg:p-14 xl:p-20"
-					>
-						<div class="relative z-10 space-y-8">
-							<h3 class="text-4xl font-bold tracking-tight lg:text-6xl xl:text-7xl">DIVERSITY</h3>
-							<p
-								class="max-w-2xl text-xl leading-relaxed font-light opacity-95 lg:text-2xl xl:text-3xl"
-							>
-								From monoculture to polyculture. Embrace biodiversity, complexity, and the
-								interconnectedness of all living things.
-							</p>
-							<a
-								href="/products"
-								class="btn mt-4 inline-block text-base font-semibold tracking-wide transition-transform btn-lg btn-secondary hover:scale-105"
-							>
-								EXPLORE LEARNING
-							</a>
-						</div>
-					</div>
-				</div>
-
-				<!-- Empowerment Card — inline SVG seedling icon -->
-				<div class="group xl:col-span-1">
-					<div
-						class="h-full rounded-3xl border border-base-200/30 bg-base-100 p-10 text-center shadow-md transition-all duration-300 hover:-translate-y-2 hover:border-primary/20 hover:shadow-xl lg:p-12"
-					>
-						<div
-							class="mb-8 flex transform justify-center transition-transform duration-300 group-hover:scale-110"
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 48 48"
-								class="h-14 w-14 text-primary"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<line x1="24" y1="42" x2="24" y2="20" />
-								<path d="M24 30c-6-1-11-7-9-14 4 4 8 9 9 14z" fill="currentColor" opacity="0.15" />
-								<path d="M24 30c-6-1-11-7-9-14 4 4 8 9 9 14" />
-								<path d="M24 24c6-1 11-7 9-14-4 4-8 9-9 14z" fill="currentColor" opacity="0.15" />
-								<path d="M24 24c6-1 11-7 9-14-4 4-8 9-9 14" />
-								<path d="M24 42c-3-1-5 1-8 0" />
-								<path d="M24 42c3-1 5 1 8 0" />
-							</svg>
-						</div>
-						<h3
-							class="font-display mb-4 text-2xl font-bold tracking-tight text-base-content uppercase lg:text-3xl"
-						>
-							EMPOWERMENT
-						</h3>
-						<p class="text-base leading-relaxed font-light text-base-content/70">
-							Tools and knowledge to make a positive impact
-						</p>
-					</div>
-				</div>
+		{:else}
+			<div class="mt-10 border border-base-content/30 p-8">
+				<p class="text-lg text-base-content/70">
+					No featured catalogue items are available right now.
+				</p>
 			</div>
-		</ScrollReveal>
-	</div>
-</section>
+		{/if}
 
-<!-- Section 4: Featured Products — Editorial Grid -->
-<section class="w-full bg-base-100 py-32">
-	<Container>
-		<div class="mb-20 space-y-6 text-center">
-			<h2 class="text-display text-5xl tracking-tight uppercase lg:text-7xl xl:text-8xl">
-				CATALOG VERIFICATION
-			</h2>
-			<div class="mx-auto h-1.5 w-32 bg-primary"></div>
-			<p class="mx-auto max-w-3xl text-xl font-light text-base-content/60 lg:text-2xl">
-				We do not publish product prices, availability, or claims until their operational evidence
-				is reviewed.
-			</p>
-		</div>
-
-		<ScrollReveal animation="fade-up">
-			{#if featuredProducts.length > 0}
-				<div class="grid grid-cols-2 gap-6 lg:gap-10">
-					{#each featuredProducts as product, i}
-						<a
-							href="/products/{product.categorySlug ||
-								product.category?.slug ||
-								'all'}/{product.slug}"
-							class="group card overflow-hidden rounded-2xl border border-base-200 bg-base-100 shadow-xl transition-all duration-500 hover:scale-[1.02] hover:shadow-xl {i ===
-							0
-								? 'col-span-2 md:col-span-1 md:row-span-2'
-								: 'col-span-2 md:col-span-1'}"
-						>
-							<figure class="relative overflow-hidden {i === 0 ? 'h-80 md:h-[28rem]' : 'h-64'}">
-								{#if product.images && product.images.length > 0}
-									<img
-										src={product.images[0].url}
-										alt={product.images[0].altText}
-										class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-									/>
-									<div
-										class="absolute inset-0 flex items-center justify-center bg-primary/0 opacity-0 transition-all duration-500 group-hover:bg-primary/20 group-hover:opacity-100"
-									>
-										<span class="text-sm font-semibold tracking-widest text-white uppercase"
-											>Quick View</span
-										>
-									</div>
-								{:else}
-									<div class="flex h-full items-center justify-center bg-base-200">
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											class="h-16 w-16 text-base-content/30"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="1.5"
-												d="M12 3C7 3 3 7 3 12s4 9 9 9 9-4 9-9-4-9-9-9zm0 0v9m0-9c2 2 3 5 3 9m-3-9c-2 2-3 5-3 9"
-											/>
-										</svg>
-									</div>
-								{/if}
-							</figure>
-							<div class="card-body space-y-4 p-6 {i === 0 ? 'lg:p-10' : ''}">
-								<h3
-									class="card-title text-base-content transition-colors group-hover:text-primary {i ===
-									0
-										? 'text-2xl lg:text-3xl'
-										: 'text-xl'} leading-tight font-bold"
-								>
-									{product.name}
-								</h3>
-								{#if i === 0}
-									<p class="text-base leading-relaxed font-light text-base-content/70">
-										{product.shortDescription}
-									</p>
-								{:else}
-									<p class="line-clamp-2 text-sm leading-relaxed font-light text-base-content/70">
-										{product.shortDescription}
-									</p>
-								{/if}
-								<div
-									class="mt-4 card-actions items-center justify-between border-t border-base-200 pt-4"
-								>
-									<div
-										class="font-mono text-2xl font-bold text-primary {i === 0
-											? 'text-3xl lg:text-4xl'
-											: ''}"
-									>
-										${parseFloat(product.price).toFixed(2)}
-									</div>
-									<span
-										class="font-display btn text-xs tracking-widest uppercase transition-transform btn-sm btn-primary group-hover:scale-105 {i ===
-										0
-											? 'text-sm btn-md'
-											: ''}"
-									>
-										VIEW DETAILS
-									</span>
-								</div>
-							</div>
-						</a>
-					{/each}
-				</div>
-			{:else}
-				<div
-					class="mx-auto max-w-2xl rounded-3xl border border-base-300 bg-base-200/40 p-8 text-center"
-				>
-					<p class="text-lg leading-relaxed text-base-content/70">
-						The product catalog is unavailable while supplier, offer, fulfillment, and claim
-						evidence is verified.
-					</p>
-				</div>
-			{/if}
-		</ScrollReveal>
-
-		<div class="mt-16 text-center">
-			<a
-				href="/products"
-				class="font-display btn text-sm tracking-widest uppercase transition-transform btn-outline btn-lg hover:scale-105"
-			>
-				VIEW CATALOG STATUS
-			</a>
-		</div>
+		<a class="btn mt-10 btn-primary" href="/products">View full catalogue</a>
 	</Container>
 </section>
 
-<!-- Section 5: Newsletter — Reimagined -->
-<section class="relative w-full overflow-hidden bg-primary py-32 text-primary-content">
-	<PatternBackground pattern={RootSystem} opacity={0.08} class="absolute inset-0 z-0" />
-
-	<div class="relative z-10 mx-auto w-full max-w-[900px] px-4 text-center sm:px-6 lg:px-12">
-		<ScrollReveal animation="fade-up">
-			<h2 class="text-display mb-6 text-5xl tracking-tight uppercase lg:text-7xl xl:text-8xl">
-				STAY CONNECTED
-			</h2>
-			<p class="mx-auto mb-6 max-w-2xl text-xl leading-relaxed font-light text-primary-content/60">
-				Newsletter sign-up is currently unavailable.
+<section class="bg-primary py-20 text-primary-content sm:py-24">
+	<Container>
+		<div class="mx-auto max-w-3xl text-center">
+			<p class="font-mono text-xs font-bold tracking-[0.18em] text-accent uppercase">
+				Keep in touch
 			</p>
-			<p class="mx-auto max-w-xl text-lg leading-relaxed font-light text-primary-content/80">
-				For updates or support, <a
-					href="/contact"
-					class="underline decoration-accent underline-offset-4">contact Aevani</a
+			<h2 class="font-display mt-3 text-5xl font-bold uppercase sm:text-7xl">Stay connected</h2>
+			<p class="mt-5 text-lg leading-relaxed text-primary-content/75">
+				Newsletter sign-up is currently unavailable. For updates or support,
+				<a class="underline decoration-accent underline-offset-4" href="/contact">contact Aevani</a
 				>.
 			</p>
-		</ScrollReveal>
-	</div>
+		</div>
+	</Container>
 </section>

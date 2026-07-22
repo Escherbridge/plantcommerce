@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { Icon } from '$lib/components/icons';
 	import { trpc } from '$lib/trpc/client';
 	import { invalidateAll } from '$app/navigation';
 
@@ -76,17 +77,7 @@
 				<p class="platform-header__subtitle">Manage your LMS course catalog</p>
 			</div>
 			<a href="/admin/lms/courses/new" class="platform-action-btn admin-header-btn">
-				<svg
-					viewBox="0 0 24 24"
-					class="h-5 w-5"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M12 5v14M5 12h14" />
-				</svg>
+				<Icon name="plus" size={20} />
 				Create Course
 			</a>
 		</div>

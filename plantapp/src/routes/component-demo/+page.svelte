@@ -396,9 +396,7 @@
 					<GridItem>
 						<div class="card bg-base-100 shadow-xl">
 							<figure class="px-10 pt-10">
-								<div
-									class="flex h-48 w-full items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary"
-								>
+								<div class="flex h-48 w-full items-center justify-center rounded-lg bg-primary">
 									<span class="text-4xl">📊</span>
 								</div>
 							</figure>
@@ -414,9 +412,7 @@
 					<GridItem>
 						<div class="card bg-base-100 shadow-xl">
 							<figure class="px-10 pt-10">
-								<div
-									class="flex h-48 w-full items-center justify-center rounded-lg bg-gradient-to-br from-accent to-info"
-								>
+								<div class="flex h-48 w-full items-center justify-center rounded-lg bg-accent">
 									<span class="text-4xl">👥</span>
 								</div>
 							</figure>
@@ -432,9 +428,7 @@
 					<GridItem>
 						<div class="card bg-base-100 shadow-xl">
 							<figure class="px-10 pt-10">
-								<div
-									class="flex h-48 w-full items-center justify-center rounded-lg bg-gradient-to-br from-warning to-error"
-								>
+								<div class="flex h-48 w-full items-center justify-center rounded-lg bg-warning">
 									<span class="text-4xl">⚙️</span>
 								</div>
 							</figure>

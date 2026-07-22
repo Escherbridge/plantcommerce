@@ -1,23 +1,19 @@
-/** See AGENTS.md §Future ingestion and publication before exposing catalog data publicly. */
+/** Compatibility availability type; provider operations now own catalogue failures. */
 export type PublicCatalogAvailability =
 	| Readonly<{ status: 'available'; reason: null }>
 	| Readonly<{ status: 'unavailable'; reason: string }>;
 
-const unavailableCatalog: PublicCatalogAvailability = Object.freeze({
-	status: 'unavailable' as const,
-	reason:
-		'Product listings are unavailable while supplier, offer, fulfillment, and claim evidence are being verified.'
+const availableCatalog: PublicCatalogAvailability = Object.freeze({
+	status: 'available' as const,
+	reason: null
 });
 
-/** Prevent source-only research and UAT seed data from becoming a public catalog. */
+/** The canonical database commerce provider is available unless its own operation fails. */
 export function getPublicCatalogAvailability(): PublicCatalogAvailability {
-	return unavailableCatalog;
+	return availableCatalog;
 }
 
-/** Reject public commerce operations until a reviewed catalog provider exists. */
+/** Retained for service compatibility; provider selection now owns availability. */
 export function assertPublicCatalogAvailable(): void {
-	const availability = getPublicCatalogAvailability();
-	if (availability.status !== 'available') {
-		throw new Error(availability.reason);
-	}
+	return;
 }

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Icon from '$lib/components/icons/Icon.svelte';
 	import { trpc } from '$lib/trpc/client';
 
 	let username = $state('');
@@ -95,18 +96,7 @@
 				<div class="register-header">
 					<a href="/" class="register-wordmark">AEVANI</a>
 					<div class="register-success-icon">
-						<svg
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							aria-hidden="true"
-						>
-							<path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-							<polyline points="22 4 12 14.01 9 11.01" />
-						</svg>
+						<Icon name="check-circle" size={48} />
 					</div>
 					<h1 class="register-title">Account Created</h1>
 					<p class="register-subtitle">Welcome to Aevani!</p>
@@ -116,8 +106,8 @@
 				<div class="register-next-steps">
 					{#if verificationEmailSent}
 						<p class="register-step-text">
-							Check your inbox and confirm the verification request. Your account is ready, while
-							catalog and checkout availability continue to be verified.
+							Check your inbox and confirm the verification request. Once verified, you can browse
+							the catalogue; checkout availability is shown before payment.
 						</p>
 					{:else}
 						<p class="register-step-text">
@@ -136,7 +126,7 @@
 							href="/products"
 							class="font-display btn w-full tracking-wider uppercase btn-outline"
 						>
-							View Catalog Status
+							Browse catalogue
 						</a>
 					</div>
 				</div>
@@ -159,18 +149,7 @@
 				<!-- Error -->
 				{#if errorMessage}
 					<div id="register-form-error" class="register-error" role="alert" aria-live="assertive">
-						<svg
-							class="h-4 w-4 shrink-0"
-							fill="currentColor"
-							viewBox="0 0 20 20"
-							aria-hidden="true"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-								clip-rule="evenodd"
-							/>
-						</svg>
+						<Icon name="alert-circle" size={16} class="h-4 w-4 shrink-0" />
 						<span>{errorMessage}</span>
 					</div>
 				{/if}
@@ -461,11 +440,6 @@
 		height: 3.5rem;
 		margin: 0 auto 1.25rem;
 		color: oklch(var(--su));
-	}
-
-	.register-success-icon svg {
-		width: 100%;
-		height: 100%;
 	}
 
 	.register-email-highlight {

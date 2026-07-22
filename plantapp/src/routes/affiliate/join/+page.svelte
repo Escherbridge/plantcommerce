@@ -5,6 +5,7 @@
 	import { trpc } from '$lib/trpc/client';
 	import { toasts } from '$lib/stores/toast';
 	import { tick } from 'svelte';
+	import { Icon, type IconName } from '$lib/components/icons';
 
 	let { data }: { data: PageData } = $props();
 
@@ -92,37 +93,37 @@
 		{
 			title: 'Application Review',
 			description: 'Applications are recorded for manual review; approval is not guaranteed.',
-			icon: 'M12 2a10 10 0 100 20 10 10 0 000-20zM8 14l2 2 4-4'
+			icon: 'check-circle' as IconName
 		},
 		{
 			title: 'Terms Before Activation',
 			description:
 				'Commission, attribution, disclosure, and payout terms are not published until reviewed in writing.',
-			icon: 'M4 4h16v12H4zM8 20h8M12 16v4'
+			icon: 'presentation' as IconName
 		},
 		{
 			title: 'Application State',
 			description:
 				'An account or dashboard state does not represent approval, earnings, or a promotion right.',
-			icon: 'M3 20h18M6 16v4M10 12v8M14 8v12M18 4v16'
+			icon: 'bar-chart' as IconName
 		},
 		{
 			title: 'No Published Cookie Window',
 			description:
 				'Attribution policy applies only when it is included in a reviewed written agreement.',
-			icon: 'M12 2a10 10 0 100 20 10 10 0 000-20zM12 6v6l4 2'
+			icon: 'clock' as IconName
 		},
 		{
 			title: 'No Published Payout Schedule',
 			description:
 				'Aevani does not currently publish a payment provider, threshold, or payout timeline.',
-			icon: 'M2 7h20v12a2 2 0 01-2 2H4a2 2 0 01-2-2V7zM22 7l-2-4H4L2 7M8 12h8'
+			icon: 'store' as IconName
 		},
 		{
 			title: 'Questions and Support',
 			description:
 				'Contact support with program questions before relying on any affiliate-related arrangement.',
-			icon: 'M17 8a5 5 0 00-10 0c0 4 5 8 5 12 0-4 5-8 5-12zM12 20v2M8 22h8'
+			icon: 'lightbulb' as IconName
 		}
 	];
 
@@ -221,16 +222,7 @@
 			{#each benefits as benefit}
 				<div class="aff-benefit">
 					<div class="aff-benefit__icon">
-						<svg
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="1.5"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<path d={benefit.icon} />
-						</svg>
+						<Icon name={benefit.icon} size={40} />
 					</div>
 					<h3 class="aff-benefit__title">{benefit.title}</h3>
 					<p class="aff-benefit__desc">{benefit.description}</p>
@@ -303,17 +295,7 @@
 			<!-- Already an affiliate -->
 			<div class="aff-apply__card">
 				<div class="aff-apply__icon-wrap aff-apply__icon-wrap--success">
-					<svg
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-						<polyline points="22 4 12 14.01 9 11.01" />
-					</svg>
+					<Icon name="check-circle" size={48} />
 				</div>
 				<h2 class="aff-apply__title">You're an Affiliate</h2>
 				<p class="aff-apply__desc">
@@ -326,17 +308,7 @@
 			<!-- Application submitted -->
 			<div class="aff-apply__card">
 				<div class="aff-apply__icon-wrap aff-apply__icon-wrap--success">
-					<svg
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-						<polyline points="22 4 12 14.01 9 11.01" />
-					</svg>
+					<Icon name="check-circle" size={48} />
 				</div>
 				<h2 class="aff-apply__title">Application Submitted</h2>
 				<p class="aff-apply__desc">
@@ -573,17 +545,7 @@
 					onclick={() => void closeTermsModal()}
 					aria-label="Close modal"
 				>
-					<svg
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<line x1="18" y1="6" x2="6" y2="18" />
-						<line x1="6" y1="6" x2="18" y2="18" />
-					</svg>
+					<Icon name="x" size={20} />
 				</button>
 			</div>
 
@@ -659,13 +621,7 @@
 	.aff-hero__bg {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(
-			160deg,
-			oklch(var(--p) / 0.06) 0%,
-			oklch(var(--s) / 0.04) 40%,
-			oklch(var(--su) / 0.03) 80%,
-			transparent 100%
-		);
+		background: oklch(var(--p) / 0.05);
 		z-index: 0;
 	}
 
@@ -713,20 +669,20 @@
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
 		color: oklch(var(--pc));
-		background: linear-gradient(135deg, oklch(var(--s)) 0%, oklch(var(--p)) 100%);
+		background: oklch(var(--p));
 		border-radius: var(--input-radius, 10px);
 		text-decoration: none;
 		border: none;
 		cursor: pointer;
 		box-shadow: 0 4px 16px oklch(var(--p) / 0.25);
 		transition:
-			opacity 200ms ease,
+			background-color 200ms ease,
 			transform 200ms var(--ease-out-expo),
 			box-shadow 200ms ease;
 	}
 
 	.aff-hero__cta:hover {
-		opacity: 0.92;
+		background-color: oklch(var(--n));
 		transform: translateY(-1px);
 		box-shadow: 0 6px 24px oklch(var(--p) / 0.3);
 	}
@@ -783,11 +739,6 @@
 		height: 2.5rem;
 		color: oklch(var(--p));
 		margin-bottom: 1rem;
-	}
-
-	.aff-benefit__icon svg {
-		width: 100%;
-		height: 100%;
 	}
 
 	.aff-benefit__title {
@@ -924,7 +875,7 @@
 		width: 3rem;
 		height: 3rem;
 		border-radius: 50%;
-		background: linear-gradient(135deg, oklch(var(--s)) 0%, oklch(var(--p)) 100%);
+		background: oklch(var(--p));
 		color: oklch(var(--pc));
 		font-family: var(--font-display);
 		font-size: 1.25rem;
@@ -998,11 +949,6 @@
 		height: 3.5rem;
 		margin: 0 auto 1.5rem;
 		color: oklch(var(--su));
-	}
-
-	.aff-apply__icon-wrap svg {
-		width: 100%;
-		height: 100%;
 	}
 
 	.aff-apply__title {
@@ -1144,7 +1090,6 @@
 		height: 100%;
 		border: 0;
 		background: oklch(var(--bc) / 0.4);
-		backdrop-filter: blur(2px);
 		cursor: default;
 	}
 
@@ -1221,11 +1166,6 @@
 	.terms-modal__close:hover {
 		background: oklch(var(--b3));
 		color: oklch(var(--bc));
-	}
-
-	.terms-modal__close svg {
-		width: 1.25rem;
-		height: 1.25rem;
 	}
 
 	.terms-modal__content {

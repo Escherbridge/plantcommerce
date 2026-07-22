@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { Icon } from '$lib/components/icons';
 
 	let { data }: { data: PageData } = $props();
 
@@ -44,18 +45,7 @@
 		<div class="admin-kpi-grid">
 			<div class="platform-stat">
 				<div class="admin-stat-icon admin-stat-icon--revenue">
-					<svg
-						viewBox="0 0 24 24"
-						class="h-5 w-5"
-						stroke="currentColor"
-						stroke-width="1.5"
-						fill="none"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
-						<path d="M12 6v12M9 9h4.5a2.5 2.5 0 010 5H9" />
-					</svg>
+					<Icon name="dollar-circle" size={20} />
 				</div>
 				<span class="platform-stat__label">Recorded Revenue</span>
 				<span class="platform-stat__value" style="color: oklch(var(--su))">
@@ -65,19 +55,7 @@
 
 			<div class="platform-stat">
 				<div class="admin-stat-icon admin-stat-icon--orders">
-					<svg
-						viewBox="0 0 24 24"
-						class="h-5 w-5"
-						stroke="currentColor"
-						stroke-width="1.5"
-						fill="none"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M3 3h2l3 12h10l3-9H6" />
-						<circle cx="8" cy="21" r="1" />
-						<circle cx="18" cy="21" r="1" />
-					</svg>
+					<Icon name="shopping-cart" size={20} />
 				</div>
 				<span class="platform-stat__label">Recorded Orders</span>
 				<span class="platform-stat__value">{stats.totalOrders.toLocaleString()}</span>
@@ -85,18 +63,7 @@
 
 			<div class="platform-stat">
 				<div class="admin-stat-icon admin-stat-icon--users">
-					<svg
-						viewBox="0 0 24 24"
-						class="h-5 w-5"
-						stroke="currentColor"
-						stroke-width="1.5"
-						fill="none"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M16 11a4 4 0 10-8 0 4 4 0 008 0z" />
-						<path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" />
-					</svg>
+					<Icon name="user" size={20} />
 				</div>
 				<span class="platform-stat__label">Registered Users</span>
 				<span class="platform-stat__value">{stats.totalUsers.toLocaleString()}</span>
@@ -104,18 +71,7 @@
 
 			<div class="platform-stat">
 				<div class="admin-stat-icon admin-stat-icon--affiliates">
-					<svg
-						viewBox="0 0 24 24"
-						class="h-5 w-5"
-						stroke="currentColor"
-						stroke-width="1.5"
-						fill="none"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
-						<path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
-					</svg>
+					<Icon name="link" size={20} />
 				</div>
 				<span class="platform-stat__label">Catalog Records</span>
 				<span class="platform-stat__value">{stats.totalProducts.toLocaleString()}</span>
@@ -172,61 +128,19 @@
 		</div>
 		<div class="admin-actions-grid">
 			<a href="/admin/products" class="platform-action-btn">
-				<svg
-					viewBox="0 0 24 24"
-					class="h-5 w-5"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M12 5v14M5 12h14" />
-				</svg>
+				<Icon name="plus" size={20} />
 				Add Product
 			</a>
 			<a href="/admin/orders" class="platform-action-btn">
-				<svg
-					viewBox="0 0 24 24"
-					class="h-5 w-5"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
-				</svg>
+				<Icon name="list" size={20} />
 				View Orders
 			</a>
 			<a href="/admin/users" class="platform-action-btn">
-				<svg
-					viewBox="0 0 24 24"
-					class="h-5 w-5"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M16 11a4 4 0 10-8 0 4 4 0 008 0z" />
-					<path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" />
-				</svg>
+				<Icon name="user" size={20} />
 				Manage Users
 			</a>
 			<a href="/admin/analytics" class="platform-action-btn">
-				<svg
-					viewBox="0 0 24 24"
-					class="h-5 w-5"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M3 17l6-6 4 4 8-8" />
-					<path d="M14 7h7v7" />
-				</svg>
+				<Icon name="trending-up" size={20} />
 				View Analytics
 			</a>
 		</div>

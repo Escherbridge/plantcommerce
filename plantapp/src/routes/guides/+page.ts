@@ -14,13 +14,15 @@ export const load: PageLoad = async (event) => {
 
 		return {
 			guides: guides || [],
-			selectedCategory: category
+			selectedCategory: category,
+			loadStatus: 'ready' as const
 		};
 	} catch (error) {
 		console.error('Error loading guides:', error);
 		return {
 			guides: [],
-			selectedCategory: category
+			selectedCategory: category,
+			loadStatus: 'error' as const
 		};
 	}
 };

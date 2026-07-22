@@ -116,8 +116,6 @@
 		position: fixed;
 		inset: 0;
 		background-color: oklch(0 0 0 / 0.5);
-		backdrop-filter: blur(4px);
-		-webkit-backdrop-filter: blur(4px);
 		z-index: 9000;
 		display: flex;
 		align-items: center;

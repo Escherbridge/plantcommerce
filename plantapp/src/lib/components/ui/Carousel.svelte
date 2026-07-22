@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { Icon } from '$lib/components/icons';
 
 	interface CarouselItem {
 		id: string;
@@ -255,14 +256,7 @@
 				disabled={!infinite && currentIndex === 0}
 				aria-label="Previous slide"
 			>
-				<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M15 19l-7-7 7-7"
-					/>
-				</svg>
+				<Icon name="chevron-left" size={20} />
 			</button>
 
 			<!-- Next arrow -->
@@ -275,9 +269,7 @@
 				disabled={!infinite && currentIndex >= maxDotIndex}
 				aria-label="Next slide"
 			>
-				<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-				</svg>
+				<Icon name="chevron-right" size={20} />
 			</button>
 		{/if}
 

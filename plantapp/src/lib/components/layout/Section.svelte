@@ -44,18 +44,12 @@
 			classes.push(backgroundMap[background]);
 		}
 
-		// Width
-		if (!fullWidth) {
-			classes.push('max-w-7xl mx-auto');
-		}
-
-		// Responsive padding
-		classes.push('px-4 sm:px-6 lg:px-8');
+		classes.push('w-full');
 
 		return classes.join(' ');
 	}
 </script>
 
-<section class="{sectionClasses} {className}">
+<section class="{sectionClasses} {className}" data-full-width={fullWidth || undefined}>
 	{@render children()}
 </section>

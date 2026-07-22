@@ -4,6 +4,7 @@
 	import { browser } from '$app/environment';
 	import { cart } from '$lib/stores/cart';
 	import { tick } from 'svelte';
+	import { Icon } from '$lib/components/icons';
 
 	interface Props {
 		drawerOpen?: boolean;
@@ -73,7 +74,7 @@
 		{
 			label: 'Catalog',
 			href: '/products',
-			children: [{ label: 'Catalog Status', href: '/products' }]
+			children: [{ label: 'All products', href: '/products' }]
 		},
 		{
 			label: 'Learn',
@@ -198,14 +199,7 @@
 		<div class="header-actions">
 			<!-- Cart -->
 			<a href="/cart" class="action-btn cart-btn" aria-label="Cart">
-				<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-					></path>
-				</svg>
+				<Icon name="shopping-bag" class="icon" />
 				{#if cartCount > 0}
 					<span class="cart-badge" class:pulse={cartPulse}>{cartCount}</span>
 				{/if}
@@ -228,14 +222,7 @@
 						}
 					}}
 				>
-					<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-						></path>
-					</svg>
+					<Icon name="user" class="icon" />
 				</button>
 				<div
 					bind:this={userMenuPanel}
@@ -294,21 +281,16 @@
 		position: sticky;
 		top: 0;
 		z-index: 9999;
-		background-color: oklch(var(--n) / 0.85);
-		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
+		background-color: oklch(var(--n));
 		border-bottom: 1px solid oklch(var(--nc) / 0.06);
 		transition:
 			background-color 0.35s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
-			border-color 0.35s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
-			backdrop-filter 0.35s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+			border-color 0.35s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
 	}
 
 	.editorial-header.scrolled {
-		background-color: oklch(var(--n) / 0.95);
+		background-color: oklch(var(--n));
 		border-bottom-color: oklch(var(--nc) / 0.1);
-		backdrop-filter: blur(16px);
-		-webkit-backdrop-filter: blur(16px);
 	}
 
 	.header-container {
@@ -495,11 +477,6 @@
 	.action-btn:hover {
 		color: oklch(var(--nc));
 		background-color: oklch(var(--nc) / 0.08);
-	}
-
-	.icon {
-		width: 1.25rem;
-		height: 1.25rem;
 	}
 
 	/* ---- Cart badge ---- */

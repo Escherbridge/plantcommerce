@@ -1,4 +1,4 @@
-import { eq, and, like, or, desc, asc, inArray } from 'drizzle-orm';
+import { eq, and, ilike, or, desc, asc, inArray } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { FileService } from './file';
@@ -15,6 +15,7 @@ export interface ProductWithImages {
 	comparePrice: string | null;
 	costPrice: string | null;
 	stockQuantity: number;
+	reservedQuantity: number;
 	trackInventory: boolean;
 	weight: string | null;
 	dimensions: any;
@@ -646,7 +647,7 @@ export class ProductService {
 		}
 
 		if (search) {
-			conditions.push(like(table.product.name, `%${sanitizeLike(search)}%`));
+			conditions.push(ilike(table.product.name, `%${sanitizeLike(search)}%`));
 		}
 
 		if (featured !== undefined) {
@@ -725,8 +726,8 @@ export class ProductService {
 			const sanitizedSearch = sanitizeLike(search);
 			conditions.push(
 				or(
-					like(table.product.name, `%${sanitizedSearch}%`),
-					like(table.product.sku, `%${sanitizedSearch}%`)
+					ilike(table.product.name, `%${sanitizedSearch}%`),
+					ilike(table.product.sku, `%${sanitizedSearch}%`)
 				)
 			);
 		}

@@ -10,15 +10,21 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import { isPublicIndexablePath, publicSite, publicSiteUrl } from '$lib/config/site';
 	import { tick } from 'svelte';
+	import { BrandIcon, Icon } from '$lib/components/icons';
+
+	let { children, data } = $props();
 
 	const currentYear = new Date().getFullYear();
 	const currentUrl = $derived($page.url.pathname);
 	const absoluteUrl = $derived(publicSiteUrl(currentUrl));
 	const robotsDirective = $derived(
-		isPublicIndexablePath(currentUrl) ? 'index, follow' : 'noindex, nofollow'
+		data.commerceMode === 'demo'
+			? 'noindex,nofollow'
+			: isPublicIndexablePath(currentUrl)
+				? 'index, follow'
+				: 'noindex, nofollow'
 	);
 
-	let { children, data } = $props();
 	const user = $derived(data.user);
 
 	// Logout function for mobile
@@ -104,7 +110,7 @@
 		{
 			label: 'Catalog',
 			href: '/products',
-			children: [{ label: 'Catalog Status', href: '/products' }]
+			children: [{ label: 'All products', href: '/products' }]
 		},
 		{
 			label: 'Learn',
@@ -140,7 +146,7 @@
 	];
 
 	const footerLinks = {
-		shop: [{ label: 'Catalog Status', href: '/products' }],
+		shop: [{ label: 'Catalogue', href: '/products' }],
 		learn: [
 			{ label: 'Guides', href: '/guides' },
 			{ label: 'Blog', href: '/blog' },
@@ -176,7 +182,7 @@
 <svelte:window onkeydown={handleDrawerKeydown} />
 
 <div class="swiss-layout">
-	<!-- Main content — scales/blurs when drawer is open -->
+	<!-- Main content — scales when the drawer is open -->
 	<div
 		class="layout-content"
 		class:drawer-active={drawerOpen}
@@ -205,81 +211,26 @@
 
 					<nav class="user-bottom-bar__nav">
 						<a href="/account/profile" class="user-bottom-bar__link">
-							<svg
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle
-									cx="12"
-									cy="7"
-									r="4"
-								/></svg
-							>
+							<Icon name="user" />
 							Profile
 						</a>
 						<a href="/account/orders" class="user-bottom-bar__link">
-							<svg
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><line
-									x1="3"
-									y1="6"
-									x2="21"
-									y2="6"
-								/><path d="M16 10a4 4 0 01-8 0" /></svg
-							>
+							<Icon name="shopping-bag" />
 							Orders
 						</a>
 						<a href="/account/wishlist" class="user-bottom-bar__link">
-							<svg
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><path
-									d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"
-								/></svg
-							>
+							<Icon name="heart" />
 							Wishlist
 						</a>
 						<a href="/cart" class="user-bottom-bar__link">
-							<svg
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path
-									d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"
-								/></svg
-							>
+							<Icon name="shopping-cart" />
 							Cart
 						</a>
 					</nav>
 
 					<div class="user-bottom-bar__actions">
 						<a href="/affiliate/terms" class="user-bottom-bar__affiliate">
-							<svg
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><path
-									d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.8-6.3-3.3-6.3 3.3 1.2-6.8-5-4.9 7-1z"
-								/></svg
-							>
+							<Icon name="sparkle" />
 							Affiliate Status
 						</a>
 					</div>
@@ -305,7 +256,7 @@
 					<!-- Brand & newsletter -->
 					<div class="footer-brand-col">
 						<p class="footer-tagline">
-							Learning resources and catalog verification for sustainable growing.
+							Practical tools and learning resources for more resilient growing.
 						</p>
 
 						<div class="newsletter-block">
@@ -315,45 +266,16 @@
 							</p>
 						</div>
 
-						<!-- Social icons (inline SVG) -->
+						<!-- Social brand marks -->
 						<div class="social-row">
 							<a href="https://facebook.com/aevani" class="social-link" aria-label="Facebook">
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.75"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-								</svg>
+								<BrandIcon name="facebook" />
 							</a>
 							<a href="https://twitter.com/aevani" class="social-link" aria-label="Twitter / X">
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.75"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<path d="M4 4l16 16M4 20 20 4" />
-								</svg>
+								<BrandIcon name="x" />
 							</a>
 							<a href="https://instagram.com/aevani" class="social-link" aria-label="Instagram">
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.75"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-									<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-									<line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-								</svg>
+								<BrandIcon name="instagram" />
 							</a>
 						</div>
 					</div>
@@ -405,16 +327,7 @@
 						<a href="/cookies" class="footer-bottom-link">Cookie Policy</a>
 					</div>
 					<button class="scroll-top-btn" onclick={scrollToTop} aria-label="Scroll to top">
-						<svg
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<polyline points="18 15 12 9 6 15"></polyline>
-						</svg>
+						<Icon name="chevron-up" />
 					</button>
 				</div>
 			</div>
@@ -453,17 +366,7 @@
 			onclick={() => void closeDrawer()}
 			aria-label="Close menu"
 		>
-			<svg
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="1.75"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-			>
-				<line x1="18" y1="6" x2="6" y2="18" />
-				<line x1="6" y1="6" x2="18" y2="18" />
-			</svg>
+			<Icon name="x" />
 		</button>
 
 		<!-- Wordmark -->
@@ -541,42 +444,13 @@
 			<!-- Social -->
 			<div class="drawer-social">
 				<a href="https://facebook.com/aevani" class="drawer-social-link" aria-label="Facebook">
-					<svg
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.75"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-					</svg>
+					<BrandIcon name="facebook" />
 				</a>
 				<a href="https://twitter.com/aevani" class="drawer-social-link" aria-label="Twitter / X">
-					<svg
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.75"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M4 4l16 16M4 20 20 4" />
-					</svg>
+					<BrandIcon name="x" />
 				</a>
 				<a href="https://instagram.com/aevani" class="drawer-social-link" aria-label="Instagram">
-					<svg
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.75"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-						<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-						<line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-					</svg>
+					<BrandIcon name="instagram" />
 				</a>
 			</div>
 		</div>
@@ -598,14 +472,11 @@
 		min-height: 100vh;
 		max-width: 100vw;
 		overflow-x: clip;
-		transition:
-			transform 0.4s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
-			filter 0.4s ease;
+		transition: transform 0.4s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
 	}
 
 	.layout-content.drawer-active {
 		transform: scale(0.95);
-		filter: blur(4px);
 		pointer-events: none;
 	}
 
@@ -779,7 +650,7 @@
 		color: oklch(var(--nc));
 	}
 
-	.social-link svg {
+	.social-link :global(svg) {
 		width: 1.125rem;
 		height: 1.125rem;
 	}
@@ -930,7 +801,7 @@
 		color: oklch(var(--nc));
 	}
 
-	.scroll-top-btn svg {
+	.scroll-top-btn :global(svg) {
 		width: 1rem;
 		height: 1rem;
 	}
@@ -1009,7 +880,7 @@
 		border-color: oklch(var(--nc) / 0.35);
 	}
 
-	.drawer-close svg {
+	.drawer-close :global(svg) {
 		width: 1.125rem;
 		height: 1.125rem;
 	}
@@ -1215,7 +1086,7 @@
 		color: oklch(var(--nc));
 	}
 
-	.drawer-social-link svg {
+	.drawer-social-link :global(svg) {
 		width: 1.125rem;
 		height: 1.125rem;
 	}
@@ -1228,8 +1099,6 @@
 		position: sticky;
 		bottom: 0;
 		z-index: 40;
-		backdrop-filter: blur(16px);
-		-webkit-backdrop-filter: blur(16px);
 	}
 
 	.user-bottom-bar__inner {
@@ -1312,7 +1181,7 @@
 		color: oklch(var(--bc));
 	}
 
-	.user-bottom-bar__link svg {
+	.user-bottom-bar__link :global(svg) {
 		width: 1.125rem;
 		height: 1.125rem;
 		flex-shrink: 0;
@@ -1326,7 +1195,7 @@
 			font-size: 0.625rem;
 		}
 
-		.user-bottom-bar__link svg {
+		.user-bottom-bar__link :global(svg) {
 			width: 1.25rem;
 			height: 1.25rem;
 		}
@@ -1348,21 +1217,21 @@
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
 		color: oklch(var(--pc));
-		background: linear-gradient(135deg, oklch(var(--s)) 0%, oklch(var(--p)) 100%);
+		background: oklch(var(--p));
 		border-radius: var(--input-radius, 10px);
 		text-decoration: none;
 		transition:
-			opacity 200ms ease,
+			background-color 200ms ease,
 			transform 200ms var(--ease-out-expo);
-		box-shadow: 0 2px 8px rgba(69, 123, 157, 0.2);
+		box-shadow: var(--shadow-sm);
 	}
 
 	.user-bottom-bar__affiliate:hover {
-		opacity: 0.9;
-		transform: scale(1.02);
+		background-color: oklch(var(--n));
+		transform: translateY(-1px);
 	}
 
-	.user-bottom-bar__affiliate svg {
+	.user-bottom-bar__affiliate :global(svg) {
 		width: 1rem;
 		height: 1rem;
 		flex-shrink: 0;
@@ -1374,7 +1243,7 @@
 			font-size: 0;
 		}
 
-		.user-bottom-bar__affiliate svg {
+		.user-bottom-bar__affiliate :global(svg) {
 			width: 1.25rem;
 			height: 1.25rem;
 		}

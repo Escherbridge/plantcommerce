@@ -19,9 +19,19 @@ export interface CartItem {
 		slug: string;
 		sku: string;
 		price: string;
+		comparePrice: string | null;
 		stockQuantity: number;
+		reservedQuantity: number;
 		trackInventory: boolean;
-		shortDescription?: string | null;
+		description: string | null;
+		shortDescription: string | null;
+		isFeatured: boolean;
+		category: {
+			id: number;
+			name: string;
+			slug: string;
+			description: string | null;
+		};
 		images?: Array<{ url: string; altText: string | null; isMain: boolean }>;
 	};
 }
@@ -143,11 +153,13 @@ export class CartService {
 				quantity: table.cartItem.quantity,
 				unitPrice: table.cartItem.unitPrice,
 				product: table.product,
+				category: table.productCategory,
 				image: table.productImage,
 				file: table.file
 			})
 			.from(table.cartItem)
 			.innerJoin(table.product, eq(table.cartItem.productId, table.product.id))
+			.innerJoin(table.productCategory, eq(table.product.categoryId, table.productCategory.id))
 			.leftJoin(
 				table.productImage,
 				and(eq(table.product.id, table.productImage.productId), eq(table.productImage.isMain, true))
@@ -175,8 +187,19 @@ export class CartService {
 					slug: item.product.slug,
 					sku: item.product.sku,
 					price: item.product.price,
+					comparePrice: item.product.comparePrice,
 					stockQuantity: item.product.stockQuantity,
+					reservedQuantity: item.product.reservedQuantity,
 					trackInventory: item.product.trackInventory,
+					description: item.product.description,
+					shortDescription: item.product.shortDescription,
+					isFeatured: item.product.isFeatured,
+					category: {
+						id: item.category.id,
+						name: item.category.name,
+						slug: item.category.slug,
+						description: item.category.description
+					},
 					images: imageUrl
 						? [
 								{
@@ -233,7 +256,8 @@ export class CartService {
 
 		const product = productResult[0];
 
-		if (product.trackInventory && product.stockQuantity < quantity) {
+		const availableQuantity = product.stockQuantity - product.reservedQuantity;
+		if (product.trackInventory && availableQuantity < quantity) {
 			throw new Error('Insufficient stock');
 		}
 
@@ -255,7 +279,7 @@ export class CartService {
 			// Update existing item
 			const newQuantity = existingItem[0].quantity + quantity;
 
-			if (product.trackInventory && product.stockQuantity < newQuantity) {
+			if (product.trackInventory && availableQuantity < newQuantity) {
 				throw new Error('Insufficient stock');
 			}
 
@@ -340,7 +364,8 @@ export class CartService {
 			await db.delete(table.cartItem).where(eq(table.cartItem.id, cartItemId));
 		} else {
 			// Check stock
-			if (product.trackInventory && product.stockQuantity < quantity) {
+			const availableQuantity = product.stockQuantity - product.reservedQuantity;
+			if (product.trackInventory && availableQuantity < quantity) {
 				throw new Error('Insufficient stock');
 			}
 

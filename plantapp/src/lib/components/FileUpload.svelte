@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { trpc } from '$lib/trpc/client';
+	import { Icon } from '$lib/components/icons';
 
 	interface UploadedFile {
 		id: string;
@@ -135,16 +136,7 @@
 				</div>
 			{:else}
 				<div class="upload-prompt">
-					<svg
-						width="48"
-						height="48"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-					>
-						<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
-					</svg>
+					<Icon name="upload" size={48} class="mx-auto mb-4 text-base-content/45" />
 					<p>Click to upload or drag and drop</p>
 					<p class="upload-info">
 						{#if multiple}Up to {maxFiles} files,{/if}
@@ -199,11 +191,6 @@
 
 	.upload-content {
 		pointer-events: none;
-	}
-
-	.upload-prompt svg {
-		margin: 0 auto 1rem;
-		color: #a0aec0;
 	}
 
 	.upload-prompt p {

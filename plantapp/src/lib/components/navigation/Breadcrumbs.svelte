@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Icon } from '$lib/components/icons';
 	interface BreadcrumbItem {
 		name: string;
 		url?: string;
@@ -80,23 +81,9 @@
 				{#if index > 0}
 					<span class="mx-2 text-base-content/40 select-none" aria-hidden="true">
 						{#if separator === 'chevron'}
-							<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M9 5l7 7-7 7"
-								/>
-							</svg>
+							<Icon name="chevron-right" size={16} />
 						{:else if separator === 'arrow'}
-							<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M14 5l7 7m0 0l-7 7m7-7H3"
-								/>
-							</svg>
+							<Icon name="arrow-right" size={16} />
 						{:else}
 							{separatorIcon}
 						{/if}

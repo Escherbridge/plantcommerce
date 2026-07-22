@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Container, Section, Grid } from '$lib/components/layout';
 	import type { PageData } from './$types';
+	import { Icon, type IconName } from '$lib/components/icons';
 
 	let { data }: { data: PageData } = $props();
 
@@ -9,32 +10,29 @@
 			title: 'Guides',
 			description: 'Step-by-step tutorials for sustainable farming techniques and best practices',
 			href: '/guides',
-			bgStyle: 'background: linear-gradient(135deg, #1B2D4A, #2a4166)',
-			iconPath:
-				'M4 6h10v36H6a2 2 0 01-2-2V8a2 2 0 012-2zm36 0H30v36h10a2 2 0 002-2V8a2 2 0 00-2-2zM18 6h12M18 42h12M10 14h6M10 20h6M10 26h4M30 14h6M30 20h6M30 26h4'
+			surfaceClass: 'bg-primary text-primary-content',
+			icon: 'book-open' as IconName
 		},
 		{
 			title: 'Blog',
 			description: 'Latest news, insights, and stories from our community of sustainable growers',
 			href: '/blog',
-			bgStyle: 'background: linear-gradient(135deg, #457B9D, #5a93b3)',
-			iconPath:
-				'M8 6h28a2 2 0 012 2v28a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2zM14 14h16M14 20h16M14 26h10M6 6l4-3M38 6l-4-3'
+			surfaceClass: 'bg-neutral text-neutral-content',
+			icon: 'clipboard-list' as IconName
 		},
 		{
 			title: 'FAQ',
 			description: 'Quick answers to the most common questions about our products and practices',
 			href: '/faq',
-			bgStyle: 'background: linear-gradient(135deg, #E63946, #eb5c67)',
-			iconPath: 'M24 4a18 18 0 100 36 18 18 0 000-36zM24 28v0M20 16a4 4 0 118 0c0 2-2 3-4 4'
+			surfaceClass: 'bg-secondary text-secondary-content',
+			icon: 'help-circle' as IconName
 		},
 		{
 			title: 'Resources',
 			description: 'Tools, calculators, downloadable guides, and community resources',
 			href: '/resources',
-			bgStyle: 'background: linear-gradient(135deg, #0A4B3E, #0d6352)',
-			iconPath:
-				'M18 8l-8 8 8 8M26 8l8 8-8 8M8 36h28a2 2 0 002-2V10a2 2 0 00-2-2H8a2 2 0 00-2 2v24a2 2 0 002 2z'
+			surfaceClass: 'border border-base-300 bg-base-200 text-base-content',
+			icon: 'code' as IconName
 		}
 	];
 </script>
@@ -68,45 +66,28 @@
 			{#each categories as category}
 				<a
 					href={category.href}
-					class="group relative flex min-h-[200px] flex-col justify-between overflow-hidden rounded-3xl p-8 text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl lg:p-10"
-					style={category.bgStyle}
+					class="group relative flex min-h-[200px] flex-col justify-between overflow-hidden rounded-xl p-8 shadow-sm transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-md lg:p-10 {category.surfaceClass}"
 				>
 					<div class="flex items-start justify-between">
 						<div class="flex-1 space-y-3">
 							<h3 class="font-display text-3xl font-bold tracking-tight uppercase lg:text-4xl">
 								{category.title}
 							</h3>
-							<p class="max-w-sm text-base leading-relaxed font-light text-white/80 lg:text-lg">
+							<p class="max-w-sm text-base leading-relaxed opacity-75 lg:text-lg">
 								{category.description}
 							</p>
 						</div>
-						<div class="ml-4 opacity-20 transition-opacity group-hover:opacity-30">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 48 48"
-								class="h-20 w-20 lg:h-24 lg:w-24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<path d={category.iconPath} />
-							</svg>
+						<div class="ml-4 opacity-40 transition-opacity group-hover:opacity-60">
+							<Icon name={category.icon} size={96} class="h-20 w-20 lg:h-24 lg:w-24" />
 						</div>
 					</div>
 					<div class="mt-6 flex items-center gap-2 text-sm font-medium tracking-wider uppercase">
 						<span>Explore</span>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="h-4 w-4 transition-transform group-hover:translate-x-1"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-						</svg>
+						<Icon
+							name="arrow-right"
+							size={16}
+							class="transition-transform group-hover:translate-x-1"
+						/>
 					</div>
 				</a>
 			{/each}
@@ -146,19 +127,11 @@
 								</p>
 								<div class="mt-6 flex items-center gap-2 text-sm font-medium text-primary">
 									<span>Read More</span>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										class="h-4 w-4 transition-transform group-hover:translate-x-1"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="2"
-										><path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M14 5l7 7m0 0l-7 7m7-7H3"
-										/></svg
-									>
+									<Icon
+										name="arrow-right"
+										size={16}
+										class="transition-transform group-hover:translate-x-1"
+									/>
 								</div>
 							</div>
 						</a>
@@ -206,19 +179,11 @@
 								{/if}
 								<div class="mt-4 flex items-center gap-2 text-sm font-medium text-primary">
 									<span>Read More</span>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										class="h-4 w-4 transition-transform group-hover:translate-x-1"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="2"
-										><path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M14 5l7 7m0 0l-7 7m7-7H3"
-										/></svg
-									>
+									<Icon
+										name="arrow-right"
+										size={16}
+										class="transition-transform group-hover:translate-x-1"
+									/>
 								</div>
 							</div>
 						</a>
@@ -294,19 +259,11 @@
 								</p>
 								<div class="mt-6 flex items-center gap-2 text-sm font-medium text-primary">
 									<span>Access</span>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										class="h-4 w-4 transition-transform group-hover:translate-x-1"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="2"
-										><path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M14 5l7 7m0 0l-7 7m7-7H3"
-										/></svg
-									>
+									<Icon
+										name="arrow-right"
+										size={16}
+										class="transition-transform group-hover:translate-x-1"
+									/>
 								</div>
 							</div>
 						</a>
@@ -318,7 +275,7 @@
 		<!-- Call to Action -->
 		<div class="text-center">
 			<div
-				class="rounded-3xl bg-gradient-to-br from-primary to-primary/80 p-12 text-primary-content shadow-xl lg:p-16"
+				class="rounded-xl border border-primary-content/10 bg-primary p-12 text-primary-content shadow-md lg:p-16"
 			>
 				<h2 class="font-display mb-4 text-3xl font-bold tracking-tight uppercase lg:text-4xl">
 					Can't Find What You're Looking For?
@@ -332,7 +289,7 @@
 					>
 					<a
 						href="/help"
-						class="font-display btn border-primary-content tracking-wider text-primary-content uppercase btn-outline btn-lg hover:bg-primary-content hover:text-primary"
+						class="font-display btn border-primary-content bg-transparent tracking-wider text-primary-content uppercase btn-lg hover:bg-primary-content hover:text-primary"
 						>Visit Help Center</a
 					>
 				</div>

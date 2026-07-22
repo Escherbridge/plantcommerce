@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Icon } from '$lib/components/icons';
 	interface Props {
 		config: { url?: string; title?: string };
 		signedUrl?: string;
@@ -60,18 +61,9 @@
 			aria-label={isPlaying ? 'Pause' : 'Play'}
 		>
 			{#if isPlaying}
-				<svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"
-					><rect x="6" y="4" width="4" height="16" /><rect
-						x="14"
-						y="4"
-						width="4"
-						height="16"
-					/></svg
-				>
+				<Icon name="pause" size={16} />
 			{:else}
-				<svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"
-					><polygon points="5,3 19,12 5,21" /></svg
-				>
+				<Icon name="play" size={16} />
 			{/if}
 		</button>
 		<div class="flex-1">

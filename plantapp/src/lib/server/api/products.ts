@@ -1,21 +1,24 @@
 import { z } from 'zod';
 import { publicProcedure, adminProcedure, router } from './trpc';
-import { ProductService } from '../services/product';
-import { AuditLogService } from '../services/auditLog';
-import { getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
+import { getCommerceAdapter } from '../commerce/adapter';
 
 export const productsRouter = router({
-	getCatalogAvailability: publicProcedure.query(() => getPublicCatalogAvailability()),
+	getCatalogAvailability: publicProcedure.query(async ({ ctx }) => {
+		const adapter = await getCommerceAdapter(ctx.event);
+		return { status: 'available' as const, reason: null, commerce: adapter.context };
+	}),
 
-	getCategories: publicProcedure.query(
-		async () => [] as Awaited<ReturnType<typeof ProductService.getCategories>>
-	),
+	getCategories: publicProcedure.query(async ({ ctx }) => {
+		const adapter = await getCommerceAdapter(ctx.event);
+		return adapter.getCategories();
+	}),
 
 	getProducts: publicProcedure
 		.input(
 			z.object({
 				categoryId: z.number().optional(),
 				categoryIds: z.array(z.number()).optional(),
+				categorySlug: z.string().optional(),
 				search: z.string().optional(),
 				featured: z.boolean().optional(),
 				limit: z.number().min(1).max(50).default(20),
@@ -24,11 +27,35 @@ export const productsRouter = router({
 				sortOrder: z.enum(['asc', 'desc']).default('desc')
 			})
 		)
-		.query(async () => [] as Awaited<ReturnType<typeof ProductService.getProducts>>),
+		.query(async ({ ctx, input }) => {
+			const adapter = await getCommerceAdapter(ctx.event);
+			let categorySlug = input.categorySlug;
+			if (!categorySlug && input.categoryId) {
+				const categories = await adapter.getCategories();
+				categorySlug = categories.find((category) =>
+					category.id.endsWith(`:${input.categoryId}`)
+				)?.slug;
+			}
+			const categoryIds = input.categoryIds?.length
+				? input.categoryIds
+				: input.categoryId
+					? [input.categoryId]
+					: undefined;
+			return adapter.getProducts({ ...input, categorySlug, categoryIds });
+		}),
 
 	getProduct: publicProcedure
-		.input(z.object({ slug: z.string() }))
-		.query(async () => null as Awaited<ReturnType<typeof ProductService.getProductBySlug>>),
+		.input(z.object({ slug: z.string(), categorySlug: z.string().optional() }))
+		.query(async ({ ctx, input }) => {
+			const adapter = await getCommerceAdapter(ctx.event);
+			if (input.categorySlug) return adapter.getProduct(input.categorySlug, input.slug);
+			const categories = await adapter.getCategories();
+			for (const category of categories) {
+				const product = await adapter.getProduct(category.slug, input.slug);
+				if (product) return product;
+			}
+			return null;
+		}),
 
 	createProduct: adminProcedure
 		.input(
@@ -68,6 +95,10 @@ export const productsRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
+			const [{ ProductService }, { AuditLogService }] = await Promise.all([
+				import('../services/product'),
+				import('../services/auditLog')
+			]);
 			const product = await ProductService.createProduct(input);
 			await AuditLogService.log(ctx.user.id, 'create_product', {
 				productId: product.id,
@@ -119,6 +150,10 @@ export const productsRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
+			const [{ ProductService }, { AuditLogService }] = await Promise.all([
+				import('../services/product'),
+				import('../services/auditLog')
+			]);
 			const { id, ...updateData } = input;
 			const product = await ProductService.updateProduct(id, updateData);
 			await AuditLogService.log(ctx.user.id, 'update_product', {
@@ -131,6 +166,10 @@ export const productsRouter = router({
 	deleteProduct: adminProcedure
 		.input(z.object({ id: z.number() }))
 		.mutation(async ({ ctx, input }) => {
+			const [{ ProductService }, { AuditLogService }] = await Promise.all([
+				import('../services/product'),
+				import('../services/auditLog')
+			]);
 			await ProductService.deleteProduct(input.id);
 			await AuditLogService.log(ctx.user.id, 'delete_product', { productId: input.id });
 			return { success: true };
@@ -146,9 +185,13 @@ export const productsRouter = router({
 				sortOrder: z.number().default(0)
 			})
 		)
-		.mutation(({ input }) => ProductService.createCategory(input)),
+		.mutation(async ({ input }) =>
+			(await import('../services/product')).ProductService.createCategory(input)
+		),
 
-	getAllCategories: adminProcedure.query(() => ProductService.getAllCategories()),
+	getAllCategories: adminProcedure.query(async () =>
+		(await import('../services/product')).ProductService.getAllCategories()
+	),
 
 	addProductImage: adminProcedure
 		.input(
@@ -160,8 +203,8 @@ export const productsRouter = router({
 				sortOrder: z.number().optional()
 			})
 		)
-		.mutation(({ input }) =>
-			ProductService.addProductImage(
+		.mutation(async ({ input }) =>
+			(await import('../services/product')).ProductService.addProductImage(
 				input.productId,
 				input.fileId,
 				input.altText,
@@ -180,20 +223,27 @@ export const productsRouter = router({
 				sortOrder: z.number().optional()
 			})
 		)
-		.mutation(({ input }) => {
+		.mutation(async ({ input }) => {
 			const { imageId, ...updates } = input;
-			return ProductService.updateProductImage(imageId, updates);
+			return (await import('../services/product')).ProductService.updateProductImage(
+				imageId,
+				updates
+			);
 		}),
 
 	deleteProductImage: adminProcedure
 		.input(z.object({ imageId: z.number() }))
-		.mutation(({ input }) =>
-			ProductService.deleteProductImage(input.imageId).then(() => ({ success: true }))
+		.mutation(async ({ input }) =>
+			(await import('../services/product')).ProductService.deleteProductImage(input.imageId).then(
+				() => ({ success: true })
+			)
 		),
 
 	getProductImages: adminProcedure
 		.input(z.object({ productId: z.number() }))
-		.query(({ input }) => ProductService.getProductImages(input.productId)),
+		.query(async ({ input }) =>
+			(await import('../services/product')).ProductService.getProductImages(input.productId)
+		),
 
 	getAllProducts: adminProcedure
 		.input(
@@ -205,7 +255,9 @@ export const productsRouter = router({
 				isActive: z.boolean().optional()
 			})
 		)
-		.query(({ input }) => ProductService.getAllProducts(input))
+		.query(async ({ input }) =>
+			(await import('../services/product')).ProductService.getAllProducts(input)
+		)
 });
 
 export type ProductsRouter = typeof productsRouter;

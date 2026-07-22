@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Icon } from '$lib/components/icons';
 	import type { Snippet } from 'svelte';
 	import type { NavigationConfig, PlatformUser } from './types';
 	import PlatformSidebar from './PlatformSidebar.svelte';
@@ -46,17 +47,7 @@
 				onclick={() => (mobileOpen = true)}
 				aria-label="Open navigation menu"
 			>
-				<svg
-					viewBox="0 0 24 24"
-					class="h-5 w-5"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M4 6h16M4 12h16M4 18h16" />
-				</svg>
+				<Icon name="menu" size={20} />
 			</button>
 
 			<PlatformBreadcrumbs path={currentPath} overrides={breadcrumbOverrides} />
