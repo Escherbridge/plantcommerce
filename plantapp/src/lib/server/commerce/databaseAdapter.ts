@@ -9,6 +9,8 @@ import {
 	type CommerceCart,
 	type CommerceCartItem,
 	type CommerceCategory,
+	type CommerceFacet,
+	type CommerceGuide,
 	type CommerceProduct
 } from '$lib/commerce/contracts';
 import type { CommerceAdapter } from './adapter';
@@ -39,7 +41,19 @@ type DatabaseProductSource = Pick<
 	| 'isFeatured'
 > & {
 	category?: DatabaseCategorySource;
-	images?: Array<{ url?: string; altText: string | null }>;
+	images?: Array<{ url?: string; altText: string | null; isMock?: boolean }>;
+	catalogDataClass?: 'verified' | 'research' | 'mock_test';
+	catalogDisclosure?: string | null;
+	catalogCategories?: Array<{ id: number; name: string; slug: string }>;
+	catalogTags?: Array<{ slug: string; name: string }>;
+	manufacturers?: Array<{
+		name: string;
+		status: 'unverified' | 'verified' | 'retired';
+		websiteUrl: string | null;
+	}>;
+	contentAreas?: Array<{ slug: string; name: string }>;
+	facets?: CommerceFacet[];
+	guides?: CommerceGuide[];
 };
 
 type DatabaseProductRow =
@@ -83,7 +97,8 @@ function mapProduct(row: DatabaseProductRow): CommerceProduct {
 	const imageFallback = product.shortDescription || product.name;
 	const images = getPublicProductImages(product.images, imageFallback).map((image) => ({
 		url: image.url,
-		altText: image.altText || imageFallback
+		altText: image.altText || imageFallback,
+		isMock: image.isMock
 	}));
 	const priceMinor = decimalToMinorUnits(String(product.price));
 	const availableQuantity =
@@ -106,7 +121,15 @@ function mapProduct(row: DatabaseProductRow): CommerceProduct {
 		inStock: availableQuantity > 0,
 		featured: Boolean(product.isFeatured),
 		images,
-		dataClass: 'database'
+		dataClass: 'database',
+		catalogDataClass: product.catalogDataClass,
+		catalogDisclosure: product.catalogDisclosure,
+		categories: product.catalogCategories?.map((candidate) => mapCategory(candidate)),
+		tags: product.catalogTags,
+		manufacturers: product.manufacturers,
+		contentAreas: product.contentAreas,
+		facets: product.facets,
+		guides: product.guides
 	};
 }
 
@@ -163,6 +186,10 @@ export const databaseCommerceAdapter: CommerceAdapter = {
 			})
 		);
 	},
+	async getTags() {
+		const { ProductService } = await import('$lib/server/services/product');
+		return ProductService.getTags();
+	},
 	async getProducts(input) {
 		const { ProductService } = await import('$lib/server/services/product');
 		let categoryId: number | undefined;
@@ -174,7 +201,9 @@ export const databaseCommerceAdapter: CommerceAdapter = {
 		const categoryIds = categoryId ? [categoryId] : input.categoryIds;
 		const rows = await ProductService.getProducts({
 			categoryIds,
+			categorySlug: input.categorySlug,
 			search: input.search,
+			tag: input.tag,
 			featured: input.featured,
 			limit: input.limit,
 			offset: input.offset,
@@ -186,7 +215,14 @@ export const databaseCommerceAdapter: CommerceAdapter = {
 	async getProduct(categorySlug, productSlug) {
 		const { ProductService } = await import('$lib/server/services/product');
 		const product = await ProductService.getProductBySlug(productSlug);
-		if (!product || product.category.slug !== categorySlug) return null;
+		if (
+			!product ||
+			![
+				product.category.slug,
+				...(product.catalogCategories ?? []).map((category) => category.slug)
+			].includes(categorySlug)
+		)
+			return null;
 		return mapProduct(product);
 	},
 	async getCart(event) {

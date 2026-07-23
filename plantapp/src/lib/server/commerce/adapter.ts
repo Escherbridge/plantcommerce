@@ -14,6 +14,7 @@ import { resolveCommerceMode } from './runtime';
 export interface CommerceAdapter {
 	readonly context: CommerceContext;
 	getCategories(): Promise<CommerceCategory[]>;
+	getTags(): Promise<import('$lib/commerce/contracts').CommerceTag[]>;
 	getProducts(input: ProductSearchInput): Promise<CommerceProduct[]>;
 	getProduct(categorySlug: string, productSlug: string): Promise<CommerceProduct | null>;
 	getCart(event: RequestEvent): Promise<CommerceCart>;

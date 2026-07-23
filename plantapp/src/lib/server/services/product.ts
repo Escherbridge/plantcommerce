@@ -36,10 +36,29 @@ export interface ProductWithImages {
 	images: Array<{
 		id: number;
 		fileId: string;
-		url?: string;
+		url: string;
 		altText: string | null;
 		sortOrder: number;
 		isMain: boolean;
+		isMock?: boolean;
+		caption?: string | null;
+		role?: 'primary' | 'gallery' | 'diagram' | 'manual';
+	}>;
+	catalogDataClass?: 'verified' | 'research' | 'mock_test';
+	catalogDisclosure?: string | null;
+	catalogCategories?: Array<{ id: number; name: string; slug: string }>;
+	catalogTags?: Array<{ slug: string; name: string }>;
+	manufacturers?: Array<{
+		name: string;
+		status: 'unverified' | 'verified' | 'retired';
+		websiteUrl: string | null;
+	}>;
+	contentAreas?: Array<{ slug: string; name: string }>;
+	facets?: Array<{ key: string; name: string; value: string }>;
+	guides?: Array<{
+		slug: string;
+		title: string;
+		type: 'guide' | 'faq' | 'recommended' | 'required' | 'mentioned';
 	}>;
 }
 
@@ -117,7 +136,9 @@ export interface ProductImage {
 export interface ProductFilter {
 	categoryId?: number;
 	categoryIds?: number[];
+	categorySlug?: string;
 	search?: string;
+	tag?: string;
 	featured?: boolean;
 	limit?: number;
 	offset?: number;
@@ -139,6 +160,171 @@ export interface CategoryParams {
 	description?: string;
 	parentId?: number;
 	sortOrder?: number;
+}
+
+type CatalogMetadata = Pick<
+	ProductWithImages,
+	| 'catalogDataClass'
+	| 'catalogDisclosure'
+	| 'catalogCategories'
+	| 'catalogTags'
+	| 'manufacturers'
+	| 'contentAreas'
+	| 'facets'
+	| 'guides'
+>;
+
+const emptyCatalogMetadata = (): CatalogMetadata => ({
+	catalogDataClass: 'research',
+	catalogDisclosure: 'Catalogue metadata is being reviewed.',
+	catalogCategories: [],
+	catalogTags: [],
+	manufacturers: [],
+	contentAreas: [],
+	facets: [],
+	guides: []
+});
+
+async function enrichCatalogMetadata(
+	products: Array<ProductWithImages>
+): Promise<Array<ProductWithImages>> {
+	if (!products.length) return products;
+	const productIds = products.map((product) => product.id);
+
+	try {
+		const [profiles, categories, tags, manufacturers, areas, facets, guides] = await Promise.all([
+			db
+				.select({
+					productId: table.productCatalogProfile.productId,
+					dataClass: table.productCatalogProfile.dataClass,
+					disclosure: table.productCatalogProfile.disclosure
+				})
+				.from(table.productCatalogProfile)
+				.where(inArray(table.productCatalogProfile.productId, productIds)),
+			db
+				.select({
+					productId: table.productCategoryAssignment.productId,
+					id: table.productCategory.id,
+					name: table.productCategory.name,
+					slug: table.productCategory.slug
+				})
+				.from(table.productCategoryAssignment)
+				.innerJoin(
+					table.productCategory,
+					eq(table.productCategoryAssignment.categoryId, table.productCategory.id)
+				)
+				.where(inArray(table.productCategoryAssignment.productId, productIds))
+				.orderBy(asc(table.productCategoryAssignment.sortOrder)),
+			db
+				.select({
+					productId: table.productTag.productId,
+					slug: table.catalogTag.slug,
+					name: table.catalogTag.name
+				})
+				.from(table.productTag)
+				.innerJoin(table.catalogTag, eq(table.productTag.tagId, table.catalogTag.id))
+				.where(inArray(table.productTag.productId, productIds))
+				.orderBy(asc(table.catalogTag.name)),
+			db
+				.select({
+					productId: table.productManufacturer.productId,
+					name: table.catalogManufacturer.name,
+					status: table.catalogManufacturer.verificationStatus,
+					websiteUrl: table.catalogManufacturer.websiteUrl
+				})
+				.from(table.productManufacturer)
+				.innerJoin(
+					table.catalogManufacturer,
+					eq(table.productManufacturer.manufacturerId, table.catalogManufacturer.id)
+				)
+				.where(inArray(table.productManufacturer.productId, productIds))
+				.orderBy(asc(table.productManufacturer.sortOrder)),
+			db
+				.select({
+					productId: table.productContentArea.productId,
+					slug: table.catalogContentArea.slug,
+					name: table.catalogContentArea.name
+				})
+				.from(table.productContentArea)
+				.innerJoin(
+					table.catalogContentArea,
+					eq(table.productContentArea.contentAreaId, table.catalogContentArea.id)
+				)
+				.where(inArray(table.productContentArea.productId, productIds))
+				.orderBy(asc(table.catalogContentArea.sortOrder)),
+			db
+				.select({
+					productId: table.productAttributeValue.productId,
+					key: table.catalogAttribute.slug,
+					name: table.catalogAttribute.name,
+					optionName: table.catalogAttributeOption.name,
+					textValue: table.productAttributeValue.textValue,
+					numberValue: table.productAttributeValue.numberValue,
+					booleanValue: table.productAttributeValue.booleanValue
+				})
+				.from(table.productAttributeValue)
+				.innerJoin(
+					table.catalogAttribute,
+					eq(table.productAttributeValue.attributeId, table.catalogAttribute.id)
+				)
+				.leftJoin(
+					table.catalogAttributeOption,
+					eq(table.productAttributeValue.optionId, table.catalogAttributeOption.id)
+				)
+				.where(inArray(table.productAttributeValue.productId, productIds))
+				.orderBy(asc(table.catalogAttribute.sortOrder)),
+			db
+				.select({
+					productId: table.productContentLink.productId,
+					slug: table.contentPage.slug,
+					title: table.contentPage.title,
+					relationship: table.productContentLink.relationship
+				})
+				.from(table.productContentLink)
+				.innerJoin(
+					table.contentPage,
+					eq(table.productContentLink.contentPageId, table.contentPage.id)
+				)
+				.where(inArray(table.productContentLink.productId, productIds))
+				.orderBy(asc(table.productContentLink.sortOrder))
+		]);
+
+		const byProduct = new Map<number, CatalogMetadata>();
+		for (const productId of productIds) byProduct.set(productId, emptyCatalogMetadata());
+		for (const profile of profiles) {
+			const metadata = byProduct.get(profile.productId);
+			if (metadata) {
+				metadata.catalogDataClass = profile.dataClass;
+				metadata.catalogDisclosure = profile.disclosure;
+			}
+		}
+		for (const row of categories) byProduct.get(row.productId)?.catalogCategories?.push(row);
+		for (const row of tags) byProduct.get(row.productId)?.catalogTags?.push(row);
+		for (const row of manufacturers) byProduct.get(row.productId)?.manufacturers?.push(row);
+		for (const row of areas) byProduct.get(row.productId)?.contentAreas?.push(row);
+		for (const row of facets) {
+			const value =
+				row.optionName ??
+				row.textValue ??
+				(row.numberValue == null ? null : String(row.numberValue)) ??
+				(row.booleanValue == null ? null : String(row.booleanValue));
+			if (value != null)
+				byProduct.get(row.productId)?.facets?.push({ key: row.key, name: row.name, value });
+		}
+		for (const row of guides)
+			byProduct
+				.get(row.productId)
+				?.guides?.push({ slug: row.slug, title: row.title, type: row.relationship });
+		return products.map((product) => ({ ...product, ...byProduct.get(product.id) }));
+	} catch (cause) {
+		const isMissingTable =
+			cause && typeof cause === 'object' && 'code' in cause && cause.code === '42P01';
+		const isLegacyMockDb = cause instanceof TypeError && /not a function/.test(cause.message);
+		if (isMissingTable || isLegacyMockDb) {
+			return products;
+		}
+		throw cause;
+	}
 }
 
 export class ProductService {
@@ -303,7 +489,7 @@ export class ProductService {
 			.where(eq(table.productImage.productId, productId))
 			.orderBy(asc(table.productImage.sortOrder));
 
-		return {
+		const hydrated: ProductWithImages = {
 			...product,
 			dimensions: product.dimensions ? JSON.parse(product.dimensions) : null,
 			tags: product.tags ? JSON.parse(product.tags) : null,
@@ -323,12 +509,15 @@ export class ProductService {
 								url,
 								altText: image.altText,
 								sortOrder: image.sortOrder,
-								isMain: image.isMain
+								isMain: image.isMain,
+								isMock: file?.bucketPath.startsWith('AI-MockAssets/')
 							}
 						]
 					: [];
 			})
 		};
+		const [enriched] = await enrichCatalogMetadata([hydrated]);
+		return enriched;
 	}
 
 	/**
@@ -629,7 +818,9 @@ export class ProductService {
 		const {
 			categoryId,
 			categoryIds,
+			categorySlug,
 			search,
+			tag,
 			featured,
 			limit = 20,
 			offset = 0,
@@ -640,7 +831,27 @@ export class ProductService {
 		// Build all conditions
 		const conditions = [eq(table.product.isActive, true), eq(table.productCategory.isActive, true)];
 
-		if (categoryIds && categoryIds.length > 0) {
+		if (categorySlug) {
+			const [category] = await db
+				.select({ id: table.productCategory.id })
+				.from(table.productCategory)
+				.where(eq(table.productCategory.slug, categorySlug))
+				.limit(1);
+			if (!category) return [];
+			try {
+				const matching = await db
+					.select({ productId: table.productCategoryAssignment.productId })
+					.from(table.productCategoryAssignment)
+					.where(eq(table.productCategoryAssignment.categoryId, category.id));
+				const matchingIds = matching.map((row) => row.productId);
+				if (!matchingIds.length) return [];
+				conditions.push(inArray(table.product.id, matchingIds));
+			} catch (cause) {
+				if (!(cause && typeof cause === 'object' && 'code' in cause && cause.code === '42P01'))
+					throw cause;
+				conditions.push(eq(table.product.categoryId, category.id));
+			}
+		} else if (categoryIds && categoryIds.length > 0) {
 			conditions.push(inArray(table.product.categoryId, categoryIds));
 		} else if (categoryId) {
 			conditions.push(eq(table.product.categoryId, categoryId));
@@ -648,6 +859,23 @@ export class ProductService {
 
 		if (search) {
 			conditions.push(ilike(table.product.name, `%${sanitizeLike(search)}%`));
+		}
+
+		if (tag) {
+			try {
+				const matching = await db
+					.select({ productId: table.productTag.productId })
+					.from(table.productTag)
+					.innerJoin(table.catalogTag, eq(table.productTag.tagId, table.catalogTag.id))
+					.where(eq(table.catalogTag.slug, tag));
+				const matchingIds = matching.map((row) => row.productId);
+				if (!matchingIds.length) return [];
+				conditions.push(inArray(table.product.id, matchingIds));
+			} catch (cause) {
+				if (!(cause && typeof cause === 'object' && 'code' in cause && cause.code === '42P01'))
+					throw cause;
+				conditions.push(ilike(table.product.tags, `%"${sanitizeLike(tag)}"%`));
+			}
 		}
 
 		if (featured !== undefined) {
@@ -686,23 +914,57 @@ export class ProductService {
 			.offset(offset);
 
 		// Attach image data to product
-		return rows.map(({ product, category, image, file }) => {
+		const mapped = rows.map(({ product, category, image, file }) => {
 			const url = publicProductImageUrl(file, product.id);
 			return {
-				product: {
-					...product,
-					images: url
-						? [
-								{
-									url,
-									altText: image?.altText || product.shortDescription
-								}
-							]
-						: []
-				},
-				category
+				...product,
+				category,
+				images: url
+					? [
+							{
+								url,
+								altText: image?.altText || product.shortDescription,
+								isMock: file?.bucketPath.startsWith('AI-MockAssets/')
+							}
+						]
+					: []
 			};
 		});
+		return enrichCatalogMetadata(mapped as ProductWithImages[]).then((products) =>
+			products.map((product) => ({ product, category: product.category }))
+		);
+	}
+
+	/** Return normalized, filterable product tags with a legacy JSON fallback. */
+	static async getTags(): Promise<Array<{ slug: string; name: string }>> {
+		try {
+			return await db
+				.select({ slug: table.catalogTag.slug, name: table.catalogTag.name })
+				.from(table.catalogTag)
+				.where(and(eq(table.catalogTag.isActive, true), eq(table.catalogTag.isFilterable, true)))
+				.orderBy(asc(table.catalogTag.name));
+		} catch (cause) {
+			if (!(cause && typeof cause === 'object' && 'code' in cause && cause.code === '42P01'))
+				throw cause;
+			const rows = await db.select({ tags: table.product.tags }).from(table.product);
+			const tags = new Map<string, { slug: string; name: string }>();
+			for (const row of rows) {
+				if (!row.tags) continue;
+				try {
+					for (const value of JSON.parse(row.tags) as unknown[]) {
+						if (typeof value !== 'string') continue;
+						const slug = value
+							.trim()
+							.toLowerCase()
+							.replace(/[^a-z0-9]+/g, '-');
+						if (slug) tags.set(slug, { slug, name: value.trim() });
+					}
+				} catch {
+					// Invalid legacy tags are surfaced by the enrichment preflight, not guessed here.
+				}
+			}
+			return [...tags.values()].sort((left, right) => left.name.localeCompare(right.name));
+		}
 	}
 
 	/**

@@ -33,7 +33,85 @@
 			<h1 class="font-display text-4xl leading-none font-bold tracking-tight uppercase md:text-6xl">
 				{data.product.name}
 			</h1>
-			<p class="text-lg leading-relaxed text-base-content/75">{data.product.description}</p>
+			<p class="text-lg leading-relaxed text-base-content/75">
+				{data.product.description ||
+					'A fuller product description will be added as catalogue content is reviewed.'}
+			</p>
+			{#if data.product.catalogDataClass === 'mock_test'}
+				<div class="border border-warning/60 bg-warning/10 p-4 text-sm" role="note">
+					<p class="font-semibold uppercase">Illustrative mock/test catalogue data</p>
+					<p class="mt-1 text-base-content/75">
+						{data.product.catalogDisclosure ||
+							'Supplier, manufacturer, media rights, and offer details are not verified.'}
+					</p>
+				</div>
+			{/if}
+
+			<section
+				class="grid gap-3 border-y border-base-300 py-5 sm:grid-cols-2"
+				aria-label="Product metadata"
+			>
+				<div>
+					<p class="text-xs font-bold tracking-wider text-base-content/60 uppercase">
+						Manufacturer
+					</p>
+					<p class="mt-1 font-semibold">
+						{data.product.manufacturers?.[0]?.name || 'Manufacturer details not supplied'}
+					</p>
+					{#if data.product.manufacturers?.[0]?.status !== 'verified'}
+						<p class="text-xs text-base-content/60">Verification status unavailable</p>
+					{/if}
+				</div>
+				<div>
+					<p class="text-xs font-bold tracking-wider text-base-content/60 uppercase">
+						Product type
+					</p>
+					<p class="mt-1 font-semibold">
+						{data.product.facets?.find((facet) => facet.key === 'product-kind')?.value ||
+							'Product type not supplied'}
+					</p>
+				</div>
+				<div>
+					<p class="text-xs font-bold tracking-wider text-base-content/60 uppercase">
+						Growing system
+					</p>
+					<p class="mt-1 font-semibold">
+						{data.product.facets?.find((facet) => facet.key === 'growing-system')?.value ||
+							'Growing system not specified'}
+					</p>
+				</div>
+				<div>
+					<p class="text-xs font-bold tracking-wider text-base-content/60 uppercase">SKU</p>
+					<p class="mt-1 font-mono text-sm">{data.product.sku || 'SKU not supplied'}</p>
+				</div>
+			</section>
+
+			<div class="space-y-4">
+				<div>
+					<p class="text-xs font-bold tracking-wider text-base-content/60 uppercase">Categories</p>
+					<div class="mt-2 flex flex-wrap gap-2">
+						{#each data.product.categories?.length ? data.product.categories : [data.product.category] as category}
+							<a class="badge badge-outline" href="/products/{category.slug}">{category.name}</a>
+						{:else}
+							<span class="text-sm text-base-content/60">Category details not supplied</span>
+						{/each}
+					</div>
+				</div>
+				<div>
+					<p class="text-xs font-bold tracking-wider text-base-content/60 uppercase">Tags</p>
+					<div class="mt-2 flex flex-wrap gap-2">
+						{#if data.product.tags?.length}
+							{#each data.product.tags as tag}
+								<a class="badge badge-ghost" href="/products?tag={tag.slug}">{tag.name}</a>
+							{/each}
+						{:else}
+							<span class="text-sm text-base-content/60"
+								>Tags will appear as the catalogue is enriched.</span
+							>
+						{/if}
+					</div>
+				</div>
+			</div>
 			{#if form?.message}
 				<p class="border border-error bg-base-100 p-4 text-sm text-error" role="alert">
 					{form.message}
@@ -78,6 +156,57 @@
 			{/if}
 		</section>
 	</div>
+
+	<section class="mt-14 grid gap-8 border-t border-base-300 pt-10 lg:grid-cols-[1fr_1fr]">
+		<div>
+			<h2 class="font-display text-2xl font-bold uppercase">Growing context</h2>
+			<div class="mt-4 flex flex-wrap gap-2">
+				{#if data.product.contentAreas?.length}
+					{#each data.product.contentAreas as area}<span class="badge badge-primary"
+							>{area.name}</span
+						>{/each}
+				{:else}
+					<p class="text-sm text-base-content/65">
+						Content areas will be added as editorial relationships are reviewed.
+					</p>
+				{/if}
+			</div>
+			{#if data.product.facets?.length}
+				<dl class="mt-5 space-y-2 text-sm">
+					{#each data.product.facets as facet}
+						<div class="flex justify-between gap-4 border-b border-base-300 py-2">
+							<dt class="text-base-content/65">{facet.name}</dt>
+							<dd class="font-semibold">{facet.value}</dd>
+						</div>
+					{/each}
+				</dl>
+			{/if}
+		</div>
+		<div>
+			<h2 class="font-display text-2xl font-bold uppercase">Guides & related content</h2>
+			<div class="mt-4 space-y-3">
+				{#if data.product.guides?.length}
+					{#each data.product.guides as guide}
+						<a
+							class="block border border-base-300 p-4 transition-colors hover:border-primary"
+							href="/guides/{guide.slug}"
+						>
+							<span class="text-xs font-bold tracking-wider text-base-content/60 uppercase"
+								>{guide.type}</span
+							>
+							<span class="mt-1 block font-semibold">{guide.title}</span>
+						</a>
+					{/each}
+				{:else}
+					<p class="border border-dashed border-base-300 p-4 text-sm text-base-content/65">
+						No related guides are linked yet. Browse the <a class="link" href="/guides"
+							>growing guides</a
+						> while this content area is being reviewed.
+					</p>
+				{/if}
+			</div>
+		</div>
+	</section>
 
 	{#if data.relatedProducts.length}
 		<section class="mt-16">

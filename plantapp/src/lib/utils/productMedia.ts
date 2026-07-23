@@ -1,9 +1,10 @@
 export interface PublicProductImage {
 	url: string;
 	altText: string | null;
+	isMock?: boolean;
 }
 
-/** Remove legacy source-tree and mock media from public product DTOs. */
+/** Keep media provenance visible while allowing the catalogue to restore labeled imagery. */
 export function getPublicProductImages(
 	images: unknown,
 	fallbackAltText: string | null | undefined
@@ -15,8 +16,14 @@ export function getPublicProductImages(
 
 		const { url, altText } = image as { url?: unknown; altText?: unknown };
 		if (typeof url !== 'string' || !url.trim()) return [];
-		if (url.includes('AI-MockAssets') || url.startsWith('/src/')) return [];
+		if (url.startsWith('/src/')) return [];
 
-		return [{ url, altText: typeof altText === 'string' ? altText : (fallbackAltText ?? null) }];
+		return [
+			{
+				url,
+				altText: typeof altText === 'string' ? altText : (fallbackAltText ?? null),
+				isMock: url.includes('AI-MockAssets')
+			}
+		];
 	});
 }

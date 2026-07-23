@@ -13,12 +13,19 @@ describe('getPublicProductImages', () => {
 				],
 				'Fallback description'
 			)
-		).toEqual([{ url: 'https://images.example.com/trowel.webp', altText: 'Garden trowel' }]);
+		).toEqual([
+			{ url: 'https://images.example.com/trowel.webp', altText: 'Garden trowel', isMock: false },
+			{
+				url: '/api/files/serve?path=AI-MockAssets%2FMAINHERO.png',
+				altText: 'Fallback description',
+				isMock: true
+			}
+		]);
 	});
 
 	it('uses the product description as alt text only for an approved image URL', () => {
 		expect(getPublicProductImages([{ url: '/media/trowel.webp' }], 'Hand-forged trowel')).toEqual([
-			{ url: '/media/trowel.webp', altText: 'Hand-forged trowel' }
+			{ url: '/media/trowel.webp', altText: 'Hand-forged trowel', isMock: false }
 		]);
 	});
 });

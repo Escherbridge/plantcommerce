@@ -7,6 +7,7 @@ import { CartService } from '$lib/server/services/cart';
 vi.mock('$lib/server/services/product', () => ({
 	ProductService: {
 		getCategories: vi.fn(),
+		getTags: vi.fn(),
 		getProducts: vi.fn(),
 		getProductBySlug: vi.fn()
 	}
@@ -42,7 +43,7 @@ function product(overrides: Record<string, unknown> = {}) {
 			description: 'Water-based systems'
 		},
 		images: [
-			{ url: '/api/files/serve?path=AI-MockAssets%2Fpump.png', altText: 'Mock pump' },
+			{ url: '/api/files/serve?path=AI-MockAssets%2Fpump.png', altText: 'Mock pump', isMock: true },
 			{ url: '/media/pump.webp', altText: 'Circulation pump' }
 		],
 		...overrides
@@ -76,7 +77,14 @@ describe('database commerce adapter', () => {
 		expect(mapped.category.slug).toBe('aquaponics');
 		expect(mapped.availableQuantity).toBe(3);
 		expect(mapped.inStock).toBe(true);
-		expect(mapped.images).toEqual([{ url: '/media/pump.webp', altText: 'Circulation pump' }]);
+		expect(mapped.images).toEqual([
+			{
+				url: '/api/files/serve?path=AI-MockAssets%2Fpump.png',
+				altText: 'Mock pump',
+				isMock: true
+			},
+			{ url: '/media/pump.webp', altText: 'Circulation pump', isMock: false }
+		]);
 	});
 
 	it('exposes disabled secure checkout before rendering a payment action', async () => {

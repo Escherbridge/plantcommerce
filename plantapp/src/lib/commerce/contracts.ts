@@ -22,9 +22,40 @@ export interface CommerceCategory {
 	parentSlug: string | null;
 }
 
+export interface CommerceTag {
+	slug: string;
+	name: string;
+}
+
+export interface CommerceManufacturer {
+	name: string;
+	status: 'unverified' | 'verified' | 'retired';
+	websiteUrl?: string | null;
+}
+
+export interface CommerceContentArea {
+	slug: string;
+	name: string;
+}
+
+export interface CommerceFacet {
+	key: string;
+	name: string;
+	value: string;
+}
+
+export interface CommerceGuide {
+	slug: string;
+	title: string;
+	type: 'guide' | 'faq' | 'recommended' | 'required' | 'mentioned';
+}
+
 export interface CommerceProductImage {
 	url: string;
 	altText: string;
+	isMock?: boolean;
+	caption?: string | null;
+	role?: 'primary' | 'gallery' | 'diagram' | 'manual';
 }
 
 export interface CommerceProduct {
@@ -42,6 +73,14 @@ export interface CommerceProduct {
 	featured: boolean;
 	images: CommerceProductImage[];
 	dataClass: CommerceDataClass;
+	catalogDataClass?: 'verified' | 'research' | 'mock_test';
+	catalogDisclosure?: string | null;
+	categories?: CommerceCategory[];
+	tags?: CommerceTag[];
+	manufacturers?: CommerceManufacturer[];
+	contentAreas?: CommerceContentArea[];
+	facets?: CommerceFacet[];
+	guides?: CommerceGuide[];
 }
 
 export interface ProductSearchInput {
@@ -49,6 +88,7 @@ export interface ProductSearchInput {
 	categorySlug?: string;
 	categoryIds?: number[];
 	featured?: boolean;
+	tag?: string;
 	limit?: number;
 	offset?: number;
 	sortBy?: 'name' | 'price' | 'created';

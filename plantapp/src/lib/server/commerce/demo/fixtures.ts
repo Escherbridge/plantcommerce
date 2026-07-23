@@ -2,6 +2,7 @@ import {
 	DEMO_COMMERCE_CONTEXT,
 	money,
 	type CommerceCategory,
+	type CommerceTag,
 	type CommerceProduct,
 	type ProductSearchInput
 } from '$lib/commerce/contracts';
@@ -58,10 +59,19 @@ export const demoProducts: readonly CommerceProduct[] = launchCatalogCandidates.
 			inStock: true,
 			featured: index % 6 === 0,
 			images: [],
-			dataClass: DEMO_COMMERCE_CONTEXT.dataClass
+			dataClass: DEMO_COMMERCE_CONTEXT.dataClass,
+			catalogDataClass: 'mock_test',
+			catalogDisclosure: 'Mock/test catalogue data. Not an offer or verified supplier listing.',
+			tags: candidate.tags.map((tag) => ({ slug: tag.toLowerCase(), name: tag }))
 		};
 	}
 );
+
+export const demoTags: readonly CommerceTag[] = Array.from(
+	new Map(
+		demoProducts.flatMap((product) => product.tags ?? []).map((tag) => [tag.slug, tag])
+	).values()
+).sort((left, right) => left.name.localeCompare(right.name));
 
 const productById = new Map(demoProducts.map((product) => [product.id, product]));
 
@@ -85,6 +95,7 @@ export function searchDemoProducts(input: ProductSearchInput): CommerceProduct[]
 	let products = demoProducts.filter((product) => {
 		if (input.categorySlug && product.category.slug !== input.categorySlug) return false;
 		if (input.categoryIds?.length) return false;
+		if (input.tag && !product.tags?.some((tag) => tag.slug === input.tag)) return false;
 		if (input.featured !== undefined && product.featured !== input.featured) return false;
 		if (!query) return true;
 		return [

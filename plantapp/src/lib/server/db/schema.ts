@@ -12,6 +12,7 @@ import {
 	jsonb,
 	index,
 	uniqueIndex,
+	primaryKey,
 	check,
 	foreignKey,
 	type AnyPgColumn
@@ -247,6 +248,228 @@ export const productImage = pgTable('product_image', {
 	isMain: boolean('is_main').notNull().default(false),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 });
+
+/** Compatibility profile for catalogue provenance and flexible reviewed metadata. */
+export const productCatalogProfile = pgTable('product_catalog_profile', {
+	productId: integer('product_id')
+		.primaryKey()
+		.references(() => product.id, { onDelete: 'cascade' }),
+	dataClass: text('data_class', { enum: ['verified', 'research', 'mock_test'] })
+		.notNull()
+		.default('research'),
+	disclosure: text('disclosure'),
+	metadata: jsonb('metadata').notNull().default({}),
+	lastReviewedAt: timestamp('last_reviewed_at', { withTimezone: true, mode: 'date' }),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+});
+
+/** Additive many-to-many category assignments; product.categoryId remains the primary alias. */
+export const productCategoryAssignment = pgTable(
+	'product_category_assignment',
+	{
+		productId: integer('product_id')
+			.notNull()
+			.references(() => product.id, { onDelete: 'cascade' }),
+		categoryId: integer('category_id')
+			.notNull()
+			.references(() => productCategory.id, { onDelete: 'restrict' }),
+		isPrimary: boolean('is_primary').notNull().default(false),
+		sortOrder: integer('sort_order').notNull().default(0),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		pk: primaryKey({ columns: [table.productId, table.categoryId] }),
+		categoryIdx: index('product_category_assignment_category_idx').on(
+			table.categoryId,
+			table.productId
+		),
+		primaryIdx: uniqueIndex('product_category_assignment_primary_idx')
+			.on(table.productId)
+			.where(sql`${table.isPrimary}`)
+	})
+);
+
+export const catalogTag = pgTable(
+	'catalog_tag',
+	{
+		id: serial('id').primaryKey(),
+		slug: text('slug').notNull().unique(),
+		name: text('name').notNull(),
+		description: text('description'),
+		isFilterable: boolean('is_filterable').notNull().default(true),
+		isActive: boolean('is_active').notNull().default(true),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({ activeIdx: index('catalog_tag_active_idx').on(table.isActive, table.name) })
+);
+
+export const productTag = pgTable(
+	'product_tag',
+	{
+		productId: integer('product_id')
+			.notNull()
+			.references(() => product.id, { onDelete: 'cascade' }),
+		tagId: integer('tag_id')
+			.notNull()
+			.references(() => catalogTag.id, { onDelete: 'restrict' }),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		pk: primaryKey({ columns: [table.productId, table.tagId] }),
+		tagIdx: index('product_tag_tag_idx').on(table.tagId, table.productId)
+	})
+);
+
+export const catalogManufacturer = pgTable(
+	'catalog_manufacturer',
+	{
+		id: serial('id').primaryKey(),
+		slug: text('slug').notNull().unique(),
+		name: text('name').notNull(),
+		description: text('description'),
+		websiteUrl: text('website_url'),
+		verificationStatus: text('verification_status', {
+			enum: ['unverified', 'verified', 'retired']
+		})
+			.notNull()
+			.default('unverified'),
+		metadata: jsonb('metadata').notNull().default({}),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({ statusIdx: index('catalog_manufacturer_status_idx').on(table.verificationStatus) })
+);
+
+export const productManufacturer = pgTable(
+	'product_manufacturer',
+	{
+		productId: integer('product_id')
+			.notNull()
+			.references(() => product.id, { onDelete: 'cascade' }),
+		manufacturerId: integer('manufacturer_id')
+			.notNull()
+			.references(() => catalogManufacturer.id, { onDelete: 'restrict' }),
+		relationship: text('relationship', { enum: ['manufacturer', 'brand', 'designer'] })
+			.notNull()
+			.default('manufacturer'),
+		isPrimary: boolean('is_primary').notNull().default(false),
+		sortOrder: integer('sort_order').notNull().default(0),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		pk: primaryKey({ columns: [table.productId, table.manufacturerId, table.relationship] }),
+		manufacturerIdx: index('product_manufacturer_manufacturer_idx').on(
+			table.manufacturerId,
+			table.productId
+		),
+		primaryIdx: uniqueIndex('product_manufacturer_primary_idx')
+			.on(table.productId)
+			.where(sql`${table.isPrimary}`)
+	})
+);
+
+export const catalogContentArea = pgTable(
+	'catalog_content_area',
+	{
+		id: serial('id').primaryKey(),
+		slug: text('slug').notNull().unique(),
+		name: text('name').notNull(),
+		description: text('description'),
+		sortOrder: integer('sort_order').notNull().default(0),
+		isActive: boolean('is_active').notNull().default(true),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		activeIdx: index('catalog_content_area_active_idx').on(table.isActive, table.sortOrder)
+	})
+);
+
+export const productContentArea = pgTable(
+	'product_content_area',
+	{
+		productId: integer('product_id')
+			.notNull()
+			.references(() => product.id, { onDelete: 'cascade' }),
+		contentAreaId: integer('content_area_id')
+			.notNull()
+			.references(() => catalogContentArea.id, { onDelete: 'restrict' }),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		pk: primaryKey({ columns: [table.productId, table.contentAreaId] }),
+		areaIdx: index('product_content_area_area_idx').on(table.contentAreaId, table.productId)
+	})
+);
+
+export const catalogAttribute = pgTable(
+	'catalog_attribute',
+	{
+		id: serial('id').primaryKey(),
+		slug: text('slug').notNull().unique(),
+		name: text('name').notNull(),
+		description: text('description'),
+		valueType: text('value_type', { enum: ['option', 'text', 'number', 'boolean'] }).notNull(),
+		unit: text('unit'),
+		isFilterable: boolean('is_filterable').notNull().default(true),
+		sortOrder: integer('sort_order').notNull().default(0),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		filterIdx: index('catalog_attribute_filter_idx').on(table.isFilterable, table.sortOrder)
+	})
+);
+
+export const catalogAttributeOption = pgTable(
+	'catalog_attribute_option',
+	{
+		id: serial('id').primaryKey(),
+		attributeId: integer('attribute_id')
+			.notNull()
+			.references(() => catalogAttribute.id, { onDelete: 'cascade' }),
+		slug: text('slug').notNull(),
+		name: text('name').notNull(),
+		sortOrder: integer('sort_order').notNull().default(0)
+	},
+	(table) => ({
+		slugIdx: uniqueIndex('catalog_attribute_option_slug_idx').on(table.attributeId, table.slug)
+	})
+);
+
+export const productAttributeValue = pgTable(
+	'product_attribute_value',
+	{
+		productId: integer('product_id')
+			.notNull()
+			.references(() => product.id, { onDelete: 'cascade' }),
+		attributeId: integer('attribute_id')
+			.notNull()
+			.references(() => catalogAttribute.id, { onDelete: 'restrict' }),
+		optionId: integer('option_id').references(() => catalogAttributeOption.id, {
+			onDelete: 'restrict'
+		}),
+		textValue: text('text_value'),
+		numberValue: decimal('number_value', { precision: 14, scale: 4 }),
+		booleanValue: boolean('boolean_value'),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		pk: primaryKey({ columns: [table.productId, table.attributeId] }),
+		attributeIdx: index('product_attribute_value_attribute_idx').on(
+			table.attributeId,
+			table.optionId,
+			table.productId
+		),
+		exactlyOneValue: check(
+			'product_attribute_value_exactly_one_check',
+			sql`num_nonnulls(${table.optionId}, ${table.textValue}, ${table.numberValue}, ${table.booleanValue}) = 1`
+		)
+	})
+);
 
 // ======= AFFILIATE SYSTEM =======
 export const affiliate = pgTable(
@@ -1273,6 +1496,146 @@ export const contentPage = pgTable(
 	})
 );
 
+export const contentTag = pgTable(
+	'content_tag',
+	{
+		contentPageId: integer('content_page_id')
+			.notNull()
+			.references(() => contentPage.id, { onDelete: 'cascade' }),
+		tagId: integer('tag_id')
+			.notNull()
+			.references(() => catalogTag.id, { onDelete: 'restrict' }),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		pk: primaryKey({ columns: [table.contentPageId, table.tagId] }),
+		tagIdx: index('content_tag_tag_idx').on(table.tagId, table.contentPageId)
+	})
+);
+
+export const contentPageArea = pgTable(
+	'content_page_area',
+	{
+		contentPageId: integer('content_page_id')
+			.notNull()
+			.references(() => contentPage.id, { onDelete: 'cascade' }),
+		contentAreaId: integer('content_area_id')
+			.notNull()
+			.references(() => catalogContentArea.id, { onDelete: 'restrict' }),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		pk: primaryKey({ columns: [table.contentPageId, table.contentAreaId] }),
+		areaIdx: index('content_page_area_area_idx').on(table.contentAreaId, table.contentPageId)
+	})
+);
+
+export const productContentLink = pgTable(
+	'product_content_link',
+	{
+		productId: integer('product_id')
+			.notNull()
+			.references(() => product.id, { onDelete: 'cascade' }),
+		contentPageId: integer('content_page_id')
+			.notNull()
+			.references(() => contentPage.id, { onDelete: 'cascade' }),
+		relationship: text('relationship', {
+			enum: ['guide', 'faq', 'recommended', 'required', 'mentioned']
+		}).notNull(),
+		sortOrder: integer('sort_order').notNull().default(0),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		pk: primaryKey({ columns: [table.productId, table.contentPageId, table.relationship] }),
+		contentIdx: index('product_content_link_content_idx').on(table.contentPageId, table.productId)
+	})
+);
+
+export const catalogMediaAsset = pgTable(
+	'catalog_media_asset',
+	{
+		id: serial('id').primaryKey(),
+		fileId: text('file_id')
+			.notNull()
+			.unique()
+			.references(() => file.id, { onDelete: 'restrict' }),
+		kind: text('kind', { enum: ['image', 'diagram', 'document', 'video'] })
+			.notNull()
+			.default('image'),
+		dataClass: text('data_class', { enum: ['verified', 'research', 'mock_test'] })
+			.notNull()
+			.default('research'),
+		rightsStatus: text('rights_status', {
+			enum: ['unverified', 'approved', 'restricted', 'expired']
+		})
+			.notNull()
+			.default('unverified'),
+		provenanceNote: text('provenance_note'),
+		verifiedAt: timestamp('verified_at', { withTimezone: true, mode: 'date' }),
+		metadata: jsonb('metadata').notNull().default({}),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		publicationIdx: index('catalog_media_asset_publication_idx').on(
+			table.dataClass,
+			table.rightsStatus
+		)
+	})
+);
+
+export const productMediaAssignment = pgTable(
+	'product_media_assignment',
+	{
+		productId: integer('product_id')
+			.notNull()
+			.references(() => product.id, { onDelete: 'cascade' }),
+		mediaAssetId: integer('media_asset_id')
+			.notNull()
+			.references(() => catalogMediaAsset.id, { onDelete: 'restrict' }),
+		role: text('role', { enum: ['primary', 'gallery', 'diagram', 'manual'] }).notNull(),
+		altText: text('alt_text'),
+		caption: text('caption'),
+		sortOrder: integer('sort_order').notNull().default(0),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		pk: primaryKey({ columns: [table.productId, table.mediaAssetId, table.role] }),
+		primaryIdx: uniqueIndex('product_media_assignment_primary_idx')
+			.on(table.productId)
+			.where(sql`${table.role} = 'primary'`),
+		mediaIdx: index('product_media_assignment_media_idx').on(table.mediaAssetId, table.productId)
+	})
+);
+
+export const catalogEnrichmentRun = pgTable(
+	'catalog_enrichment_run',
+	{
+		runId: text('run_id').primaryKey(),
+		action: text('action', { enum: ['apply'] }).notNull(),
+		status: text('status', { enum: ['running', 'applied', 'failed'] }).notNull(),
+		releaseId: text('release_id').notNull(),
+		sourceCommit: text('source_commit').notNull(),
+		migrationHash: text('migration_hash').notNull(),
+		seedHash: text('seed_hash').notNull(),
+		backupEvidence: text('backup_evidence').notNull(),
+		summary: jsonb('summary').notNull(),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+		completedAt: timestamp('completed_at', { withTimezone: true, mode: 'date' })
+	},
+	(table) => ({
+		createdIdx: index('catalog_enrichment_run_created_idx').on(table.createdAt),
+		migrationHashFormat: check(
+			'catalog_enrichment_run_migration_hash_check',
+			sql`${table.migrationHash} ~ '^[0-9a-f]{64}$'`
+		),
+		seedHashFormat: check(
+			'catalog_enrichment_run_seed_hash_check',
+			sql`${table.seedHash} ~ '^[0-9a-f]{64}$'`
+		)
+	})
+);
+
 // ======= AUDIT LOG =======
 export const auditLog = pgTable('audit_log', {
 	id: serial('id').primaryKey(),
@@ -1399,6 +1762,17 @@ export const productRelations = relations(product, ({ one, many }) => ({
 		fields: [product.categoryId],
 		references: [productCategory.id]
 	}),
+	catalogProfile: one(productCatalogProfile, {
+		fields: [product.id],
+		references: [productCatalogProfile.productId]
+	}),
+	categoryAssignments: many(productCategoryAssignment),
+	tagAssignments: many(productTag),
+	manufacturerAssignments: many(productManufacturer),
+	contentAreaAssignments: many(productContentArea),
+	attributeValues: many(productAttributeValue),
+	contentLinks: many(productContentLink),
+	mediaAssignments: many(productMediaAssignment),
 	images: many(productImage),
 	affiliateLinks: many(affiliateLink),
 	cartItems: many(cartItem),
@@ -1423,7 +1797,8 @@ export const productCategoryRelations = relations(productCategory, ({ one, many 
 		references: [productCategory.id]
 	}),
 	children: many(productCategory),
-	products: many(product)
+	products: many(product),
+	productAssignments: many(productCategoryAssignment)
 }));
 
 export const orderRelations = relations(order, ({ one, many }) => ({
@@ -1488,7 +1863,7 @@ export const fileRelations = relations(file, ({ one }) => ({
 	})
 }));
 
-export const contentPageRelations = relations(contentPage, ({ one }) => ({
+export const contentPageRelations = relations(contentPage, ({ one, many }) => ({
 	author: one(user, {
 		fields: [contentPage.authorId],
 		references: [user.id]
@@ -1497,7 +1872,10 @@ export const contentPageRelations = relations(contentPage, ({ one }) => ({
 		fields: [contentPage.featuredImageFileId],
 		references: [file.id],
 		relationName: 'content_page_featured_image'
-	})
+	}),
+	tagAssignments: many(contentTag),
+	areaAssignments: many(contentPageArea),
+	productLinks: many(productContentLink)
 }));
 
 // ======= CMS SEO FIELDS =======
@@ -1557,6 +1935,13 @@ export type Session = typeof session.$inferSelect;
 export type User = typeof user.$inferSelect;
 export type Product = typeof product.$inferSelect;
 export type ProductCategory = typeof productCategory.$inferSelect;
+export type ProductCatalogProfile = typeof productCatalogProfile.$inferSelect;
+export type ProductCategoryAssignment = typeof productCategoryAssignment.$inferSelect;
+export type CatalogTag = typeof catalogTag.$inferSelect;
+export type CatalogManufacturer = typeof catalogManufacturer.$inferSelect;
+export type CatalogContentArea = typeof catalogContentArea.$inferSelect;
+export type CatalogAttribute = typeof catalogAttribute.$inferSelect;
+export type CatalogMediaAsset = typeof catalogMediaAsset.$inferSelect;
 export type CatalogSeedCategory = typeof catalogSeedCategory.$inferSelect;
 export type CatalogSeedCollection = typeof catalogSeedCollection.$inferSelect;
 export type CatalogSeedItem = typeof catalogSeedItem.$inferSelect;

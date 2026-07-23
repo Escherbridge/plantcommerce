@@ -1,5 +1,10 @@
 <script lang="ts">
-	import type { CommerceCategory, CommerceContext, CommerceProduct } from '$lib/commerce/contracts';
+	import type {
+		CommerceCategory,
+		CommerceContext,
+		CommerceProduct,
+		CommerceTag
+	} from '$lib/commerce/contracts';
 	import { formatMoney } from '$lib/commerce/contracts';
 	import MockCommerceNotice from './MockCommerceNotice.svelte';
 	import ProductVisual from './ProductVisual.svelte';
@@ -8,15 +13,19 @@
 		context,
 		products,
 		categories,
+		tags = [],
 		search = '',
 		selectedCategory = '',
+		selectedTag = '',
 		sort = 'created-desc'
 	}: {
 		context: CommerceContext;
 		products: CommerceProduct[];
 		categories: CommerceCategory[];
+		tags?: CommerceTag[];
 		search?: string;
 		selectedCategory?: string;
+		selectedTag?: string;
 		sort?: string;
 	} = $props();
 </script>
@@ -41,7 +50,7 @@
 	<form
 		action="/products"
 		method="GET"
-		class="mt-10 grid gap-3 md:grid-cols-[1fr_15rem_13rem_auto]"
+		class="mt-10 grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(11rem,15rem)_minmax(11rem,15rem)_minmax(11rem,15rem)_auto]"
 	>
 		<label class="form-control">
 			<span class="label-text mb-1 font-semibold">Search</span>
@@ -58,6 +67,15 @@
 				<option value="">All categories</option>
 				{#each categories as category}
 					<option value={category.slug}>{category.name}</option>
+				{/each}
+			</select>
+		</label>
+		<label class="form-control">
+			<span class="label-text mb-1 font-semibold">Tag</span>
+			<select class="select-bordered select w-full" name="tag" value={selectedTag}>
+				<option value="">All tags</option>
+				{#each tags as tag}
+					<option value={tag.slug}>{tag.name}</option>
 				{/each}
 			</select>
 		</label>
@@ -106,12 +124,25 @@
 					<p class="text-xs font-bold tracking-wider text-base-content/75 uppercase">
 						{product.category.name}
 					</p>
+					{#if product.catalogDataClass === 'mock_test'}
+						<p class="text-xs font-semibold tracking-wide text-warning uppercase">
+							Illustrative mock/test catalogue data
+						</p>
+					{/if}
 					<h2 class="font-display text-xl leading-tight font-bold uppercase">
 						<a href="/products/{product.category.slug}/{product.slug}">{product.name}</a>
 					</h2>
 					<p class="line-clamp-3 flex-1 text-sm leading-relaxed text-base-content/70">
-						{product.shortDescription}
+						{product.shortDescription ||
+							'Product summary will be added as catalogue content is reviewed.'}
 					</p>
+					{#if product.tags?.length}
+						<div class="flex flex-wrap gap-1.5" aria-label="Product tags">
+							{#each product.tags.slice(0, 3) as tag}
+								<a class="badge badge-outline" href="/products?tag={tag.slug}">{tag.name}</a>
+							{/each}
+						</div>
+					{/if}
 					<div class="flex items-end justify-between gap-3 border-t border-base-300 pt-4">
 						<p>
 							{#if context.isMock}<span class="block text-xs font-bold uppercase">Test price</span

@@ -23,13 +23,19 @@ operational and media evidence passes review.
   source-tree or mock-media URL on a public surface.
 - Bucket-backed images with rights source, alt text, verification time, exactly
   one primary image, and no public shoppability without verified primary media.
+- A normalized enrichment layer for secondary categories (including Hydroponics,
+  Aquaponics, and Seeds & Propagation), tags, typed facets, content areas,
+  guide relationships, manufacturer identities, and explicit mock/test media
+  provenance. Missing metadata must render as a truthful placeholder.
 
 ## Release boundary
 
 Production apply is a manually invoked Railway worker from the reviewed release
-commit after a read-only preflight and an exact manifest/release confirmation.
-It is never a web-service startup or predeploy action. The existing
-`db:seed:uat` fixture remains disposable-environment-only.
+commit after a read-only preflight, scoped logical backup, and exact
+artifact/release/target confirmation. It is never a web-service startup or
+predeploy action. The existing `db:seed:uat` fixture remains
+disposable-environment-only; bundled AI-MockAssets remain visibly labeled and
+rights-unverified.
 
 ## Verification
 

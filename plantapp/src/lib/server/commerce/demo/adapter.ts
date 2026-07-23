@@ -1,6 +1,6 @@
 import { DEMO_COMMERCE_CONTEXT } from '$lib/commerce/contracts';
 import type { CommerceAdapter } from '../adapter';
-import { demoCategories, getDemoProductByRoute, searchDemoProducts } from './fixtures';
+import { demoCategories, demoTags, getDemoProductByRoute, searchDemoProducts } from './fixtures';
 import {
 	addDemoCartItem,
 	clearDemoCart,
@@ -15,6 +15,9 @@ export const demoCommerceAdapter: CommerceAdapter = {
 	context: DEMO_COMMERCE_CONTEXT,
 	async getCategories() {
 		return [...demoCategories];
+	},
+	async getTags() {
+		return [...demoTags];
 	},
 	async getProducts(input) {
 		return searchDemoProducts(input);

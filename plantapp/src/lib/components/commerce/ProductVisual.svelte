@@ -18,11 +18,20 @@
 </script>
 
 {#if product.images[0]}
-	<img
-		class="h-full w-full object-cover"
-		src={product.images[0].url}
-		alt={product.images[0].altText}
-	/>
+	<div class="relative h-full w-full">
+		<img
+			class="h-full w-full object-cover"
+			src={product.images[0].url}
+			alt={product.images[0].altText || `${product.name} catalogue image`}
+		/>
+		{#if product.images[0].isMock || product.catalogDataClass === 'mock_test'}
+			<span
+				class="absolute bottom-3 left-3 rounded-sm bg-base-100/95 px-2 py-1 font-mono text-[0.65rem] font-bold tracking-wide text-base-content uppercase shadow-sm"
+			>
+				Illustrative mock image
+			</span>
+		{/if}
+	</div>
 {:else}
 	<div
 		class="flex h-full w-full flex-col items-center justify-center gap-3 bg-base-200 p-5 text-center text-base-content/75"

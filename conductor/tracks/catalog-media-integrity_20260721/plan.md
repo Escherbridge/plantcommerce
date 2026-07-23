@@ -16,3 +16,6 @@ created: 2026-07-21
 4. Execute a read-only production preflight and catalog plan from the exact
    release commit; apply only with explicit release/hash confirmation.
 5. Verify the applied state, then separately evaluate the public catalog gate.
+6. Keep the legacy category/tags columns as compatibility aliases while the
+   storefront reads normalized assignments, facets, guides, and media
+   provenance with explicit fallbacks for missing values.
