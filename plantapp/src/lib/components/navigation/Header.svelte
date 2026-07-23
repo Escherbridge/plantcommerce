@@ -4,6 +4,7 @@
 	import { browser } from '$app/environment';
 	import { cart } from '$lib/stores/cart';
 	import { tick } from 'svelte';
+	import LeafMark from '$lib/components/ui/LeafMark.svelte';
 
 	interface Props {
 		drawerOpen?: boolean;
@@ -68,25 +69,12 @@
 		}
 	}
 
-	// Navigation structure
+	// Primary navigation (Aevani IA)
 	const mainNavigation = [
-		{
-			label: 'Catalog',
-			href: '/products',
-			children: [{ label: 'Catalog Status', href: '/products' }]
-		},
-		{
-			label: 'Learn',
-			href: '/learn',
-			children: [
-				{ label: 'Guides', href: '/guides' },
-				{ label: 'Blog', href: '/blog' },
-				{ label: 'FAQs', href: '/faq' },
-				{ label: 'Resources', href: '/resources' }
-			]
-		},
-		{ label: 'Affiliate Status', href: '/affiliate/terms' },
-		{ label: 'Support', href: '/support' }
+		{ label: 'Shop', href: '/products' },
+		{ label: 'Learn', href: '/learn' },
+		{ label: 'Growing systems', href: '/products' },
+		{ label: 'About', href: '/about' }
 	];
 
 	const userNavigation = $derived.by(() => {
@@ -149,139 +137,137 @@
 
 <svelte:window onkeydown={handleUserMenuKeydown} />
 
-<header class="editorial-header" class:scrolled>
-	<div class="header-container">
-		<!-- Mobile hamburger -->
-		<button
-			type="button"
-			class="hamburger"
-			aria-label="Open menu"
-			aria-expanded={drawerOpen}
-			aria-controls="mobile-navigation-drawer"
-			onclick={(event) => onOpenDrawer(event.currentTarget)}
-		>
-			<span class="bar bar-1"></span>
-			<span class="bar bar-2"></span>
-			<span class="bar bar-3"></span>
-		</button>
-
-		<!-- Wordmark -->
-		<a href="/" class="wordmark">AEVANI</a>
-
-		<!-- Desktop navigation -->
-		<nav class="desktop-nav">
-			{#each mainNavigation as item, i}
-				<div class="nav-item">
-					<a
-						href={item.href}
-						class="nav-link"
-						class:active={isActive(item.href)}
-						style="--stagger: {i}"
-					>
-						{item.label}
-						<span class="nav-underline"></span>
-					</a>
-					{#if item.children}
-						<div class="nav-dropdown">
-							{#each item.children as child, j}
-								<a href={child.href} class="nav-dropdown-link" style="transition-delay: {j * 50}ms">
-									{child.label}
-								</a>
-							{/each}
-						</div>
-					{/if}
-				</div>
-			{/each}
-		</nav>
-
-		<!-- Right side actions -->
-		<div class="header-actions">
-			<!-- Cart -->
-			<a href="/cart" class="action-btn cart-btn" aria-label="Cart">
-				<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-					></path>
-				</svg>
-				{#if cartCount > 0}
-					<span class="cart-badge" class:pulse={cartPulse}>{cartCount}</span>
-				{/if}
-			</a>
-
-			<!-- User menu -->
-			<div class="user-menu" class:open={userMenuOpen} onfocusout={handleUserMenuFocusout}>
+<header class="aevani-header" class:scrolled>
+	<div class="header-inner">
+		<div class="glass-bar">
+			<!-- Left: mobile hamburger + brand -->
+			<div class="header-left">
 				<button
-					bind:this={userMenuButton}
 					type="button"
-					class="action-btn"
-					aria-label="User menu"
-					aria-expanded={userMenuOpen}
-					aria-controls="user-navigation-menu"
-					onclick={() => (userMenuOpen = !userMenuOpen)}
-					onkeydown={(event) => {
-						if (event.key === 'ArrowDown') {
-							event.preventDefault();
-							void openUserMenuAndFocusFirst();
-						}
-					}}
+					class="hamburger"
+					aria-label="Open menu"
+					aria-expanded={drawerOpen}
+					aria-controls="mobile-navigation-drawer"
+					onclick={(event) => onOpenDrawer(event.currentTarget)}
 				>
-					<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<span class="bar bar-1"></span>
+					<span class="bar bar-2"></span>
+					<span class="bar bar-3"></span>
+				</button>
+
+				<a href="/" class="brand" aria-label="Aevani home">
+					<LeafMark size={36} />
+					<span class="wordmark">AEVANI</span>
+				</a>
+			</div>
+
+			<!-- Center navigation -->
+			<nav class="desktop-nav" aria-label="Primary">
+				{#each mainNavigation as item}
+					<a href={item.href} class="nav-link" class:active={isActive(item.href)}>
+						{item.label}
+					</a>
+				{/each}
+			</nav>
+
+			<!-- Right actions -->
+			<div class="header-actions">
+				<a
+					href="/affiliate"
+					class="affiliates-link"
+					class:active={isActive('/affiliate')}
+				>
+					Affiliates
+				</a>
+
+				<!-- Cart primary pill -->
+				<a href="/cart" class="cart-pill" aria-label="Cart">
+					<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
 							stroke-width="2"
-							d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+							d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
 						></path>
 					</svg>
-				</button>
-				<div
-					bind:this={userMenuPanel}
-					id="user-navigation-menu"
-					class="user-dropdown"
-					hidden={!userMenuOpen}
-				>
-					{#if user}
-						<div class="user-dropdown-header">
-							<span class="user-dropdown-name">
-								{user.firstName || user.username}
-							</span>
-							<span class="user-dropdown-email">{user.email}</span>
-						</div>
-						<hr class="dropdown-divider" />
-						{#each userNavigation as item, j}
-							<a
-								href={item.href}
-								class="user-dropdown-link"
-								style="transition-delay: {j * 50}ms"
-								onclick={() => void closeUserMenu()}
-							>
-								{item.label}
-							</a>
-						{/each}
-						<hr class="dropdown-divider" />
-						<button
-							onclick={() => {
-								void closeUserMenu(true);
-								void handleLogout();
-							}}
-							class="user-dropdown-link logout-btn"
-							disabled={isLoggingOut}
-						>
-							{isLoggingOut ? 'Logging out...' : 'Logout'}
-						</button>
-					{:else}
-						<a href="/login" class="user-dropdown-link" onclick={() => void closeUserMenu()}
-							>Login</a
-						>
-						<a
-							href="/register"
-							class="user-dropdown-link primary-link"
-							onclick={() => void closeUserMenu()}>Register</a
-						>
+					<span class="cart-label">Cart</span>
+					{#if cartCount > 0}
+						<span class="cart-count" class:pulse={cartPulse}>{cartCount}</span>
 					{/if}
+				</a>
+
+				<!-- User menu -->
+				<div class="user-menu" class:open={userMenuOpen} onfocusout={handleUserMenuFocusout}>
+					<button
+						bind:this={userMenuButton}
+						type="button"
+						class="account-btn"
+						aria-label="User menu"
+						aria-expanded={userMenuOpen}
+						aria-controls="user-navigation-menu"
+						onclick={() => (userMenuOpen = !userMenuOpen)}
+						onkeydown={(event) => {
+							if (event.key === 'ArrowDown') {
+								event.preventDefault();
+								void openUserMenuAndFocusFirst();
+							}
+						}}
+					>
+						<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+							></path>
+						</svg>
+					</button>
+					<div
+						bind:this={userMenuPanel}
+						id="user-navigation-menu"
+						class="user-dropdown"
+						hidden={!userMenuOpen}
+					>
+						{#if user}
+							<div class="user-dropdown-header">
+								<span class="user-dropdown-name">
+									{user.firstName || user.username}
+								</span>
+								<span class="user-dropdown-email">{user.email}</span>
+							</div>
+							<hr class="dropdown-divider" />
+							{#each userNavigation as item, j}
+								<a
+									href={item.href}
+									class="user-dropdown-link"
+									style="transition-delay: {j * 50}ms"
+									onclick={() => void closeUserMenu()}
+								>
+									{item.label}
+								</a>
+							{/each}
+							<hr class="dropdown-divider" />
+							<button
+								onclick={() => {
+									void closeUserMenu(true);
+									void handleLogout();
+								}}
+								class="user-dropdown-link logout-btn"
+								disabled={isLoggingOut}
+							>
+								{isLoggingOut ? 'Logging out...' : 'Logout'}
+							</button>
+						{:else}
+							<a href="/login" class="user-dropdown-link" onclick={() => void closeUserMenu()}
+								>Login</a
+							>
+							<a
+								href="/register"
+								class="user-dropdown-link primary-link"
+								onclick={() => void closeUserMenu()}>Register</a
+							>
+						{/if}
+					</div>
 				</div>
 			</div>
 		</div>
@@ -289,68 +275,101 @@
 </header>
 
 <style>
-	/* ---- Base header ---- */
-	.editorial-header {
+	/* ---- Sticky glass shell ---- */
+	.aevani-header {
 		position: sticky;
-		top: 0;
-		z-index: 9999;
-		background-color: oklch(var(--n) / 0.85);
-		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
-		border-bottom: 1px solid oklch(var(--nc) / 0.06);
-		transition:
-			background-color 0.35s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
-			border-color 0.35s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
-			backdrop-filter 0.35s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
-	}
-
-	.editorial-header.scrolled {
-		background-color: oklch(var(--n) / 0.95);
-		border-bottom-color: oklch(var(--nc) / 0.1);
-		backdrop-filter: blur(16px);
-		-webkit-backdrop-filter: blur(16px);
-	}
-
-	.header-container {
-		max-width: 1600px;
-		margin: 0 auto;
-		padding: 0.25rem 2rem;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		height: 5rem;
-		gap: 2rem;
+		top: 14px;
+		z-index: 80;
+		margin-top: 14px;
+		padding: 0 24px;
 	}
 
 	@media (max-width: 767px) {
-		.header-container {
-			padding: 0.25rem 1rem;
-			height: 4rem;
+		.aevani-header {
+			padding: 0 16px;
 		}
 	}
 
-	/* ---- Wordmark ---- */
-	.wordmark {
-		font-family: var(--font-display, 'Barlow Condensed', sans-serif);
-		font-size: 1.25rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: oklch(var(--nc));
-		text-decoration: none;
-		transition: opacity 0.2s;
+	.header-inner {
+		max-width: 1240px;
+		margin: 0 auto;
+	}
+
+	/* ---- Glass pill bar ---- */
+	.glass-bar {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		min-height: 64px;
+		padding: 0.55rem 0.75rem 0.55rem 1.25rem;
+		background: rgba(248, 245, 238, 0.72);
+		backdrop-filter: blur(20px) saturate(1.3);
+		-webkit-backdrop-filter: blur(20px) saturate(1.3);
+		border: 1px solid rgba(255, 255, 255, 0.7);
+		border-radius: 20px;
+		box-shadow:
+			0 10px 40px rgba(23, 48, 31, 0.12),
+			inset 0 1px 0 rgba(255, 255, 255, 0.9);
+		transition:
+			box-shadow 0.35s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+			background-color 0.35s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+	}
+
+	.aevani-header.scrolled .glass-bar {
+		background: rgba(248, 245, 238, 0.85);
+		box-shadow:
+			0 14px 48px rgba(23, 48, 31, 0.18),
+			inset 0 1px 0 rgba(255, 255, 255, 0.95);
+	}
+
+	@media (max-width: 767px) {
+		.glass-bar {
+			min-height: 58px;
+			padding: 0.45rem 0.65rem 0.45rem 0.85rem;
+			gap: 0.75rem;
+		}
+	}
+
+	/* ---- Left / brand ---- */
+	.header-left {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
 		flex-shrink: 0;
 	}
 
-	.wordmark:hover {
-		opacity: 0.75;
+	.brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		text-decoration: none;
+		transition: opacity 0.2s;
 	}
 
-	/* ---- Desktop nav ---- */
+	.brand:hover {
+		opacity: 0.85;
+	}
+
+	.wordmark {
+		font-family: var(--font-display, sans-serif);
+		font-size: 1.15rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		color: #1c3527;
+		line-height: 1;
+	}
+
+	@media (max-width: 400px) {
+		.wordmark {
+			display: none;
+		}
+	}
+
+	/* ---- Center nav ---- */
 	.desktop-nav {
 		display: none;
 		align-items: center;
-		gap: 0.25rem;
+		gap: 0.15rem;
 		flex: 1;
 		justify-content: center;
 	}
@@ -361,170 +380,118 @@
 		}
 	}
 
-	.nav-item {
-		position: relative;
-	}
-
 	.nav-link {
-		font-family: var(--font-sans, 'Inter', sans-serif);
-		font-size: 0.8125rem;
+		font-family: var(--font-body, sans-serif);
+		font-size: 15px;
 		font-weight: 500;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: oklch(var(--nc) / 0.8);
-		padding: 0.75rem 1rem;
+		color: #2c4335;
+		padding: 0.5rem 0.9rem;
+		border-radius: 999px;
 		text-decoration: none;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0;
-		transition: color 0.2s;
-		position: relative;
+		white-space: nowrap;
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease;
 	}
 
 	.nav-link:hover,
-	.nav-link:focus-visible,
+	.nav-link:focus-visible {
+		background-color: rgba(28, 53, 39, 0.08);
+		color: #1c3527;
+	}
+
 	.nav-link.active {
-		color: oklch(var(--nc));
+		color: #1c3527;
+		background-color: rgba(28, 53, 39, 0.06);
 	}
 
-	/* Underline slide-in */
-	.nav-underline {
-		display: block;
-		height: 1px;
-		width: 100%;
-		background-color: oklch(var(--nc));
-		transform: scaleX(0);
-		transform-origin: left;
-		transition: transform 0.25s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
-		margin-top: 2px;
-	}
-
-	.nav-link:hover .nav-underline,
-	.nav-link:focus-visible .nav-underline,
-	.nav-link.active .nav-underline {
-		transform: scaleX(1);
-	}
-
-	/* ---- Dropdown ---- */
-	.nav-dropdown {
-		position: absolute;
-		top: calc(100% + 0.5rem);
-		left: 0;
-		z-index: 10000;
-		min-width: 13rem;
-		background: white;
-		border: 1px solid #e5e5e5;
-		border-radius: 0.75rem;
-		box-shadow:
-			0 20px 40px -8px oklch(0% 0 0 / 0.12),
-			0 8px 16px -4px oklch(0% 0 0 / 0.06);
-		padding: 0.5rem;
-		opacity: 0;
-		visibility: hidden;
-		transform: translateY(-8px);
-		transition:
-			opacity 0.22s ease,
-			visibility 0.22s ease,
-			transform 0.22s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
-	}
-
-	.nav-item:hover .nav-dropdown,
-	.nav-item:focus-within .nav-dropdown {
-		opacity: 1;
-		visibility: visible;
-		transform: translateY(0);
-	}
-
-	.nav-dropdown-link {
-		display: block;
-		padding: 0.625rem 1rem;
-		font-family: var(--font-sans, 'Inter', sans-serif);
-		font-size: 0.8125rem;
-		font-weight: 400;
-		color: #555;
-		text-decoration: none;
-		border-radius: 0.375rem;
-		opacity: 0;
-		transform: translateX(-6px);
-		transition:
-			background-color 0.15s ease,
-			color 0.15s ease,
-			opacity 0.18s ease,
-			transform 0.18s ease;
-	}
-
-	.nav-item:hover .nav-dropdown-link,
-	.nav-item:focus-within .nav-dropdown-link {
-		opacity: 1;
-		transform: translateX(0);
-	}
-
-	.nav-dropdown-link:hover,
-	.nav-dropdown-link:focus-visible {
-		background-color: #f5f5f5;
-		color: #1a1a1a;
-	}
-
-	/* ---- Actions ---- */
+	/* ---- Right actions ---- */
 	.header-actions {
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
+		gap: 0.75rem;
 		flex-shrink: 0;
+		margin-left: auto;
 	}
 
-	.action-btn {
+	.affiliates-link {
+		font-family: var(--font-body, sans-serif);
+		font-size: 15px;
+		font-weight: 500;
+		color: #5a7263;
+		text-decoration: none;
+		padding: 0.35rem 0.25rem;
+		transition: color 0.2s ease;
+		white-space: nowrap;
+	}
+
+	.affiliates-link:hover,
+	.affiliates-link:focus-visible,
+	.affiliates-link.active {
+		color: #1c3527;
+	}
+
+	@media (max-width: 767px) {
+		.affiliates-link {
+			display: none;
+		}
+	}
+
+	/* ---- Cart primary pill ---- */
+	.cart-pill {
 		position: relative;
-		display: flex;
+		display: inline-flex;
 		align-items: center;
-		justify-content: center;
-		padding: 0.5rem;
-		min-width: 2.75rem;
-		min-height: 2.75rem;
-		color: oklch(var(--nc) / 0.8);
-		background: none;
-		border: none;
-		border-radius: 0.375rem;
-		cursor: pointer;
+		gap: 0.5rem;
+		padding: 0.6rem 1.1rem;
+		border-radius: 999px;
+		background: linear-gradient(180deg, #347a56, #1e4a36);
+		color: #ffffff;
+		font-family: var(--font-body, sans-serif);
+		font-size: 14px;
+		font-weight: 600;
+		text-decoration: none;
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.25),
+			0 6px 20px rgba(30, 74, 54, 0.3);
 		transition:
-			color 0.2s,
-			background-color 0.2s;
+			box-shadow 0.2s ease,
+			transform 0.2s ease;
 	}
 
-	.action-btn:hover {
-		color: oklch(var(--nc));
-		background-color: oklch(var(--nc) / 0.08);
+	.cart-pill:hover,
+	.cart-pill:focus-visible {
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.3),
+			0 8px 26px rgba(30, 74, 54, 0.42);
+		transform: translateY(-1px);
 	}
 
-	.icon {
-		width: 1.25rem;
-		height: 1.25rem;
+	.cart-pill .icon {
+		width: 1.15rem;
+		height: 1.15rem;
 	}
 
-	/* ---- Cart badge ---- */
-	.cart-badge {
-		position: absolute;
-		top: 0.125rem;
-		right: 0.125rem;
-		background-color: oklch(var(--a));
-		color: oklch(var(--ac));
-		font-size: 0.625rem;
-		font-weight: 700;
-		border-radius: 9999px;
-		height: 1rem;
-		min-width: 1rem;
-		display: flex;
+	.cart-count {
+		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		padding: 0 0.2rem;
+		min-width: 1.2rem;
+		height: 1.2rem;
+		padding: 0 0.35rem;
+		border-radius: 999px;
+		background: #a8e6c8;
+		color: #14261b;
+		font-size: 0.7rem;
+		font-weight: 700;
+		line-height: 1;
 	}
 
-	.cart-badge.pulse {
-		animation: badge-pulse 0.4s ease-out;
+	.cart-count.pulse {
+		animation: cart-pulse 0.4s ease-out;
 	}
 
-	@keyframes badge-pulse {
+	@keyframes cart-pulse {
 		0% {
 			transform: scale(1);
 		}
@@ -536,23 +503,63 @@
 		}
 	}
 
-	/* ---- User dropdown ---- */
-	.user-menu {
-		position: relative;
+	@media (max-width: 519px) {
+		.cart-label {
+			display: none;
+		}
+		.cart-pill {
+			padding: 0.55rem 0.7rem;
+		}
 	}
 
+	/* ---- Account button ---- */
+	.user-menu {
+		position: relative;
+		flex-shrink: 0;
+	}
+
+	.account-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.6rem;
+		height: 2.6rem;
+		color: #1c3527;
+		background: rgba(255, 255, 255, 0.5);
+		border: 1px solid rgba(255, 255, 255, 0.7);
+		border-radius: 999px;
+		cursor: pointer;
+		transition:
+			background-color 0.2s ease,
+			border-color 0.2s ease;
+	}
+
+	.account-btn:hover,
+	.account-btn:focus-visible {
+		background: rgba(255, 255, 255, 0.75);
+		border-color: rgba(46, 107, 79, 0.35);
+	}
+
+	.account-btn .icon {
+		width: 1.2rem;
+		height: 1.2rem;
+	}
+
+	/* ---- User dropdown ---- */
 	.user-dropdown {
 		position: absolute;
 		right: 0;
-		top: calc(100% + 0.5rem);
-		z-index: 10000;
+		top: calc(100% + 0.6rem);
+		z-index: 90;
 		min-width: 13rem;
-		background-color: oklch(var(--b1));
-		border: 1px solid oklch(var(--b3));
-		border-radius: 0.75rem;
+		background: rgba(248, 245, 238, 0.96);
+		backdrop-filter: blur(18px) saturate(1.2);
+		-webkit-backdrop-filter: blur(18px) saturate(1.2);
+		border: 1px solid rgba(255, 255, 255, 0.7);
+		border-radius: 16px;
 		box-shadow:
-			0 20px 40px -8px oklch(0% 0 0 / 0.12),
-			0 8px 16px -4px oklch(0% 0 0 / 0.06);
+			0 18px 44px rgba(23, 48, 31, 0.18),
+			inset 0 1px 0 rgba(255, 255, 255, 0.9);
 		padding: 0.5rem;
 		opacity: 0;
 		visibility: hidden;
@@ -577,29 +584,29 @@
 	}
 
 	.user-dropdown-name {
-		font-size: 0.875rem;
+		font-family: var(--font-display, sans-serif);
+		font-size: 0.9rem;
 		font-weight: 600;
-		color: oklch(var(--bc));
+		color: #1c3527;
 	}
 
 	.user-dropdown-email {
 		font-size: 0.75rem;
-		color: oklch(var(--bc) / 0.55);
+		color: #5a7263;
 	}
 
 	.user-dropdown-link {
 		display: block;
 		padding: 0.625rem 1rem;
-		font-size: 0.8125rem;
-		font-weight: 400;
-		color: oklch(var(--bc) / 0.7);
+		font-family: var(--font-body, sans-serif);
+		font-size: 0.85rem;
+		font-weight: 500;
+		color: #2c4335;
 		text-decoration: none;
-		border-radius: 0.375rem;
+		border-radius: 10px;
 		transition:
 			background-color 0.15s ease,
-			color 0.15s ease,
-			opacity 0.18s ease,
-			transform 0.18s ease;
+			color 0.15s ease;
 		opacity: 0;
 		transform: translateX(-6px);
 	}
@@ -611,13 +618,13 @@
 
 	.user-dropdown-link:hover,
 	.user-dropdown-link:focus-visible {
-		background-color: oklch(var(--p) / 0.08);
-		color: oklch(var(--bc));
+		background-color: rgba(46, 107, 79, 0.1);
+		color: #1c3527;
 	}
 
 	.user-dropdown-link.primary-link {
-		background-color: oklch(var(--a));
-		color: oklch(var(--ac));
+		background: linear-gradient(180deg, #347a56, #1e4a36);
+		color: #f4f1ea;
 		font-weight: 600;
 		margin-top: 0.25rem;
 		opacity: 1;
@@ -625,13 +632,14 @@
 	}
 
 	.user-dropdown-link.primary-link:hover {
-		background-color: oklch(var(--a) / 0.85);
+		background: linear-gradient(180deg, #3d8862, #1e4a36);
+		color: #ffffff;
 	}
 
 	.dropdown-divider {
 		margin: 0.375rem 0;
 		border: none;
-		border-top: 1px solid oklch(var(--bc) / 0.1);
+		border-top: 1px solid rgba(28, 53, 39, 0.1);
 	}
 
 	.logout-btn {
@@ -648,19 +656,18 @@
 		cursor: not-allowed;
 	}
 
-	/* ---- Hamburger ---- */
+	/* ---- Hamburger (mobile) ---- */
 	.hamburger {
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		gap: 5px;
-		width: 2.75rem;
-		height: 2.75rem;
+		width: 2.4rem;
+		height: 2.4rem;
 		cursor: pointer;
-		padding: 0.25rem;
+		padding: 0.4rem;
 		border: 0;
 		background: none;
-		color: inherit;
 		flex-shrink: 0;
 	}
 
@@ -672,8 +679,8 @@
 
 	.bar {
 		display: block;
-		height: 1.5px;
-		background-color: oklch(var(--nc));
+		height: 2px;
+		background-color: #1c3527;
 		border-radius: 9999px;
 		transition:
 			transform 0.25s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
@@ -686,7 +693,7 @@
 		width: 100%;
 	}
 	.bar-2 {
-		width: 75%;
+		width: 70%;
 	}
 	.bar-3 {
 		width: 100%;

@@ -24,6 +24,22 @@ export interface ProductWithImages {
 	tags: any;
 	metaTitle: string | null;
 	metaDescription: string | null;
+	// Product-detail fields (design-spec §5).
+	descriptionHtml: string | null;
+	keyFeatures: string[] | null;
+	stats: { value: string; label: string }[] | null;
+	specs: { label: string; value: string }[] | null;
+	inTheBox: string[] | null;
+	faqs: { q: string; a: string }[] | null;
+	badges: string[] | null;
+	testBedNote: string | null;
+	warranty: string | null;
+	shippingNote: string | null;
+	bundleOffer: { title: string; price: string; compareAt: string; blurb: string } | null;
+	relatedProductIds: number[] | null;
+	currency: string;
+	ratingAverage: string | null;
+	reviewCount: number;
 	createdAt: Date;
 	updatedAt: Date;
 	category: {
@@ -39,6 +55,15 @@ export interface ProductWithImages {
 		altText: string | null;
 		sortOrder: number;
 		isMain: boolean;
+	}>;
+	reviews: Array<{
+		id: number;
+		authorName: string;
+		rating: number;
+		title: string | null;
+		body: string;
+		isVerifiedPurchase: boolean;
+		createdAt: Date;
 	}>;
 }
 
@@ -77,6 +102,22 @@ export interface CreateProductParams {
 	metaTitle?: string;
 	metaDescription?: string;
 	isFeatured?: boolean;
+	// Product-detail fields (design-spec §5).
+	descriptionHtml?: string;
+	keyFeatures?: string[];
+	stats?: { value: string; label: string }[];
+	specs?: { label: string; value: string }[];
+	inTheBox?: string[];
+	faqs?: { q: string; a: string }[];
+	badges?: string[];
+	testBedNote?: string;
+	warranty?: string;
+	shippingNote?: string;
+	bundleOffer?: { title: string; price: string; compareAt: string; blurb: string } | null;
+	relatedProductIds?: number[];
+	currency?: string;
+	ratingAverage?: string;
+	reviewCount?: number;
 }
 
 export interface UpdateProductParams {
@@ -102,6 +143,22 @@ export interface UpdateProductParams {
 	metaDescription?: string;
 	isFeatured?: boolean;
 	isActive?: boolean;
+	// Product-detail fields (design-spec §5).
+	descriptionHtml?: string;
+	keyFeatures?: string[];
+	stats?: { value: string; label: string }[];
+	specs?: { label: string; value: string }[];
+	inTheBox?: string[];
+	faqs?: { q: string; a: string }[];
+	badges?: string[];
+	testBedNote?: string;
+	warranty?: string;
+	shippingNote?: string;
+	bundleOffer?: { title: string; price: string; compareAt: string; blurb: string } | null;
+	relatedProductIds?: number[];
+	currency?: string;
+	ratingAverage?: string;
+	reviewCount?: number;
 }
 
 export interface ProductImage {
@@ -190,7 +247,23 @@ export class ProductService {
 			isFeatured: params.isFeatured || false,
 			tags: params.tags ? JSON.stringify(params.tags) : null,
 			metaTitle: params.metaTitle || null,
-			metaDescription: params.metaDescription || null
+			metaDescription: params.metaDescription || null,
+			// Product-detail fields (design-spec §5). jsonb columns pass through as JS values (no JSON.stringify).
+			descriptionHtml: params.descriptionHtml ?? null,
+			keyFeatures: params.keyFeatures ?? null,
+			stats: params.stats ?? null,
+			specs: params.specs ?? null,
+			inTheBox: params.inTheBox ?? null,
+			faqs: params.faqs ?? null,
+			badges: params.badges ?? null,
+			testBedNote: params.testBedNote ?? null,
+			warranty: params.warranty ?? null,
+			shippingNote: params.shippingNote ?? null,
+			bundleOffer: params.bundleOffer ?? null,
+			relatedProductIds: params.relatedProductIds ?? null,
+			currency: params.currency ?? 'USD',
+			ratingAverage: params.ratingAverage ?? null,
+			reviewCount: params.reviewCount ?? 0
 		};
 
 		const [product] = await db.insert(table.product).values(productData).returning();
@@ -302,6 +375,13 @@ export class ProductService {
 			.where(eq(table.productImage.productId, productId))
 			.orderBy(asc(table.productImage.sortOrder));
 
+		// Get product reviews (newest first) for the buy box + ratings (design-spec §5).
+		const reviews = await db
+			.select()
+			.from(table.productReview)
+			.where(eq(table.productReview.productId, productId))
+			.orderBy(desc(table.productReview.createdAt));
+
 		return {
 			...product,
 			dimensions: product.dimensions ? JSON.parse(product.dimensions) : null,
@@ -326,7 +406,16 @@ export class ProductService {
 							}
 						]
 					: [];
-			})
+			}),
+			reviews: reviews.map((review) => ({
+				id: review.id,
+				authorName: review.authorName,
+				rating: review.rating,
+				title: review.title,
+				body: review.body,
+				isVerifiedPurchase: review.isVerifiedPurchase,
+				createdAt: review.createdAt
+			}))
 		};
 	}
 

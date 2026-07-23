@@ -1,255 +1,351 @@
 <script lang="ts">
-	import { Container, Section } from '$lib/components/layout';
-	import { Select } from '$lib/components/ui';
-	import { goto } from '$app/navigation';
+	// Aevani Shop / catalogue. Header + category chips (client filter, ?category= in URL)
+	// + featured hero row + 4-col product grid. See design-spec.md §6.
+	import { ProductCard } from '$lib/components/cards';
+	import { replaceState } from '$app/navigation';
+	import { page } from '$app/state';
 	import type { PageData } from './$types';
-
-	import CategoryNav from '$lib/components/navigation/CategoryNav.svelte';
 
 	let { data }: { data: PageData } = $props();
 
-	let searchQuery = $state(data.searchQuery || '');
-	let selectedCategory = $state(data.selectedCategory || '');
+	// Chip id -> label. Chip -> product system mapping lives in chipMatches().
+	const CHIPS = [
+		{ id: 'all', label: 'All products' },
+		{ id: 'hydroponics', label: 'Hydroponics' },
+		{ id: 'aquaponics', label: 'Aquaponics' },
+		{ id: 'silvopasture', label: 'Silvopasture' },
+		{ id: 'agroforestry', label: 'Agroforestry' },
+		{ id: 'kits-collections', label: 'Starter kits' },
+		{ id: 'seeds-supplies', label: 'Seeds & supplies' }
+	];
 
-	function handleSearch() {
-		const params = new URLSearchParams();
-		if (searchQuery) params.set('search', searchQuery);
-		if (selectedCategory) params.set('category', selectedCategory);
-		goto(`/products?${params.toString()}`);
+	const FEATURED_BADGE: Record<string, string> = {
+		'vertical-tower-garden-system': 'Bestseller',
+		'ibc-aquaponics-fish-tank': 'In stock',
+		'permaculture-starter-kit': 'Great first kit'
+	};
+
+	let selected = $state(data.selectedCategory ?? 'all');
+	const searchQuery = $derived((data.searchQuery ?? '').trim());
+
+	/** True when a product's system belongs to the given chip. */
+	function chipMatches(chipId: string, system: string): boolean {
+		if (chipId === 'all') return true;
+		if (chipId === 'seeds-supplies') return system === 'plants-seeds' || system === 'garden-tools';
+		return system === chipId;
 	}
 
-	function handleCategoryFilter(categoryId: string) {
-		selectedCategory = categoryId;
-		handleSearch();
+	const filtered = $derived(
+		data.products.filter((p) => {
+			if (!chipMatches(selected, p.system)) return false;
+			if (searchQuery) {
+				const hay = `${p.name} ${p.shortDescription ?? ''} ${p.categoryName}`.toLowerCase();
+				if (!hay.includes(searchQuery.toLowerCase())) return false;
+			}
+			return true;
+		})
+	);
+
+	const activeLabel = $derived(CHIPS.find((c) => c.id === selected)?.label ?? 'All products');
+
+	function badgeFor(p: PageData['products'][number]): string | undefined {
+		if (p.badges && p.badges.length > 0) return p.badges[0];
+		if (p.comparePrice) return 'Sale';
+		if (p.isFeatured) return 'Bestseller';
+		return undefined;
+	}
+
+	function selectChip(id: string) {
+		selected = id;
+		const params = new URLSearchParams();
+		if (id !== 'all') params.set('category', id);
+		if (searchQuery) params.set('search', searchQuery);
+		const qs = params.toString();
+		replaceState(qs ? `${page.url.pathname}?${qs}` : page.url.pathname, page.state);
 	}
 </script>
 
 <svelte:head>
-	<meta name="robots" content="noindex,nofollow" />
+	<title>Shop the catalogue — Aevani</title>
+	<meta
+		name="description"
+		content="Every tool here earned its place. Field-tested hydroponics, aquaponics, silvopasture, agroforestry systems, starter kits, seeds and supplies — only what we've grown with."
+	/>
 </svelte:head>
 
-<Section>
-	<Container>
-		<!-- Enhanced Header -->
-		<div class="mb-12 space-y-4">
-			<h1 class="text-5xl font-bold tracking-tight lg:text-7xl">CATALOG</h1>
-			<div class="h-1 w-24 bg-primary"></div>
-			<p class="max-w-3xl text-xl font-light text-base-content/60 lg:text-2xl">
-				We publish products only after their supplier, offer, fulfillment, and claim evidence is
-				verified.
-			</p>
+<main class="catalogue">
+	<header class="cat-head">
+		<span class="eyebrow">The catalogue</span>
+		<h1 class="cat-title">Every tool here earned its place.</h1>
+		<p class="cat-lead">
+			We only sell what we've grown with. Every system, kit, seed, and hand tool below was
+			field-tested on our own beds before it made the cut — no drop-shipped filler, no listings we
+			couldn't stand behind.
+		</p>
+	</header>
+
+	<!-- Category filter chips -->
+	<nav class="chips" aria-label="Filter by category">
+		{#each CHIPS as chip}
+			<button
+				type="button"
+				class="chip"
+				class:chip--active={selected === chip.id}
+				aria-pressed={selected === chip.id}
+				onclick={() => selectChip(chip.id)}
+			>
+				{chip.label}
+			</button>
+		{/each}
+	</nav>
+
+	<!-- Featured hero row -->
+	{#if data.featured.length > 0 && selected === 'all' && !searchQuery}
+		<section class="featured" aria-label="Featured products">
+			{#each data.featured as product}
+				<ProductCard
+					variant="featured"
+					href={product.href}
+					image={product.image}
+					imageAlt={product.imageAlt}
+					title={product.name}
+					category={product.categoryName}
+					price={product.price}
+					badge={FEATURED_BADGE[product.slug]}
+				/>
+			{/each}
+		</section>
+	{/if}
+
+	<!-- Product grid -->
+	<section class="grid-section" aria-label="Products">
+		<div class="grid-head">
+			<h2 class="grid-title">
+				{activeLabel} · {filtered.length}
+				{filtered.length === 1 ? 'item' : 'items'}
+			</h2>
+			<span class="grid-sort">Sorted by our honest recommendation</span>
 		</div>
 
-		{#if data.catalogAvailability.status === 'unavailable'}
-			<div
-				class="rounded-3xl border border-base-300 bg-base-200/40 p-8 text-center shadow-sm md:p-12"
-			>
-				<h2 class="font-display text-3xl font-bold tracking-tight uppercase">
-					Catalog verification in progress
-				</h2>
-				<p class="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-base-content/70">
-					{data.catalogAvailability.reason}
-				</p>
-				<a href="/support" class="btn mt-8 btn-primary">Contact support</a>
+		{#if filtered.length > 0}
+			<div class="product-grid">
+				{#each filtered as product}
+					<ProductCard
+						href={product.href}
+						image={product.image}
+						imageAlt={product.imageAlt}
+						title={product.name}
+						category={product.categoryName}
+						description={product.shortDescription ?? undefined}
+						price={product.price}
+						compareAt={product.comparePrice ?? undefined}
+						badge={badgeFor(product)}
+					/>
+				{/each}
 			</div>
 		{:else}
-			<!-- Enhanced Filters -->
-			<div class="mb-12 flex flex-col gap-6 md:flex-row md:items-end">
-				<!-- Search -->
-				<div class="flex-1">
-					<label
-						for="catalog-search"
-						class="font-display mb-2 block text-xs tracking-widest text-base-content/40 uppercase"
-					>
-						Search
-					</label>
-					<div class="flex items-end gap-3">
-						<div class="relative flex-1">
-							<svg
-								class="pointer-events-none absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-base-content/40"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="1.5"
-							>
-								<circle cx="11" cy="11" r="7" />
-								<path stroke-linecap="round" d="M20 20l-3.5-3.5" />
-							</svg>
-							<input
-								id="catalog-search"
-								type="text"
-								placeholder="Search products..."
-								class="input-bordered input w-full pl-10 text-lg"
-								bind:value={searchQuery}
-								onkeydown={(e) => e.key === 'Enter' && handleSearch()}
-							/>
-						</div>
-						<button
-							class="font-display btn shrink-0 px-8 text-sm tracking-wider uppercase btn-primary"
-							onclick={handleSearch}
-						>
-							Search
-						</button>
-					</div>
-				</div>
-
-				<!-- Category Filter -->
-				<div class="md:w-72">
-					<label
-						for="catalog-category"
-						class="font-display mb-2 block text-xs tracking-widest text-base-content/40 uppercase"
-					>
-						Category
-					</label>
-					<Select
-						id="catalog-category"
-						options={[
-							{ value: '', label: 'All Categories' },
-							...data.categories.map((c) => ({ value: c.id, label: c.name }))
-						]}
-						bind:value={selectedCategory}
-						placeholder="All Categories"
-						onchange={() => handleSearch()}
-					/>
-				</div>
-			</div>
-
-			<!-- Enhanced Category Cards -->
-			{#if !data.selectedCategory && !data.searchQuery}
-				<div class="mb-16">
-					<h2 class="mb-6 text-3xl font-bold tracking-tight lg:text-4xl">SHOP BY CATEGORY</h2>
-					<CategoryNav showCounts={true} showIcons={true} compact={true} />
-					<div class="mt-8 text-center">
-						<a
-							href="/products"
-							class="inline-flex items-center text-lg font-medium text-primary hover:underline"
-						>
-							View all categories
-							<svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M14 5l7 7m0 0l-7 7m7-7H3"
-								/>
-							</svg>
-						</a>
-					</div>
-				</div>
-			{/if}
-
-			<!-- Enhanced Products Grid -->
-			<div>
-				<h2 class="font-display mb-8 text-3xl font-bold tracking-tight uppercase lg:text-4xl">
-					{#if data.searchQuery}
-						SEARCH RESULTS FOR "{data.searchQuery}"
-					{:else if data.selectedCategory}
-						FILTERED PRODUCTS
+			<div class="empty">
+				<p class="empty-lead">
+					{#if data.products.length === 0}
+						The catalogue is being restocked. Check back shortly or reach out and we'll help.
 					{:else}
-						ALL PRODUCTS
+						Nothing in <strong>{activeLabel}</strong>{searchQuery
+							? ` matching “${searchQuery}”`
+							: ''} just yet.
 					{/if}
-				</h2>
-
-				<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-					{#if data.products && data.products.length > 0}
-						{#each data.products as product}
-							<a
-								href="/products/{product.categorySlug ||
-									product.category?.slug ||
-									'all'}/{product.slug}"
-								class="group flex flex-col overflow-hidden rounded-3xl border border-base-200/30 bg-base-100 shadow-md transition-all duration-300 hover:scale-[1.02] hover:border-primary/20 hover:shadow-xl"
-							>
-								<figure class="relative h-56 overflow-hidden bg-base-200">
-									{#if product.images && product.images.length > 0}
-										<img
-											src={product.images[0].url || '/placeholder.png'}
-											alt={product.images[0].altText || product.name}
-											class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-										/>
-										<div
-											class="absolute inset-0 flex items-center justify-center bg-primary/0 transition-colors duration-300 group-hover:bg-primary/15"
-										>
-											<span
-												class="font-display text-sm tracking-widest text-white uppercase opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-												>Quick View</span
-											>
-										</div>
-									{:else}
-										<div class="flex h-full items-center justify-center">
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												viewBox="0 0 48 48"
-												class="h-12 w-12 text-base-content/20"
-												fill="none"
-												stroke="currentColor"
-												stroke-width="1.5"
-												stroke-linecap="round"
-												stroke-linejoin="round"
-											>
-												<path
-													d="M24 42c-3-1-5 1-8 0M24 42c3-1 5 1 8 0M24 42V20M24 30c-6-1-11-7-9-14 4 4 8 9 9 14zM24 24c6-1 11-7 9-14-4 4-8 9-9 14z"
-												/>
-											</svg>
-										</div>
-									{/if}
-								</figure>
-								<div class="flex flex-1 flex-col space-y-3 p-6">
-									<h3
-										class="font-display line-clamp-2 text-lg leading-tight font-bold tracking-tight uppercase transition-colors group-hover:text-primary"
-									>
-										{product.name}
-									</h3>
-									<p
-										class="line-clamp-2 flex-1 text-sm leading-relaxed font-light text-base-content/60"
-									>
-										{product.shortDescription || product.description || 'No description available'}
-									</p>
-									<div
-										class="mt-auto flex items-center justify-between border-t border-base-200/50 pt-4"
-									>
-										<div class="font-mono text-2xl font-bold text-primary">
-											${parseFloat(product.price).toFixed(2)}
-										</div>
-										<span
-											class="font-display text-xs font-semibold tracking-widest text-primary uppercase"
-										>
-											VIEW DETAILS
-										</span>
-									</div>
-								</div>
-							</a>
-						{/each}
-					{:else}
-						<div class="col-span-3 space-y-6 py-20 text-center">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 48 48"
-								class="mx-auto h-16 w-16 text-base-content/20"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-							>
-								<circle cx="20" cy="20" r="14" /><path d="M30 30l12 12" />
-							</svg>
-							<p class="text-2xl font-light text-base-content/70">
-								{#if data.searchQuery || data.selectedCategory}
-									No products found matching your criteria
-								{:else}
-									No products available
-								{/if}
-							</p>
-							{#if data.searchQuery || data.selectedCategory}
-								<button
-									class="font-display btn rounded-none tracking-wider uppercase btn-lg btn-primary"
-									onclick={() => goto('/products')}
-								>
-									Clear Filters
-								</button>
-							{/if}
-						</div>
-					{/if}
-				</div>
+				</p>
+				{#if data.products.length > 0}
+					<button type="button" class="chip chip--active" onclick={() => selectChip('all')}>
+						View all products
+					</button>
+				{/if}
 			</div>
 		{/if}
-	</Container>
-</Section>
+	</section>
+</main>
+
+<style>
+	.catalogue {
+		max-width: 1240px;
+		margin: 0 auto;
+		padding: 56px 24px 96px;
+	}
+
+	.eyebrow {
+		display: block;
+		font-family: var(--font-body);
+		font-size: 13px;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.14em;
+		color: #2e6b4f;
+	}
+
+	.cat-head {
+		max-width: 720px;
+	}
+
+	.cat-title {
+		margin: 14px 0 0;
+		font-family: var(--font-display);
+		font-size: 52px;
+		font-weight: 600;
+		line-height: 1.04;
+		letter-spacing: -0.02em;
+		color: #1c3527;
+		text-wrap: balance;
+	}
+
+	.cat-lead {
+		margin: 18px 0 0;
+		font-family: var(--font-body);
+		font-size: 19px;
+		line-height: 1.6;
+		color: #4a5f52;
+		text-wrap: pretty;
+	}
+
+	/* ---- Chips ---- */
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin-top: 36px;
+	}
+
+	.chip {
+		appearance: none;
+		cursor: pointer;
+		padding: 11px 20px;
+		border-radius: 999px;
+		font-family: var(--font-body);
+		font-size: 14px;
+		font-weight: 600;
+		color: #22362a;
+		background: rgba(255, 255, 255, 0.6);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border: 1px solid rgba(46, 107, 79, 0.28);
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+		transition:
+			transform 200ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+			background-color 200ms ease,
+			color 200ms ease,
+			box-shadow 200ms ease;
+	}
+
+	.chip:hover {
+		transform: translateY(-1px);
+		border-color: rgba(46, 107, 79, 0.45);
+	}
+
+	.chip--active {
+		color: #f4f1ea;
+		background: linear-gradient(180deg, #347a56, #1e4a36);
+		border-color: transparent;
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.35),
+			0 6px 18px rgba(30, 74, 54, 0.32);
+	}
+
+	/* ---- Featured row ---- */
+	.featured {
+		margin-top: 40px;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 22px;
+	}
+
+	/* ---- Grid section ---- */
+	.grid-section {
+		margin-top: 56px;
+	}
+
+	.grid-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 16px;
+		flex-wrap: wrap;
+		padding-bottom: 20px;
+		border-bottom: 1px solid rgba(46, 107, 79, 0.14);
+	}
+
+	.grid-title {
+		margin: 0;
+		font-family: var(--font-display);
+		font-size: 26px;
+		font-weight: 600;
+		letter-spacing: -0.015em;
+		color: #1c3527;
+	}
+
+	.grid-sort {
+		font-family: var(--font-body);
+		font-size: 13.5px;
+		color: #5a7263;
+	}
+
+	.product-grid {
+		margin-top: 28px;
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 22px;
+	}
+
+	/* ---- Empty state ---- */
+	.empty {
+		margin-top: 40px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 20px;
+		padding: 64px 24px;
+		text-align: center;
+	}
+
+	.empty-lead {
+		margin: 0;
+		max-width: 520px;
+		font-family: var(--font-body);
+		font-size: 18px;
+		line-height: 1.6;
+		color: #4a5f52;
+	}
+
+	/* ---- Responsive ---- */
+	@media (max-width: 1024px) {
+		.product-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+		.featured {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	@media (max-width: 820px) {
+		.product-grid,
+		.featured {
+			grid-template-columns: repeat(2, 1fr);
+		}
+		.cat-title {
+			font-size: 40px;
+		}
+	}
+
+	@media (max-width: 520px) {
+		.catalogue {
+			padding: 40px 18px 72px;
+		}
+		.product-grid,
+		.featured {
+			grid-template-columns: 1fr;
+		}
+		.cat-title {
+			font-size: 34px;
+		}
+		.cat-lead {
+			font-size: 17px;
+		}
+	}
+</style>

@@ -3,24 +3,23 @@
 </script>
 
 <svelte:head>
-	<title>Affiliate settings status | Aevani</title>
+	<title>Affiliate Settings | Aevani</title>
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <div class="platform-content">
 	<div class="platform-header">
-		<h1 class="platform-header__title">Affiliate Settings Status</h1>
-		<p class="platform-header__subtitle">
-			Affiliate payment and notification settings are unavailable.
-		</p>
+		<h1 class="platform-header__title">Affiliate Settings</h1>
+		<p class="platform-header__subtitle">Manage your affiliate account preferences.</p>
 	</div>
 	<div class="platform-card">
 		<div class="platform-empty">
 			<p class="platform-empty__text">
-				Do not enter payout or promotion details here. Aevani has not published an active affiliate
-				payout or notification workflow.
+				Payout details and notification preferences are coming soon. In the meantime, payouts are
+				issued monthly from your cleared balance once you reach the $50 minimum. For account or
+				payout questions, contact support.
 			</p>
-			<a href="/affiliate/terms" class="platform-action-btn">Review program status</a>
+			<a href="/affiliate/earnings" class="platform-action-btn">View earnings</a>
 		</div>
 	</div>
 </div>

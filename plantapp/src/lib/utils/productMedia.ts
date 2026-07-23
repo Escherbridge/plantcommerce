@@ -3,7 +3,7 @@ export interface PublicProductImage {
 	altText: string | null;
 }
 
-/** Remove legacy source-tree and mock media from public product DTOs. */
+/** Normalize public product image DTOs, serving real assets (incl. AI-MockAssets / $lib) as-is. */
 export function getPublicProductImages(
 	images: unknown,
 	fallbackAltText: string | null | undefined
@@ -15,7 +15,6 @@ export function getPublicProductImages(
 
 		const { url, altText } = image as { url?: unknown; altText?: unknown };
 		if (typeof url !== 'string' || !url.trim()) return [];
-		if (url.includes('AI-MockAssets') || url.startsWith('/src/')) return [];
 
 		return [{ url, altText: typeof altText === 'string' ? altText : (fallbackAltText ?? null) }];
 	});

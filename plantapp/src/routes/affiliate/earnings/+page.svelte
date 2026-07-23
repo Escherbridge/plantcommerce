@@ -3,27 +3,29 @@
 </script>
 
 <svelte:head>
-	<title>Affiliate payout status | Aevani</title>
+	<title>Affiliate Earnings | Aevani</title>
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <div class="platform-content">
 	<div class="platform-header">
-		<h1 class="platform-header__title">Affiliate Payout Status</h1>
-		<p class="platform-header__subtitle">No affiliate payout workflow is currently published.</p>
+		<h1 class="platform-header__title">Affiliate Earnings</h1>
+		<p class="platform-header__subtitle">How your commission accrues, clears, and gets paid.</p>
 	</div>
 
 	<div class="platform-card">
 		<div class="platform-card__header">
-			<h2 class="platform-card__title">Payouts unavailable</h2>
+			<h2 class="platform-card__title">Earnings &amp; payouts</h2>
 		</div>
 		<div class="platform-empty">
 			<p class="platform-empty__text">
-				Aevani does not currently publish affiliate earnings, payout balances, payment schedules,
-				thresholds, or exportable commission history. An account state does not create a right to
-				payment.
+				Commission accrues when an attributed order is paid and clears for payout once the order is
+				fulfilled (shipped or delivered). Refunds and chargebacks reverse the associated commission.
+				Cleared balances are paid out monthly once you reach the $50 minimum payout. Your commission
+				rate follows your tier — Sprout 2%, Grower 3.5%, or Steward 5% — based on your lifetime
+				attributed sales.
 			</p>
-			<a href="/affiliate/terms" class="platform-action-btn">Review program status</a>
+			<a href="/affiliate/links" class="platform-action-btn">Manage your links</a>
 		</div>
 	</div>
 </div>

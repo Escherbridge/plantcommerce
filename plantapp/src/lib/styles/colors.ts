@@ -1,24 +1,24 @@
 export const colors = {
-	// Primary - evolved deep navy (slightly warmer than original #1D3557)
-	primary: '#1B2D4A',
-	// Secondary - muted earthy blue
-	secondary: '#457B9D',
-	// Accent - bold red (retained from brand)
-	accent: '#E63946',
-	// Growth green - new (inspired by Chrome Industries deep teal)
-	growthGreen: '#0A4B3E',
-	// Warm cream - replaces #F1FAEE
-	warmCream: '#F7F5F0',
+	// Primary - Aevani brand forest green (buttons/links)
+	primary: '#2E6B4F',
+	// Secondary - deep forest green
+	secondary: '#1E4A36',
+	// Accent - mint (replaces the old red)
+	accent: '#8FD8B4',
+	// Growth green - primary button gradient top
+	growthGreen: '#347A56',
+	// Warm cream - canvas / base-100
+	warmCream: '#F4F1EA',
 	// Light cream
 	lightCream: '#FDFCF9',
-	// Charcoal - for dark sections
-	charcoal: '#1A1A1A',
+	// Charcoal - darkest forest, for dark sections / footer
+	charcoal: '#14261B',
 	// Warm gray - for muted text
-	warmGray: '#6B7064',
-	// Light warm gray
-	lightWarmGray: '#B8B5AE',
+	warmGray: '#5A7263',
+	// Light warm gray - captions / meta
+	lightWarmGray: '#7C9585',
 	// Base borders
-	borderLight: '#E8E5DE',
-	// Info blue-green (retained)
-	info: '#A8DADC'
+	borderLight: '#E3DBC9',
+	// Info / water accent (aquaponics)
+	info: '#2A6480'
 } as const;

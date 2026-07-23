@@ -7,9 +7,7 @@ import { getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
 export const productsRouter = router({
 	getCatalogAvailability: publicProcedure.query(() => getPublicCatalogAvailability()),
 
-	getCategories: publicProcedure.query(
-		async () => [] as Awaited<ReturnType<typeof ProductService.getCategories>>
-	),
+	getCategories: publicProcedure.query(() => ProductService.getCategories()),
 
 	getProducts: publicProcedure
 		.input(
@@ -24,11 +22,15 @@ export const productsRouter = router({
 				sortOrder: z.enum(['asc', 'desc']).default('desc')
 			})
 		)
-		.query(async () => [] as Awaited<ReturnType<typeof ProductService.getProducts>>),
+		.query(({ input }) => ProductService.getProducts(input)),
 
 	getProduct: publicProcedure
 		.input(z.object({ slug: z.string() }))
-		.query(async () => null as Awaited<ReturnType<typeof ProductService.getProductBySlug>>),
+		.query(({ input }) => ProductService.getProductBySlug(input.slug)),
+
+	getProductById: adminProcedure
+		.input(z.object({ id: z.number() }))
+		.query(({ input }) => ProductService.getProductById(input.id)),
 
 	createProduct: adminProcedure
 		.input(
@@ -64,7 +66,34 @@ export const productsRouter = router({
 				tags: z.array(z.string()).optional(),
 				metaTitle: z.string().optional(),
 				metaDescription: z.string().optional(),
-				isFeatured: z.boolean().default(false)
+				isFeatured: z.boolean().default(false),
+				// Product-detail fields (design-spec §5). jsonb passed through unchanged.
+				descriptionHtml: z.string().optional(),
+				keyFeatures: z.array(z.string()).optional(),
+				stats: z.array(z.object({ value: z.string(), label: z.string() })).optional(),
+				specs: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
+				inTheBox: z.array(z.string()).optional(),
+				faqs: z.array(z.object({ q: z.string(), a: z.string() })).optional(),
+				badges: z.array(z.string()).optional(),
+				testBedNote: z.string().optional(),
+				warranty: z.string().optional(),
+				shippingNote: z.string().optional(),
+				bundleOffer: z
+					.object({
+						title: z.string(),
+						price: z.string(),
+						compareAt: z.string(),
+						blurb: z.string()
+					})
+					.nullable()
+					.optional(),
+				relatedProductIds: z.array(z.number()).optional(),
+				currency: z.string().optional(),
+				ratingAverage: z
+					.string()
+					.regex(/^\d+(\.\d{1,2})?$/)
+					.optional(),
+				reviewCount: z.number().int().min(0).optional()
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
@@ -115,7 +144,34 @@ export const productsRouter = router({
 				metaTitle: z.string().optional(),
 				metaDescription: z.string().optional(),
 				isFeatured: z.boolean().optional(),
-				isActive: z.boolean().optional()
+				isActive: z.boolean().optional(),
+				// Product-detail fields (design-spec §5). jsonb passed through unchanged.
+				descriptionHtml: z.string().optional(),
+				keyFeatures: z.array(z.string()).optional(),
+				stats: z.array(z.object({ value: z.string(), label: z.string() })).optional(),
+				specs: z.array(z.object({ label: z.string(), value: z.string() })).optional(),
+				inTheBox: z.array(z.string()).optional(),
+				faqs: z.array(z.object({ q: z.string(), a: z.string() })).optional(),
+				badges: z.array(z.string()).optional(),
+				testBedNote: z.string().optional(),
+				warranty: z.string().optional(),
+				shippingNote: z.string().optional(),
+				bundleOffer: z
+					.object({
+						title: z.string(),
+						price: z.string(),
+						compareAt: z.string(),
+						blurb: z.string()
+					})
+					.nullable()
+					.optional(),
+				relatedProductIds: z.array(z.number()).optional(),
+				currency: z.string().optional(),
+				ratingAverage: z
+					.string()
+					.regex(/^\d+(\.\d{1,2})?$/)
+					.optional(),
+				reviewCount: z.number().int().min(0).optional()
 			})
 		)
 		.mutation(async ({ ctx, input }) => {

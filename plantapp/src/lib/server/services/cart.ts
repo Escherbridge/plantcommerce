@@ -22,6 +22,8 @@ export interface CartItem {
 		stockQuantity: number;
 		trackInventory: boolean;
 		shortDescription?: string | null;
+		/** Direct category slug used to build the product-detail URL segment. */
+		categorySlug?: string | null;
 		images?: Array<{ url: string; altText: string | null; isMain: boolean }>;
 	};
 }
@@ -121,6 +123,11 @@ export class CartService {
 	 */
 	static async getCart(userId?: string, sessionId?: string): Promise<Cart | null> {
 		assertPublicCatalogAvailable();
+		// A visitor with neither a user nor a guest session simply has no cart yet:
+		// return an empty (null) cart instead of throwing so header polling never 500s.
+		if (!userId && !sessionId) {
+			return null;
+		}
 		const identity = requireCartIdentity(userId, sessionId);
 
 		const cartResult = await db
@@ -143,11 +150,13 @@ export class CartService {
 				quantity: table.cartItem.quantity,
 				unitPrice: table.cartItem.unitPrice,
 				product: table.product,
+				category: table.productCategory,
 				image: table.productImage,
 				file: table.file
 			})
 			.from(table.cartItem)
 			.innerJoin(table.product, eq(table.cartItem.productId, table.product.id))
+			.leftJoin(table.productCategory, eq(table.product.categoryId, table.productCategory.id))
 			.leftJoin(
 				table.productImage,
 				and(eq(table.product.id, table.productImage.productId), eq(table.productImage.isMain, true))
@@ -177,6 +186,7 @@ export class CartService {
 					price: item.product.price,
 					stockQuantity: item.product.stockQuantity,
 					trackInventory: item.product.trackInventory,
+					categorySlug: item.category?.slug ?? null,
 					images: imageUrl
 						? [
 								{

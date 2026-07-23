@@ -7,6 +7,12 @@ import {
 } from '../catalogTruth/publicCatalog';
 import { encodeBase64url } from '@oslojs/encoding';
 import { invalidateUserSessions } from '../auth';
+import {
+	AFFILIATE_TIERS,
+	DEFAULT_AFFILIATE_TIER,
+	resolveAffiliateTier,
+	type AffiliateTier
+} from './affiliateTiers';
 
 export type AffiliateStatus = 'pending' | 'active' | 'rejected' | 'suspended';
 
@@ -109,12 +115,13 @@ export class AffiliateService {
 					.values({
 						userId,
 						affiliateCode,
-						commissionRate: '0.05',
+						// Self-serve affiliates start in the Sprout tier and are approved on join.
+						commissionRate: DEFAULT_AFFILIATE_TIER.rate,
 						totalEarnings: '0.00',
 						totalClicks: 0,
 						totalConversions: 0,
-						isActive: false,
-						status: 'pending',
+						isActive: true,
+						status: 'active',
 						website: applicationData?.website,
 						socialMedia: applicationData?.socialMedia,
 						audience: applicationData?.audience,
@@ -125,6 +132,7 @@ export class AffiliateService {
 					.onConflictDoNothing()
 					.returning();
 				if (affiliate) {
+					await this.promoteUserToAffiliateRole(tx, userId);
 					return { affiliate, created: true };
 				}
 
@@ -143,6 +151,50 @@ export class AffiliateService {
 
 			throw new Error('Unable to allocate a unique affiliate code');
 		});
+	}
+
+	/**
+	 * Promote a non-admin user to the `affiliate` role. Sessions are not invalidated:
+	 * session validation reads the user role fresh, so self-serve joiners stay signed in.
+	 */
+	private static async promoteUserToAffiliateRole(tx: any, userId: string): Promise<void> {
+		const [affiliateUser] = await tx
+			.select({ role: table.user.role })
+			.from(table.user)
+			.where(eq(table.user.id, userId))
+			.limit(1);
+		if (affiliateUser && affiliateUser.role !== 'admin' && affiliateUser.role !== 'affiliate') {
+			await tx
+				.update(table.user)
+				.set({ role: 'affiliate', updatedAt: new Date() })
+				.where(eq(table.user.id, userId));
+		}
+	}
+
+	/** Sum of attributed order subtotals (USD), excluding cancelled/refunded orders. */
+	static async getLifetimeAttributedSalesUsd(affiliateId: number): Promise<number> {
+		const [row] = await db
+			.select({ total: sql<string>`COALESCE(SUM(${table.order.subtotalAmount}), 0)` })
+			.from(table.order)
+			.innerJoin(table.affiliateLink, eq(table.order.affiliateLinkId, table.affiliateLink.id))
+			.where(
+				and(
+					eq(table.affiliateLink.affiliateId, affiliateId),
+					sql`${table.order.status} NOT IN ('cancelled', 'refunded')`
+				)
+			);
+		return row ? Number(row.total) : 0;
+	}
+
+	/** Resolve the affiliate's current commission tier from their lifetime attributed sales. */
+	static async getCurrentTier(affiliateId: number): Promise<AffiliateTier> {
+		const lifetimeSalesUsd = await this.getLifetimeAttributedSalesUsd(affiliateId);
+		return resolveAffiliateTier(lifetimeSalesUsd);
+	}
+
+	/** All commission tiers, ordered from entry (Sprout) to top (Steward). */
+	static getTierLadder(): readonly AffiliateTier[] {
+		return AFFILIATE_TIERS;
 	}
 
 	/**

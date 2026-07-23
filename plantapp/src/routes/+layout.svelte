@@ -3,7 +3,9 @@
 	import { Header } from '$lib/components/navigation';
 	import { RootSystem } from '$lib/components/patterns';
 	import Toast from '$lib/components/ui/Toast.svelte';
+	import LeafMark from '$lib/components/ui/LeafMark.svelte';
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import { trpc } from '$lib/trpc/client';
 	import { browser } from '$app/environment';
 	import { cart } from '$lib/stores/cart';
@@ -140,28 +142,39 @@
 	];
 
 	const footerLinks = {
-		shop: [{ label: 'Catalog Status', href: '/products' }],
+		shop: [
+			{ label: 'All products', href: '/products' },
+			{ label: 'Hydroponics', href: '/products/hydroponics' },
+			{ label: 'Aquaponics', href: '/products/aquaponics' },
+			{ label: 'Silvopasture', href: '/products/silvopasture' },
+			{ label: 'Agroforestry', href: '/products/agroforestry' }
+		],
 		learn: [
 			{ label: 'Guides', href: '/guides' },
-			{ label: 'Blog', href: '/blog' },
+			{ label: 'Field notes', href: '/blog' },
 			{ label: 'FAQs', href: '/faq' },
 			{ label: 'Resources', href: '/resources' }
 		],
 		company: [
 			{ label: 'About', href: '/about' },
+			{ label: 'Affiliate program', href: '/affiliate' },
 			{ label: 'Contact', href: '/contact' },
-			{ label: 'Careers', href: '/careers' },
 			{ label: 'Press', href: '/press' }
 		],
 		support: [
-			{ label: 'Support', href: '/support' },
-			{ label: 'Help Center', href: '/help' },
+			{ label: 'Help center', href: '/help' },
 			{ label: 'Shipping', href: '/shipping' },
 			{ label: 'Returns', href: '/returns' },
-			{ label: 'Warranty', href: '/warranty' },
-			{ label: 'Size Guide', href: '/size-guide' }
+			{ label: 'Warranty', href: '/warranty' }
 		]
 	};
+
+	// Newsletter — no dedicated endpoint yet; route interested growers to contact.
+	let newsletterEmail = $state('');
+	function handleNewsletterSubmit(event: SubmitEvent) {
+		event.preventDefault();
+		void goto('/contact');
+	}
 
 	function scrollToTop() {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -288,59 +301,46 @@
 		{/if}
 
 		<!-- ===== FOOTER ===== -->
-		<footer class="editorial-footer">
-			<!-- Root system SVG pattern overlay -->
+		<footer class="aevani-footer">
+			<!-- Faint leaf/root texture overlay -->
 			<div class="footer-pattern" aria-hidden="true">
 				<RootSystem />
 			</div>
 
 			<div class="footer-inner">
-				<!-- Large wordmark -->
-				<div class="footer-wordmark-row">
-					<span class="footer-wordmark">AEVANI</span>
+				<!-- (a) Newsletter row -->
+				<div class="newsletter-row">
+					<div class="newsletter-copy">
+						<h2 class="newsletter-title">Field notes, monthly</h2>
+						<p class="newsletter-blurb">
+							Growing experiments, honest results, and what we're planting next — sent once a month.
+						</p>
+					</div>
+					<form class="newsletter-form" onsubmit={handleNewsletterSubmit}>
+						<input
+							type="email"
+							class="newsletter-input"
+							placeholder="you@example.com"
+							aria-label="Email address"
+							bind:value={newsletterEmail}
+						/>
+						<button type="submit" class="newsletter-submit">Subscribe</button>
+					</form>
 				</div>
 
-				<!-- Grid: brand col + link cols -->
+				<!-- (b) 5-column grid -->
 				<div class="footer-grid">
-					<!-- Brand & newsletter -->
+					<!-- Brand column -->
 					<div class="footer-brand-col">
+						<a href="/" class="footer-brand">
+							<LeafMark size={40} variant="dark" />
+							<span class="footer-wordmark">AEVANI</span>
+						</a>
 						<p class="footer-tagline">
-							Learning resources and catalog verification for sustainable growing.
+							Tools and knowledge for growing systems that give back more than they take.
 						</p>
 
-						<div class="newsletter-block">
-							<h4 class="newsletter-label">Newsletter updates</h4>
-							<p class="newsletter-unavailable">
-								Sign-up is not available yet. Review <a href="/support">support status</a> for updates.
-							</p>
-						</div>
-
-						<!-- Social icons (inline SVG) -->
 						<div class="social-row">
-							<a href="https://facebook.com/aevani" class="social-link" aria-label="Facebook">
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.75"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-								</svg>
-							</a>
-							<a href="https://twitter.com/aevani" class="social-link" aria-label="Twitter / X">
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.75"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<path d="M4 4l16 16M4 20 20 4" />
-								</svg>
-							</a>
 							<a href="https://instagram.com/aevani" class="social-link" aria-label="Instagram">
 								<svg
 									viewBox="0 0 24 24"
@@ -353,6 +353,30 @@
 									<rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
 									<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
 									<line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+								</svg>
+							</a>
+							<a href="https://twitter.com/aevani" class="social-link" aria-label="X">
+								<svg
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.75"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<path d="M4 4l16 16M4 20 20 4" />
+								</svg>
+							</a>
+							<a href="https://facebook.com/aevani" class="social-link" aria-label="Facebook">
+								<svg
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.75"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
 								</svg>
 							</a>
 						</div>
@@ -396,13 +420,13 @@
 					</details>
 				</div>
 
-				<!-- Footer bottom bar -->
+				<!-- (c) Legal bar -->
 				<div class="footer-bottom">
-					<p class="copyright">&copy; {currentYear} Aevani. All rights reserved.</p>
+					<p class="copyright">&copy; {currentYear} Aevani. Grown with care.</p>
 					<div class="footer-bottom-links">
-						<a href="/privacy" class="footer-bottom-link">Privacy Policy</a>
-						<a href="/terms" class="footer-bottom-link">Terms of Service</a>
-						<a href="/cookies" class="footer-bottom-link">Cookie Policy</a>
+						<a href="/privacy" class="footer-bottom-link">Privacy</a>
+						<a href="/terms" class="footer-bottom-link">Terms</a>
+						<a href="/cookies" class="footer-bottom-link">Cookies</a>
 					</div>
 					<button class="scroll-top-btn" onclick={scrollToTop} aria-label="Scroll to top">
 						<svg
@@ -467,7 +491,10 @@
 		</button>
 
 		<!-- Wordmark -->
-		<a href="/" class="drawer-wordmark" onclick={() => void closeDrawer()}>AEVANI</a>
+		<a href="/" class="drawer-wordmark" onclick={() => void closeDrawer()}>
+			<LeafMark size={34} />
+			<span>AEVANI</span>
+		</a>
 
 		<!-- Primary nav -->
 		<nav class="drawer-nav">
@@ -631,59 +658,140 @@
 		transform: translateY(0);
 	}
 
-	/* ===== FOOTER ===== */
-	.editorial-footer {
-		background-color: oklch(var(--p));
-		color: oklch(var(--pc));
+	/* ===== FOOTER (Aevani dark forest) ===== */
+	.aevani-footer {
 		position: relative;
+		margin-top: 96px;
+		background-color: #14261b;
+		background-image: radial-gradient(
+			900px 500px at 85% -10%,
+			rgba(143, 216, 180, 0.14) 0%,
+			transparent 60%
+		);
+		color: #dce6dd;
 		overflow: hidden;
 	}
 
 	.footer-pattern {
 		position: absolute;
 		inset: 0;
-		opacity: 0.05;
+		opacity: 0.06;
+		color: #8fd8b4;
 		pointer-events: none;
 	}
 
 	.footer-inner {
 		position: relative;
 		z-index: 1;
-		max-width: 80rem;
+		max-width: 1240px;
 		margin: 0 auto;
-		padding: 4rem 2rem 2rem;
+		padding: 4rem 24px 2rem;
 	}
 
 	@media (max-width: 639px) {
 		.footer-inner {
-			padding: 3rem 1rem 2rem;
+			padding: 3rem 16px 2rem;
 		}
 	}
 
-	/* Large wordmark */
-	.footer-wordmark-row {
-		margin-bottom: 3rem;
-		border-bottom: 1px solid oklch(var(--nc) / 0.1);
-		padding-bottom: 2rem;
+	/* (a) Newsletter row */
+	.newsletter-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem 2.5rem;
+		padding: 2rem;
+		margin-bottom: 3.5rem;
+		border-radius: 22px;
+		background: rgba(255, 255, 255, 0.04);
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 	}
 
-	.footer-wordmark {
-		font-family: var(--font-display, 'Barlow Condensed', sans-serif);
-		font-size: 3rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: oklch(var(--nc));
-		line-height: 1;
-	}
-
-	@media (min-width: 1024px) {
-		.footer-wordmark {
-			font-size: 5rem;
+	@media (max-width: 639px) {
+		.newsletter-row {
+			padding: 1.5rem;
 		}
 	}
 
-	/* Footer grid */
+	.newsletter-copy {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		max-width: 30rem;
+	}
+
+	.newsletter-title {
+		font-family: var(--font-display, sans-serif);
+		font-size: 1.6rem;
+		font-weight: 600;
+		letter-spacing: -0.015em;
+		color: #f4f1ea;
+		line-height: 1.1;
+	}
+
+	.newsletter-blurb {
+		font-family: var(--font-body, sans-serif);
+		font-size: 0.95rem;
+		color: #7c9585;
+		line-height: 1.5;
+	}
+
+	.newsletter-form {
+		display: flex;
+		gap: 0.5rem;
+		flex: 1 1 20rem;
+		max-width: 26rem;
+	}
+
+	.newsletter-input {
+		flex: 1;
+		min-width: 0;
+		padding: 0.8rem 1.1rem;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.06);
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		color: #f4f1ea;
+		font-family: var(--font-body, sans-serif);
+		font-size: 0.9rem;
+		transition:
+			border-color 0.2s ease,
+			background-color 0.2s ease;
+	}
+
+	.newsletter-input::placeholder {
+		color: #5a7263;
+	}
+
+	.newsletter-input:focus {
+		outline: none;
+		border-color: rgba(143, 216, 180, 0.55);
+		background: rgba(255, 255, 255, 0.09);
+	}
+
+	.newsletter-submit {
+		flex-shrink: 0;
+		padding: 0.8rem 1.5rem;
+		border: none;
+		border-radius: 999px;
+		background: linear-gradient(180deg, #a8e6c8, #7cc9a2);
+		color: #14261b;
+		font-family: var(--font-body, sans-serif);
+		font-size: 0.9rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition:
+			transform 0.2s ease,
+			box-shadow 0.2s ease;
+	}
+
+	.newsletter-submit:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 8px 22px rgba(124, 201, 162, 0.35);
+	}
+
+	/* (b) Footer grid */
 	.footer-grid {
 		display: grid;
 		grid-template-columns: 1fr;
@@ -699,14 +807,14 @@
 
 	@media (min-width: 1024px) {
 		.footer-grid {
-			grid-template-columns: 2fr repeat(4, 1fr);
+			grid-template-columns: 1.5fr repeat(4, 1fr);
 		}
 	}
 
 	.footer-brand-col {
 		display: flex;
 		flex-direction: column;
-		gap: 1.5rem;
+		gap: 1.25rem;
 	}
 
 	@media (min-width: 640px) {
@@ -721,67 +829,62 @@
 		}
 	}
 
+	.footer-brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.65rem;
+		text-decoration: none;
+		width: fit-content;
+	}
+
+	.footer-wordmark {
+		font-family: var(--font-display, sans-serif);
+		font-size: 1.25rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		color: #f4f1ea;
+		line-height: 1;
+	}
+
 	.footer-tagline {
-		font-family: var(--font-sans, 'Inter', sans-serif);
-		font-size: 0.875rem;
-		color: oklch(var(--nc) / 0.6);
-		line-height: 1.65;
-		max-width: 22rem;
+		font-family: var(--font-body, sans-serif);
+		font-size: 0.9rem;
+		color: #7c9585;
+		line-height: 1.6;
+		max-width: 20rem;
 	}
 
-	/* Newsletter */
-	.newsletter-block {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-	}
-
-	.newsletter-label {
-		font-family: var(--font-sans, 'Inter', sans-serif);
-		font-size: 0.75rem;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: oklch(var(--nc) / 0.5);
-	}
-
-	.newsletter-unavailable {
-		font-family: var(--font-sans, 'Inter', sans-serif);
-		font-size: 0.875rem;
-		color: oklch(var(--nc) / 0.7);
-		line-height: 1.5;
-		max-width: 22rem;
-	}
-
-	.newsletter-unavailable a {
-		color: inherit;
-		text-decoration: underline;
-		text-underline-offset: 0.2em;
-	}
-
-	/* Social icons */
+	/* Social pills */
 	.social-row {
 		display: flex;
-		gap: 1rem;
+		gap: 0.65rem;
 	}
 
 	.social-link {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 2rem;
-		height: 2rem;
-		color: oklch(var(--nc) / 0.4);
-		transition: color 0.2s;
+		width: 2.4rem;
+		height: 2.4rem;
+		border-radius: 999px;
+		color: #a8e6c8;
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		transition:
+			background-color 0.2s,
+			color 0.2s,
+			border-color 0.2s;
 	}
 
 	.social-link:hover {
-		color: oklch(var(--nc));
+		color: #14261b;
+		background: #a8e6c8;
+		border-color: #a8e6c8;
 	}
 
 	.social-link svg {
-		width: 1.125rem;
-		height: 1.125rem;
+		width: 1.05rem;
+		height: 1.05rem;
 	}
 
 	/* Footer link columns */
@@ -807,11 +910,10 @@
 	/* On mobile, collapse by default, allow expand */
 	@media (max-width: 767px) {
 		.footer-section {
-			border-bottom: 1px solid oklch(var(--nc) / 0.08);
+			border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 			padding-bottom: 0.5rem;
 		}
 
-		/* Close sections by default on mobile */
 		.footer-section:not([open]) .footer-links {
 			display: none;
 		}
@@ -826,7 +928,7 @@
 		.footer-section summary::after {
 			content: '+';
 			font-size: 1rem;
-			color: oklch(var(--nc) / 0.4);
+			color: rgba(220, 230, 221, 0.5);
 			font-weight: 300;
 			transition: transform 0.2s;
 		}
@@ -837,39 +939,39 @@
 	}
 
 	.footer-title {
-		font-family: var(--font-sans, 'Inter', sans-serif);
-		font-size: 0.75rem;
+		font-family: var(--font-body, sans-serif);
+		font-size: 0.72rem;
 		font-weight: 600;
 		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: oklch(var(--nc) / 0.5);
+		letter-spacing: 0.14em;
+		color: #8fd8b4;
 		padding: 0.5rem 0;
 	}
 
 	.footer-links {
 		display: flex;
 		flex-direction: column;
-		gap: 0.625rem;
+		gap: 0.7rem;
 		list-style: none;
 		padding: 0;
 		margin: 0;
 	}
 
 	.footer-link {
-		font-family: var(--font-mono, 'JetBrains Mono', monospace);
-		font-size: 0.8125rem;
-		color: oklch(var(--nc) / 0.55);
+		font-family: var(--font-body, sans-serif);
+		font-size: 0.9rem;
+		color: rgba(220, 230, 221, 0.72);
 		text-decoration: none;
 		transition: color 0.15s;
 	}
 
 	.footer-link:hover {
-		color: oklch(var(--nc));
+		color: #f4f1ea;
 	}
 
-	/* Footer bottom */
+	/* (c) Legal bar */
 	.footer-bottom {
-		border-top: 1px solid oklch(var(--nc) / 0.1);
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
 		padding-top: 1.5rem;
 		display: flex;
 		flex-direction: column;
@@ -885,9 +987,9 @@
 	}
 
 	.copyright {
-		font-family: var(--font-mono, 'JetBrains Mono', monospace);
-		font-size: 0.75rem;
-		color: oklch(var(--nc) / 0.35);
+		font-family: var(--font-body, sans-serif);
+		font-size: 0.82rem;
+		color: #5a7263;
 	}
 
 	.footer-bottom-links {
@@ -896,15 +998,15 @@
 	}
 
 	.footer-bottom-link {
-		font-family: var(--font-mono, 'JetBrains Mono', monospace);
-		font-size: 0.75rem;
-		color: oklch(var(--nc) / 0.35);
+		font-family: var(--font-body, sans-serif);
+		font-size: 0.82rem;
+		color: #7c9585;
 		text-decoration: none;
 		transition: color 0.15s;
 	}
 
 	.footer-bottom-link:hover {
-		color: oklch(var(--nc) / 0.7);
+		color: #f4f1ea;
 	}
 
 	/* Scroll to top */
@@ -912,12 +1014,12 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 2rem;
-		height: 2rem;
-		background-color: oklch(var(--nc) / 0.08);
-		border: 1px solid oklch(var(--nc) / 0.15);
-		border-radius: 0.25rem;
-		color: oklch(var(--nc) / 0.5);
+		width: 2.2rem;
+		height: 2.2rem;
+		background-color: rgba(255, 255, 255, 0.06);
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		border-radius: 999px;
+		color: #a8e6c8;
 		cursor: pointer;
 		transition:
 			background-color 0.2s,
@@ -926,8 +1028,8 @@
 	}
 
 	.scroll-top-btn:hover {
-		background-color: oklch(var(--nc) / 0.15);
-		color: oklch(var(--nc));
+		background-color: #a8e6c8;
+		color: #14261b;
 	}
 
 	.scroll-top-btn svg {
@@ -953,7 +1055,7 @@
 		visibility: visible;
 	}
 
-	/* ===== MOBILE DRAWER ===== */
+	/* ===== MOBILE DRAWER (Aevani cream/forest) ===== */
 	.mobile-drawer {
 		position: fixed;
 		top: 0;
@@ -962,8 +1064,13 @@
 		left: 0;
 		width: 100vw;
 		height: 100vh;
-		background-color: oklch(var(--n));
-		color: oklch(var(--nc));
+		background-color: #14261b;
+		background-image: radial-gradient(
+			700px 500px at 90% 0%,
+			rgba(143, 216, 180, 0.12) 0%,
+			transparent 60%
+		);
+		color: #dce6dd;
 		z-index: 100;
 		display: flex;
 		flex-direction: column;
@@ -980,7 +1087,8 @@
 	.drawer-pattern {
 		position: absolute;
 		inset: 0;
-		opacity: 0.04;
+		opacity: 0.05;
+		color: #8fd8b4;
 		pointer-events: none;
 	}
 
@@ -993,20 +1101,22 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: none;
-		border: 1px solid oklch(var(--nc) / 0.15);
-		border-radius: 0.375rem;
-		color: oklch(var(--nc) / 0.7);
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		border-radius: 999px;
+		color: rgba(220, 230, 221, 0.75);
 		cursor: pointer;
 		transition:
 			color 0.2s,
+			background-color 0.2s,
 			border-color 0.2s;
 		z-index: 1;
 	}
 
 	.drawer-close:hover {
-		color: oklch(var(--nc));
-		border-color: oklch(var(--nc) / 0.35);
+		color: #14261b;
+		background: #a8e6c8;
+		border-color: #a8e6c8;
 	}
 
 	.drawer-close svg {
@@ -1015,15 +1125,16 @@
 	}
 
 	.drawer-wordmark {
-		font-family: var(--font-display, 'Barlow Condensed', sans-serif);
-		font-size: 1.5rem;
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		font-family: var(--font-display, sans-serif);
+		font-size: 1.4rem;
 		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: oklch(var(--nc));
+		letter-spacing: 0.14em;
+		color: #f4f1ea;
 		text-decoration: none;
 		margin-bottom: 3rem;
-		display: block;
 		position: relative;
 		z-index: 1;
 	}
@@ -1057,23 +1168,22 @@
 	}
 
 	.drawer-nav-link {
-		font-family: var(--font-display, 'Barlow Condensed', sans-serif);
-		font-size: 1.75rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
-		color: oklch(var(--nc));
+		font-family: var(--font-display, sans-serif);
+		font-size: 1.6rem;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		color: #f4f1ea;
 		text-decoration: none;
 		padding: 0.5rem 0;
 		display: block;
-		border-bottom: 1px solid oklch(var(--nc) / 0.06);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 		cursor: pointer;
 		list-style: none;
 		transition: color 0.15s;
 	}
 
 	.drawer-nav-link:hover {
-		color: oklch(var(--nc) / 0.7);
+		color: #8fd8b4;
 	}
 
 	.drawer-nav-link::-webkit-details-marker {
@@ -1089,16 +1199,16 @@
 	}
 
 	.drawer-sub-link {
-		font-family: var(--font-sans, 'Inter', sans-serif);
+		font-family: var(--font-body, sans-serif);
 		font-size: 0.9375rem;
-		color: oklch(var(--nc) / 0.55);
+		color: rgba(220, 230, 221, 0.6);
 		text-decoration: none;
 		padding: 0.375rem 0;
 		transition: color 0.15s;
 	}
 
 	.drawer-sub-link:hover {
-		color: oklch(var(--nc));
+		color: #f4f1ea;
 	}
 
 	/* Drawer bottom */
@@ -1109,7 +1219,7 @@
 		gap: 1.5rem;
 		position: relative;
 		z-index: 1;
-		border-top: 1px solid oklch(var(--nc) / 0.1);
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
 		padding-top: 1.5rem;
 	}
 
@@ -1124,34 +1234,34 @@
 		flex-direction: column;
 		gap: 0.2rem;
 		padding: 0.75rem;
-		background-color: oklch(var(--nc) / 0.06);
-		border-radius: 0.375rem;
+		background-color: rgba(255, 255, 255, 0.05);
+		border-radius: 12px;
 	}
 
 	.drawer-user-name {
 		font-size: 0.875rem;
 		font-weight: 600;
-		color: oklch(var(--nc));
+		color: #f4f1ea;
 	}
 
 	.drawer-user-email {
 		font-size: 0.75rem;
-		color: oklch(var(--nc) / 0.45);
+		color: #7c9585;
 	}
 
 	.drawer-action-btn {
 		display: block;
 		width: 100%;
-		padding: 0.625rem 1rem;
+		padding: 0.7rem 1rem;
 		text-align: center;
-		font-family: var(--font-sans, 'Inter', sans-serif);
-		font-size: 0.875rem;
+		font-family: var(--font-body, sans-serif);
+		font-size: 0.9rem;
 		font-weight: 500;
-		border-radius: 0.375rem;
+		border-radius: 999px;
 		text-decoration: none;
-		color: oklch(var(--nc) / 0.75);
-		background-color: oklch(var(--nc) / 0.07);
-		border: none;
+		color: rgba(220, 230, 221, 0.85);
+		background-color: rgba(255, 255, 255, 0.06);
+		border: 1px solid rgba(255, 255, 255, 0.12);
 		cursor: pointer;
 		transition:
 			background-color 0.2s,
@@ -1159,8 +1269,8 @@
 	}
 
 	.drawer-action-btn:hover {
-		background-color: oklch(var(--nc) / 0.12);
-		color: oklch(var(--nc));
+		background-color: rgba(255, 255, 255, 0.12);
+		color: #f4f1ea;
 	}
 
 	.drawer-action-btn:disabled {
@@ -1169,20 +1279,23 @@
 	}
 
 	.drawer-action-btn.primary {
-		background-color: oklch(var(--a));
-		color: oklch(var(--ac));
+		background: linear-gradient(180deg, #a8e6c8, #7cc9a2);
+		color: #14261b;
+		border-color: transparent;
+		font-weight: 600;
 	}
 
 	.drawer-action-btn.primary:hover {
-		background-color: oklch(var(--a) / 0.85);
+		background: linear-gradient(180deg, #b6ecd2, #7cc9a2);
+		color: #14261b;
 	}
 
 	/* Drawer newsletter */
 	.drawer-newsletter {
-		font-family: var(--font-sans, 'Inter', sans-serif);
+		font-family: var(--font-body, sans-serif);
 		font-size: 0.8125rem;
 		line-height: 1.5;
-		color: oklch(var(--nc) / 0.65);
+		color: #7c9585;
 	}
 
 	.drawer-newsletter-unavailable {
@@ -1190,7 +1303,7 @@
 	}
 
 	.drawer-newsletter-unavailable a {
-		color: inherit;
+		color: #a8e6c8;
 		text-decoration: underline;
 		text-underline-offset: 0.2em;
 	}
@@ -1198,7 +1311,7 @@
 	/* Drawer social */
 	.drawer-social {
 		display: flex;
-		gap: 1.25rem;
+		gap: 1rem;
 	}
 
 	.drawer-social-link {
@@ -1207,12 +1320,20 @@
 		justify-content: center;
 		width: 2.75rem;
 		height: 2.75rem;
-		color: oklch(var(--nc) / 0.35);
-		transition: color 0.2s;
+		border-radius: 999px;
+		color: #a8e6c8;
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		transition:
+			color 0.2s,
+			background-color 0.2s,
+			border-color 0.2s;
 	}
 
 	.drawer-social-link:hover {
-		color: oklch(var(--nc));
+		color: #14261b;
+		background: #a8e6c8;
+		border-color: #a8e6c8;
 	}
 
 	.drawer-social-link svg {

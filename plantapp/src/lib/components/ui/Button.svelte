@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 
 	interface Props {
-		variant?: 'primary' | 'secondary' | 'ghost';
+		variant?: 'primary' | 'secondary' | 'ghost' | 'mint';
 		size?: 'sm' | 'md' | 'lg';
 		loading?: boolean;
 		disabled?: boolean;
@@ -40,11 +40,11 @@
 			'btn-plant',
 			`btn-plant--${variant}`,
 			`btn-plant--${size}`,
-			'inline-flex items-center justify-center gap-2',
-			'font-sans font-semibold uppercase tracking-[0.05em]',
+			'inline-flex items-center justify-center gap-2 whitespace-nowrap',
+			'font-semibold',
 			'min-h-[44px]',
 			sizeClasses,
-			'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
+			'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2E6B4F]/40 focus-visible:ring-offset-2',
 			'transition-all',
 			isDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '',
 			className
@@ -75,99 +75,87 @@
 {/if}
 
 <style>
-	/* Primary variant — Frutiger Aero glass-tinted */
-	.btn-plant--primary {
-		background: linear-gradient(180deg, oklch(var(--p) / 0.92) 0%, oklch(var(--p)) 100%);
-		color: oklch(var(--pc));
-		border: 1px solid oklch(var(--p) / 0.7);
-		border-radius: var(--input-radius, 10px);
-		box-shadow:
-			var(--shadow-glow-sm),
-			0 1px 0 oklch(var(--pc) / 0.1) inset;
-		transform: translateY(0) scale(1);
+	/* Aevani pill buttons. See design-spec.md §1 (Buttons). */
+	.btn-plant {
+		font-family: var(--font-body);
+		border-radius: 999px;
+		text-transform: none;
+		letter-spacing: 0;
+		transform: translateY(0);
 		transition:
-			transform 250ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)),
-			box-shadow 250ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)),
+			transform 250ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+			box-shadow 250ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
 			background 250ms ease;
 	}
 
-	.btn-plant--primary:not(:disabled):hover {
-		transform: scale(1.02);
+	/* Primary — forest gradient pill */
+	.btn-plant--primary {
+		background: linear-gradient(180deg, #347a56 0%, #1e4a36 100%);
+		color: #f4f1ea;
+		border: 1px solid rgba(30, 74, 54, 0.6);
 		box-shadow:
-			var(--shadow-glow-md),
-			0 1px 0 oklch(var(--pc) / 0.15) inset;
-		background: linear-gradient(180deg, oklch(var(--p) / 0.85) 0%, oklch(var(--p) / 0.95) 100%);
+			inset 0 1px 0 rgba(255, 255, 255, 0.35),
+			0 6px 20px rgba(30, 74, 54, 0.35);
+	}
+
+	.btn-plant--primary:not(:disabled):hover {
+		transform: translateY(-1px);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.4),
+			0 10px 26px rgba(30, 74, 54, 0.45);
 	}
 
 	.btn-plant--primary:not(:disabled):active {
-		transform: scale(0.98);
+		transform: translateY(0);
 	}
 
-	/* Secondary variant — glass outline */
+	/* Secondary — glass pill */
 	.btn-plant--secondary {
-		background: var(--input-bg);
-		color: oklch(var(--p));
-		border: 1.5px solid var(--input-border-hover);
-		border-radius: var(--input-radius, 10px);
-		position: relative;
-		overflow: hidden;
-		backdrop-filter: blur(var(--glass-blur));
-		-webkit-backdrop-filter: blur(var(--glass-blur));
-		box-shadow: var(--shadow-glow-sm);
-		transition:
-			color 300ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1)),
-			box-shadow 250ms var(--ease-out-expo);
-	}
-
-	.btn-plant--secondary::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background-color: oklch(var(--p));
-		transform-origin: left center;
-		transform: scaleX(0);
-		transition: transform 300ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1));
-		z-index: 0;
+		background: rgba(255, 255, 255, 0.5);
+		color: #1c3527;
+		border: 1px solid rgba(255, 255, 255, 0.9);
+		backdrop-filter: blur(var(--glass-blur, 12px));
+		-webkit-backdrop-filter: blur(var(--glass-blur, 12px));
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.95),
+			0 6px 18px rgba(23, 48, 31, 0.1);
 	}
 
 	.btn-plant--secondary:not(:disabled):hover {
-		color: oklch(var(--pc));
+		background: rgba(255, 255, 255, 0.7);
+		transform: translateY(-1px);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.95),
+			0 10px 24px rgba(23, 48, 31, 0.14);
 	}
 
-	.btn-plant--secondary:not(:disabled):hover::before {
-		transform: scaleX(1);
-	}
-
-	.btn-plant--secondary :global(*) {
-		position: relative;
-		z-index: 1;
-	}
-
-	/* Ghost variant */
+	/* Ghost — outline pill */
 	.btn-plant--ghost {
 		background-color: transparent;
-		color: oklch(var(--p));
-		border: none;
-		border-radius: var(--input-radius, 10px);
-		position: relative;
-		padding-bottom: calc(var(--spacing, 0.25rem) * 2 + 2px);
+		color: #2e6b4f;
+		border: 1px solid rgba(46, 107, 79, 0.3);
 	}
 
-	.btn-plant--ghost::after {
-		content: '';
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		height: 2px;
-		background-color: oklch(var(--p));
-		transform-origin: left center;
-		transform: scaleX(0);
-		transition: transform 300ms var(--ease-out-expo, cubic-bezier(0.19, 1, 0.22, 1));
+	.btn-plant--ghost:not(:disabled):hover {
+		background-color: rgba(46, 107, 79, 0.08);
+		border-color: rgba(46, 107, 79, 0.45);
 	}
 
-	.btn-plant--ghost:not(:disabled):hover::after {
-		transform: scaleX(1);
+	/* Mint — light CTA on dark surfaces */
+	.btn-plant--mint {
+		background: linear-gradient(180deg, #a8e6c8 0%, #7cc9a2 100%);
+		color: #14261b;
+		border: 1px solid rgba(124, 201, 162, 0.7);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.5),
+			0 6px 20px rgba(20, 38, 27, 0.25);
+	}
+
+	.btn-plant--mint:not(:disabled):hover {
+		transform: translateY(-1px);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.6),
+			0 10px 26px rgba(20, 38, 27, 0.32);
 	}
 
 	/* Spinner */

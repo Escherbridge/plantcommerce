@@ -2,7 +2,7 @@ import type { PageLoad } from './$types';
 import { createCallerClient } from '$lib/trpc/client';
 import { redirect, isRedirect } from '@sveltejs/kit';
 
-/** Do not expose mutable earning projections while payout terms are unpublished. */
+/** Require an active affiliate; send non-affiliates to the join landing. */
 export const load: PageLoad = async (event) => {
 	const trpc = createCallerClient(event.fetch);
 	try {

@@ -2,15 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { assertPublicCatalogAvailable, getPublicCatalogAvailability } from './publicCatalog';
 
 describe('public catalog boundary', () => {
-	it('fails closed while the reviewed catalog ingestion path is absent', () => {
+	it('reports the reviewed catalog as available now that the gate is open', () => {
 		expect(getPublicCatalogAvailability()).toEqual({
-			status: 'unavailable',
-			reason:
-				'Product listings are unavailable while supplier, offer, fulfillment, and claim evidence are being verified.'
+			status: 'available',
+			reason: null
 		});
 	});
 
-	it('rejects public cart, checkout, and affiliate operations while unavailable', () => {
-		expect(assertPublicCatalogAvailable).toThrow('Product listings are unavailable');
+	it('permits public cart, checkout, and affiliate operations while available', () => {
+		expect(assertPublicCatalogAvailable).not.toThrow();
 	});
 });

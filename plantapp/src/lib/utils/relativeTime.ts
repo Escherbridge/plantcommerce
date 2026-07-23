@@ -1,3 +1,33 @@
+const ABSOLUTE_MONTHS = [
+	'Jan',
+	'Feb',
+	'Mar',
+	'Apr',
+	'May',
+	'Jun',
+	'Jul',
+	'Aug',
+	'Sep',
+	'Oct',
+	'Nov',
+	'Dec'
+];
+
+/**
+ * Deterministic absolute date (`Mon D, YYYY`) built from UTC parts.
+ *
+ * Unlike `formatRelativeTime` (which depends on `Date.now()`) and
+ * `toLocaleDateString` (which depends on the host timezone/locale), this
+ * produces byte-identical output on the SSR server and the hydrating client,
+ * so it is safe to render during hydration without a `hydration_html_changed`
+ * mismatch. See `src/lib/utils/AGENTS.md`.
+ */
+export function formatAbsoluteDate(date: Date | string): string {
+	const then = typeof date === 'string' ? new Date(date) : date;
+	if (Number.isNaN(then.getTime())) return '';
+	return `${ABSOLUTE_MONTHS[then.getUTCMonth()]} ${then.getUTCDate()}, ${then.getUTCFullYear()}`;
+}
+
 export function formatRelativeTime(date: Date | string): string {
 	const now = new Date();
 	const then = typeof date === 'string' ? new Date(date) : date;

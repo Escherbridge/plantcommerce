@@ -1,6 +1,7 @@
 import { eq, desc, and, or, inArray } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
+import { AffiliateCommissionService } from './affiliateCommission';
 
 export type OrderStatus =
 	| 'pending'
@@ -263,13 +264,28 @@ export class OrderService {
 	 * Update order status
 	 */
 	static async updateOrderStatus(orderId: number, status: OrderStatus): Promise<void> {
-		await db
-			.update(table.order)
-			.set({
-				status,
-				updatedAt: new Date()
-			})
-			.where(eq(table.order.id, orderId));
+		await db.transaction(async (tx) => {
+			const now = new Date();
+			await tx
+				.update(table.order)
+				.set({ status, updatedAt: now })
+				.where(eq(table.order.id, orderId));
+
+			// Fulfillment clears (approves) accrued affiliate commission; refund/chargeback/
+			// cancellation reverses it. No-ops when the affiliate ledger is disabled.
+			const causationReference = `order:${orderId}:status:${status}`;
+			if (status === 'shipped' || status === 'delivered') {
+				await AffiliateCommissionService.clearCommissionsForOrder(tx, orderId, causationReference, now);
+			} else if (status === 'refunded' || status === 'cancelled') {
+				await AffiliateCommissionService.reverseCommissionsForOrder(
+					tx,
+					orderId,
+					'refund',
+					causationReference,
+					now
+				);
+			}
+		});
 	}
 
 	/**

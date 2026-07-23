@@ -4,25 +4,33 @@ import { createCallerClient } from '$lib/trpc/client';
 export const load: PageLoad = async (event) => {
 	const trpc = createCallerClient(event.fetch);
 	try {
-		const [results, categories] = await Promise.all([
+		const [results, categories, catalog] = await Promise.all([
+			// Featured field kit — the 3 flagged products for the home showcase.
 			trpc.products.getProducts.query({
 				featured: true,
-				limit: 6,
+				limit: 3,
 				sortBy: 'created',
 				sortOrder: 'desc'
 			}),
-			trpc.products.getCategories.query()
+			trpc.products.getCategories.query(),
+			// Lightweight catalogue sample used only to derive a real "N+ products" hero stat.
+			trpc.products.getProducts.query({
+				limit: 50,
+				sortBy: 'created',
+				sortOrder: 'desc'
+			})
 		]);
 
 		const parentSlugMap = buildParentSlugMap(categories);
 		const featuredProducts = (Array.isArray(results) ? results : []).map((row: any) =>
 			normalizeProduct(row, parentSlugMap)
 		);
+		const productCount = Array.isArray(catalog) ? catalog.length : 0;
 
-		return { featuredProducts };
+		return { featuredProducts, productCount };
 	} catch (error) {
-		console.error('Error loading featured products:', error);
-		return { featuredProducts: [] };
+		console.error('Error loading home page data:', error);
+		return { featuredProducts: [], productCount: 0 };
 	}
 };
 

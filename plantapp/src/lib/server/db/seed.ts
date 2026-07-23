@@ -1,18 +1,29 @@
 /**
  * Comprehensive UAT Seed Script for Aevani Plant Commerce
  *
- * Seeds all database tables with realistic, interconnected data
- * using the AI-MockAssets images as product/content imagery.
+ * Seeds all database tables with realistic, interconnected data. The product
+ * catalogue is the canonical 40-product demo dataset (`catalogDemo.ts`), served
+ * from real `/assets/` imagery; content/hero imagery still resolves through the
+ * legacy mock-asset serve API.
  *
  * Usage: npm run db:seed:uat
  */
 
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { sql } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { hash } from '@node-rs/argon2';
 import crypto from 'node:crypto';
 import * as schema from './schema';
+import * as lms from './lms-schema';
+import {
+	demoCategories,
+	demoProducts,
+	computeRatingSummary,
+	resolveAssetUrls,
+	assetUrlToBucketPath,
+	deriveProductColumns
+} from './catalogDemo';
 
 // ---------- connection ----------
 const DATABASE_URL = process.env.DATABASE_URL;
@@ -75,10 +86,11 @@ function generateOrderNumber(index: number): string {
 	return `${prefix}-${year}-${String(index + 1).padStart(5, '0')}`;
 }
 
-// The mock-asset image path prefix (relative from src/lib/images/)
+// The mock-asset image path prefix (relative from src/lib/images/), still used
+// for content/hero imagery served via the file serve API.
 const IMG_BASE = 'AI-MockAssets';
 
-// ---------- file record factory ----------
+// ---------- file record factory (content/hero imagery) ----------
 function makeFileRecord(opts: {
 	filename: string;
 	entityType: 'product' | 'content' | 'user' | 'general';
@@ -255,981 +267,6 @@ const users: (typeof schema.user.$inferInsert)[] = [
 	}
 ];
 
-// ----- Product Categories (hierarchical) -----
-interface CategoryDef {
-	name: string;
-	slug: string;
-	description: string;
-	children?: CategoryDef[];
-}
-
-const categoryTree: CategoryDef[] = [
-	{
-		name: 'Plants & Seeds',
-		slug: 'plants-seeds',
-		description:
-			'Heirloom seeds, medicinal herbs, native plants, and companion planting collections for polyculture gardens.',
-		children: [
-			{
-				name: 'Heirloom Seeds',
-				slug: 'heirloom-seeds',
-				description:
-					'Open-pollinated, non-GMO heritage seed varieties passed down through generations.'
-			},
-			{
-				name: 'Medicinal Herbs',
-				slug: 'medicinal-herbs',
-				description: 'Therapeutic herb plants and kits for home apothecary gardens.'
-			},
-			{
-				name: 'Pollinator Plants',
-				slug: 'pollinator-plants',
-				description:
-					'Native flowering plants that attract bees, butterflies, and beneficial insects.'
-			}
-		]
-	},
-	{
-		name: 'Garden Tools',
-		slug: 'garden-tools',
-		description:
-			'Hand-forged, ergonomic, and sustainable tools for permaculture gardening and soil stewardship.',
-		children: [
-			{
-				name: 'Hand Tools',
-				slug: 'hand-tools',
-				description: 'Trowels, cultivators, and pruners crafted for durability and comfort.'
-			},
-			{
-				name: 'Soil Testing',
-				slug: 'soil-testing',
-				description: 'pH meters, nutrient test kits, and soil health monitoring equipment.'
-			}
-		]
-	},
-	{
-		name: 'Hydroponics',
-		slug: 'hydroponics',
-		description:
-			'Complete hydroponic growing systems, nutrients, and media for soil-free indoor and vertical farming.',
-		children: [
-			{
-				name: 'Hydroponic Systems',
-				slug: 'hydroponic-systems',
-				description: 'NFT channels, DWC buckets, vertical towers, and grow tent kits.'
-			},
-			{
-				name: 'Nutrients & Media',
-				slug: 'nutrients-media',
-				description:
-					'Hydroponic nutrient solutions, rockwool, clay pebbles, and growing substrates.'
-			}
-		]
-	},
-	{
-		name: 'Aquaponics',
-		slug: 'aquaponics',
-		description:
-			'Integrated fish-and-plant aquaponic systems combining aquaculture with hydroponic growing.',
-		children: [
-			{
-				name: 'Aquaponic Systems',
-				slug: 'aquaponic-systems',
-				description: 'Countertop to commercial-scale aquaponic setups.'
-			},
-			{
-				name: 'Fish & Supplies',
-				slug: 'fish-supplies',
-				description: 'Tilapia fingerlings, water testing, bell siphons, and fish tank components.'
-			}
-		]
-	},
-	{
-		name: 'Silvopasture',
-		slug: 'silvopasture',
-		description:
-			'Silvopasture systems integrating trees, forage, and livestock for regenerative land management.',
-		children: [
-			{
-				name: 'Tree & Forage Seeds',
-				slug: 'tree-forage-seeds',
-				description: 'Nitrogen-fixing trees, silvopasture seed mixes, and forage crop starts.'
-			},
-			{
-				name: 'Livestock Integration',
-				slug: 'livestock-integration',
-				description: 'Portable netting, tree shelters, and rotational grazing equipment.'
-			}
-		]
-	},
-	{
-		name: 'Agroforestry',
-		slug: 'agroforestry',
-		description:
-			'Agroforestry products and tree-based agricultural systems for sustainable food production.',
-		children: [
-			{
-				name: 'Tree Crops',
-				slug: 'tree-crops',
-				description: 'Fruit and nut tree seedlings for agroforestry systems.'
-			},
-			{
-				name: 'Forest Farming',
-				slug: 'forest-farming',
-				description: 'Understory crops, mushroom logs, and forest garden components.'
-			}
-		]
-	},
-	{
-		name: 'Kits & Collections',
-		slug: 'kits-collections',
-		description:
-			'Curated starter kits and themed collections for composting, mushrooms, microgreens, and more.',
-		children: [
-			{
-				name: 'Starter Kits',
-				slug: 'starter-kits',
-				description: 'Everything-in-one kits for beginners to get growing immediately.'
-			},
-			{
-				name: 'Composting',
-				slug: 'composting',
-				description: 'Countertop bins, worm farms, and soil amendment bundles.'
-			}
-		]
-	}
-];
-
-// ----- Product definitions mapped to mock assets -----
-interface ProductDef {
-	name: string;
-	slug: string;
-	sku: string;
-	description: string;
-	shortDescription: string;
-	price: string;
-	comparePrice?: string;
-	costPrice: string;
-	stock: number;
-	weight: string;
-	categorySlug: string;
-	isFeatured: boolean;
-	tags: string[];
-	imageFile: string;
-	metaTitle: string;
-	metaDescription: string;
-}
-
-const products: ProductDef[] = [
-	// --- Plants & Seeds ---
-	{
-		name: 'Heirloom Tomato Collection',
-		slug: 'heirloom-tomato-collection',
-		sku: 'PLT-TOM-001',
-		description:
-			'A curated selection of 6 heritage tomato varieties including Brandywine, Cherokee Purple, Green Zebra, San Marzano, Yellow Pear, and Black Krim. These open-pollinated seeds have been saved for generations, producing tomatoes with unmatched flavor complexity. Each packet contains 25+ seeds with detailed growing guides, companion planting charts, and seed-saving instructions. Perfect for the home gardener seeking exceptional taste and genetic diversity.',
-		shortDescription: '6 heritage tomato varieties with 25+ seeds each and growing guides.',
-		price: '34.99',
-		comparePrice: '44.99',
-		costPrice: '12.50',
-		stock: 245,
-		weight: '0.18',
-		categorySlug: 'heirloom-seeds',
-		isFeatured: true,
-		tags: ['tomato', 'heirloom', 'seeds', 'vegetable', 'organic', 'bestseller'],
-		imageFile: 'PlantProduct-TOMATO.png',
-		metaTitle: 'Heirloom Tomato Seed Collection | 6 Heritage Varieties',
-		metaDescription:
-			'Grow 6 heritage tomato varieties from open-pollinated seeds. Includes Brandywine, Cherokee Purple & more with planting guides.'
-	},
-	{
-		name: 'Medicinal Herb Garden Kit',
-		slug: 'medicinal-herb-garden-kit',
-		sku: 'PLT-MED-001',
-		description:
-			'Start your home apothecary with this thoughtfully assembled medicinal herb collection. Includes live starter plants of lavender, chamomile, echinacea, peppermint, lemon balm, and calendula in biodegradable coconut coir pots. Each plant comes with a detailed care card covering growing conditions, harvest timing, drying methods, and traditional medicinal uses. The included field guide covers 30+ herbal preparations from teas to tinctures.',
-		shortDescription:
-			'6 live medicinal herb starters with care cards and herbal preparation guide.',
-		price: '49.99',
-		comparePrice: '59.99',
-		costPrice: '18.00',
-		stock: 128,
-		weight: '2.40',
-		categorySlug: 'medicinal-herbs',
-		isFeatured: true,
-		tags: ['medicinal', 'herbs', 'lavender', 'chamomile', 'organic', 'wellness'],
-		imageFile: 'PlantProduct-MED.png',
-		metaTitle: 'Medicinal Herb Garden Kit | 6 Live Healing Plants',
-		metaDescription:
-			'Grow your own apothecary. 6 medicinal herb starters with care guides and herbal preparation instructions.'
-	},
-	{
-		name: 'Pollinator Garden Seed Collection',
-		slug: 'pollinator-garden-seed-collection',
-		sku: 'PLT-POL-001',
-		description:
-			'Attract bees, butterflies, and hummingbirds with this regionally adapted wildflower seed mix. Contains 18 native species including milkweed, bee balm, echinacea, black-eyed susan, and wild bergamot. Enough seed to cover 200 sq ft. Includes a seasonal bloom chart ensuring continuous flowering from spring through fall. Supports monarch migration corridors and native pollinator populations.',
-		shortDescription: '18 native wildflower species covering 200 sq ft with seasonal bloom chart.',
-		price: '28.99',
-		costPrice: '8.50',
-		stock: 310,
-		weight: '0.12',
-		categorySlug: 'pollinator-plants',
-		isFeatured: false,
-		tags: ['pollinator', 'wildflower', 'native', 'bees', 'butterflies', 'biodiversity'],
-		imageFile: 'GeneralKits&Collections-PollinatorGardenSeedCollection.png',
-		metaTitle: 'Pollinator Garden Seed Collection | 18 Native Wildflowers',
-		metaDescription:
-			'Support pollinators with 18 native wildflower species. Covers 200 sq ft with blooms from spring through fall.'
-	},
-	{
-		name: 'Heirloom Seed Vault',
-		slug: 'heirloom-seed-vault',
-		sku: 'PLT-SED-001',
-		description:
-			'A comprehensive collection of 40 heirloom vegetable, herb, and flower seed varieties packaged in moisture-proof resealable pouches inside a durable metal tin. Varieties span every season and growing zone, from cold-hardy kale to heat-loving okra. Each packet is dated and tested for 90%+ germination rates. Includes a 60-page companion planting and succession planting guide. The ultimate seed library for food sovereignty.',
-		shortDescription: '40 heirloom seed varieties in moisture-proof vault with planting guide.',
-		price: '89.99',
-		comparePrice: '119.99',
-		costPrice: '28.00',
-		stock: 85,
-		weight: '1.20',
-		categorySlug: 'heirloom-seeds',
-		isFeatured: true,
-		tags: ['seeds', 'heirloom', 'vault', 'prepper', 'organic', 'collection'],
-		imageFile: 'PlantProduct-SEED.png',
-		metaTitle: 'Heirloom Seed Vault | 40 Varieties in Moisture-Proof Tin',
-		metaDescription:
-			'40 heirloom seed varieties with 90%+ germination. Moisture-proof vault with companion planting guide.'
-	},
-
-	// --- Garden Tools ---
-	{
-		name: 'Hand-Forged Garden Trowel',
-		slug: 'hand-forged-garden-trowel',
-		sku: 'TLS-TRW-001',
-		description:
-			'Crafted by artisan blacksmiths from high-carbon steel with a hand-turned ash wood handle. The tapered blade cuts through compacted soil effortlessly, while depth markings on the blade ensure precise planting. The full-tang construction means this trowel will last generations. Each piece shows unique hammer marks from the forging process. Leather hanging loop included.',
-		shortDescription: 'Artisan-forged high-carbon steel trowel with ash handle and depth markings.',
-		price: '42.00',
-		costPrice: '16.00',
-		stock: 67,
-		weight: '0.45',
-		categorySlug: 'hand-tools',
-		isFeatured: true,
-		tags: ['trowel', 'hand-forged', 'tool', 'steel', 'artisan', 'lifetime'],
-		imageFile: 'ToolProduct-TROWL.png',
-		metaTitle: 'Hand-Forged Garden Trowel | Artisan High-Carbon Steel',
-		metaDescription:
-			'Artisan blacksmith-forged trowel in high-carbon steel with ash wood handle. Built to last generations.'
-	},
-
-	// --- Hydroponics ---
-	{
-		name: 'NFT Hydroponic Channel System',
-		slug: 'nft-hydroponic-channel-system',
-		sku: 'HYD-NFT-001',
-		description:
-			'Professional-grade Nutrient Film Technique system with 4 food-safe PVC channels, submersible pump, 20-gallon reservoir, timer, and 36 net pots. Grows up to 36 heads of lettuce or herbs simultaneously. UV-stabilized white channels reflect light onto plants while keeping roots cool. Includes starter nutrient pack and pH adjustment kit. Assembly in under 2 hours with no tools required.',
-		shortDescription: '4-channel NFT system growing 36 plants with pump, reservoir, and nutrients.',
-		price: '189.99',
-		comparePrice: '229.99',
-		costPrice: '72.00',
-		stock: 34,
-		weight: '12.50',
-		categorySlug: 'hydroponic-systems',
-		isFeatured: true,
-		tags: ['hydroponic', 'NFT', 'lettuce', 'indoor', 'commercial', 'system'],
-		imageFile: 'HydroToolProduct-NFTHydroponicChannelSystem.png',
-		metaTitle: 'NFT Hydroponic Channel System | Grow 36 Plants',
-		metaDescription:
-			'Professional NFT hydroponic system with 4 channels, pump, and nutrients. Grow 36 plants simultaneously.'
-	},
-	{
-		name: 'Deep Water Culture Bucket System',
-		slug: 'deep-water-culture-bucket-system',
-		sku: 'HYD-DWC-001',
-		description:
-			'The simplest path to hydroponic growing. This single-plant DWC system includes a 5-gallon food-grade bucket, 6-inch net pot lid, air pump, air stone, tubing, clay pebbles, and a 2-week nutrient starter. Perfect for growing large plants like tomatoes, peppers, or basil. The opaque bucket prevents algae while the continuous aeration keeps roots oxygenated. Great for beginners and classrooms.',
-		shortDescription: '5-gallon DWC bucket with air pump, clay pebbles, and nutrient starter.',
-		price: '39.99',
-		costPrice: '14.00',
-		stock: 156,
-		weight: '3.20',
-		categorySlug: 'hydroponic-systems',
-		isFeatured: false,
-		tags: ['hydroponic', 'DWC', 'beginner', 'bucket', 'indoor'],
-		imageFile: 'HydroToolProduct-DeepWaterCulture(DWC)Bucket System.png',
-		metaTitle: 'Deep Water Culture Bucket System | Beginner Hydroponics',
-		metaDescription:
-			'Start hydroponic growing with this complete DWC bucket system. Includes pump, clay pebbles, and nutrients.'
-	},
-	{
-		name: 'Vertical Tower Garden System',
-		slug: 'vertical-tower-garden-system',
-		sku: 'HYD-VTG-001',
-		description:
-			'Grow 40+ plants in just 2 square feet of floor space. This 6-foot vertical aeroponic tower uses a top-drip irrigation system to deliver nutrients to stacked grow pods. Ideal for patios, balconies, and small spaces. Made from food-safe BPA-free plastic with UV protection. Includes pump, timer, 40 grow pods, rockwool starters, and a 3-month nutrient supply. Grows strawberries, herbs, greens, and flowers.',
-		shortDescription: '6-foot vertical tower growing 40+ plants in 2 sq ft with drip irrigation.',
-		price: '349.99',
-		comparePrice: '449.99',
-		costPrice: '135.00',
-		stock: 22,
-		weight: '18.00',
-		categorySlug: 'hydroponic-systems',
-		isFeatured: true,
-		tags: ['vertical', 'tower', 'hydroponic', 'aeroponic', 'space-saving', 'patio'],
-		imageFile: 'HydroToolProduct-VerticalTowerGardenSystem.png',
-		metaTitle: 'Vertical Tower Garden | Grow 40+ Plants in 2 Sq Ft',
-		metaDescription:
-			'Grow 40+ plants vertically in just 2 sq ft. Aeroponic tower with drip system, pump, and 3-month nutrient supply.'
-	},
-	{
-		name: 'Hydroponic Grow Tent Kit',
-		slug: 'hydroponic-grow-tent-kit',
-		sku: 'HYD-GTK-001',
-		description:
-			'Complete indoor growing environment in a 4x4x7 ft reflective mylar tent. Includes full-spectrum LED grow light (400W equivalent, draws 200W), inline fan with carbon filter for odor control, clip fan for air circulation, thermometer/hygrometer, and hanging equipment. The 600D Oxford exterior blocks all light leaks. Multiple cable ports and observation window. Perfect for year-round indoor production.',
-		shortDescription:
-			'4x4 ft grow tent with LED light, ventilation, carbon filter, and climate monitoring.',
-		price: '279.99',
-		comparePrice: '349.99',
-		costPrice: '105.00',
-		stock: 18,
-		weight: '22.00',
-		categorySlug: 'hydroponic-systems',
-		isFeatured: false,
-		tags: ['grow-tent', 'LED', 'indoor', 'ventilation', 'year-round'],
-		imageFile: 'HydroToolProduct-HydroponicGrowTentKit.png',
-		metaTitle: 'Hydroponic Grow Tent Kit | Complete 4x4 Indoor Setup',
-		metaDescription:
-			'Complete 4x4 indoor growing tent with LED light, carbon filter ventilation, and climate monitoring.'
-	},
-	{
-		name: 'Hydroponic Nutrients Trio',
-		slug: 'hydroponic-nutrients-trio',
-		sku: 'HYD-NUT-001',
-		description:
-			'Three-part liquid nutrient system (Grow, Bloom, Micro) designed for all hydroponic and soilless growing methods. Pharmaceutical-grade minerals with chelated micronutrients for maximum plant uptake. Each 1-quart bottle includes a measuring cup and feeding schedule chart for vegetables, herbs, and flowers. pH-buffered formula reduces adjustment needs. Enough for 150+ gallons of nutrient solution.',
-		shortDescription: '3-part liquid nutrients (Grow/Bloom/Micro) for 150+ gallons of solution.',
-		price: '44.99',
-		costPrice: '15.00',
-		stock: 203,
-		weight: '3.60',
-		categorySlug: 'nutrients-media',
-		isFeatured: false,
-		tags: ['nutrients', 'hydroponic', 'liquid', 'minerals', 'feeding'],
-		imageFile: 'HydroToolProduct-HydroponicNutrientsTrio.png',
-		metaTitle: 'Hydroponic Nutrients Trio | Grow, Bloom & Micro',
-		metaDescription:
-			'Complete 3-part hydroponic nutrient system. Pharmaceutical-grade minerals for 150+ gallons of solution.'
-	},
-	{
-		name: 'Rockwool Cubes & Growing Media Sampler',
-		slug: 'rockwool-cubes-growing-media-sampler',
-		sku: 'HYD-MED-001',
-		description:
-			'Sample pack of the most popular hydroponic growing media. Includes 50 rockwool starter cubes (1.5 inch), 2L expanded clay pebbles (hydroton), 2L coco coir, and 1L perlite. Each medium comes with a usage guide explaining which crops and systems it works best with. Perfect for experimenting to find your preferred growing substrate.',
-		shortDescription: '50 rockwool cubes plus clay pebbles, coco coir, and perlite samples.',
-		price: '24.99',
-		costPrice: '8.00',
-		stock: 178,
-		weight: '2.80',
-		categorySlug: 'nutrients-media',
-		isFeatured: false,
-		tags: ['rockwool', 'clay-pebbles', 'coco-coir', 'growing-media', 'starter'],
-		imageFile: 'HydroToolProduct-RockwoolCubes&GrowingMedia.png',
-		metaTitle: 'Rockwool & Growing Media Sampler | 4 Substrates',
-		metaDescription:
-			'Try 4 hydroponic growing media: rockwool cubes, clay pebbles, coco coir, and perlite with usage guides.'
-	},
-	{
-		name: 'Net Pots & Clay Pebbles Bundle',
-		slug: 'net-pots-clay-pebbles-bundle',
-		sku: 'HYD-NPC-001',
-		description:
-			'Essential hydroponic planting supplies: 50 heavy-duty net pots (assorted 2", 3", and 6" sizes) plus 10L of premium expanded clay pebbles. The net pots feature reinforced rims and wide drainage slots for optimal root aeration. Pre-washed clay pebbles are pH-neutral and reusable for years. Compatible with all hydroponic systems.',
-		shortDescription:
-			'50 assorted net pots and 10L premium clay pebbles for any hydroponic system.',
-		price: '32.99',
-		costPrice: '11.00',
-		stock: 142,
-		weight: '5.00',
-		categorySlug: 'nutrients-media',
-		isFeatured: false,
-		tags: ['net-pots', 'clay-pebbles', 'hydroton', 'supplies'],
-		imageFile: 'HydroToolProduct-HydroponicNetPots&ClayPebbles.png',
-		metaTitle: 'Net Pots & Clay Pebbles Bundle | Hydroponic Essentials',
-		metaDescription:
-			'50 net pots in 3 sizes plus 10L premium clay pebbles. Compatible with all hydroponic systems.'
-	},
-	{
-		name: 'Aeroponic Misting System',
-		slug: 'aeroponic-misting-system',
-		sku: 'HYD-AER-001',
-		description:
-			'High-pressure aeroponic misting system with 80 PSI diaphragm pump, 12 brass misting nozzles, accumulator tank, cycle timer, and 50 feet of tubing. Delivers a fine 50-micron mist directly to root zones for maximum nutrient absorption and oxygenation. Roots grow 3x faster than traditional hydroponics. Includes anti-drip nozzles and inline filter. For serious growers seeking cutting-edge technology.',
-		shortDescription: 'High-pressure 80 PSI misting system with 12 nozzles and cycle timer.',
-		price: '219.99',
-		comparePrice: '269.99',
-		costPrice: '82.00',
-		stock: 15,
-		weight: '8.50',
-		categorySlug: 'hydroponic-systems',
-		isFeatured: false,
-		tags: ['aeroponic', 'misting', 'high-pressure', 'advanced', 'roots'],
-		imageFile: 'HydroToolProduct-AeroponicMistingSystem.png',
-		metaTitle: 'Aeroponic Misting System | 80 PSI High-Pressure',
-		metaDescription:
-			'Advanced 80 PSI aeroponic misting system. 12 brass nozzles deliver 50-micron mist for 3x faster root growth.'
-	},
-
-	// --- Aquaponics ---
-	{
-		name: 'Countertop Aquaponics Starter System',
-		slug: 'countertop-aquaponics-starter-system',
-		sku: 'AQP-CTR-001',
-		description:
-			'A self-contained ecosystem that fits on your kitchen counter. Fish waste feeds the plants, plants clean the water. Includes a 3-gallon clear acrylic tank, grow bed with clay pebbles, LED grow light, air pump, and water conditioner. Accommodates 2-3 small fish (goldfish or bettas) and grows herbs, lettuce, or microgreens year-round. Silent operation, elegant design with bamboo accents. The perfect introduction to aquaponics.',
-		shortDescription: 'Kitchen countertop aquaponics with 3-gal tank, grow bed, and LED light.',
-		price: '79.99',
-		comparePrice: '99.99',
-		costPrice: '30.00',
-		stock: 64,
-		weight: '4.50',
-		categorySlug: 'aquaponic-systems',
-		isFeatured: true,
-		tags: ['aquaponics', 'countertop', 'beginner', 'kitchen', 'fish', 'herbs'],
-		imageFile: 'ToolProduct-AquaPonic.png',
-		metaTitle: 'Countertop Aquaponics System | Kitchen Fish & Herb Garden',
-		metaDescription:
-			'Grow herbs and raise fish on your kitchen counter. Complete aquaponics starter with tank, grow bed, and LED light.'
-	},
-	{
-		name: 'Commercial Aquaponics Grow Bed',
-		slug: 'commercial-aquaponics-grow-bed',
-		sku: 'AQP-BED-001',
-		description:
-			'Production-scale 4x8 ft flood-and-drain grow bed with food-grade HDPE liner, bell siphon assembly, 12" depth for deep-rooting crops, and stainless steel frame. Holds 32 cubic feet of growing media. Designed to pair with 275-gallon IBC fish tanks in a 1:1 ratio. Includes plumbing fittings, overflow protection, and installation guide. Rated for 10+ years of continuous use in greenhouse environments.',
-		shortDescription: '4x8 ft commercial grow bed with bell siphon, HDPE liner, and steel frame.',
-		price: '449.99',
-		costPrice: '180.00',
-		stock: 8,
-		weight: '45.00',
-		categorySlug: 'aquaponic-systems',
-		isFeatured: false,
-		tags: ['aquaponics', 'commercial', 'grow-bed', 'greenhouse', 'production'],
-		imageFile: 'ToolProduct-AquaponicBed.png',
-		metaTitle: 'Commercial Aquaponics Grow Bed | 4x8 ft Production Scale',
-		metaDescription:
-			'4x8 ft commercial aquaponics grow bed with food-grade liner and stainless steel frame for greenhouse production.'
-	},
-	{
-		name: 'IBC Aquaponics Fish Tank',
-		slug: 'ibc-aquaponics-fish-tank',
-		sku: 'AQP-IBC-001',
-		description:
-			'Professionally converted 275-gallon IBC tote fish tank with food-safe interior coating, viewing window (12x18 in tempered glass), ball valve drain, solids filter basket, aeration manifold with 4 air stones, and insulated jacket for temperature stability. Supports 50-75 tilapia or 100+ ornamental fish. The metal cage provides structural support while the pallet base keeps it elevated for gravity-fed drainage to grow beds.',
-		shortDescription:
-			'275-gallon IBC fish tank with viewing window, aeration, and insulated jacket.',
-		price: '389.99',
-		comparePrice: '479.99',
-		costPrice: '155.00',
-		stock: 6,
-		weight: '55.00',
-		categorySlug: 'aquaponic-systems',
-		isFeatured: false,
-		tags: ['aquaponics', 'fish-tank', 'IBC', 'tilapia', '275-gallon'],
-		imageFile: 'ToolProduct-AquaponicFishTank.png',
-		metaTitle: 'IBC Aquaponics Fish Tank | 275-Gallon Converted Tote',
-		metaDescription:
-			'275-gallon IBC fish tank with viewing window, 4-stone aeration, and insulated jacket for 50-75 tilapia.'
-	},
-	{
-		name: 'Aquaponics Bell Siphon Kit',
-		slug: 'aquaponics-bell-siphon-kit',
-		sku: 'AQP-BSK-001',
-		description:
-			'Auto-siphon kit that creates the flood-and-drain cycle essential to media-based aquaponics. Includes clear PVC standpipe (adjustable height 6-12"), bell housing, media guard screen, and all fittings for standard 1" bulkhead. The clear construction lets you observe the siphon cycle for educational purposes or troubleshooting. Starts reliably at 2 GPM and breaks cleanly. Works in grow beds 8-14 inches deep.',
-		shortDescription: 'Clear PVC bell siphon with adjustable height for 8-14" grow beds.',
-		price: '24.99',
-		costPrice: '7.00',
-		stock: 198,
-		weight: '0.60',
-		categorySlug: 'fish-supplies',
-		isFeatured: false,
-		tags: ['aquaponics', 'bell-siphon', 'flood-drain', 'plumbing'],
-		imageFile: 'ToolProduct-AquaponicsBellSiphonKit.png',
-		metaTitle: 'Aquaponics Bell Siphon Kit | Clear PVC Auto-Siphon',
-		metaDescription:
-			'Clear PVC bell siphon kit for aquaponics flood-and-drain systems. Adjustable 6-12" height for any grow bed.'
-	},
-	{
-		name: 'Aquaponics Water Testing Kit',
-		slug: 'aquaponics-water-testing-kit',
-		sku: 'AQP-WTK-001',
-		description:
-			'Master test kit specifically calibrated for aquaponics water chemistry. Tests pH, ammonia (NH3/NH4+), nitrite (NO2-), nitrate (NO3-), dissolved oxygen, and general hardness (GH). Includes 150+ tests per parameter, color comparison cards, digital thermometer, and a laminated quick-reference guide for ideal ranges. Essential for maintaining the nitrogen cycle and keeping both fish and plants thriving.',
-		shortDescription: 'Complete 6-parameter water test kit with 150+ tests and reference guide.',
-		price: '34.99',
-		costPrice: '12.00',
-		stock: 112,
-		weight: '0.80',
-		categorySlug: 'fish-supplies',
-		isFeatured: false,
-		tags: ['aquaponics', 'water-testing', 'pH', 'ammonia', 'nitrogen-cycle'],
-		imageFile: 'ToolProduct-AquaponicsWaterTestingKit.png',
-		metaTitle: 'Aquaponics Water Testing Kit | 6 Parameters, 150+ Tests',
-		metaDescription:
-			'Master water test kit for aquaponics. Tests pH, ammonia, nitrite, nitrate, DO, and hardness with 150+ tests.'
-	},
-	{
-		name: 'Tilapia Fingerlings Starter Pack',
-		slug: 'tilapia-fingerlings-starter-pack',
-		sku: 'AQP-TFP-001',
-		description:
-			'Live shipment of 25 Nile tilapia fingerlings (1-2 inches), the gold standard fish for aquaponics. Hardy, fast-growing, and excellent feed conversion. Ships Monday-Wednesday via overnight express in insulated box with oxygen packs. Includes acclimation guide, feeding schedule for the first 90 days, and a water parameter quick-start sheet. Fish arrive healthy or we replace them free. Estimated harvest size: 1-1.5 lbs in 8-10 months.',
-		shortDescription:
-			'25 live Nile tilapia fingerlings with overnight shipping and acclimation guide.',
-		price: '59.99',
-		costPrice: '22.00',
-		stock: 40,
-		weight: '3.00',
-		categorySlug: 'fish-supplies',
-		isFeatured: false,
-		tags: ['tilapia', 'fingerlings', 'live-fish', 'aquaponics', 'protein'],
-		imageFile: 'ToolProduct-AquaponicsTilapiaFingerlings.png',
-		metaTitle: 'Tilapia Fingerlings | 25 Live Nile Tilapia for Aquaponics',
-		metaDescription:
-			'25 live Nile tilapia fingerlings shipped overnight. Hardy, fast-growing fish for aquaponics systems.'
-	},
-
-	// --- Silvopasture & Agroforestry ---
-	{
-		name: 'Silvopasture Seed Mix',
-		slug: 'silvopasture-seed-mix',
-		sku: 'SIL-SSM-001',
-		description:
-			'Premium pasture seed blend formulated for silvopasture systems where livestock graze beneath trees. Contains shade-tolerant varieties of orchardgrass, white clover, birdsfoot trefoil, chicory, and timothy. The legume component fixes 80-150 lbs of nitrogen per acre annually, reducing fertilizer costs. Seeding rate: 25 lbs per acre. Suitable for USDA zones 4-8. Comes in a resealable kraft bag with detailed establishment guide.',
-		shortDescription:
-			'Shade-tolerant pasture blend of grasses and legumes for silvopasture systems.',
-		price: '64.99',
-		costPrice: '24.00',
-		stock: 48,
-		weight: '25.00',
-		categorySlug: 'tree-forage-seeds',
-		isFeatured: false,
-		tags: ['silvopasture', 'seed-mix', 'pasture', 'shade-tolerant', 'nitrogen-fixing'],
-		imageFile: 'Silvopasture&AgroforestryProducts-SilvopastureSeedMix.png',
-		metaTitle: 'Silvopasture Seed Mix | Shade-Tolerant Pasture Blend',
-		metaDescription:
-			'Premium shade-tolerant pasture seed mix for silvopasture. Grasses and nitrogen-fixing legumes for zones 4-8.'
-	},
-	{
-		name: 'Tree Shelters & Protectors (25 pack)',
-		slug: 'tree-shelters-protectors-25-pack',
-		sku: 'SIL-TSP-001',
-		description:
-			'Protect young tree plantings from livestock browse, deer, rodents, and herbicide drift. These 4-foot translucent polypropylene shelters create a greenhouse microclimate that accelerates growth by 50-100%. Includes 25 shelters, 25 hardwood stakes, and 50 zip ties. Biodegradable option: shelters break down in 5-7 years as trees outgrow them. Essential for establishing silvopasture or agroforestry plantings where animals are present.',
-		shortDescription:
-			'25 translucent 4-ft tree shelters with stakes for silvopasture establishment.',
-		price: '89.99',
-		comparePrice: '109.99',
-		costPrice: '35.00',
-		stock: 32,
-		weight: '15.00',
-		categorySlug: 'livestock-integration',
-		isFeatured: false,
-		tags: ['tree-shelters', 'protectors', 'silvopasture', 'deer', 'browse'],
-		imageFile: 'Silvopasture&AgroforestryProducts-TreeShelters&Protectors.png',
-		metaTitle: 'Tree Shelters & Protectors | 25 Pack for Silvopasture',
-		metaDescription:
-			'25 translucent 4-ft tree shelters that accelerate growth 50-100%. Protect from livestock, deer, and rodents.'
-	},
-	{
-		name: 'Forage Chicory Plants (50 plugs)',
-		slug: 'forage-chicory-plants-50-plugs',
-		sku: 'SIL-FCP-001',
-		description:
-			'Deep-rooted forage chicory is a superstar in silvopasture systems. Its 12-18" taproots break up compacted soil, mine minerals from deep subsoil, and provide drought resistance. Livestock prefer it over most grasses, and it contains natural anthelmintic compounds that reduce parasite loads. This flat of 50 plugs establishes quickly and persists 5+ years. Plant at 4-6" spacing in prepared beds or interplant into existing pasture.',
-		shortDescription:
-			'50 forage chicory plugs with deep taproots for soil improvement and livestock forage.',
-		price: '44.99',
-		costPrice: '16.00',
-		stock: 56,
-		weight: '6.00',
-		categorySlug: 'tree-forage-seeds',
-		isFeatured: false,
-		tags: ['chicory', 'forage', 'silvopasture', 'soil-health', 'livestock'],
-		imageFile: 'Silvopasture&AgroforestryProducts-ForageChicoryPlants.png',
-		metaTitle: 'Forage Chicory Plants | 50 Plugs for Silvopasture',
-		metaDescription:
-			'50 forage chicory plugs with deep taproots. Improves soil, provides livestock forage, and reduces parasites.'
-	},
-	{
-		name: 'Portable Electric Netting (164 ft)',
-		slug: 'portable-electric-netting-164-ft',
-		sku: 'SIL-PEN-001',
-		description:
-			'Electrifiable poultry/sheep netting for rotational grazing in silvopasture and orchard systems. 164 ft roll of 42" tall netting with built-in posts (14 posts, 12 ft spacing). Double-spike posts for firm ground hold. Includes 12 ground stakes and carry bag. Compatible with any standard fence energizer (sold separately). Move paddocks daily or weekly to prevent overgrazing and distribute fertility. Orange hi-vis color for safety.',
-		shortDescription: '164 ft x 42" electric netting with 14 posts for rotational grazing.',
-		price: '149.99',
-		costPrice: '58.00',
-		stock: 24,
-		weight: '12.00',
-		categorySlug: 'livestock-integration',
-		isFeatured: false,
-		tags: ['electric-netting', 'rotational-grazing', 'poultry', 'sheep', 'portable'],
-		imageFile: 'Silvopasture&AgroforestryProducts-PortableElectricNettingforRotationalGrazing.png',
-		metaTitle: 'Portable Electric Netting | 164 ft Rotational Grazing',
-		metaDescription:
-			'164 ft portable electric netting for rotational grazing. 42" tall with built-in posts, perfect for silvopasture.'
-	},
-	{
-		name: 'Livestock Water Trough (Shaded)',
-		slug: 'livestock-water-trough-shaded',
-		sku: 'SIL-LWT-001',
-		description:
-			'Heavy-gauge galvanized steel 100-gallon stock tank designed for silvopasture use. The galvanized finish resists rust and algae while keeping water cool under tree canopy shade. Includes a float valve for auto-fill from garden hose, drain plug, and mounting bracket for optional shade cover. Round design prevents livestock from getting trapped in corners. Doubles as a raised bed planter or rain catchment barrel in off-season.',
-		shortDescription: '100-gallon galvanized stock tank with auto-fill float valve and drain.',
-		price: '129.99',
-		costPrice: '52.00',
-		stock: 19,
-		weight: '28.00',
-		categorySlug: 'livestock-integration',
-		isFeatured: false,
-		tags: ['water-trough', 'livestock', 'galvanized', 'silvopasture', 'stock-tank'],
-		imageFile: 'Silvopasture&AgroforestryProducts-LivestockWaterTrough.png',
-		metaTitle: 'Livestock Water Trough | 100-Gallon Galvanized Tank',
-		metaDescription:
-			'100-gallon galvanized livestock water trough with auto-fill. Perfect for silvopasture shade management.'
-	},
-	{
-		name: 'Nitrogen-Fixing Tree Seeds Collection',
-		slug: 'nitrogen-fixing-tree-seeds-collection',
-		sku: 'SIL-NFT-001',
-		description:
-			'Establish the backbone of your agroforestry system with these nitrogen-fixing tree seeds. Collection includes black locust (100 seeds), autumn olive (50 seeds), siberian pea shrub (75 seeds), and alder (100 seeds). These species fix 50-300 lbs of nitrogen per acre annually through symbiotic root bacteria. Includes scarification and stratification instructions for each species, plus a planting density guide for alley cropping and silvopasture.',
-		shortDescription:
-			'4-species nitrogen-fixing tree seed collection with 325+ seeds and planting guide.',
-		price: '36.99',
-		costPrice: '10.00',
-		stock: 72,
-		weight: '0.30',
-		categorySlug: 'tree-forage-seeds',
-		isFeatured: false,
-		tags: ['nitrogen-fixing', 'tree-seeds', 'agroforestry', 'black-locust', 'alley-cropping'],
-		imageFile: 'Silvopasture&AgroforestryProducts-Nitrogen-FixingTreeSeeds.png',
-		metaTitle: 'Nitrogen-Fixing Tree Seeds | 4 Species for Agroforestry',
-		metaDescription:
-			'4 nitrogen-fixing tree species (325+ seeds). Fix 50-300 lbs N/acre for silvopasture and alley cropping.'
-	},
-
-	// --- Kits & Collections ---
-	{
-		name: 'Permaculture Starter Kit',
-		slug: 'permaculture-starter-kit',
-		sku: 'KIT-PRM-001',
-		description:
-			'Everything a beginning permaculturist needs in one beautifully packaged wooden crate. Includes: 12 companion planting seed packets, hand trowel, soil pH test kit, compost thermometer, biodegradable seed-starting pots, plant labels, garden twine, and a 120-page illustrated permaculture principles guidebook. Designed as a gift or self-starter, this kit covers the "observe and interact" through "produce no waste" principles with hands-on activities.',
-		shortDescription:
-			'Complete permaculture starter in wooden crate with seeds, tools, and guidebook.',
-		price: '89.99',
-		comparePrice: '109.99',
-		costPrice: '35.00',
-		stock: 42,
-		weight: '5.50',
-		categorySlug: 'starter-kits',
-		isFeatured: true,
-		tags: ['permaculture', 'starter', 'gift', 'beginner', 'companion-planting'],
-		imageFile: 'GeneralKits&Collections-PermacultureStarterKit.png',
-		metaTitle: 'Permaculture Starter Kit | Seeds, Tools & Guidebook',
-		metaDescription:
-			'Complete permaculture starter kit in wooden crate. 12 seed packets, tools, soil test, and 120-page guidebook.'
-	},
-	{
-		name: 'Microgreens Growing Kit',
-		slug: 'microgreens-growing-kit',
-		sku: 'KIT-MCG-001',
-		description:
-			'Harvest nutritious microgreens in just 7-14 days with this countertop growing kit. Includes 5 stackable BPA-free growing trays (10x20"), 5 seed varieties (sunflower, radish, broccoli, pea shoots, and wheatgrass), coconut coir growing mats, spray bottle, and a recipe booklet for incorporating microgreens into meals. No soil, no mess. Perfect for apartments, classrooms, and kitchens. Yields 10+ harvests from included seeds.',
-		shortDescription: '5-tray microgreens kit with 5 seed varieties and coconut coir mats.',
-		price: '39.99',
-		costPrice: '14.00',
-		stock: 94,
-		weight: '3.00',
-		categorySlug: 'starter-kits',
-		isFeatured: false,
-		tags: ['microgreens', 'indoor', 'countertop', 'sprouts', 'nutrition'],
-		imageFile: 'GeneralKits&Collections-MicrogreensGrowingKit.png',
-		metaTitle: 'Microgreens Growing Kit | 5 Varieties, Harvest in 7 Days',
-		metaDescription:
-			'Grow microgreens in 7-14 days. 5 trays, 5 seed varieties, and coconut coir mats for 10+ harvests.'
-	},
-	{
-		name: 'Mushroom Cultivation Kit',
-		slug: 'mushroom-cultivation-kit',
-		sku: 'KIT-MSH-001',
-		description:
-			'Grow gourmet oyster mushrooms at home with this ready-to-fruit kit. The pre-inoculated hardwood sawdust block is fully colonized and ready to produce within 7-10 days of opening. Simply cut an X in the bag, mist twice daily, and watch clusters of pearl oyster mushrooms emerge. Produces 2-3 flushes totaling 1-2 lbs of fresh mushrooms. Includes a humidity tent, misting bottle, and a guide to log inoculation for continued outdoor growing.',
-		shortDescription: 'Ready-to-fruit oyster mushroom kit producing 1-2 lbs in 2-3 flushes.',
-		price: '29.99',
-		costPrice: '10.00',
-		stock: 158,
-		weight: '5.00',
-		categorySlug: 'starter-kits',
-		isFeatured: true,
-		tags: ['mushroom', 'oyster', 'fungi', 'indoor', 'gourmet', 'gift'],
-		imageFile: 'GeneralKits&Collections-MushroomCultivationKit.png',
-		metaTitle: 'Mushroom Cultivation Kit | Grow Oyster Mushrooms at Home',
-		metaDescription:
-			'Grow gourmet oyster mushrooms at home. Ready-to-fruit kit produces 1-2 lbs in 7-10 days.'
-	},
-	{
-		name: 'Composting Starter Kit',
-		slug: 'composting-starter-kit',
-		sku: 'KIT-CMP-001',
-		description:
-			'Make composting easy and odor-free with this complete countertop-to-garden system. Includes a 1.3-gallon stainless steel countertop bin with charcoal filter lid, compost thermometer (0-200F), stainless steel aerating tool, and a laminated "Browns & Greens" ratio guide. The countertop bin holds 3-4 days of kitchen scraps before transferring to your outdoor pile. The charcoal filter eliminates odors for up to 6 months before replacement.',
-		shortDescription:
-			'Stainless steel countertop compost bin with thermometer, aerator, and guide.',
-		price: '44.99',
-		costPrice: '18.00',
-		stock: 76,
-		weight: '2.50',
-		categorySlug: 'composting',
-		isFeatured: false,
-		tags: ['composting', 'kitchen', 'countertop', 'odor-free', 'stainless-steel'],
-		imageFile: 'GeneralKits&Collections-CompostingStarterKit.png',
-		metaTitle: 'Composting Starter Kit | Countertop Bin & Tools',
-		metaDescription:
-			'Odor-free composting made easy. Stainless steel countertop bin, thermometer, aerator, and ratio guide.'
-	},
-	{
-		name: 'Worm Composting (Vermicompost) Kit',
-		slug: 'worm-composting-vermicompost-kit',
-		sku: 'KIT-WRM-001',
-		description:
-			'Turn kitchen scraps into black gold with this stackable worm farm. The 3-tray system lets worms migrate upward as each tray fills, leaving finished castings below for easy harvesting. Includes 3 stacking trays, base with spigot for worm tea collection, coir bedding block, moisture mat, and detailed startup guide. Add 1 lb of red wiggler worms (not included, available separately) and start diverting waste within a week. Compact enough for apartments.',
-		shortDescription: '3-tray stackable worm farm with spigot, bedding, and startup guide.',
-		price: '54.99',
-		costPrice: '22.00',
-		stock: 61,
-		weight: '6.00',
-		categorySlug: 'composting',
-		isFeatured: false,
-		tags: ['vermicompost', 'worm-farm', 'red-wigglers', 'castings', 'apartment'],
-		imageFile: 'GeneralKits&Collections-Worm Composting (Vermicompost) Kit.png',
-		metaTitle: 'Worm Composting Kit | 3-Tray Vermicompost System',
-		metaDescription:
-			'Stackable 3-tray worm farm for apartment composting. Collect castings and worm tea from kitchen scraps.'
-	},
-	{
-		name: 'Beneficial Insect Habitat Kit',
-		slug: 'beneficial-insect-habitat-kit',
-		sku: 'KIT-BIH-001',
-		description:
-			'Attract and house the beneficial insects that protect your garden naturally. This kit includes a mason bee house (holds 60+ tubes), a ladybug/lacewing shelter, a butterfly puddling dish (ceramic), 5 packets of beneficial-insect-attracting flower seeds, and an illustrated identification guide for 30 common garden insects. Learn which bugs are friends and create habitat that keeps pest populations in check without chemicals.',
-		shortDescription:
-			'Bee house, insect shelters, puddling dish, flower seeds, and insect ID guide.',
-		price: '59.99',
-		costPrice: '22.00',
-		stock: 38,
-		weight: '4.00',
-		categorySlug: 'starter-kits',
-		isFeatured: false,
-		tags: ['beneficial-insects', 'mason-bees', 'ladybugs', 'IPM', 'habitat'],
-		imageFile: 'GeneralKits&Collections-Beneficial Insect Habitat Kit.png',
-		metaTitle: 'Beneficial Insect Habitat Kit | Bee House & Garden Friends',
-		metaDescription:
-			'Attract garden allies with bee house, insect shelters, flower seeds, and 30-species identification guide.'
-	},
-	{
-		name: 'Rainwater Harvesting Kit',
-		slug: 'rainwater-harvesting-kit',
-		sku: 'KIT-RWH-001',
-		description:
-			'Capture and reuse rainwater with this complete downspout diverter kit. Connects to any standard rectangular or round downspout to redirect rainwater into a barrel or cistern. Includes universal diverter valve, fine mesh debris filter, overflow fitting, brass spigot, 6 ft of flexible connector hose, and Teflon tape. The diverter automatically bypasses to the downspout when your barrel is full. Saves 1,300+ gallons per year from a typical roof.',
-		shortDescription: 'Complete downspout diverter kit with filter, spigot, and overflow valve.',
-		price: '49.99',
-		costPrice: '18.00',
-		stock: 53,
-		weight: '3.50',
-		categorySlug: 'starter-kits',
-		isFeatured: false,
-		tags: ['rainwater', 'harvesting', 'water-conservation', 'downspout', 'sustainable'],
-		imageFile: 'GeneralKits&Collections-Rainwater Harvesting Kit Components.png',
-		metaTitle: 'Rainwater Harvesting Kit | Downspout Diverter System',
-		metaDescription:
-			'Capture 1,300+ gallons of rainwater per year. Complete diverter kit with filter, spigot, and overflow.'
-	},
-	{
-		name: 'Soil Building Amendment Kit',
-		slug: 'soil-building-amendment-kit',
-		sku: 'KIT-SBA-001',
-		description:
-			'Build living soil with this curated collection of 6 premium amendments. Includes: biochar (2 lbs, pre-charged), worm castings (4 lbs), glacial rock dust (3 lbs), kelp meal (2 lbs), neem cake (1 lb), and mycorrhizal inoculant (4 oz). Each amendment comes in a labeled kraft bag with application rates and timing guidelines. Enough to enrich 50-100 sq ft of garden beds. The synergy between these amendments creates soil that improves year after year.',
-		shortDescription:
-			'6 premium soil amendments (biochar, castings, rock dust, kelp, neem, mycorrhizae).',
-		price: '69.99',
-		comparePrice: '84.99',
-		costPrice: '28.00',
-		stock: 44,
-		weight: '14.00',
-		categorySlug: 'starter-kits',
-		isFeatured: false,
-		tags: ['soil', 'amendments', 'biochar', 'mycorrhizae', 'organic', 'regenerative'],
-		imageFile: 'GeneralKits&Collections-Soil Building Amendment Kit.png',
-		metaTitle: 'Soil Building Amendment Kit | 6 Premium Amendments',
-		metaDescription:
-			'Build living soil with biochar, worm castings, rock dust, kelp, neem, and mycorrhizae for 50-100 sq ft.'
-	},
-	{
-		name: 'Herb Spiral Garden Kit',
-		slug: 'herb-spiral-garden-kit',
-		sku: 'KIT-HSG-001',
-		description:
-			'Build the iconic permaculture herb spiral in your backyard. This kit includes a step-by-step construction guide with measurements, 8 herb seedling plugs (rosemary, thyme, oregano, sage, parsley, chives, basil, cilantro), landscape fabric, and plant placement cards showing where each herb goes based on its water and sun preferences. The spiral design creates 6+ microclimates in just 6 sq ft, from dry Mediterranean at the top to moisture-loving herbs at the base.',
-		shortDescription: '8 herb seedlings with spiral construction guide and placement cards.',
-		price: '54.99',
-		costPrice: '20.00',
-		stock: 36,
-		weight: '4.50',
-		categorySlug: 'starter-kits',
-		isFeatured: false,
-		tags: ['herb-spiral', 'permaculture', 'herbs', 'design', 'microclimates'],
-		imageFile: 'GeneralKits&Collections-Herb Spiral Garden Kit.png',
-		metaTitle: 'Herb Spiral Garden Kit | Permaculture Design with 8 Herbs',
-		metaDescription:
-			'Build a permaculture herb spiral. 8 herb seedlings with construction guide creating 6+ microclimates in 6 sq ft.'
-	},
-
-	// --- Agroforestry ---
-	{
-		name: 'Chestnut Tree Seedlings (10-pack)',
-		slug: 'chestnut-tree-seedlings-10-pack',
-		sku: 'AGF-CTS-001',
-		description:
-			'Premium bare-root chestnut tree seedlings perfect for silvopasture and agroforestry systems. These blight-resistant hybrid varieties (Dunstan Chestnut) are selected for exceptional nut production and timber value. Trees provide valuable mast crop for livestock and wildlife while building long-term farm value. Each seedling is 2-3 feet tall with strong root systems, ready to plant in USDA zones 5-9. Chestnuts bear in 3-5 years and produce 50-100 lbs of nuts per tree at maturity. Includes variety tags, planting instructions, and a spacing guide for alley cropping.',
-		shortDescription:
-			'10 blight-resistant Dunstan chestnut seedlings (2-3 ft) for agroforestry systems.',
-		price: '149.99',
-		comparePrice: '179.99',
-		costPrice: '55.00',
-		stock: 12,
-		weight: '8.00',
-		categorySlug: 'tree-crops',
-		isFeatured: false,
-		tags: ['chestnut', 'tree', 'agroforestry', 'silvopasture', 'nut-tree', 'seedlings'],
-		imageFile: 'Silvopasture&AgroforestryProducts-PermacultureStarterKit.png',
-		metaTitle: 'Chestnut Tree Seedlings | 10-Pack for Agroforestry',
-		metaDescription:
-			'10 blight-resistant Dunstan chestnut seedlings for agroforestry. Bear in 3-5 years, produce 50-100 lbs/tree.'
-	},
-
-	// --- Tools ---
-	{
-		name: 'Digital pH & EC Meter Set',
-		slug: 'digital-ph-ec-meter-set',
-		sku: 'TLS-PHE-001',
-		description:
-			'Professional-grade digital meters for precise nutrient solution and soil monitoring. The pH meter is accurate to 0.01 units with automatic temperature compensation (ATC). The EC/TDS meter measures electrical conductivity and total dissolved solids for hydroponic, aquaponic, and soil nutrient management. Both feature backlit displays, one-touch calibration, and IP67 waterproof housings. Includes pH 4.0 and 7.0 calibration solutions, 1413 uS/cm EC standard, protective carry cases, and a laminated quick-reference guide for ideal ranges by crop type.',
-		shortDescription: 'Precision pH and EC/TDS meters with calibration solutions and carry cases.',
-		price: '89.99',
-		comparePrice: '109.99',
-		costPrice: '32.00',
-		stock: 34,
-		weight: '0.60',
-		categorySlug: 'soil-testing',
-		isFeatured: false,
-		tags: ['pH-meter', 'EC-meter', 'TDS', 'hydroponics', 'testing', 'precision'],
-		imageFile: 'HydroToolProduct-RockwoolCubes&GrowingMedia.png',
-		metaTitle: 'Digital pH & EC Meter Set | Professional Growing Instruments',
-		metaDescription:
-			'Professional pH and EC/TDS meters with 0.01 accuracy, ATC, and calibration solutions for hydroponics and soil.'
-	},
-
-	// --- Additional Plants & Seeds product ---
-	{
-		name: 'Artisan Seed Packet Collection',
-		slug: 'artisan-seed-packet-collection',
-		sku: 'PLT-ASP-001',
-		description:
-			'A beautiful collection of 20 heirloom vegetable and flower seeds in artistically designed packets featuring original botanical illustrations. Each packet contains rare and unusual open-pollinated varieties you will not find at big box stores: Moon and Stars watermelon, Lemon cucumber, Dragon Tongue beans, and more. All seeds are certified organic, non-GMO, and tested for 90%+ germination. Comes in a vintage-inspired wooden seed storage box with dividers and blank labels for organizing your collection.',
-		shortDescription: '20 artistically packaged heirloom seed varieties in a vintage storage box.',
-		price: '49.99',
-		costPrice: '16.00',
-		stock: 89,
-		weight: '1.00',
-		categorySlug: 'heirloom-seeds',
-		isFeatured: false,
-		tags: ['seeds', 'heirloom', 'artisan', 'botanical', 'collection', 'gift'],
-		imageFile: 'PlantProduct-SEED.png',
-		metaTitle: 'Artisan Seed Packet Collection | 20 Heirloom Varieties',
-		metaDescription:
-			'20 heirloom seed varieties in original botanical illustration packets. Vintage wooden storage box included.'
-	},
-	{
-		name: 'Seed Saving Starter Kit',
-		slug: 'seed-saving-starter-kit',
-		sku: 'KIT-SSK-001',
-		description:
-			'Complete kit for saving and storing seeds. Includes seed envelopes, desiccant packets, labels, magnifying glass, tweezers, and a vintage wooden storage box with dividers. Field guide covers seed collection timing, drying methods, and storage for 50+ common garden varieties.',
-		shortDescription: 'Complete kit for saving and storing seeds with wooden storage box.',
-		price: '34.99',
-		comparePrice: '44.99',
-		costPrice: '12.00',
-		stock: 86,
-		weight: '1.50',
-		categorySlug: 'starter-kits',
-		isFeatured: false,
-		tags: ['seed-saving', 'heritage', 'self-sufficiency', 'preservation'],
-		imageFile: 'PlantProduct-SEED.png',
-		metaTitle: 'Seed Saving Starter Kit | Complete Guide & Storage',
-		metaDescription:
-			'Everything you need to save and store seeds. Includes wooden storage box, tools, and field guide for 50+ garden varieties.'
-	},
-	{
-		name: 'Season Extension Kit',
-		slug: 'season-extension-kit',
-		sku: 'KIT-SEK-001',
-		description:
-			'Extend your growing season by 4-8 weeks. Includes 10 galvanized wire hoops, 20ft row cover fabric, 20 ground staples, soil thermometer, and planting calendar. Row covers protect from frost to 28°F while allowing light and rain through.',
-		shortDescription: 'Extend your growing season 4-8 weeks with row covers and hoops.',
-		price: '59.99',
-		costPrice: '22.00',
-		stock: 47,
-		weight: '8.00',
-		categorySlug: 'starter-kits',
-		isFeatured: false,
-		tags: ['season-extension', 'row-cover', 'frost-protection', 'spring', 'fall'],
-		imageFile: 'GeneralKits&Collections-PermacultureStarterKit.png',
-		metaTitle: 'Season Extension Kit | Frost Protection Row Covers',
-		metaDescription:
-			'Extend your growing season with row covers, hoops, and soil thermometer. Protect plants from frost to 28°F.'
-	},
-	{
-		name: 'Grafting & Propagation Kit',
-		slug: 'grafting-propagation-kit',
-		sku: 'KIT-GPK-001',
-		description:
-			'Master plant propagation with this professional grafting kit. Includes Japanese grafting knife, bypass pruning shears, grafting tape, parafilm, rooting hormone powder, 2 propagation domes, and an illustrated 80-page guide covering whip-and-tongue, cleft, and bud grafting techniques for fruit trees, tomatoes, and ornamentals.',
-		shortDescription: 'Professional grafting kit with tools, materials, and illustrated guide.',
-		price: '47.99',
-		comparePrice: '59.99',
-		costPrice: '18.00',
-		stock: 54,
-		weight: '1.20',
-		categorySlug: 'starter-kits',
-		isFeatured: false,
-		tags: ['grafting', 'propagation', 'fruit-trees', 'cloning', 'advanced'],
-		imageFile: 'GeneralKits&Collections-PermacultureStarterKit.png',
-		metaTitle: 'Grafting & Propagation Kit | Professional Tools & Guide',
-		metaDescription:
-			'Master grafting and propagation with Japanese knife, pruners, tape, and 80-page illustrated guide for fruit trees and ornamentals.'
-	}
-];
-
 // ----- Content pages -----
 interface ContentDef {
 	title: string;
@@ -1357,6 +394,172 @@ const contentPages: ContentDef[] = [
 	}
 ];
 
+// ----- LMS courses (minimal but valid /learn + /courses content) -----
+interface LmsCourseDef {
+	title: string;
+	slug: string;
+	description: string;
+	difficulty: 'beginner' | 'intermediate' | 'advanced';
+	durationEstimate: number;
+	isFeatured: boolean;
+	categorySlug: string;
+	tagSlugs: string[];
+	productCategorySlug: string;
+	modules: { title: string; lessons: { title: string; body: string; isPreview?: boolean }[] }[];
+}
+
+const lmsCategoryDefs = [
+	{ name: 'Growing Systems', slug: 'growing-systems' },
+	{ name: 'Regenerative Land', slug: 'regenerative-land' },
+	{ name: 'Foundations', slug: 'foundations' }
+];
+
+const lmsTagDefs = [
+	{ name: 'Hydroponics', slug: 'hydroponics' },
+	{ name: 'Aquaponics', slug: 'aquaponics' },
+	{ name: 'Silvopasture', slug: 'silvopasture' },
+	{ name: 'Seeds', slug: 'seeds' },
+	{ name: 'Soil', slug: 'soil' },
+	{ name: 'Beginner', slug: 'beginner' }
+];
+
+const lmsCourseDefs: LmsCourseDef[] = [
+	{
+		title: 'Hydroponics Field Guide',
+		slug: 'hydroponics-field-guide',
+		description:
+			'Grow your first soil-free crop with confidence — systems, nutrients, pH, and troubleshooting, the way we run them in our own test room.',
+		difficulty: 'beginner',
+		durationEstimate: 120,
+		isFeatured: true,
+		categorySlug: 'growing-systems',
+		tagSlugs: ['hydroponics', 'beginner'],
+		productCategorySlug: 'hydroponics',
+		modules: [
+			{
+				title: 'Choosing a System',
+				lessons: [
+					{
+						title: 'DWC, NFT, and Towers',
+						body: 'A plain-language tour of the main hydroponic methods and which one fits your space and goals.',
+						isPreview: true
+					},
+					{
+						title: 'What You Actually Need',
+						body: 'The short list of gear that matters: reservoir, pump, media, nutrients, and a way to read pH.'
+					}
+				]
+			},
+			{
+				title: 'Running the System',
+				lessons: [
+					{
+						title: 'pH and EC in Practice',
+						body: 'How to read and hold the two numbers that decide whether nutrients flow or plants starve.'
+					},
+					{
+						title: 'Troubleshooting Common Problems',
+						body: 'Algae, root rot, nutrient lockout, and pump failure — how to spot and fix each one early.'
+					}
+				]
+			}
+		]
+	},
+	{
+		title: 'Aquaponics From Scratch',
+		slug: 'aquaponics-from-scratch',
+		description:
+			'Build a balanced fish-and-plant loop: the nitrogen cycle, stocking rates, and the patient first months that make or break a system.',
+		difficulty: 'intermediate',
+		durationEstimate: 180,
+		isFeatured: true,
+		categorySlug: 'growing-systems',
+		tagSlugs: ['aquaponics'],
+		productCategorySlug: 'aquaponics',
+		modules: [
+			{
+				title: 'The Nitrogen Cycle',
+				lessons: [
+					{
+						title: 'Fish, Bacteria, Plants',
+						body: 'How ammonia becomes nitrate and why bacteria are the real workhorse of your system.',
+						isPreview: true
+					},
+					{
+						title: 'Cycling a New System',
+						body: 'Why you cycle before adding fish, and how to know when your biofilter is ready.'
+					}
+				]
+			},
+			{
+				title: 'Livestock & Balance',
+				lessons: [
+					{
+						title: 'Stocking and Feeding',
+						body: 'Fish-to-plant ratios, understocking early, and feeding rates that keep water clean.'
+					}
+				]
+			}
+		]
+	},
+	{
+		title: 'Silvopasture & Agroforestry Basics',
+		slug: 'silvopasture-agroforestry-basics',
+		description:
+			'Integrate trees, forage, and livestock for shade, forage, and long-term farm value — establishment, rotation, and species selection.',
+		difficulty: 'intermediate',
+		durationEstimate: 150,
+		isFeatured: false,
+		categorySlug: 'regenerative-land',
+		tagSlugs: ['silvopasture'],
+		productCategorySlug: 'silvopasture',
+		modules: [
+			{
+				title: 'Designing the System',
+				lessons: [
+					{
+						title: 'Trees Into Pasture, Forage Into Forest',
+						body: 'Two paths into silvopasture and how to choose based on what you already have.',
+						isPreview: true
+					},
+					{
+						title: 'Protecting Young Trees',
+						body: 'Tree shelters, spacing, and getting seedlings past the vulnerable browsing years.'
+					}
+				]
+			}
+		]
+	},
+	{
+		title: 'Seed Saving & Soil Health',
+		slug: 'seed-saving-soil-health',
+		description:
+			'Close the loop: save true-to-type seed and build living soil that improves every season. The foundations under every other system.',
+		difficulty: 'beginner',
+		durationEstimate: 90,
+		isFeatured: false,
+		categorySlug: 'foundations',
+		tagSlugs: ['seeds', 'soil', 'beginner'],
+		productCategorySlug: 'supplies',
+		modules: [
+			{
+				title: 'Foundations',
+				lessons: [
+					{
+						title: 'Reading Your Soil',
+						body: 'Simple jar and earthworm tests, plus what a basic soil report is telling you.',
+						isPreview: true
+					},
+					{
+						title: 'Saving Seed That Grows True',
+						body: 'Open-pollinated vs hybrid, drying and storage, and building your own seed library.'
+					}
+				]
+			}
+		]
+	}
+];
+
 // ================================================================
 // SEED EXECUTION
 // ================================================================
@@ -1366,7 +569,7 @@ async function seed() {
 	console.log('=== Aevani UAT Seed Script ===\n');
 
 	// --- 0. Hash passwords ---
-	console.log('[1/12] Hashing user passwords...');
+	console.log('[1/13] Hashing user passwords...');
 	const passwordHash = await hash(seedPassword, {
 		memoryCost: 19456,
 		timeCost: 2,
@@ -1378,16 +581,62 @@ async function seed() {
 	}
 
 	// --- 1. Clear existing data (order matters for FK constraints) ---
-	console.log('[2/12] Clearing existing data...');
+	console.log('[2/13] Clearing existing data...');
+	// LMS (children -> parents) before file/user/productCategory
+	await db.delete(lms.lmsNote);
+	await db.delete(lms.lmsBookmark);
+	await db.delete(lms.lmsLearnerBadge);
+	await db.delete(lms.lmsBadge);
+	await db.delete(lms.lmsCertificate);
+	await db.delete(lms.lmsCertificateTemplate);
+	await db.delete(lms.lmsQuizAnswer);
+	await db.delete(lms.lmsQuizAttempt);
+	await db.delete(lms.lmsProgress);
+	await db.delete(lms.lmsEnrollment);
+	await db.delete(lms.lmsQuestionOption);
+	await db.delete(lms.lmsQuestion);
+	await db.delete(lms.lmsQuestionBank);
+	await db.delete(lms.lmsQuiz);
+	await db.delete(lms.lmsContentBlock);
+	await db.delete(lms.lmsLesson);
+	await db.delete(lms.lmsModule);
+	await db.delete(lms.lmsDiscussionReply);
+	await db.delete(lms.lmsDiscussionThread);
+	await db.delete(lms.lmsCourseReview);
+	await db.delete(lms.lmsCourseToTagJoin);
+	await db.delete(lms.lmsCourseToCategoryJoin);
+	await db.delete(lms.lmsCourseProduct);
+	await db.delete(lms.lmsCoursePrerequisite);
+	await db.delete(lms.lmsCourse);
+	await db.delete(lms.lmsCourseTag);
+	await db.delete(lms.lmsCourseCategory);
+	await db.delete(lms.lmsProgram);
+
+	// Affiliate commission ledger (append-only) + policy snapshots — clear before orders/affiliates.
+	await db.delete(schema.affiliateCommissionLedgerEvent);
+	await db.delete(schema.affiliatePayout);
+	await db.delete(schema.affiliateCommissionLedger);
+	await db.delete(schema.affiliateTermsAcceptance);
+	await db.delete(schema.affiliateTier);
+
 	await db.delete(schema.auditLog);
 	await db.delete(schema.affiliateClick);
 	await db.delete(schema.orderItem);
 	await db.delete(schema.order);
+	// Attributed checkout drafts + webhook events backing the commission ledger demo.
+	await db.delete(schema.checkoutDraft);
+	await db.delete(schema.stripeWebhookEvent);
 	await db.delete(schema.cartItem);
 	await db.delete(schema.cart);
 	await db.delete(schema.wishlistItem);
 	await db.delete(schema.affiliateLink);
 	await db.delete(schema.affiliate);
+	// catalog-seed managed tables (restrict FKs to product/productCategory)
+	await db.delete(schema.catalogSeedItem);
+	await db.delete(schema.catalogSeedCategory);
+	await db.delete(schema.catalogSeedCollection);
+	await db.delete(schema.catalogSeedRun);
+	await db.delete(schema.productReview);
 	await db.delete(schema.productImage);
 	await db.delete(schema.product);
 	await db.delete(schema.productCategory);
@@ -1403,16 +652,16 @@ async function seed() {
 	await db.delete(schema.user);
 
 	// --- 2. Users ---
-	console.log('[3/12] Inserting users...');
+	console.log('[3/13] Inserting users...');
 	await db.insert(schema.user).values(users);
 	console.log(`  -> ${users.length} users inserted`);
 
 	// --- 3. Product Categories (parent first, then children) ---
-	console.log('[4/12] Inserting product categories...');
+	console.log('[4/13] Inserting product categories...');
 	const categoryIdMap = new Map<string, number>(); // slug -> id
 
-	for (let i = 0; i < categoryTree.length; i++) {
-		const cat = categoryTree[i];
+	for (let i = 0; i < demoCategories.length; i++) {
+		const cat = demoCategories[i];
 		const [inserted] = await db
 			.insert(schema.productCategory)
 			.values({
@@ -1446,25 +695,150 @@ async function seed() {
 	}
 	console.log(`  -> ${categoryIdMap.size} categories inserted`);
 
-	// --- 4. Files (product images and content images) ---
-	console.log('[5/12] Inserting file records...');
-	const fileRecords: (typeof schema.file.$inferInsert)[] = [];
-	const fileIdMap = new Map<string, string>(); // filename -> file.id
+	// --- 4. Catalog: products, files, images, reviews (from catalogDemo) ---
+	console.log('[5/13] Inserting catalog products, files, images, and reviews...');
+	const productIdMap = new Map<string, number>(); // slug -> id
+	const fileIdByBucketPath = new Map<string, string>(); // bucketPath -> file.id
+	const productImageRows: (typeof schema.productImage.$inferInsert)[] = [];
+	const reviewRows: (typeof schema.productReview.$inferInsert)[] = [];
+	let fileCount = 0;
 
-	// Product image files
-	for (const p of products) {
-		const rec = makeFileRecord({
-			filename: p.imageFile,
-			entityType: 'product',
-			uploadedBy: USER_IDS.admin
-		});
-		if (!fileIdMap.has(p.imageFile)) {
-			fileIdMap.set(p.imageFile, rec.id);
-			fileRecords.push(rec);
+	for (const p of demoProducts) {
+		const categoryId = categoryIdMap.get(p.categorySlug);
+		if (!categoryId) {
+			console.warn(`  [WARN] Category not found for "${p.name}" (slug: ${p.categorySlug})`);
+			continue;
+		}
+
+		const derived = deriveProductColumns(p);
+		const { ratingAverage, reviewCount } = computeRatingSummary(p.reviews);
+
+		const [inserted] = await db
+			.insert(schema.product)
+			.values({
+				name: p.name,
+				slug: p.slug,
+				description: p.shortDescription,
+				shortDescription: p.shortDescription,
+				sku: p.sku,
+				price: p.price,
+				comparePrice: p.compareAt ?? null,
+				costPrice: derived.costPrice,
+				stockQuantity: derived.stockQuantity,
+				trackInventory: true,
+				weight: null,
+				dimensions: null,
+				categoryId,
+				isActive: true,
+				isFeatured: p.isFeatured,
+				tags: JSON.stringify(derived.tags),
+				metaTitle: derived.metaTitle,
+				metaDescription: derived.metaDescription,
+				descriptionHtml: p.descriptionHtml,
+				keyFeatures: p.keyFeatures,
+				stats: p.stats,
+				specs: p.specs,
+				inTheBox: p.inTheBox,
+				faqs: p.faqs,
+				badges: p.badges,
+				testBedNote: p.testBedNote,
+				warranty: p.warranty,
+				shippingNote: p.shippingNote,
+				bundleOffer: p.bundleOffer ?? null,
+				relatedProductIds: null, // set in a second pass once ids exist
+				currency: 'USD',
+				ratingAverage,
+				reviewCount,
+				createdAt: daysAgo(randomInt(30, 200)),
+				updatedAt: new Date()
+			})
+			.returning({ id: schema.product.id });
+
+		const productId = inserted.id;
+		productIdMap.set(p.slug, productId);
+
+		// Files (deduped by bucketPath) + product_image rows.
+		const assetUrls = resolveAssetUrls(p);
+		let sortOrder = 0;
+		for (const assetUrl of assetUrls) {
+			const bucketPath = assetUrlToBucketPath(assetUrl);
+			let fileId = fileIdByBucketPath.get(bucketPath);
+			if (!fileId) {
+				fileId = generateId();
+				fileIdByBucketPath.set(bucketPath, fileId);
+				const basename = bucketPath.split('/').pop() ?? bucketPath;
+				await db.insert(schema.file).values({
+					id: fileId,
+					filename: basename,
+					originalFilename: basename,
+					mimeType: 'image/png',
+					fileSize: randomInt(200_000, 2_000_000),
+					bucketPath,
+					bucketName: process.env.S3_BUCKET_NAME || 'aevani-assets',
+					entityType: 'product',
+					entityId: String(productId),
+					uploadedBy: USER_IDS.admin,
+					isPublic: true,
+					metadata: JSON.stringify({ source: 'seed', assetKey: p.assetKey }),
+					createdAt: daysAgo(randomInt(30, 120)),
+					updatedAt: new Date()
+				});
+				fileCount++;
+			}
+			productImageRows.push({
+				productId,
+				fileId,
+				altText: p.name,
+				sortOrder,
+				isMain: sortOrder === 0
+			});
+			sortOrder++;
+		}
+
+		// Reviews
+		for (const r of p.reviews) {
+			reviewRows.push({
+				productId,
+				authorName: r.authorName,
+				rating: r.rating,
+				title: r.title,
+				body: r.body,
+				isVerifiedPurchase: r.isVerifiedPurchase,
+				createdAt: daysAgo(randomInt(1, 150))
+			});
 		}
 	}
 
-	// Content/hero image files
+	// Second pass: curated related products (3 same/adjacent-system peers, by slug).
+	for (const p of demoProducts) {
+		const id = productIdMap.get(p.slug);
+		if (!id) continue;
+		const related = p.relatedSlugs
+			.map((slug) => productIdMap.get(slug))
+			.filter((x): x is number => typeof x === 'number');
+		if (related.length > 0) {
+			await db
+				.update(schema.product)
+				.set({ relatedProductIds: related })
+				.where(eq(schema.product.id, id));
+		}
+	}
+
+	if (productImageRows.length > 0) {
+		await db.insert(schema.productImage).values(productImageRows);
+	}
+	if (reviewRows.length > 0) {
+		await db.insert(schema.productReview).values(reviewRows);
+	}
+	console.log(
+		`  -> ${productIdMap.size} products, ${fileCount} asset files, ${productImageRows.length} images, ${reviewRows.length} reviews`
+	);
+
+	// --- 5. Content/hero image files (served via mock-asset serve API) ---
+	console.log('[6/13] Inserting content image files...');
+	const contentFileRecords: (typeof schema.file.$inferInsert)[] = [];
+	const contentFileIdMap = new Map<string, string>(); // filename -> file.id
+
 	const contentImageFiles = [
 		'MAINHERO.png',
 		'CommunityHero.png',
@@ -1476,117 +850,67 @@ async function seed() {
 		'EDProduct-DIRT.png'
 	];
 	for (const f of contentImageFiles) {
-		if (!fileIdMap.has(f)) {
-			const rec = makeFileRecord({
-				filename: f,
-				entityType: 'content',
-				uploadedBy: USER_IDS.admin
-			});
-			fileIdMap.set(f, rec.id);
-			fileRecords.push(rec);
+		if (!contentFileIdMap.has(f)) {
+			const rec = makeFileRecord({ filename: f, entityType: 'content', uploadedBy: USER_IDS.admin });
+			contentFileIdMap.set(f, rec.id);
+			contentFileRecords.push(rec);
 		}
 	}
-
-	// Content page featured images
 	for (const cp of contentPages) {
-		if (cp.imageFile && !fileIdMap.has(cp.imageFile)) {
+		if (cp.imageFile && !contentFileIdMap.has(cp.imageFile)) {
 			const rec = makeFileRecord({
 				filename: cp.imageFile,
 				entityType: 'content',
 				uploadedBy: USER_IDS.admin
 			});
-			fileIdMap.set(cp.imageFile, rec.id);
-			fileRecords.push(rec);
+			contentFileIdMap.set(cp.imageFile, rec.id);
+			contentFileRecords.push(rec);
 		}
 	}
-
-	await db.insert(schema.file).values(fileRecords);
-	console.log(`  -> ${fileRecords.length} file records inserted`);
-
-	// --- 5. Products ---
-	console.log('[6/12] Inserting products...');
-	const productIdMap = new Map<string, number>(); // slug -> id
-
-	for (const p of products) {
-		const categoryId = categoryIdMap.get(p.categorySlug);
-		if (!categoryId) {
-			console.warn(`  [WARN] Category not found for product "${p.name}" (slug: ${p.categorySlug})`);
-			continue;
-		}
-
-		const [inserted] = await db
-			.insert(schema.product)
-			.values({
-				name: p.name,
-				slug: p.slug,
-				description: p.description,
-				shortDescription: p.shortDescription,
-				sku: p.sku,
-				price: p.price,
-				comparePrice: p.comparePrice ?? null,
-				costPrice: p.costPrice,
-				stockQuantity: p.stock,
-				trackInventory: true,
-				weight: p.weight,
-				dimensions: JSON.stringify({
-					length: randomInt(5, 30),
-					width: randomInt(5, 20),
-					height: randomInt(3, 15)
-				}),
-				categoryId,
-				isActive: true,
-				isFeatured: p.isFeatured,
-				tags: JSON.stringify(p.tags),
-				metaTitle: p.metaTitle,
-				metaDescription: p.metaDescription,
-				createdAt: daysAgo(randomInt(30, 200)),
-				updatedAt: new Date()
-			})
-			.returning({ id: schema.product.id });
-
-		productIdMap.set(p.slug, inserted.id);
+	if (contentFileRecords.length > 0) {
+		await db.insert(schema.file).values(contentFileRecords);
 	}
-	console.log(`  -> ${productIdMap.size} products inserted`);
+	console.log(`  -> ${contentFileRecords.length} content file records inserted`);
 
-	// --- 6. Product Images ---
-	console.log('[7/12] Inserting product images...');
-	const productImages: (typeof schema.productImage.$inferInsert)[] = [];
+	// --- 6. Affiliate tiers, affiliates & links ---
+	console.log('[7/13] Inserting affiliate tiers, affiliates, and links...');
 
-	for (const p of products) {
-		const productId = productIdMap.get(p.slug);
-		const fileId = fileIdMap.get(p.imageFile);
-		if (productId && fileId) {
-			productImages.push({
-				productId,
-				fileId,
-				altText: p.shortDescription,
-				sortOrder: 0,
-				isMain: true
-			});
-		}
+	// Confirmed commission model — tiered on lifetime attributed sales, plus a flat
+	// platform fee. Sprout 2% ($0–$5k) · Grower 3.5% ($5k–$25k) · Steward 5% ($25k+).
+	const AFFILIATE_PLATFORM_FEE_BPS = 200; // flat 2% platform fee on attributed sales
+	const affiliateTierDefs = [
+		{ code: 'sprout', version: 1, commissionRateBps: 200 }, // 2%   · $0–$5,000 lifetime attributed sales
+		{ code: 'grower', version: 1, commissionRateBps: 350 }, // 3.5% · $5,000–$25,000
+		{ code: 'steward', version: 1, commissionRateBps: 500 } // 5%   · $25,000+
+	];
+	for (const t of affiliateTierDefs) {
+		await db.insert(schema.affiliateTier).values({
+			id: generateId(),
+			code: t.code,
+			version: t.version,
+			commissionRateBps: t.commissionRateBps,
+			isActive: true,
+			createdAt: daysAgo(200)
+		});
 	}
 
-	if (productImages.length > 0) {
-		await db.insert(schema.productImage).values(productImages);
-	}
-	console.log(`  -> ${productImages.length} product images inserted`);
-
-	// --- 7. Affiliates & Links ---
-	console.log('[8/12] Inserting affiliates and links...');
+	// Demo affiliates mapped onto the tier ladder (previously flat 10% / 7.5%).
 	const affiliateData = [
 		{
 			userId: USER_IDS.marcus,
 			code: 'MARCUS10',
-			commissionRate: '0.1000',
-			totalEarnings: '1247.50',
+			tier: { code: 'steward', version: 1, bps: 500 },
+			commissionRate: '0.0500', // Steward — 5%
+			totalEarnings: '1312.50', // ≈ 5% of ~$26,250 lifetime attributed sales
 			totalClicks: 3420,
 			totalConversions: 87
 		},
 		{
 			userId: USER_IDS.jordan,
 			code: 'JORDANGROW',
-			commissionRate: '0.0750',
-			totalEarnings: '682.30',
+			tier: { code: 'grower', version: 1, bps: 350 },
+			commissionRate: '0.0350', // Grower — 3.5%
+			totalEarnings: '735.00', // ≈ 3.5% of ~$21,000 lifetime attributed sales
 			totalClicks: 1856,
 			totalConversions: 42
 		}
@@ -1614,7 +938,9 @@ async function seed() {
 
 	// Create affiliate links for featured products
 	const affiliateLinkIds: number[] = [];
-	const featuredSlugs = products.filter((p) => p.isFeatured).map((p) => p.slug);
+	// First link per affiliate — the attribution source for the commission ledger demo.
+	const attributionLinkByAffiliate = new Map<number, { linkId: number; productId: number }>();
+	const featuredSlugs = demoProducts.filter((p) => p.isFeatured).map((p) => p.slug);
 	for (const slug of featuredSlugs) {
 		const productId = productIdMap.get(slug);
 		if (!productId) continue;
@@ -1639,21 +965,331 @@ async function seed() {
 				})
 				.returning({ id: schema.affiliateLink.id });
 			affiliateLinkIds.push(inserted.id);
+			if (!attributionLinkByAffiliate.has(affiliateId)) {
+				attributionLinkByAffiliate.set(affiliateId, { linkId: inserted.id, productId });
+			}
 		}
 	}
 	console.log(
 		`  -> ${affiliateIdMap.size} affiliates, ${affiliateLinkIds.length} affiliate links inserted`
 	);
 
-	// --- 8. Orders ---
-	console.log('[9/12] Inserting orders...');
-	const customerIds = [
-		USER_IDS.sarah,
-		USER_IDS.elena,
-		USER_IDS.aisha,
-		USER_IDS.tom,
-		USER_IDS.priya
+	// --- 6b. Affiliate commission ledger (confirmed tiered model) ---
+	// Immutable, append-only accounting sourced from immutable checkout drafts:
+	// accrues 'pending' when an attributed order is paid, clears via 'approved' on
+	// fulfilment, reaches 'payable'/'paid' with a payout, and 'reversed' on refund.
+	// Amounts reflect each affiliate's tier rate (Steward 5% / Grower 3.5%).
+	console.log('[7b/13] Inserting affiliate commission ledger demo data...');
+
+	const hex64 = (material: string): string =>
+		crypto.createHash('sha256').update(material).digest('hex');
+
+	type CommissionLifecycle = 'pending' | 'cleared' | 'paid';
+	interface AttributedCommissionSpec {
+		key: string;
+		affiliateUserId: string;
+		buyerUserId: string;
+		tier: { code: string; version: number; bps: number };
+		itemSlugs: { slug: string; qty: number }[];
+		lifecycle: CommissionLifecycle;
+		reversalReason?: 'refund' | 'chargeback';
+		orderStatus: 'processing' | 'delivered' | 'refunded';
+		draftStatus: 'paid' | 'fulfilled';
+		daysAgoCreated: number;
+	}
+
+	// Mix of states: pending (accrued, order paid), cleared (order fulfilled),
+	// a full payout lifecycle, and a refunded/reversed accrual.
+	const commissionSpecs: AttributedCommissionSpec[] = [
+		{
+			key: 'marcus-pending',
+			affiliateUserId: USER_IDS.marcus,
+			buyerUserId: USER_IDS.elena,
+			tier: { code: 'steward', version: 1, bps: 500 },
+			itemSlugs: [{ slug: 'vertical-tower-garden-system', qty: 1 }],
+			lifecycle: 'pending',
+			orderStatus: 'processing',
+			draftStatus: 'paid',
+			daysAgoCreated: 6
+		},
+		{
+			key: 'marcus-cleared',
+			affiliateUserId: USER_IDS.marcus,
+			buyerUserId: USER_IDS.sarah,
+			tier: { code: 'steward', version: 1, bps: 500 },
+			itemSlugs: [{ slug: 'ibc-aquaponics-fish-tank', qty: 1 }],
+			lifecycle: 'cleared',
+			orderStatus: 'delivered',
+			draftStatus: 'fulfilled',
+			daysAgoCreated: 24
+		},
+		{
+			key: 'marcus-reversed',
+			affiliateUserId: USER_IDS.marcus,
+			buyerUserId: USER_IDS.aisha,
+			tier: { code: 'steward', version: 1, bps: 500 },
+			itemSlugs: [{ slug: 'commercial-aquaponics-grow-bed', qty: 1 }],
+			lifecycle: 'cleared',
+			reversalReason: 'refund',
+			orderStatus: 'refunded',
+			draftStatus: 'fulfilled',
+			daysAgoCreated: 40
+		},
+		{
+			key: 'jordan-pending',
+			affiliateUserId: USER_IDS.jordan,
+			buyerUserId: USER_IDS.tom,
+			tier: { code: 'grower', version: 1, bps: 350 },
+			itemSlugs: [{ slug: 'hydroponic-nutrients-trio', qty: 2 }],
+			lifecycle: 'pending',
+			orderStatus: 'processing',
+			draftStatus: 'paid',
+			daysAgoCreated: 8
+		},
+		{
+			key: 'jordan-paid',
+			affiliateUserId: USER_IDS.jordan,
+			buyerUserId: USER_IDS.priya,
+			tier: { code: 'grower', version: 1, bps: 350 },
+			itemSlugs: [{ slug: 'countertop-aquaponics-starter-system', qty: 1 }],
+			lifecycle: 'paid',
+			orderStatus: 'delivered',
+			draftStatus: 'fulfilled',
+			daysAgoCreated: 55
+		}
 	];
+
+	const AFFILIATE_TERMS_VERSION = 'terms-2026-01';
+	const AFFILIATE_DISCLOSURE_VERSION = 'disclosure-2026-01';
+	let commissionOrderSeq = 60; // AEV order numbers, clear of the 15 demo orders (0–14)
+	let ledgerCount = 0;
+	let ledgerEventCount = 0;
+	let payoutCount = 0;
+
+	for (const spec of commissionSpecs) {
+		const affiliateId = affiliateIdMap.get(spec.affiliateUserId);
+		const attributionLink = affiliateId
+			? attributionLinkByAffiliate.get(affiliateId)
+			: undefined;
+		const buyer = users.find((u) => u.id === spec.buyerUserId);
+		if (!affiliateId || !attributionLink || !buyer) continue;
+
+		// Line items + amounts in minor units (cents), from real seeded products.
+		const items = spec.itemSlugs.map((it) => {
+			const prod = demoProducts.find((p) => p.slug === it.slug)!;
+			const unitMinor = Math.round(parseFloat(prod.price) * 100);
+			return { prod, qty: it.qty, unitMinor, lineMinor: unitMinor * it.qty };
+		});
+		const subtotalMinor = items.reduce((sum, it) => sum + it.lineMinor, 0);
+		const taxMinor = Math.round(subtotalMinor * 0.08);
+		const shippingMinor = subtotalMinor > 7500 ? 0 : 999;
+		const discountMinor = 0;
+		const totalMinor = subtotalMinor + taxMinor + shippingMinor - discountMinor;
+		// Commission accrues on the order subtotal at the affiliate's tier rate.
+		const commissionMinor = Math.round((subtotalMinor * spec.tier.bps) / 10000);
+
+		const createdAt = daysAgo(spec.daysAgoCreated);
+		const snapshotHash = hex64(`draft:${spec.key}`);
+		const payloadDigest = hex64(`stripe:${spec.key}`);
+
+		// 1) Immutable checkout draft carrying the frozen affiliate policy snapshot.
+		const draftId = generateId();
+		await db.insert(schema.checkoutDraft).values({
+			id: draftId,
+			reference: `seed-draft-${spec.key}`,
+			userId: spec.buyerUserId,
+			guestSubjectHash: null,
+			affiliateLinkId: attributionLink.linkId,
+			affiliateCommissionMinor: commissionMinor,
+			affiliateId,
+			affiliateCommissionRateBps: spec.tier.bps,
+			affiliateTierCode: spec.tier.code,
+			affiliateTierVersion: spec.tier.version,
+			affiliateTermsVersion: AFFILIATE_TERMS_VERSION,
+			affiliateDisclosureVersion: AFFILIATE_DISCLOSURE_VERSION,
+			status: spec.draftStatus,
+			currency: 'usd',
+			subtotalMinor,
+			taxMinor,
+			shippingMinor,
+			discountMinor,
+			totalMinor,
+			snapshotHash,
+			customerEmail: buyer.email,
+			expiresAt: new Date(createdAt.getTime() + 60 * 60 * 1000),
+			createdAt,
+			updatedAt: new Date()
+		});
+
+		// 2) Stripe webhook event (processed) — the accrual's causation source.
+		const webhookId = generateId();
+		await db.insert(schema.stripeWebhookEvent).values({
+			id: webhookId,
+			draftId: null,
+			paymentAttemptId: null,
+			eventType: 'checkout.session.completed',
+			status: 'processed',
+			attemptCount: 1,
+			payloadDigest,
+			receivedAt: createdAt,
+			processingAt: createdAt,
+			processedAt: createdAt
+		});
+
+		// 3) Attributed order (+ items) so the ledger keeps referential integrity.
+		const [ord] = await db
+			.insert(schema.order)
+			.values({
+				orderNumber: generateOrderNumber(commissionOrderSeq++),
+				checkoutDraftId: draftId,
+				userId: spec.buyerUserId,
+				affiliateLinkId: attributionLink.linkId,
+				status: spec.orderStatus,
+				totalAmount: (totalMinor / 100).toFixed(2),
+				subtotalAmount: (subtotalMinor / 100).toFixed(2),
+				taxAmount: (taxMinor / 100).toFixed(2),
+				shippingAmount: (shippingMinor / 100).toFixed(2),
+				discountAmount: '0.00',
+				affiliateCommission: (commissionMinor / 100).toFixed(2),
+				shippingAddress: null,
+				billingAddress: null,
+				customerEmail: buyer.email,
+				createdAt,
+				updatedAt: new Date()
+			})
+			.returning({ id: schema.order.id });
+
+		for (const it of items) {
+			await db.insert(schema.orderItem).values({
+				orderId: ord.id,
+				productId: productIdMap.get(it.prod.slug)!,
+				productName: it.prod.name,
+				productSku: it.prod.sku,
+				quantity: it.qty,
+				unitPrice: (it.unitMinor / 100).toFixed(2),
+				totalPrice: (it.lineMinor / 100).toFixed(2),
+				createdAt
+			});
+		}
+
+		// 4) Immutable commission fact.
+		const commissionId = generateId();
+		await db.insert(schema.affiliateCommissionLedger).values({
+			id: commissionId,
+			affiliateId,
+			affiliateLinkId: attributionLink.linkId,
+			sourceOrderId: ord.id,
+			sourceCheckoutDraftId: draftId,
+			sourceStripeWebhookEventId: webhookId,
+			sourceReference: `order:${ord.id}:commission`,
+			currency: 'usd',
+			quotedAmountMinor: commissionMinor,
+			commissionRateBps: spec.tier.bps,
+			draftSnapshotHash: snapshotHash,
+			tierCode: spec.tier.code,
+			tierVersion: spec.tier.version,
+			termsVersion: AFFILIATE_TERMS_VERSION,
+			disclosureVersion: AFFILIATE_DISCLOSURE_VERSION,
+			termsAcceptanceId: null,
+			createdAt
+		});
+		ledgerCount++;
+
+		// 5) Lifecycle events. Pending accrual is emitted when the order is paid.
+		await db.insert(schema.affiliateCommissionLedgerEvent).values({
+			id: generateId(),
+			commissionId,
+			eventType: 'pending',
+			amountDeltaMinor: commissionMinor,
+			currency: 'usd',
+			eventReference: `order:${ord.id}:commission:pending`,
+			causationReference: webhookId,
+			reasonCode: 'initial_accrual',
+			createdAt
+		});
+		ledgerEventCount++;
+
+		// Approval clears the accrual on fulfilment.
+		if (spec.lifecycle === 'cleared' || spec.lifecycle === 'paid') {
+			await db.insert(schema.affiliateCommissionLedgerEvent).values({
+				id: generateId(),
+				commissionId,
+				eventType: 'approved',
+				amountDeltaMinor: 0,
+				currency: 'usd',
+				eventReference: `order:${ord.id}:commission:approved`,
+				reasonCode: 'manual_adjustment',
+				createdAt: daysAgo(Math.max(1, spec.daysAgoCreated - 3))
+			});
+			ledgerEventCount++;
+		}
+
+		// Payout instruction + payable/paid lifecycle.
+		if (spec.lifecycle === 'paid') {
+			const payoutId = generateId();
+			const paidAt = daysAgo(Math.max(1, spec.daysAgoCreated - 10));
+			await db.insert(schema.affiliatePayout).values({
+				id: payoutId,
+				affiliateId,
+				payoutReference: `seed-payout-${spec.key}`,
+				currency: 'usd',
+				amountMinor: commissionMinor,
+				periodStart: daysAgo(spec.daysAgoCreated + 5),
+				periodEnd: paidAt,
+				createdAt: paidAt
+			});
+			payoutCount++;
+
+			await db.insert(schema.affiliateCommissionLedgerEvent).values({
+				id: generateId(),
+				commissionId,
+				eventType: 'payable',
+				amountDeltaMinor: 0,
+				currency: 'usd',
+				payoutId,
+				eventReference: `order:${ord.id}:commission:payable`,
+				reasonCode: 'payout',
+				createdAt: paidAt
+			});
+			ledgerEventCount++;
+
+			await db.insert(schema.affiliateCommissionLedgerEvent).values({
+				id: generateId(),
+				commissionId,
+				eventType: 'paid',
+				amountDeltaMinor: 0,
+				currency: 'usd',
+				payoutId,
+				eventReference: `order:${ord.id}:commission:paid`,
+				reasonCode: 'payout',
+				createdAt: paidAt
+			});
+			ledgerEventCount++;
+		}
+
+		// Refund reverses the full accrual.
+		if (spec.reversalReason) {
+			await db.insert(schema.affiliateCommissionLedgerEvent).values({
+				id: generateId(),
+				commissionId,
+				eventType: 'reversed',
+				amountDeltaMinor: -commissionMinor,
+				currency: 'usd',
+				eventReference: `order:${ord.id}:commission:reversed`,
+				reasonCode: spec.reversalReason,
+				createdAt: daysAgo(Math.max(1, spec.daysAgoCreated - 5))
+			});
+			ledgerEventCount++;
+		}
+	}
+
+	console.log(
+		`  -> platform fee ${AFFILIATE_PLATFORM_FEE_BPS} bps; ${affiliateTierDefs.length} tiers, ${ledgerCount} commissions, ${ledgerEventCount} ledger events, ${payoutCount} payouts inserted`
+	);
+
+	// --- 7. Orders ---
+	console.log('[8/13] Inserting orders...');
+	const customerIds = [USER_IDS.sarah, USER_IDS.elena, USER_IDS.aisha, USER_IDS.tom, USER_IDS.priya];
 	const statuses: (
 		| 'pending'
 		| 'confirmed'
@@ -1673,7 +1309,7 @@ async function seed() {
 		'pending',
 		'cancelled'
 	];
-	const allProductSlugs = products.map((p) => p.slug);
+	const allProductSlugs = demoProducts.map((p) => p.slug);
 
 	const addresses = [
 		{
@@ -1735,7 +1371,7 @@ async function seed() {
 
 		const orderItems: { slug: string; qty: number; price: number }[] = orderProductSlugs.map(
 			(slug) => {
-				const prod = products.find((p) => p.slug === slug)!;
+				const prod = demoProducts.find((p) => p.slug === slug)!;
 				return { slug, qty: randomInt(1, 3), price: parseFloat(prod.price) };
 			}
 		);
@@ -1777,7 +1413,7 @@ async function seed() {
 
 		// Insert order items
 		for (const item of orderItems) {
-			const prod = products.find((p) => p.slug === item.slug)!;
+			const prod = demoProducts.find((p) => p.slug === item.slug)!;
 			const productId = productIdMap.get(item.slug)!;
 			await db.insert(schema.orderItem).values({
 				orderId: ord.id,
@@ -1793,8 +1429,8 @@ async function seed() {
 	}
 	console.log(`  -> 15 orders with items inserted`);
 
-	// --- 9. Carts (active) ---
-	console.log('[10/12] Inserting active carts and wishlists...');
+	// --- 8. Carts (active) & wishlists ---
+	console.log('[9/13] Inserting active carts and wishlists...');
 	// Sarah has an active cart
 	const [sarahCart] = await db
 		.insert(schema.cart)
@@ -1806,15 +1442,20 @@ async function seed() {
 		})
 		.returning({ id: schema.cart.id });
 
-	const sarahCartProducts = [products[0], products[5], products[23]]; // tomato, NFT system, mushroom kit
-	for (const p of sarahCartProducts) {
-		const productId = productIdMap.get(p.slug);
-		if (productId) {
+	const sarahCartSlugs = [
+		'heirloom-tomato-collection',
+		'nft-hydroponic-channel-system',
+		'mushroom-cultivation-kit'
+	];
+	for (const slug of sarahCartSlugs) {
+		const prod = demoProducts.find((p) => p.slug === slug);
+		const productId = productIdMap.get(slug);
+		if (prod && productId) {
 			await db.insert(schema.cartItem).values({
 				cartId: sarahCart.id,
 				productId,
 				quantity: randomInt(1, 2),
-				unitPrice: p.price,
+				unitPrice: prod.price,
 				createdAt: daysAgo(1),
 				updatedAt: new Date()
 			});
@@ -1832,14 +1473,15 @@ async function seed() {
 		})
 		.returning({ id: schema.cart.id });
 
-	const guestCartProduct = products[4]; // trowel
-	const trowelId = productIdMap.get(guestCartProduct.slug);
-	if (trowelId) {
+	const guestCartSlug = 'hand-forged-garden-trowel';
+	const guestProduct = demoProducts.find((p) => p.slug === guestCartSlug);
+	const guestProductId = productIdMap.get(guestCartSlug);
+	if (guestProduct && guestProductId) {
 		await db.insert(schema.cartItem).values({
 			cartId: guestCart.id,
-			productId: trowelId,
+			productId: guestProductId,
 			quantity: 1,
-			unitPrice: guestCartProduct.price,
+			unitPrice: guestProduct.price,
 			createdAt: daysAgo(0),
 			updatedAt: new Date()
 		});
@@ -1849,11 +1491,7 @@ async function seed() {
 	const wishlistData = [
 		{
 			userId: USER_IDS.elena,
-			slugs: [
-				'vertical-tower-garden-system',
-				'aeroponic-misting-system',
-				'mushroom-cultivation-kit'
-			]
+			slugs: ['vertical-tower-garden-system', 'aeroponic-misting-system', 'mushroom-cultivation-kit']
 		},
 		{
 			userId: USER_IDS.aisha,
@@ -1861,11 +1499,7 @@ async function seed() {
 		},
 		{
 			userId: USER_IDS.tom,
-			slugs: [
-				'silvopasture-seed-mix',
-				'portable-electric-netting-164-ft',
-				'ibc-aquaponics-fish-tank'
-			]
+			slugs: ['silvopasture-seed-mix', 'portable-electric-netting-164-ft', 'ibc-aquaponics-fish-tank']
 		}
 	];
 
@@ -1885,10 +1519,10 @@ async function seed() {
 	}
 	console.log(`  -> 2 carts, ${wishlistCount} wishlist items inserted`);
 
-	// --- 10. Content Pages ---
-	console.log('[11/12] Inserting content pages and CMS data...');
+	// --- 9. Content Pages + CMS SEO ---
+	console.log('[10/13] Inserting content pages and CMS data...');
 	for (const cp of contentPages) {
-		const featuredImageFileId = cp.imageFile ? (fileIdMap.get(cp.imageFile) ?? null) : null;
+		const featuredImageFileId = cp.imageFile ? (contentFileIdMap.get(cp.imageFile) ?? null) : null;
 		const publishedAt = cp.status === 'published' ? daysAgo(randomInt(5, 60)) : null;
 
 		await db.insert(schema.contentPage).values({
@@ -1944,19 +1578,143 @@ async function seed() {
 		`  -> ${contentPages.length} content pages, ${contentPages.length + 1} SEO records inserted`
 	);
 
+	// --- 10. LMS courses (minimal but valid /learn + /courses content) ---
+	console.log('[11/13] Inserting LMS courses...');
+	const lmsCategoryIdMap = new Map<string, string>(); // slug -> id
+	for (let i = 0; i < lmsCategoryDefs.length; i++) {
+		const c = lmsCategoryDefs[i];
+		const id = generateId();
+		await db.insert(lms.lmsCourseCategory).values({
+			id,
+			name: c.name,
+			slug: c.slug,
+			description: null,
+			sortOrder: i
+		});
+		lmsCategoryIdMap.set(c.slug, id);
+	}
+
+	const lmsTagIdMap = new Map<string, string>(); // slug -> id
+	for (const t of lmsTagDefs) {
+		const id = generateId();
+		await db.insert(lms.lmsCourseTag).values({ id, name: t.name, slug: t.slug });
+		lmsTagIdMap.set(t.slug, id);
+	}
+
+	let lmsCourseCount = 0;
+	let lmsModuleCount = 0;
+	let lmsLessonCount = 0;
+	for (let i = 0; i < lmsCourseDefs.length; i++) {
+		const c = lmsCourseDefs[i];
+		const courseId = generateId();
+		await db.insert(lms.lmsCourse).values({
+			id: courseId,
+			title: c.title,
+			slug: c.slug,
+			description: c.description,
+			courseType: 'self_paced',
+			instructorId: USER_IDS.admin,
+			difficulty: c.difficulty,
+			language: 'en',
+			durationEstimate: c.durationEstimate,
+			pricingType: 'free',
+			enrollmentType: 'open',
+			passingScore: 70,
+			status: 'published',
+			version: 1,
+			sortOrder: i,
+			sequentialEnabled: true,
+			isFeatured: c.isFeatured,
+			metaTitle: `${c.title} | Aevani Learn`,
+			metaDescription: c.description,
+			createdAt: daysAgo(randomInt(30, 120)),
+			updatedAt: new Date()
+		});
+		lmsCourseCount++;
+
+		// Category + tag joins
+		const categoryId = lmsCategoryIdMap.get(c.categorySlug);
+		if (categoryId) {
+			await db.insert(lms.lmsCourseToCategoryJoin).values({ courseId, categoryId });
+		}
+		for (const tagSlug of c.tagSlugs) {
+			const tagId = lmsTagIdMap.get(tagSlug);
+			if (tagId) {
+				await db.insert(lms.lmsCourseToTagJoin).values({ courseId, tagId });
+			}
+		}
+
+		// Link to a product category so /learn can cross-sell
+		const productCategoryId = categoryIdMap.get(c.productCategorySlug);
+		if (productCategoryId) {
+			await db.insert(lms.lmsCourseProduct).values({
+				id: generateId(),
+				courseId,
+				productCategoryId
+			});
+		}
+
+		// Modules -> lessons -> content blocks
+		for (let m = 0; m < c.modules.length; m++) {
+			const mod = c.modules[m];
+			const moduleId = generateId();
+			await db.insert(lms.lmsModule).values({
+				id: moduleId,
+				title: mod.title,
+				slug: `${c.slug}-${slugify(mod.title)}`,
+				description: null,
+				courseId,
+				sortOrder: m,
+				isPublished: true
+			});
+			lmsModuleCount++;
+
+			for (let l = 0; l < mod.lessons.length; l++) {
+				const lesson = mod.lessons[l];
+				const lessonId = generateId();
+				await db.insert(lms.lmsLesson).values({
+					id: lessonId,
+					title: lesson.title,
+					slug: `${c.slug}-${slugify(mod.title)}-${slugify(lesson.title)}`,
+					description: null,
+					moduleId,
+					sortOrder: l,
+					isPublished: true,
+					isPreview: lesson.isPreview ?? false,
+					estimatedMinutes: 15
+				});
+				lmsLessonCount++;
+
+				await db.insert(lms.lmsContentBlock).values({
+					id: generateId(),
+					lessonId,
+					type: 'text',
+					title: lesson.title,
+					content: `<p>${lesson.body}</p>`,
+					sortOrder: 0,
+					isRequired: true,
+					completionThreshold: 100
+				});
+			}
+		}
+	}
+	console.log(
+		`  -> ${lmsCourseCount} courses, ${lmsModuleCount} modules, ${lmsLessonCount} lessons inserted`
+	);
+
 	// --- 11. Audit Log ---
-	console.log('[12/12] Inserting audit log entries...');
+	console.log('[12/13] Inserting audit log entries...');
 	const auditEntries: (typeof schema.auditLog.$inferInsert)[] = [
 		{
 			userId: USER_IDS.admin,
 			action: 'seed.executed',
-			details: JSON.stringify({ version: '1.0.0', timestamp: new Date().toISOString() }),
+			details: JSON.stringify({ version: '2.0.0', timestamp: new Date().toISOString() }),
 			timestamp: new Date()
 		},
 		{
 			userId: USER_IDS.admin,
 			action: 'product.created',
-			details: JSON.stringify({ count: products.length, source: 'seed' }),
+			details: JSON.stringify({ count: demoProducts.length, source: 'catalogDemo' }),
 			timestamp: daysAgo(1)
 		},
 		{
@@ -2016,8 +1774,10 @@ async function seed() {
 	console.log(`  Users:              ${users.length}`);
 	console.log(`  Categories:         ${categoryIdMap.size}`);
 	console.log(`  Products:           ${productIdMap.size}`);
-	console.log(`  Product Images:     ${productImages.length}`);
-	console.log(`  Files:              ${fileRecords.length}`);
+	console.log(`  Product Images:     ${productImageRows.length}`);
+	console.log(`  Product Reviews:    ${reviewRows.length}`);
+	console.log(`  Asset Files:        ${fileCount}`);
+	console.log(`  Content Files:      ${contentFileRecords.length}`);
 	console.log(`  Affiliates:         ${affiliateIdMap.size}`);
 	console.log(`  Affiliate Links:    ${affiliateLinkIds.length}`);
 	console.log(`  Orders:             15`);
@@ -2025,6 +1785,7 @@ async function seed() {
 	console.log(`  Wishlist Items:     ${wishlistCount}`);
 	console.log(`  Content Pages:      ${contentPages.length}`);
 	console.log(`  CMS SEO Records:    ${contentPages.length + 1}`);
+	console.log(`  LMS Courses:        ${lmsCourseCount}`);
 	console.log(`  Audit Entries:      ${auditEntries.length}`);
 	console.log('\n  Credentials were supplied through the local UAT seed environment.\n');
 }

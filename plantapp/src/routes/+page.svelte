@@ -1,62 +1,100 @@
 <script lang="ts">
 	import StructuredData from '$lib/components/StructuredData.svelte';
-	import { Container, Section, Grid, GridItem, OptimizedImage } from '$lib/components';
-	import { PatternBackground, MyceliumNetwork, RootSystem } from '$lib/components/patterns';
-	import ScrollReveal from '$lib/components/ui/ScrollReveal.svelte';
-	import ParallaxHero from '$lib/components/ui/ParallaxHero.svelte';
+	import { ProductCard, SystemCard } from '$lib/components/cards';
+	import { SectionHeader, GlassCard, Button } from '$lib/components/ui';
+	import { assetManifest } from '$lib/data/assetManifest';
 	import { publicSite, publicSiteUrl } from '$lib/config/site';
 	import type { PageData } from './$types';
 
-	// Import images via Vite for proper bundling
-	import sustainabilityImg from '$lib/images/AI-MockAssets/SustainabilityHero.png';
-	import communityImg from '$lib/images/AI-MockAssets/CommunityHero.png';
-	import heroImg from '$lib/images/AI-MockAssets/MAINHERO.png';
-	import hydroImg from '$lib/images/AI-MockAssets/HydroToolProduct-VerticalTowerGardenSystem.png';
-	import aquaImg from '$lib/images/AI-MockAssets/ToolProduct-AquaPonic.png';
-	import silvoImg from '$lib/images/AI-MockAssets/Silvopasture&AgroforestryProducts-SilvopastureSeedMix.png';
-	import agroImg from '$lib/images/AI-MockAssets/Silvopasture&AgroforestryProducts-Nitrogen-FixingTreeSeeds.png';
-
 	let { data }: { data: PageData } = $props();
 
-	// Featured products from server load (database-backed)
-	const featuredProducts = data.featuredProducts;
+	// Featured field kit + real catalogue count from the server load.
+	const featuredProducts = $derived(data.featuredProducts ?? []);
+	const productCount = $derived(data.productCount ?? 0);
 
-	const categories = [
+	// Hero product stat: real catalogue count where available, else the brand default.
+	const productStat = $derived(productCount > 0 ? `${productCount}+` : '38+');
+
+	// Growing systems — four ways to grow, each linking to its catalogue slug.
+	const systems = [
 		{
-			label: 'Hydroponics',
-			href: '/learn',
-			image: hydroImg,
-			alt: 'Vertical tower garden hydroponic system'
+			number: '01',
+			title: 'Hydroponics',
+			href: '/products/hydroponics',
+			image: assetManifest.verticalTower,
+			description:
+				'Soil-free growing that fits more harvest into less space, using up to 90% less water than a conventional bed.'
 		},
 		{
-			label: 'Aquaponics',
-			href: '/learn',
-			image: aquaImg,
-			alt: 'Aquaponic system with fish and plants'
+			number: '02',
+			title: 'Aquaponics',
+			href: '/products/aquaponics',
+			image: assetManifest.ibcFishTank,
+			description:
+				'Fish and plants in one closed loop — the fish feed the greens, the greens keep the water clean.'
 		},
 		{
-			label: 'Silvopasture',
-			href: '/learn',
-			image: silvoImg,
-			alt: 'Silvopasture seed mix products'
+			number: '03',
+			title: 'Silvopasture',
+			href: '/products/silvopasture',
+			image: assetManifest.silvoSeedMix,
+			description:
+				'Trees, forage, and livestock sharing the same acre — shade, feed, and healthier soil, all at once.'
 		},
 		{
-			label: 'Agroforestry',
-			href: '/learn',
-			image: agroImg,
-			alt: 'Nitrogen-fixing tree seeds for agroforestry'
+			number: '04',
+			title: 'Agroforestry',
+			href: '/products/agroforestry',
+			image: assetManifest.nfixingTreeSeeds,
+			description:
+				'Perennial trees and shrubs layered into your land for food, fuel, and long-term resilience.'
 		}
 	];
+
+	// Why Aevani — four value props (titles verbatim from the design).
+	const values = [
+		{
+			title: 'Tested, not listed',
+			body: 'Every product here earned its place in our own beds first. If it did not survive a real season of use, it never makes the catalogue.'
+		},
+		{
+			title: 'Knowledge included',
+			body: 'Gear is only half the story. Every kit ships with the growing guide we wish we had — and the Learn hub is free for everyone.'
+		},
+		{
+			title: 'Built to be repaired',
+			body: 'We stock the parts that wear out and show you how to swap them. A tower that lasts ten years beats one you replace every two.'
+		},
+		{
+			title: 'Honest by default',
+			body: 'We will tell you what a product cannot do as plainly as what it can. If a crop got top-heavy in our tests, it is in the notes.'
+		}
+	];
+
+	/** Build the product detail href from a normalized featured product. */
+	function productHref(p: any): string {
+		const cat = p.categorySlug || p.category?.slug || 'all';
+		return `/products/${cat}/${p.slug}`;
+	}
+
+	/** First real product image, falling back to the hero asset (never a placeholder). */
+	function productImage(p: any): string {
+		return p.images?.[0]?.url || assetManifest.heroMain;
+	}
+
+	/** Optional badge from the product's first tag (rendered uppercase by ProductCard). */
+	function productBadge(p: any): string | undefined {
+		return Array.isArray(p.tags) && p.tags.length > 0 ? String(p.tags[0]) : undefined;
+	}
 </script>
 
 <svelte:head>
-	<title>{publicSite.name} | Sustainable Agriculture Marketplace</title>
+	<title>{publicSite.name} | Field-tested growing systems</title>
 	<meta
 		name="description"
-		content="From monoculture to polyculture. Sustainable agriculture systems for a resilient future."
+		content="Field-tested hydroponic, aquaponic, silvopasture, and agroforestry systems — sold with the guides, spare parts, and honest notes you need to keep things alive."
 	/>
 
-	<!-- Add this StructuredData component -->
 	<StructuredData
 		type="website"
 		data={{
@@ -66,428 +104,579 @@
 		}}
 	/>
 
-	<!-- Also add Organization schema -->
 	<StructuredData
 		type="organization"
 		data={{
 			name: publicSite.name,
 			url: publicSite.origin,
-			logo: publicSiteUrl(heroImg)
+			logo: publicSiteUrl(assetManifest.heroMain)
 		}}
 	/>
 </svelte:head>
 
-<!-- Section 1: Parallax Hero -->
-<ParallaxHero
-	title="AEVANI"
-	subtitle="From monoculture to polyculture. Sustainable agriculture systems for a resilient future."
-	backgroundImage={heroImg}
-	ctaLinks={[
-		{ label: 'Catalog Status', href: '/products', variant: 'primary' },
-		{ label: 'Learn More', href: '/learn', variant: 'outline' }
-	]}
-/>
+<div class="home">
+	<!-- 1. Hero -->
+	<section class="home-hero container">
+		<div class="hero__left">
+			<span class="status-badge">
+				<span class="status-badge__dot" aria-hidden="true"></span>
+				Field-tested growing systems
+			</span>
 
-<!-- Section 2: Shop by Category — Editorial Showcase -->
-<section class="w-full bg-base-100 py-24 md:py-32">
-	<Container>
-		<div class="mb-16 space-y-4 text-center">
-			<h2 class="text-display tracking-widest uppercase">Explore Growing Systems</h2>
-			<div class="mx-auto h-1 w-24 bg-primary"></div>
-			<p class="mx-auto max-w-2xl text-xl font-light text-base-content/60">
-				Browse learning pathways and research themes while catalog verification is in progress.
+			<h1 class="hero__title">Grow something that outlasts the season.</h1>
+
+			<p class="hero__lead">
+				Field-tested hydroponic, aquaponic, and agroforestry systems — sold with the guides, the
+				spare parts, and the honest notes you need to actually keep things alive.
 			</p>
-		</div>
 
-		<ScrollReveal animation="stagger-children">
-			<div
-				class="grid grid-cols-1 gap-4 md:grid-cols-2 md:grid-rows-2"
-				style="grid-template-rows: auto auto;"
-			>
-				<!-- First card: spans 2 rows -->
-				<a
-					href={categories[0].href}
-					class="group relative min-h-[60vh] overflow-hidden rounded-2xl md:row-span-2"
-				>
-					<img
-						src={categories[0].image}
-						alt={categories[0].alt}
-						class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-					/>
-					<div
-						class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
-					></div>
-					<div class="absolute inset-0 flex flex-col justify-end p-8 lg:p-12">
-						<h3 class="text-display mb-4 text-4xl tracking-widest text-white uppercase lg:text-6xl">
-							{categories[0].label}
-						</h3>
-						<span
-							class="inline-block translate-y-4 text-sm font-semibold tracking-widest text-white/0 uppercase transition-all duration-300 group-hover:translate-y-0 group-hover:text-white"
-						>
-							Explore guides &rarr;
-						</span>
-					</div>
-				</a>
-
-				<!-- Cards 2–4: single cells -->
-				{#each categories.slice(1) as category}
-					<a
-						href={category.href}
-						class="group relative min-h-[60vh] overflow-hidden rounded-2xl md:min-h-0"
-						style="min-height: 280px;"
-					>
-						<img
-							src={category.image}
-							alt={category.alt}
-							class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-						/>
-						<div
-							class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
-						></div>
-						<div class="absolute inset-0 flex flex-col justify-end p-6 lg:p-8">
-							<h3
-								class="text-display mb-2 text-2xl tracking-widest text-white uppercase lg:text-3xl"
-							>
-								{category.label}
-							</h3>
-							<span
-								class="inline-block translate-y-4 text-sm font-semibold tracking-widest text-white/0 uppercase transition-all duration-300 group-hover:translate-y-0 group-hover:text-white"
-							>
-								Explore guides &rarr;
-							</span>
-						</div>
-					</a>
-				{/each}
+			<div class="hero__ctas">
+				<Button href="/products" variant="primary" size="lg">Shop the catalogue</Button>
+				<Button href="/learn" variant="secondary" size="lg">Start learning — it's free</Button>
 			</div>
-		</ScrollReveal>
 
-		<div class="mt-12 text-center">
-			<a
-				href="/products"
-				class="inline-flex items-center text-lg font-medium text-primary hover:underline"
-			>
-				View catalog status
-				<svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M14 5l7 7m0 0l-7 7m7-7H3"
-					/>
-				</svg>
-			</a>
-		</div>
-	</Container>
-</section>
-
-<!-- Section 3: Core Values -->
-<section class="relative w-full overflow-hidden bg-primary py-32 text-primary-content">
-	<PatternBackground pattern={MyceliumNetwork} opacity={0.05} class="absolute inset-0 z-0" />
-
-	<div class="relative z-10 mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-12">
-		<div class="mb-24 space-y-6 text-center">
-			<h2 class="text-display text-5xl tracking-tight uppercase lg:text-7xl xl:text-8xl">
-				CORE VALUES
-			</h2>
-			<div class="mx-auto h-1.5 w-32 bg-primary"></div>
-			<p class="mx-auto max-w-3xl text-xl font-light text-primary-content/60 lg:text-2xl">
-				Building a sustainable future through diversity, education, and community
-			</p>
-		</div>
-
-		<ScrollReveal animation="stagger-children">
-			<div
-				class="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-10 xl:grid-cols-4"
-			>
-				<!-- Sustainability - Large Feature Card -->
-				<div class="group md:col-span-2 lg:col-span-2 xl:col-span-2">
-					<div class="relative h-full overflow-hidden rounded-2xl shadow-2xl">
-						<img
-							src={sustainabilityImg}
-							alt="Hands nurturing rich soil with seedlings"
-							class="h-80 w-full object-cover transition-transform duration-700 group-hover:scale-110 lg:h-96 xl:h-[32rem]"
-							loading="lazy"
-						/>
-						<div
-							class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
-						></div>
-						<div
-							class="absolute inset-0 bg-primary/0 transition-colors duration-500 group-hover:bg-primary/10"
-						></div>
-						<div
-							class="absolute right-0 bottom-0 left-0 transform p-8 transition-transform duration-500 group-hover:translate-y-0 lg:p-12"
-						>
-							<h3 class="mb-4 text-4xl font-bold text-white lg:text-5xl xl:text-6xl">
-								SUSTAINABILITY
-							</h3>
-							<p class="max-w-xl text-lg font-light text-white/90 xl:text-2xl">
-								Nurturing the soil, growing resilient ecosystems
-							</p>
-						</div>
-					</div>
+			<div class="hero__stats">
+				<div class="hero-stat">
+					<span class="hero-stat__value">{productStat}</span>
+					<span class="hero-stat__label">field-tested products</span>
 				</div>
-
-				<!-- Education Card — inline SVG book icon -->
-				<div class="group xl:col-span-1">
-					<div
-						class="h-full rounded-3xl border border-base-200/30 bg-base-100 p-10 shadow-md transition-all duration-300 hover:-translate-y-2 hover:border-primary/20 hover:shadow-xl lg:p-12"
-					>
-						<div class="mb-8 transform transition-transform duration-300 group-hover:scale-110">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 48 48"
-								class="h-14 w-14 text-primary"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<path d="M4 8c0-1.1.9-2 2-2h14v36H6a2 2 0 01-2-2V8z" />
-								<path d="M44 8c0-1.1-.9-2-2-2H28v36h14a2 2 0 002-2V8z" />
-								<path d="M20 6h8" /><path d="M20 42h8" />
-								<path d="M10 14h8M10 20h8M10 26h6" />
-								<path d="M30 14h8M30 20h8M30 26h6" />
-							</svg>
-						</div>
-						<h3
-							class="font-display mb-4 text-2xl font-bold tracking-tight text-base-content uppercase lg:text-3xl"
-						>
-							EDUCATION
-						</h3>
-						<p class="text-lg leading-relaxed font-light text-base-content/70">
-							Accessible, practical knowledge for growers at every level
-						</p>
-					</div>
+				<div class="hero-stat">
+					<span class="hero-stat__value">4</span>
+					<span class="hero-stat__label">growing systems</span>
 				</div>
-
-				<!-- Community Card -->
-				<div class="group md:col-span-1 lg:col-span-1 xl:col-span-1">
-					<div class="relative h-full overflow-hidden rounded-2xl shadow-2xl">
-						<img
-							src={communityImg}
-							alt="Diverse community gardening together"
-							class="h-72 w-full object-cover transition-transform duration-700 group-hover:scale-110 lg:h-80"
-							loading="lazy"
-						/>
-						<div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-						<div
-							class="absolute inset-0 bg-primary/0 transition-colors duration-500 group-hover:bg-primary/10"
-						></div>
-						<div class="absolute right-6 bottom-6 left-6">
-							<h3 class="mb-2 text-2xl font-bold text-white lg:text-3xl">COMMUNITY</h3>
-							<p class="text-base font-light text-white/90">Growing together</p>
-						</div>
-					</div>
-				</div>
-
-				<!-- Diversity Block -->
-				<div class="group md:col-span-2 lg:col-span-2 xl:col-span-2">
-					<div
-						class="hover:shadow-3xl relative h-full overflow-hidden rounded-2xl bg-gradient-to-br from-secondary to-secondary/80 p-10 text-secondary-content shadow-2xl transition-all duration-300 hover:-translate-y-1 lg:p-14 xl:p-20"
-					>
-						<div class="relative z-10 space-y-8">
-							<h3 class="text-4xl font-bold tracking-tight lg:text-6xl xl:text-7xl">DIVERSITY</h3>
-							<p
-								class="max-w-2xl text-xl leading-relaxed font-light opacity-95 lg:text-2xl xl:text-3xl"
-							>
-								From monoculture to polyculture. Embrace biodiversity, complexity, and the
-								interconnectedness of all living things.
-							</p>
-							<a
-								href="/products"
-								class="btn mt-4 inline-block text-base font-semibold tracking-wide transition-transform btn-lg btn-secondary hover:scale-105"
-							>
-								EXPLORE LEARNING
-							</a>
-						</div>
-					</div>
-				</div>
-
-				<!-- Empowerment Card — inline SVG seedling icon -->
-				<div class="group xl:col-span-1">
-					<div
-						class="h-full rounded-3xl border border-base-200/30 bg-base-100 p-10 text-center shadow-md transition-all duration-300 hover:-translate-y-2 hover:border-primary/20 hover:shadow-xl lg:p-12"
-					>
-						<div
-							class="mb-8 flex transform justify-center transition-transform duration-300 group-hover:scale-110"
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 48 48"
-								class="h-14 w-14 text-primary"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<line x1="24" y1="42" x2="24" y2="20" />
-								<path d="M24 30c-6-1-11-7-9-14 4 4 8 9 9 14z" fill="currentColor" opacity="0.15" />
-								<path d="M24 30c-6-1-11-7-9-14 4 4 8 9 9 14" />
-								<path d="M24 24c6-1 11-7 9-14-4 4-8 9-9 14z" fill="currentColor" opacity="0.15" />
-								<path d="M24 24c6-1 11-7 9-14-4 4-8 9-9 14" />
-								<path d="M24 42c-3-1-5 1-8 0" />
-								<path d="M24 42c3-1 5 1 8 0" />
-							</svg>
-						</div>
-						<h3
-							class="font-display mb-4 text-2xl font-bold tracking-tight text-base-content uppercase lg:text-3xl"
-						>
-							EMPOWERMENT
-						</h3>
-						<p class="text-base leading-relaxed font-light text-base-content/70">
-							Tools and knowledge to make a positive impact
-						</p>
-					</div>
+				<div class="hero-stat">
+					<span class="hero-stat__value">2-yr</span>
+					<span class="hero-stat__label">warranty</span>
 				</div>
 			</div>
-		</ScrollReveal>
-	</div>
-</section>
-
-<!-- Section 4: Featured Products — Editorial Grid -->
-<section class="w-full bg-base-100 py-32">
-	<Container>
-		<div class="mb-20 space-y-6 text-center">
-			<h2 class="text-display text-5xl tracking-tight uppercase lg:text-7xl xl:text-8xl">
-				CATALOG VERIFICATION
-			</h2>
-			<div class="mx-auto h-1.5 w-32 bg-primary"></div>
-			<p class="mx-auto max-w-3xl text-xl font-light text-base-content/60 lg:text-2xl">
-				We do not publish product prices, availability, or claims until their operational evidence
-				is reviewed.
-			</p>
 		</div>
 
-		<ScrollReveal animation="fade-up">
-			{#if featuredProducts.length > 0}
-				<div class="grid grid-cols-2 gap-6 lg:gap-10">
-					{#each featuredProducts as product, i}
-						<a
-							href="/products/{product.categorySlug ||
-								product.category?.slug ||
-								'all'}/{product.slug}"
-							class="group card overflow-hidden rounded-2xl border border-base-200 bg-base-100 shadow-xl transition-all duration-500 hover:scale-[1.02] hover:shadow-xl {i ===
-							0
-								? 'col-span-2 md:col-span-1 md:row-span-2'
-								: 'col-span-2 md:col-span-1'}"
-						>
-							<figure class="relative overflow-hidden {i === 0 ? 'h-80 md:h-[28rem]' : 'h-64'}">
-								{#if product.images && product.images.length > 0}
-									<img
-										src={product.images[0].url}
-										alt={product.images[0].altText}
-										class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-									/>
-									<div
-										class="absolute inset-0 flex items-center justify-center bg-primary/0 opacity-0 transition-all duration-500 group-hover:bg-primary/20 group-hover:opacity-100"
-									>
-										<span class="text-sm font-semibold tracking-widest text-white uppercase"
-											>Quick View</span
-										>
-									</div>
-								{:else}
-									<div class="flex h-full items-center justify-center bg-base-200">
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											class="h-16 w-16 text-base-content/30"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="1.5"
-												d="M12 3C7 3 3 7 3 12s4 9 9 9 9-4 9-9-4-9-9-9zm0 0v9m0-9c2 2 3 5 3 9m-3-9c-2 2-3 5-3 9"
-											/>
-										</svg>
-									</div>
-								{/if}
-							</figure>
-							<div class="card-body space-y-4 p-6 {i === 0 ? 'lg:p-10' : ''}">
-								<h3
-									class="card-title text-base-content transition-colors group-hover:text-primary {i ===
-									0
-										? 'text-2xl lg:text-3xl'
-										: 'text-xl'} leading-tight font-bold"
-								>
-									{product.name}
-								</h3>
-								{#if i === 0}
-									<p class="text-base leading-relaxed font-light text-base-content/70">
-										{product.shortDescription}
-									</p>
-								{:else}
-									<p class="line-clamp-2 text-sm leading-relaxed font-light text-base-content/70">
-										{product.shortDescription}
-									</p>
-								{/if}
-								<div
-									class="mt-4 card-actions items-center justify-between border-t border-base-200 pt-4"
-								>
-									<div
-										class="font-mono text-2xl font-bold text-primary {i === 0
-											? 'text-3xl lg:text-4xl'
-											: ''}"
-									>
-										${parseFloat(product.price).toFixed(2)}
-									</div>
-									<span
-										class="font-display btn text-xs tracking-widest uppercase transition-transform btn-sm btn-primary group-hover:scale-105 {i ===
-										0
-											? 'text-sm btn-md'
-											: ''}"
-									>
-										VIEW DETAILS
-									</span>
-								</div>
-							</div>
-						</a>
+		<div class="hero__right">
+			<div class="hero-visual">
+				<img
+					class="hero-visual__img"
+					src={assetManifest.heroMain}
+					alt="Aevani vertical growing tower thriving with leafy greens and herbs"
+					fetchpriority="high"
+				/>
+				<div class="float-card float-card--top">
+					<span class="float-card__value">40+ plants</span>
+					<span class="float-card__label">in 2 sq ft of floor space</span>
+				</div>
+				<div class="float-card float-card--bottom">
+					<span class="float-card__value">&minus;90% water</span>
+					<span class="float-card__label">vs. conventional beds</span>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 2. Systems -->
+	<section id="systems" class="section container">
+		<SectionHeader
+			eyebrow="Four ways to grow"
+			title="Pick a system. We'll walk the rest of the way with you."
+			actionLabel="Browse everything"
+			actionHref="/products"
+		/>
+		<div class="systems-grid">
+			{#each systems as system}
+				<SystemCard
+					number={system.number}
+					title={system.title}
+					href={system.href}
+					image={system.image}
+					description={system.description}
+				/>
+			{/each}
+		</div>
+	</section>
+
+	<!-- 3. Why Aevani -->
+	<section id="about" class="section container">
+		<GlassCard padding="clamp(28px, 4vw, 56px)" radius={28}>
+			<div class="why">
+				<div class="why__intro">
+					<span class="why__eyebrow">Why Aevani</span>
+					<h2 class="why__title">We only sell what we've grown with.</h2>
+				</div>
+				<div class="why__grid">
+					{#each values as value}
+						<div class="value">
+							<h3 class="value__title">{value.title}</h3>
+							<p class="value__body">{value.body}</p>
+						</div>
 					{/each}
 				</div>
-			{:else}
-				<div
-					class="mx-auto max-w-2xl rounded-3xl border border-base-300 bg-base-200/40 p-8 text-center"
-				>
-					<p class="text-lg leading-relaxed text-base-content/70">
-						The product catalog is unavailable while supplier, offer, fulfillment, and claim
-						evidence is verified.
-					</p>
-				</div>
-			{/if}
-		</ScrollReveal>
+			</div>
+		</GlassCard>
+	</section>
 
-		<div class="mt-16 text-center">
-			<a
-				href="/products"
-				class="font-display btn text-sm tracking-widest uppercase transition-transform btn-outline btn-lg hover:scale-105"
-			>
-				VIEW CATALOG STATUS
+	<!-- 4. Featured products -->
+	{#if featuredProducts.length > 0}
+		<section class="section container">
+			<SectionHeader
+				eyebrow="Current field kit"
+				title="What we're reaching for this season"
+				actionLabel="Full catalogue"
+				actionHref="/products"
+			/>
+			<div class="featured-grid">
+				{#each featuredProducts as product}
+					<ProductCard
+						href={productHref(product)}
+						image={productImage(product)}
+						imageAlt={product.images?.[0]?.altText || product.name}
+						title={product.name}
+						category={product.category?.name ?? 'Aevani'}
+						description={product.shortDescription}
+						price={product.price}
+						compareAt={product.comparePrice ?? undefined}
+						badge={productBadge(product)}
+					/>
+				{/each}
+			</div>
+		</section>
+	{/if}
+
+	<!-- 5. Learn + Affiliate split -->
+	<section class="section container">
+		<div class="split">
+			<a class="learn-card" href="/learn">
+				<span class="learn-card__eyebrow">Learn hub</span>
+				<h2 class="learn-card__title">Guides written by people with dirt on their keyboards.</h2>
+				<p class="learn-card__body">
+					Step-by-step growing guides, troubleshooting, and field notes straight from our own test
+					beds — free to read, no account required.
+				</p>
+				<span class="learn-card__link">Explore the guides &rarr;</span>
 			</a>
+
+			<div id="affiliate" class="affiliate-card">
+				<span class="affiliate-card__eyebrow">Affiliate program</span>
+				<h2 class="affiliate-card__title">Teach people to grow. Earn while you do.</h2>
+				<p class="affiliate-card__body">
+					Share the systems you already trust and earn a fair cut on every grower you send our way.
+					Built for educators, market gardeners, and anyone with a following that grows.
+				</p>
+				<Button href="/affiliate/join" variant="primary" size="lg">Join the program</Button>
+			</div>
 		</div>
-	</Container>
-</section>
+	</section>
+</div>
 
-<!-- Section 5: Newsletter — Reimagined -->
-<section class="relative w-full overflow-hidden bg-primary py-32 text-primary-content">
-	<PatternBackground pattern={RootSystem} opacity={0.08} class="absolute inset-0 z-0" />
+<style>
+	.home {
+		min-height: 100vh;
+	}
 
-	<div class="relative z-10 mx-auto w-full max-w-[900px] px-4 text-center sm:px-6 lg:px-12">
-		<ScrollReveal animation="fade-up">
-			<h2 class="text-display mb-6 text-5xl tracking-tight uppercase lg:text-7xl xl:text-8xl">
-				STAY CONNECTED
-			</h2>
-			<p class="mx-auto mb-6 max-w-2xl text-xl leading-relaxed font-light text-primary-content/60">
-				Newsletter sign-up is currently unavailable.
-			</p>
-			<p class="mx-auto max-w-xl text-lg leading-relaxed font-light text-primary-content/80">
-				For updates or support, <a
-					href="/contact"
-					class="underline decoration-accent underline-offset-4">contact Aevani</a
-				>.
-			</p>
-		</ScrollReveal>
-	</div>
-</section>
+	.container {
+		max-width: 1240px;
+		margin: 0 auto;
+		padding-left: 24px;
+		padding-right: 24px;
+	}
+
+	.section {
+		margin-top: clamp(64px, 9vw, 112px);
+	}
+
+	/* ---------- Hero ---------- */
+	.home-hero {
+		display: grid;
+		grid-template-columns: 1.05fr 1fr;
+		gap: 56px;
+		align-items: center;
+		padding-top: 80px;
+		padding-bottom: 40px;
+	}
+
+	.status-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 9px;
+		padding: 8px 16px;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.55);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		border: 1px solid rgba(255, 255, 255, 0.9);
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+		font-family: var(--font-body);
+		font-size: 13px;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		color: #1c3527;
+	}
+
+	.status-badge__dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 999px;
+		background: linear-gradient(180deg, #a8e6c8, #4ea786);
+		box-shadow: 0 0 0 3px rgba(143, 216, 180, 0.28);
+	}
+
+	.hero__title {
+		margin: 22px 0 0;
+		font-family: var(--font-display);
+		font-size: clamp(40px, 6vw, 64px);
+		font-weight: 600;
+		line-height: 1.02;
+		letter-spacing: -0.02em;
+		color: #1c3527;
+		text-wrap: balance;
+	}
+
+	.hero__lead {
+		margin: 22px 0 0;
+		max-width: 34rem;
+		font-family: var(--font-body);
+		font-size: 19px;
+		line-height: 1.55;
+		color: #4a5f52;
+		text-wrap: pretty;
+	}
+
+	.hero__ctas {
+		margin-top: 30px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+	}
+
+	.hero__stats {
+		margin-top: 40px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 34px;
+	}
+
+	.hero-stat {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.hero-stat__value {
+		font-family: var(--font-display);
+		font-size: 30px;
+		font-weight: 700;
+		line-height: 1;
+		letter-spacing: -0.02em;
+		color: #1c3527;
+	}
+
+	.hero-stat__label {
+		font-family: var(--font-body);
+		font-size: 13.5px;
+		color: #5a7263;
+	}
+
+	/* Hero visual */
+	.hero__right {
+		position: relative;
+	}
+
+	.hero-visual {
+		position: relative;
+		border-radius: 32px;
+		overflow: visible;
+	}
+
+	.hero-visual__img {
+		display: block;
+		width: 100%;
+		height: clamp(360px, 42vw, 540px);
+		object-fit: cover;
+		border-radius: 32px;
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.4),
+			0 22px 60px rgba(23, 48, 31, 0.22);
+	}
+
+	.float-card {
+		position: absolute;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		padding: 14px 18px;
+		border-radius: 18px;
+		background: rgba(255, 255, 255, 0.72);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		border: 1px solid rgba(255, 255, 255, 0.9);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.95),
+			0 12px 30px rgba(23, 48, 31, 0.18);
+	}
+
+	.float-card--top {
+		top: 26px;
+		left: -22px;
+	}
+
+	.float-card--bottom {
+		bottom: 26px;
+		right: -22px;
+	}
+
+	.float-card__value {
+		font-family: var(--font-display);
+		font-size: 19px;
+		font-weight: 700;
+		letter-spacing: -0.015em;
+		color: #1c3527;
+	}
+
+	.float-card__label {
+		font-family: var(--font-body);
+		font-size: 12.5px;
+		line-height: 1.3;
+		color: #5a7263;
+	}
+
+	/* ---------- Systems ---------- */
+	.systems-grid {
+		margin-top: 40px;
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 22px;
+	}
+
+	/* ---------- Why Aevani ---------- */
+	.why {
+		display: grid;
+		grid-template-columns: 0.85fr 1.15fr;
+		gap: clamp(28px, 4vw, 56px);
+		align-items: start;
+	}
+
+	.why__eyebrow {
+		display: block;
+		font-family: var(--font-body);
+		font-size: 13px;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.14em;
+		color: #2e6b4f;
+	}
+
+	.why__title {
+		margin: 12px 0 0;
+		font-family: var(--font-display);
+		font-size: clamp(28px, 3.4vw, 36px);
+		font-weight: 600;
+		line-height: 1.08;
+		letter-spacing: -0.015em;
+		color: #1c3527;
+		text-wrap: balance;
+	}
+
+	.why__grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 28px 32px;
+	}
+
+	.value__title {
+		margin: 0;
+		font-family: var(--font-display);
+		font-size: 19px;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		color: #1c3527;
+	}
+
+	.value__body {
+		margin: 8px 0 0;
+		font-family: var(--font-body);
+		font-size: 14.5px;
+		line-height: 1.55;
+		color: #4a5f52;
+		text-wrap: pretty;
+	}
+
+	/* ---------- Featured ---------- */
+	.featured-grid {
+		margin-top: 40px;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 24px;
+	}
+
+	/* ---------- Learn + Affiliate split ---------- */
+	.split {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 24px;
+	}
+
+	.learn-card,
+	.affiliate-card {
+		display: flex;
+		flex-direction: column;
+		border-radius: 28px;
+		padding: clamp(28px, 3.4vw, 44px);
+	}
+
+	/* Dark Learn hub card */
+	.learn-card {
+		text-decoration: none;
+		position: relative;
+		overflow: hidden;
+		background:
+			radial-gradient(600px 300px at 90% -10%, rgba(143, 216, 180, 0.22) 0%, transparent 60%),
+			linear-gradient(150deg, #1e4a36 0%, #14261b 100%);
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		box-shadow: 0 16px 44px rgba(20, 38, 27, 0.28);
+		transition:
+			transform 300ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+			box-shadow 300ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+	}
+
+	.learn-card:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 24px 56px rgba(20, 38, 27, 0.34);
+	}
+
+	.learn-card__eyebrow {
+		font-family: var(--font-body);
+		font-size: 13px;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.14em;
+		color: #8fd8b4;
+	}
+
+	.learn-card__title {
+		margin: 14px 0 0;
+		font-family: var(--font-display);
+		font-size: clamp(24px, 2.8vw, 32px);
+		font-weight: 600;
+		line-height: 1.1;
+		letter-spacing: -0.015em;
+		color: #f4f1ea;
+		text-wrap: balance;
+	}
+
+	.learn-card__body {
+		margin: 16px 0 0;
+		font-family: var(--font-body);
+		font-size: 15.5px;
+		line-height: 1.6;
+		color: #dce6dd;
+		text-wrap: pretty;
+	}
+
+	.learn-card__link {
+		margin-top: auto;
+		padding-top: 24px;
+		font-family: var(--font-body);
+		font-size: 15px;
+		font-weight: 600;
+		color: #a8e6c8;
+	}
+
+	/* Glass Affiliate card */
+	.affiliate-card {
+		background: rgba(255, 255, 255, 0.72);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		border: 1px solid rgba(255, 255, 255, 0.9);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.95),
+			0 10px 34px rgba(23, 48, 31, 0.12);
+	}
+
+	.affiliate-card__eyebrow {
+		font-family: var(--font-body);
+		font-size: 13px;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.14em;
+		color: #2e6b4f;
+	}
+
+	.affiliate-card__title {
+		margin: 14px 0 0;
+		font-family: var(--font-display);
+		font-size: clamp(24px, 2.8vw, 32px);
+		font-weight: 600;
+		line-height: 1.1;
+		letter-spacing: -0.015em;
+		color: #1c3527;
+		text-wrap: balance;
+	}
+
+	.affiliate-card__body {
+		margin: 16px 0 24px;
+		font-family: var(--font-body);
+		font-size: 15.5px;
+		line-height: 1.6;
+		color: #4a5f52;
+		text-wrap: pretty;
+	}
+
+	.affiliate-card :global(.btn-plant) {
+		margin-top: auto;
+		align-self: flex-start;
+	}
+
+	/* ---------- Responsive ---------- */
+	@media (max-width: 960px) {
+		.home-hero {
+			grid-template-columns: 1fr;
+			gap: 44px;
+			padding-top: 56px;
+		}
+
+		.hero__right {
+			order: -1;
+		}
+
+		.systems-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		.why {
+			grid-template-columns: 1fr;
+			gap: 28px;
+		}
+
+		.featured-grid {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.hero__stats {
+			gap: 22px;
+		}
+
+		.float-card--top {
+			left: 10px;
+		}
+
+		.float-card--bottom {
+			right: 10px;
+		}
+
+		.systems-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.why__grid {
+			grid-template-columns: 1fr;
+			gap: 24px;
+		}
+
+		.featured-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.split {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

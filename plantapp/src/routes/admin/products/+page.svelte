@@ -1,10 +1,45 @@
 <script lang="ts">
+	import { trpc } from '$lib/trpc/client';
+	import { toasts } from '$lib/stores/toast';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 
 	let searchQuery = $state('');
 	let selectedCategory = $state('all');
+	let processingId = $state<number | null>(null);
+
+	async function toggleActive(product: { id: number; isActive: boolean }) {
+		if (processingId !== null) return;
+		processingId = product.id;
+		const nextActive = !product.isActive;
+		try {
+			await trpc.products.updateProduct.mutate({ id: product.id, isActive: nextActive });
+			toasts.addToast({
+				message: nextActive ? 'Product activated' : 'Product deactivated',
+				variant: 'success',
+				duration: 3000
+			});
+			const rows = await trpc.admin.getAllProducts.query({ limit: 50, offset: 0 });
+			data.products = rows.map(({ product: p, category }) => ({
+				id: p.id,
+				name: p.name,
+				sku: p.sku,
+				price: p.price,
+				stockQuantity: p.stockQuantity,
+				isActive: p.isActive,
+				category
+			}));
+		} catch (error: any) {
+			toasts.addToast({
+				message: error?.message || 'Failed to update product',
+				variant: 'error',
+				duration: 3000
+			});
+		} finally {
+			processingId = null;
+		}
+	}
 
 	const products = $derived(data.products || []);
 
@@ -124,7 +159,11 @@
 									>
 										Edit
 									</a>
-									<button class="platform-action-btn admin-table-btn">
+									<button
+										class="platform-action-btn admin-table-btn"
+										onclick={() => toggleActive(product)}
+										disabled={processingId === product.id}
+									>
 										{product.isActive ? 'Deactivate' : 'Activate'}
 									</button>
 								</div>

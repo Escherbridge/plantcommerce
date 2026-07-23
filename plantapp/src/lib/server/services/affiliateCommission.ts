@@ -410,6 +410,122 @@ export class AffiliateCommissionService {
 		return winner;
 	}
 
+	/**
+	 * Clear (approve) every pending commission accrued for a fulfilled order.
+	 * Fulfillment (shipped/delivered) moves a commission from `pending` to `approved`,
+	 * i.e. into the affiliate's cleared/payable balance. Issuing the actual monthly
+	 * payout instruction (`payable`/`paid`) remains a separate batch workflow.
+	 */
+	static async clearCommissionsForOrder(
+		tx: Transaction,
+		orderId: number,
+		causationReference?: string,
+		now?: Date
+	): Promise<number> {
+		if (!this.isEnabled()) {
+			return 0;
+		}
+		const commissions = await tx
+			.select({ id: table.affiliateCommissionLedger.id })
+			.from(table.affiliateCommissionLedger)
+			.where(eq(table.affiliateCommissionLedger.sourceOrderId, orderId));
+
+		let cleared = 0;
+		for (const commission of commissions) {
+			const events = await tx
+				.select({
+					eventType: table.affiliateCommissionLedgerEvent.eventType,
+					amountDeltaMinor: table.affiliateCommissionLedgerEvent.amountDeltaMinor
+				})
+				.from(table.affiliateCommissionLedgerEvent)
+				.where(eq(table.affiliateCommissionLedgerEvent.commissionId, commission.id));
+
+			const hasEvent = (eventType: string) =>
+				events.some((event: { eventType: string }) => event.eventType === eventType);
+			const netAmountMinor = events.reduce(
+				(total: number, event: { amountDeltaMinor: number }) => total + event.amountDeltaMinor,
+				0
+			);
+
+			if (
+				!hasEvent('pending') ||
+				netAmountMinor <= 0 ||
+				hasEvent('approved') ||
+				hasEvent('payable') ||
+				hasEvent('paid')
+			) {
+				continue;
+			}
+
+			await this.recordLifecycleEvent(tx, {
+				commissionId: commission.id,
+				eventType: 'approved',
+				eventReference: `commission:${commission.id}:cleared`,
+				causationReference,
+				now
+			});
+			cleared += 1;
+		}
+		return cleared;
+	}
+
+	/**
+	 * Reverse the outstanding balance of every commission accrued for an order that was
+	 * refunded, charged back, or cancelled. Idempotent per commission and reason.
+	 */
+	static async reverseCommissionsForOrder(
+		tx: Transaction,
+		orderId: number,
+		reasonCode: CommissionReversalReason,
+		causationReference?: string,
+		now?: Date
+	): Promise<number> {
+		if (!this.isEnabled()) {
+			return 0;
+		}
+		const commissions = await tx
+			.select({
+				id: table.affiliateCommissionLedger.id,
+				quotedAmountMinor: table.affiliateCommissionLedger.quotedAmountMinor
+			})
+			.from(table.affiliateCommissionLedger)
+			.where(eq(table.affiliateCommissionLedger.sourceOrderId, orderId));
+
+		let reversed = 0;
+		for (const commission of commissions) {
+			const events = await tx
+				.select({
+					eventType: table.affiliateCommissionLedgerEvent.eventType,
+					amountDeltaMinor: table.affiliateCommissionLedgerEvent.amountDeltaMinor
+				})
+				.from(table.affiliateCommissionLedgerEvent)
+				.where(eq(table.affiliateCommissionLedgerEvent.commissionId, commission.id));
+
+			const alreadyReversedMinor = events
+				.filter((event: { eventType: string }) => event.eventType === 'reversed')
+				.reduce(
+					(total: number, event: { amountDeltaMinor: number }) =>
+						total + Math.abs(event.amountDeltaMinor),
+					0
+				);
+			const outstandingMinor = commission.quotedAmountMinor - alreadyReversedMinor;
+			if (outstandingMinor <= 0) {
+				continue;
+			}
+
+			await this.recordReversal(tx, {
+				commissionId: commission.id,
+				amountMinor: outstandingMinor,
+				eventReference: `commission:${commission.id}:reversal:${reasonCode}`,
+				reasonCode,
+				causationReference,
+				now
+			});
+			reversed += 1;
+		}
+		return reversed;
+	}
+
 	/** Create or retrieve an immutable payout instruction; provider disbursement remains a separate workflow. */
 	static async createPayoutInstruction(
 		tx: Transaction,

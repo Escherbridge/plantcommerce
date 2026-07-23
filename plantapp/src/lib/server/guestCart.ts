@@ -1,7 +1,7 @@
 import { dev } from '$app/environment';
 import { env } from '$env/dynamic/private';
 import type { Cookies } from '@sveltejs/kit';
-import { encodeBase64url } from '@oslojs/encoding';
+import { encodeBase64urlNoPadding } from '@oslojs/encoding';
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 export const guestCartCookieName = 'aevani_guest_cart';
@@ -16,10 +16,16 @@ const guestCartCookieOptions = {
 	sameSite: 'lax' as const
 };
 
+// Dev-only fallback so local guest carts work without provisioning a real secret.
+// Production (dev === false) still requires a properly configured secret and never
+// falls back to this constant. See AGENTS.md §guest cart.
+const devFallbackGuestCartCookieSecret =
+	'aevani-local-dev-guest-cart-secret-not-for-production-use';
+
 function getConfiguredGuestCartCookieSecret(): string | null {
 	const secret = env.GUEST_CART_COOKIE_SECRET;
 	if (!secret || secret.startsWith('replace-with-') || Buffer.byteLength(secret) < 32) {
-		return null;
+		return dev ? devFallbackGuestCartCookieSecret : null;
 	}
 
 	return secret;
@@ -76,7 +82,9 @@ export function getOrCreateGuestCartSessionId(cookies: Cookies): string {
 		return existingSessionId;
 	}
 
-	const sessionId = encodeBase64url(crypto.getRandomValues(new Uint8Array(32)));
+	// Must be unpadded so the 43-char session id matches guestCartCookiePattern and
+	// the signature computed over it verifies on read-back.
+	const sessionId = encodeBase64urlNoPadding(crypto.getRandomValues(new Uint8Array(32)));
 	cookies.set(
 		guestCartCookieName,
 		serializeGuestCartCookie(sessionId, secret),

@@ -1,4 +1,4 @@
 import type { PageLoad } from './$types';
 
-/** Promotional fixture data is withheld until the affiliate program is active. */
+/** Static guidance page; the layout guard already enforces an active affiliate. */
 export const load: PageLoad = async () => ({});

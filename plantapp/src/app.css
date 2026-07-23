@@ -1,11 +1,6 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/inter';
-@import '@fontsource/barlow-condensed/400.css';
-@import '@fontsource/barlow-condensed/500.css';
-@import '@fontsource/barlow-condensed/600.css';
-@import '@fontsource/barlow-condensed/700.css';
-@import '@fontsource/barlow-condensed/800.css';
-@import '@fontsource/barlow-condensed/900.css';
+@import '@fontsource-variable/familjen-grotesk';
+@import '@fontsource-variable/instrument-sans';
 @import '@fontsource/jetbrains-mono/400.css';
 @import '@fontsource/jetbrains-mono/500.css';
 @import '@fontsource/jetbrains-mono/700.css';
@@ -18,26 +13,26 @@
 	name: 'aevani';
 	default: true;
 	color-scheme: light;
-	--color-primary: oklch(29.72% 0.0582 259.57);
-	--color-primary-content: oklch(97.03% 0.007 88.69);
-	--color-secondary: oklch(55.98% 0.0781 237.99);
-	--color-secondary-content: oklch(97.03% 0.007 88.69);
-	--color-accent: oklch(61.22% 0.2082 22.25);
-	--color-accent-content: oklch(100% 0 135.81);
-	--color-neutral: oklch(21.78% 0 135.81);
-	--color-neutral-content: oklch(97.03% 0.007 88.69);
-	--color-base-100: oklch(97.03% 0.007 88.69);
-	--color-base-200: oklch(93.49% 0.0115 84.62);
-	--color-base-300: oklch(92.23% 0.0099 87.51);
-	--color-base-content: oklch(21.78% 0 135.81);
-	--color-info: oklch(37.08% 0.0654 175.16);
-	--color-info-content: oklch(97.03% 0.007 88.69);
-	--color-success: oklch(47.58% 0.0777 162.16);
-	--color-success-content: oklch(97.03% 0.007 88.69);
-	--color-warning: oklch(70.62% 0.144 82.48);
-	--color-warning-content: oklch(21.78% 0 135.81);
-	--color-error: oklch(61.22% 0.2082 22.25);
-	--color-error-content: oklch(100% 0 135.81);
+	--color-primary: #2e6b4f;
+	--color-primary-content: #f4f1ea;
+	--color-secondary: #1e4a36;
+	--color-secondary-content: #f4f1ea;
+	--color-accent: #8fd8b4;
+	--color-accent-content: #14261b;
+	--color-neutral: #14261b;
+	--color-neutral-content: #dce6dd;
+	--color-base-100: #f4f1ea;
+	--color-base-200: #ede7da;
+	--color-base-300: #e3dbc9;
+	--color-base-content: #22362a;
+	--color-info: #2a6480;
+	--color-info-content: #f4f1ea;
+	--color-success: #2e6b4f;
+	--color-success-content: #f4f1ea;
+	--color-warning: #b8860b;
+	--color-warning-content: #14261b;
+	--color-error: #b4432e;
+	--color-error-content: #f4f1ea;
 	--radius-selector: 0.5rem;
 	--radius-field: 0.625rem;
 	--radius-box: 1rem;
@@ -53,12 +48,12 @@
 	name: 'aevani-dark';
 	prefersdark: true;
 	color-scheme: dark;
-	--color-primary: oklch(70% 0.09 237);
-	--color-primary-content: oklch(21.78% 0 135.81);
-	--color-secondary: oklch(73% 0.06 230);
-	--color-secondary-content: oklch(21.78% 0 135.81);
-	--color-accent: oklch(61.22% 0.2082 22.25);
-	--color-accent-content: oklch(100% 0 135.81);
+	--color-primary: oklch(76.2% 0.1082 160.03);
+	--color-primary-content: oklch(24.89% 0.0319 156.37);
+	--color-secondary: oklch(87.47% 0.0755 163.42);
+	--color-secondary-content: oklch(24.89% 0.0319 156.37);
+	--color-accent: oklch(82.41% 0.0893 162.19);
+	--color-accent-content: oklch(24.89% 0.0319 156.37);
 	--color-neutral: oklch(28% 0 0);
 	--color-neutral-content: oklch(92.23% 0.0099 87.51);
 	--color-base-100: oklch(21.78% 0 135.81);
@@ -71,8 +66,8 @@
 	--color-success-content: oklch(21.78% 0 135.81);
 	--color-warning: oklch(78% 0.12 82);
 	--color-warning-content: oklch(21.78% 0 135.81);
-	--color-error: oklch(61.22% 0.2082 22.25);
-	--color-error-content: oklch(100% 0 135.81);
+	--color-error: oklch(60.11% 0.1429 33.07);
+	--color-error-content: oklch(95.85% 0.0098 87.47);
 	--radius-selector: 0.5rem;
 	--radius-field: 0.625rem;
 	--radius-box: 1rem;
@@ -87,31 +82,32 @@
 	/* ── DaisyUI v4→v5 Variable Bridge ──
 	   v5 uses --color-primary: oklch(...) instead of --p: L C H
 	   These aliases let existing oklch(var(--p)) expressions keep working */
-	--p: 29.72% 0.0582 259.57;
-	--pc: 97.03% 0.007 88.69;
-	--s: 55.98% 0.0781 237.99;
-	--sc: 97.03% 0.007 88.69;
-	--a: 61.22% 0.2082 22.25;
-	--ac: 100% 0 0;
-	--n: 21.78% 0 0;
-	--nc: 97.03% 0.007 88.69;
-	--b1: 97.03% 0.007 88.69;
-	--b2: 93.49% 0.0115 84.62;
-	--b3: 92.23% 0.0099 87.51;
-	--bc: 21.78% 0 0;
-	--in: 37.08% 0.0654 175.16;
-	--inc: 97.03% 0.007 88.69;
-	--su: 47.58% 0.0777 162.16;
-	--suc: 97.03% 0.007 88.69;
-	--wa: 70.62% 0.144 82.48;
-	--wac: 21.78% 0 0;
-	--er: 61.22% 0.2082 22.25;
-	--erc: 100% 0 0;
+	--p: 47.9% 0.0786 161.35;
+	--pc: 95.85% 0.0098 87.47;
+	--s: 37.16% 0.0603 161.65;
+	--sc: 95.85% 0.0098 87.47;
+	--a: 82.41% 0.0893 162.19;
+	--ac: 24.89% 0.0319 156.37;
+	--n: 24.89% 0.0319 156.37;
+	--nc: 91.48% 0.0161 148.4;
+	--b1: 95.85% 0.0098 87.47;
+	--b2: 92.91% 0.0185 86.15;
+	--b3: 89.29% 0.0257 86.88;
+	--bc: 31.16% 0.0337 157.44;
+	--in: 47.74% 0.075 232.35;
+	--inc: 95.85% 0.0098 87.47;
+	--su: 47.9% 0.0786 161.35;
+	--suc: 95.85% 0.0098 87.47;
+	--wa: 65.21% 0.1322 81.57;
+	--wac: 24.89% 0.0319 156.37;
+	--er: 53.52% 0.1513 32.6;
+	--erc: 95.85% 0.0098 87.47;
 
 	/* ── Typography ── */
-	--font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+	--font-display: 'Familjen Grotesk Variable', 'Familjen Grotesk', sans-serif;
 	--font-body:
-		'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		'Instrument Sans Variable', 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+		Roboto, sans-serif;
 	--font-mono: 'JetBrains Mono', 'Fira Mono', monospace;
 
 	/* ── Fluid Type Scale ── */
@@ -141,10 +137,10 @@
 	--radius-full: 9999px;
 
 	/* ── Shadows (warm-tinted using primary base) ── */
-	--shadow-sm: 0 1px 2px rgba(27, 45, 74, 0.05);
-	--shadow-md: 0 4px 6px -1px rgba(27, 45, 74, 0.07), 0 2px 4px -1px rgba(27, 45, 74, 0.04);
-	--shadow-lg: 0 10px 15px -3px rgba(27, 45, 74, 0.08), 0 4px 6px -2px rgba(27, 45, 74, 0.04);
-	--shadow-xl: 0 20px 25px -5px rgba(27, 45, 74, 0.1), 0 10px 10px -5px rgba(27, 45, 74, 0.03);
+	--shadow-sm: 0 1px 2px rgba(23, 48, 31, 0.05);
+	--shadow-md: 0 4px 6px -1px rgba(23, 48, 31, 0.07), 0 2px 4px -1px rgba(23, 48, 31, 0.04);
+	--shadow-lg: 0 10px 15px -3px rgba(23, 48, 31, 0.08), 0 4px 6px -2px rgba(23, 48, 31, 0.04);
+	--shadow-xl: 0 20px 25px -5px rgba(23, 48, 31, 0.1), 0 10px 10px -5px rgba(23, 48, 31, 0.03);
 
 	/* ── Animation Timing ── */
 	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -163,16 +159,16 @@
 	--glass-blur-strong: 20px;
 
 	/* Luminous shadows (warm, nature-tinted) */
-	--shadow-glow-sm: 0 1px 3px rgba(69, 123, 157, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
-	--shadow-glow-md: 0 4px 12px rgba(69, 123, 157, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.45) inset;
-	--shadow-glow-lg: 0 8px 24px rgba(69, 123, 157, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
-	--shadow-glow-focus: 0 0 0 3px rgba(69, 123, 157, 0.18), 0 0 12px rgba(69, 123, 157, 0.08);
+	--shadow-glow-sm: 0 1px 3px rgba(46, 107, 79, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+	--shadow-glow-md: 0 4px 12px rgba(46, 107, 79, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.45) inset;
+	--shadow-glow-lg: 0 8px 24px rgba(46, 107, 79, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+	--shadow-glow-focus: 0 0 0 3px rgba(46, 107, 79, 0.18), 0 0 12px rgba(46, 107, 79, 0.08);
 
 	/* Nature-inspired gradients */
 	--gradient-sky: linear-gradient(
 		135deg,
-		rgba(107, 154, 196, 0.08) 0%,
-		rgba(69, 123, 157, 0.04) 100%
+		rgba(143, 216, 180, 0.08) 0%,
+		rgba(46, 107, 79, 0.04) 100%
 	);
 	--gradient-leaf: linear-gradient(135deg, rgba(45, 106, 79, 0.06) 0%, rgba(10, 75, 62, 0.03) 100%);
 	--gradient-warm: linear-gradient(
@@ -188,9 +184,9 @@
 
 	/* Input-specific tokens */
 	--input-bg: rgba(255, 255, 255, 0.6);
-	--input-border: rgba(27, 45, 74, 0.12);
-	--input-border-hover: rgba(69, 123, 157, 0.35);
-	--input-border-focus: rgba(69, 123, 157, 0.55);
+	--input-border: rgba(23, 48, 31, 0.12);
+	--input-border-hover: rgba(46, 107, 79, 0.35);
+	--input-border-focus: rgba(46, 107, 79, 0.55);
 	--input-radius: 10px;
 	--input-padding-x: 0.875rem;
 	--input-padding-y: 0.75rem;
@@ -203,6 +199,20 @@
 body {
 	font-family: var(--font-body);
 	min-height: 100vh;
+	background: #f4f1ea;
+	background-image:
+		radial-gradient(1100px 600px at 85% -5%, rgba(143, 216, 180, 0.35) 0%, transparent 60%),
+		radial-gradient(900px 500px at 5% 8%, rgba(214, 196, 152, 0.3) 0%, transparent 55%);
+	background-attachment: fixed;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: var(--font-display);
 }
 
 pre,
@@ -304,11 +314,11 @@ code {
 	--shadow-glow-sm: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
 	--shadow-glow-md: 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
 	--shadow-glow-lg: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
-	--shadow-glow-focus: 0 0 0 3px rgba(107, 154, 196, 0.25), 0 0 12px rgba(107, 154, 196, 0.1);
+	--shadow-glow-focus: 0 0 0 3px rgba(143, 216, 180, 0.25), 0 0 12px rgba(143, 216, 180, 0.1);
 	--gradient-sky: linear-gradient(
 		135deg,
-		rgba(107, 154, 196, 0.1) 0%,
-		rgba(69, 123, 157, 0.05) 100%
+		rgba(143, 216, 180, 0.1) 0%,
+		rgba(46, 107, 79, 0.05) 100%
 	);
 	--gradient-glass: linear-gradient(
 		135deg,
@@ -317,8 +327,8 @@ code {
 	);
 	--input-bg: rgba(255, 255, 255, 0.06);
 	--input-border: rgba(255, 255, 255, 0.1);
-	--input-border-hover: rgba(107, 154, 196, 0.3);
-	--input-border-focus: rgba(107, 154, 196, 0.5);
+	--input-border-hover: rgba(143, 216, 180, 0.3);
+	--input-border-focus: rgba(143, 216, 180, 0.5);
 }
 
 /* ══════════════════════════════════════════
@@ -425,7 +435,7 @@ textarea.textarea-bordered {
 .textarea-error,
 .textarea.textarea-error {
 	border-color: oklch(var(--er)) !important;
-	box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1) !important;
+	box-shadow: 0 0 0 3px rgba(180, 67, 46, 0.1) !important;
 }
 
 /* ── Glass card utility ── */
@@ -536,7 +546,7 @@ textarea.textarea-bordered {
 /* ── Select / Dropdown ── */
 select,
 .select {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23457B9D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232E6B4F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
 	background-repeat: no-repeat !important;
 	background-position: right 0.75rem center !important;
 	background-size: 1rem !important;

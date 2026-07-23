@@ -2,7 +2,7 @@ import type { PageLoad } from './$types';
 import { createCallerClient } from '$lib/trpc/client';
 import { redirect, isRedirect } from '@sveltejs/kit';
 
-/** Keep link tools authenticated but inert until catalog and program terms are verified. */
+/** Require an active affiliate; send non-affiliates to the join landing. */
 export const load: PageLoad = async (event) => {
 	const trpc = createCallerClient(event.fetch);
 	try {

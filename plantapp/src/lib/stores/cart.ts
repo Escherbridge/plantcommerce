@@ -19,8 +19,14 @@ export interface CartItem {
 		id: number;
 		name: string;
 		slug: string;
-		shortDescription: string | null;
-		images: Array<{ url: string; altText: string | null }>;
+		sku?: string;
+		price?: string;
+		stockQuantity?: number;
+		trackInventory?: boolean;
+		shortDescription?: string | null;
+		/** Direct category slug used to build the product-detail URL segment. */
+		categorySlug?: string | null;
+		images?: Array<{ url: string; altText: string | null; isMain?: boolean }>;
 	};
 }
 

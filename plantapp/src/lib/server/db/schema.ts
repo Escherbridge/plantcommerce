@@ -220,6 +220,27 @@ export const product = pgTable(
 		tags: text('tags'), // JSON array of tags
 		metaTitle: text('meta_title'),
 		metaDescription: text('meta_description'),
+		// Product-detail fields (Aevani product page anatomy, design-spec §5). All additive/nullable.
+		descriptionHtml: text('description_html'),
+		keyFeatures: jsonb('key_features').$type<string[]>(),
+		stats: jsonb('stats').$type<{ value: string; label: string }[]>(),
+		specs: jsonb('specs').$type<{ label: string; value: string }[]>(),
+		inTheBox: jsonb('in_the_box').$type<string[]>(),
+		faqs: jsonb('faqs').$type<{ q: string; a: string }[]>(),
+		badges: jsonb('badges').$type<string[]>(),
+		testBedNote: text('test_bed_note'),
+		warranty: text('warranty'),
+		shippingNote: text('shipping_note'),
+		bundleOffer: jsonb('bundle_offer').$type<{
+			title: string;
+			price: string;
+			compareAt: string;
+			blurb: string;
+		} | null>(),
+		relatedProductIds: jsonb('related_product_ids').$type<number[]>(),
+		currency: text('currency').notNull().default('USD'),
+		ratingAverage: decimal('rating_average', { precision: 3, scale: 2 }),
+		reviewCount: integer('review_count').notNull().default(0),
 		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 	},
@@ -247,6 +268,27 @@ export const productImage = pgTable('product_image', {
 	isMain: boolean('is_main').notNull().default(false),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 });
+
+// Customer reviews for a product (Aevani product page anatomy, design-spec §5 buy box + ratings).
+export const productReview = pgTable(
+	'product_review',
+	{
+		id: serial('id').primaryKey(),
+		productId: integer('product_id')
+			.notNull()
+			.references(() => product.id, { onDelete: 'cascade' }),
+		authorName: text('author_name').notNull(),
+		rating: integer('rating').notNull(),
+		title: text('title'),
+		body: text('body').notNull(),
+		isVerifiedPurchase: boolean('is_verified_purchase').notNull().default(false),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		productIdx: index('product_review_product_idx').on(table.productId),
+		ratingRange: check('product_review_rating_range_check', sql`${table.rating} between 1 and 5`)
+	})
+);
 
 // ======= AFFILIATE SYSTEM =======
 export const affiliate = pgTable(
@@ -1400,9 +1442,17 @@ export const productRelations = relations(product, ({ one, many }) => ({
 		references: [productCategory.id]
 	}),
 	images: many(productImage),
+	reviews: many(productReview),
 	affiliateLinks: many(affiliateLink),
 	cartItems: many(cartItem),
 	orderItems: many(orderItem)
+}));
+
+export const productReviewRelations = relations(productReview, ({ one }) => ({
+	product: one(product, {
+		fields: [productReview.productId],
+		references: [product.id]
+	})
 }));
 
 export const productImageRelations = relations(productImage, ({ one }) => ({
@@ -1556,6 +1606,7 @@ export const cmsContent = pgTable(
 export type Session = typeof session.$inferSelect;
 export type User = typeof user.$inferSelect;
 export type Product = typeof product.$inferSelect;
+export type ProductReview = typeof productReview.$inferSelect;
 export type ProductCategory = typeof productCategory.$inferSelect;
 export type CatalogSeedCategory = typeof catalogSeedCategory.$inferSelect;
 export type CatalogSeedCollection = typeof catalogSeedCollection.$inferSelect;

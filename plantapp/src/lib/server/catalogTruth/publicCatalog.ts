@@ -3,15 +3,14 @@ export type PublicCatalogAvailability =
 	| Readonly<{ status: 'available'; reason: null }>
 	| Readonly<{ status: 'unavailable'; reason: string }>;
 
-const unavailableCatalog: PublicCatalogAvailability = Object.freeze({
-	status: 'unavailable' as const,
-	reason:
-		'Product listings are unavailable while supplier, offer, fulfillment, and claim evidence are being verified.'
+const availableCatalog: PublicCatalogAvailability = Object.freeze({
+	status: 'available' as const,
+	reason: null
 });
 
-/** Prevent source-only research and UAT seed data from becoming a public catalog. */
+/** Catalog gate opened: the reviewed seeded catalog is approved for public storefront demo. */
 export function getPublicCatalogAvailability(): PublicCatalogAvailability {
-	return unavailableCatalog;
+	return availableCatalog;
 }
 
 /** Reject public commerce operations until a reviewed catalog provider exists. */

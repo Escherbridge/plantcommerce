@@ -358,6 +358,12 @@ export class FileService {
 			return null;
 		}
 
+		// Static demo assets live in `static/assets/` and resolve to a stable
+		// SvelteKit URL that survives the production build.
+		if (bucketPath.startsWith('assets/') || bucketPath.startsWith('/assets/')) {
+			return `/assets/${bucketPath.replace(/^\/?assets\//, '')}`;
+		}
+
 		// Mock assets are served locally via the file serve API
 		if (bucketPath.startsWith('AI-MockAssets/')) {
 			return `/api/files/serve?path=${encodeURIComponent(bucketPath)}`;

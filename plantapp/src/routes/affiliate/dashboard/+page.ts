@@ -3,7 +3,7 @@ import { createCallerClient } from '$lib/trpc/client';
 import { redirect, isRedirect } from '@sveltejs/kit';
 import { getUser } from '$lib/loaders/protected';
 
-/** Keep this route restricted while public affiliate terms remain unavailable. */
+/** Require an active affiliate (or admin); send non-affiliates to the join landing. */
 export const load: PageLoad = async (event) => {
 	const trpc = createCallerClient(event.fetch);
 	try {
