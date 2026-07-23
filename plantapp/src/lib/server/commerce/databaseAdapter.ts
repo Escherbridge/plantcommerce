@@ -25,21 +25,20 @@ type DatabaseCategorySource = {
 	parentSlug?: string | null;
 };
 
-type DatabaseProductSource = Pick<
-	ProductWithImages,
-	| 'id'
-	| 'slug'
-	| 'name'
-	| 'description'
-	| 'shortDescription'
-	| 'sku'
-	| 'price'
-	| 'comparePrice'
-	| 'stockQuantity'
-	| 'reservedQuantity'
-	| 'trackInventory'
-	| 'isFeatured'
-> & {
+type DatabaseProductSource = Pick<ProductWithImages, 'id' | 'slug' | 'name' | 'sku' | 'price'> &
+	// mapProduct null-guards these, so they may be absent on lighter sources (e.g. cart items).
+	Partial<
+		Pick<
+			ProductWithImages,
+			| 'shortDescription'
+			| 'description'
+			| 'comparePrice'
+			| 'stockQuantity'
+			| 'reservedQuantity'
+			| 'trackInventory'
+			| 'isFeatured'
+		>
+	> & {
 	category?: DatabaseCategorySource;
 	images?: Array<{ url?: string; altText: string | null; isMock?: boolean }>;
 	catalogDataClass?: 'verified' | 'research' | 'mock_test';

@@ -15,6 +15,7 @@ export interface ProductWithImages {
 	comparePrice: string | null;
 	costPrice: string | null;
 	stockQuantity: number;
+	reservedQuantity: number;
 	trackInventory: boolean;
 	weight: string | null;
 	dimensions: any;
@@ -40,6 +41,8 @@ export interface ProductWithImages {
 	currency: string;
 	ratingAverage: string | null;
 	reviewCount: number;
+	/** Optional additional catalogue categories (used by main's commerce adapter). */
+	catalogCategories?: { id: number; name: string; slug: string }[];
 	createdAt: Date;
 	updatedAt: Date;
 	category: {
@@ -173,7 +176,10 @@ export interface ProductImage {
 export interface ProductFilter {
 	categoryId?: number;
 	categoryIds?: number[];
+	/** Accepted for commerce-adapter compatibility; the adapter resolves it to categoryIds. */
+	categorySlug?: string;
 	search?: string;
+	tag?: string;
 	featured?: boolean;
 	limit?: number;
 	offset?: number;
@@ -689,6 +695,39 @@ export class ProductService {
 			.from(table.productCategory)
 			.where(eq(table.productCategory.isActive, true))
 			.orderBy(asc(table.productCategory.sortOrder), asc(table.productCategory.name));
+	}
+
+	/**
+	 * Distinct product tags derived from active products' `tags` (JSON-string arrays).
+	 * Provided for commerce-adapter compatibility.
+	 */
+	static async getTags(): Promise<Array<{ slug: string; name: string }>> {
+		const rows = await db
+			.select({ tags: table.product.tags })
+			.from(table.product)
+			.where(eq(table.product.isActive, true));
+		const seen = new Map<string, string>();
+		for (const row of rows) {
+			let list: unknown = row.tags;
+			if (typeof list === 'string') {
+				try {
+					list = JSON.parse(list);
+				} catch {
+					list = [];
+				}
+			}
+			if (!Array.isArray(list)) continue;
+			for (const raw of list) {
+				if (typeof raw !== 'string' || !raw.trim()) continue;
+				const name = raw.trim();
+				const slug = name
+					.toLowerCase()
+					.replace(/[^a-z0-9]+/g, '-')
+					.replace(/(^-|-$)/g, '');
+				if (slug && !seen.has(slug)) seen.set(slug, name);
+			}
+		}
+		return Array.from(seen, ([slug, name]) => ({ slug, name }));
 	}
 
 	/**

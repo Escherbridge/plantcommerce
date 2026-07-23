@@ -1,6 +1,8 @@
 export interface PublicProductImage {
 	url: string;
 	altText: string | null;
+	/** Optional flag consumed by the commerce adapter; our real assets leave it unset. */
+	isMock?: boolean;
 }
 
 /** Normalize public product image DTOs, serving real assets (incl. AI-MockAssets / $lib) as-is. */
