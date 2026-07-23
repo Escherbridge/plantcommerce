@@ -67,7 +67,7 @@ function publicProductImageUrl(file: table.File | null, productId: number): stri
 		!file ||
 		!file.isPublic ||
 		file.entityType !== 'product' ||
-		file.entityId !== String(productId)
+		(file.entityId !== null && file.entityId !== String(productId))
 	) {
 		return null;
 	}
