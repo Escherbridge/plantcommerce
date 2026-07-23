@@ -14,13 +14,15 @@ export const load: PageLoad = async (event) => {
 
 		return {
 			resources: resources || [],
-			selectedType: type
+			selectedType: type,
+			loadStatus: 'ready' as const
 		};
 	} catch (error) {
 		console.error('Error loading resources:', error);
 		return {
 			resources: [],
-			selectedType: type
+			selectedType: type,
+			loadStatus: 'error' as const
 		};
 	}
 };

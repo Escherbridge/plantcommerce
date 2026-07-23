@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Container } from '$lib/components/layout';
 	import type { PageData } from './$types';
+	import { Icon } from '$lib/components/icons';
 
 	let { data }: { data: PageData } = $props();
 
@@ -64,20 +65,11 @@
 				<div class="flex-1">
 					<label for="course-search" class="sr-only">Search courses</label>
 					<div class="relative">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-base-content/40"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								d="M21 21l-4.35-4.35M10 18a8 8 0 100-16 8 8 0 000 16z"
-							/>
-						</svg>
+						<Icon
+							name="search"
+							size={20}
+							class="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-base-content/40"
+						/>
 						<input
 							id="course-search"
 							type="text"
@@ -106,20 +98,7 @@
 		<!-- Results -->
 		{#if filteredCourses.length === 0}
 			<div class="rounded-3xl border border-base-200/50 bg-base-100 p-16 text-center">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="mx-auto mb-4 h-16 w-16 text-base-content/30"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-					stroke-width="1.5"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-					/>
-				</svg>
+				<Icon name="book-open" size={64} class="mx-auto mb-4 text-base-content/30" />
 				<h3 class="font-display mb-2 text-2xl font-bold tracking-tight uppercase">
 					No Courses Found
 				</h3>
@@ -143,9 +122,7 @@
 						class="group flex flex-col overflow-hidden rounded-3xl border border-base-200/30 bg-base-100 shadow-md transition-all duration-300 hover:border-primary/20 hover:shadow-xl"
 					>
 						<!-- Thumbnail -->
-						<div
-							class="relative aspect-video overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/10"
-						>
+						<div class="relative aspect-video overflow-hidden bg-base-200">
 							{#if course.thumbnailFileId}
 								<img
 									src="/api/files/serve/{course.thumbnailFileId}"
@@ -154,20 +131,7 @@
 								/>
 							{:else}
 								<div class="flex h-full w-full items-center justify-center">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										class="h-16 w-16 text-primary/30"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="1.5"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-										/>
-									</svg>
+									<Icon name="book-open" size={64} class="text-primary/30" />
 								</div>
 							{/if}
 						</div>
@@ -216,20 +180,11 @@
 								</span>
 								<div class="flex items-center gap-2 text-sm font-medium text-primary">
 									<span>View</span>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										class="h-4 w-4 transition-transform group-hover:translate-x-1"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="2"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M14 5l7 7m0 0l-7 7m7-7H3"
-										/>
-									</svg>
+									<Icon
+										name="arrow-right"
+										size={16}
+										class="transition-transform group-hover:translate-x-1"
+									/>
 								</div>
 							</div>
 						</div>

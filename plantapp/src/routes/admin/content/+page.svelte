@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { Icon } from '$lib/components/icons';
 
 	let { data }: { data: PageData } = $props();
 
@@ -32,17 +33,7 @@
 				<p class="platform-header__subtitle">Create and manage blog posts, guides, and pages</p>
 			</div>
 			<a href="/admin/content/new" class="platform-action-btn admin-header-btn">
-				<svg
-					viewBox="0 0 24 24"
-					class="h-5 w-5"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M12 5v14M5 12h14" />
-				</svg>
+				<Icon name="plus" size={20} />
 				Create Content
 			</a>
 		</div>

@@ -135,3 +135,23 @@ authority.
 This source-only artifact establishes immutable manifest-to-category/product mappings and a bounded seed-run ledger. It must never be journaled or applied through `db:migrate`/`db:push` while the database baseline is unresolved. Run `preflight_catalog_seed_reconciler.sql` read-only, save the schema fingerprint and collision report, take a backup, and rehearse the exact DDL and catalog workflow on a disposable copy first.
 
 The production command is a manual Railway job only. Every command requires an exact reviewed manifest hash and runtime/expected Railway project, environment, service, database, release-ID, and release-commit pairs; `catalog:seed:plan` and `catalog:seed:verify` are read-only, while `catalog:seed:apply` and `catalog:seed:rollback` also require explicit command confirmation. Global duplicate category/product slug, SKU, and object-key scans fail the plan before writes. Existing managed-field hashes reject out-of-band edits rather than overwriting them. Newly created rows are deleted on rollback only when unreferenced; otherwise rollback stops and the backup/restore handle remains the final recovery boundary. Never run the destructive UAT fixture seed against production.
+
+## `0009_catalog_enrichment.sql`
+
+This additive source-only artifact adds many-to-many categories, normalized
+tags, manufacturer identities, content areas, typed facets, guide links, and
+media provenance. It remains outside the Drizzle journal until the baseline is
+reconciled. Run `preflight_catalog_enrichment.sql`, save its output, rehearse on
+a disposable production-shaped database, and take a fresh backup before apply.
+
+`scripts/catalog-enrichment.ts` is the only supported runner. Its default
+`plan` is read-only. `apply` requires exact Railway project, environment,
+application-service, database-service, release, source-commit, database-name,
+connection-fingerprint, artifact-hash, and backup-SHA attestations. It applies
+DDL and deterministic backfill in one advisory-locked transaction. It never
+changes prices, inventory, activation, users, carts, orders, capability flags,
+or manufacturer truth.
+
+Bundled `AI-MockAssets` remain `mock_test` with unverified rights and must be
+disclosed as illustrative mock media. Do not infer a manufacturer from a
+product name, merchant, provider, or supplier.

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
+	import { Icon, type IconName } from '$lib/components/icons';
 
 	interface Props {
 		userRole: 'admin' | 'customer' | 'affiliate' | 'instructor';
@@ -166,18 +167,18 @@
 		};
 	});
 
-	function sectionIcon(section: string): string {
+	function sectionIcon(section: string): IconName {
 		switch (section) {
 			case 'Account':
-				return 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z';
+				return 'user';
 			case 'Shop':
-				return 'M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0';
+				return 'shopping-bag';
 			case 'Affiliate':
-				return 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75';
+				return 'users';
 			case 'Admin':
-				return 'M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z';
+				return 'lock';
 			default:
-				return 'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2M9 5h6';
+				return 'clipboard-list';
 		}
 	}
 
@@ -204,20 +205,7 @@
 			aria-label="Command palette"
 		>
 			<div class="palette-input-wrap">
-				<svg
-					class="search-icon"
-					viewBox="0 0 24 24"
-					width="20"
-					height="20"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<circle cx="11" cy="11" r="8" />
-					<line x1="21" y1="21" x2="16.65" y2="16.65" />
-				</svg>
+				<Icon name="search" size={20} class="shrink-0 text-base-content/40" />
 				<input
 					bind:this={inputRef}
 					bind:value={query}
@@ -241,19 +229,11 @@
 								onclick={() => selectResult(page)}
 								onmouseenter={() => (selectedIndex = idx)}
 							>
-								<svg
-									class="result-icon"
-									viewBox="0 0 24 24"
-									width="16"
-									height="16"
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<path d={sectionIcon(page.section)} />
-								</svg>
+								<Icon
+									name={sectionIcon(page.section)}
+									size={16}
+									class="shrink-0 text-base-content/50"
+								/>
 								<span class="result-label">{page.label}</span>
 								<span class="result-badge">{page.section}</span>
 							</button>
@@ -272,19 +252,7 @@
 								onclick={() => selectResult(page)}
 								onmouseenter={() => (selectedIndex = currentFlatIndex)}
 							>
-								<svg
-									class="result-icon"
-									viewBox="0 0 24 24"
-									width="16"
-									height="16"
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<path d={sectionIcon(section)} />
-								</svg>
+								<Icon name={sectionIcon(section)} size={16} class="shrink-0 text-base-content/50" />
 								<span class="result-label">{page.label}</span>
 								<span class="result-badge">{section}</span>
 							</button>
@@ -320,7 +288,6 @@
 		justify-content: center;
 		padding-top: 12vh;
 		background: rgba(0, 0, 0, 0.5);
-		backdrop-filter: blur(8px);
 		animation: overlay-in 150ms ease;
 	}
 
@@ -371,11 +338,6 @@
 		gap: 0.75rem;
 		padding: 0.875rem 1rem;
 		border-bottom: 1px solid var(--input-border);
-	}
-
-	.search-icon {
-		color: oklch(var(--bc) / 0.4);
-		flex-shrink: 0;
 	}
 
 	.palette-input {
@@ -435,11 +397,6 @@
 	.result-item:focus-visible {
 		outline: none;
 		box-shadow: var(--shadow-glow-focus);
-	}
-
-	.result-icon {
-		flex-shrink: 0;
-		color: oklch(var(--bc) / 0.5);
 	}
 
 	.result-label {

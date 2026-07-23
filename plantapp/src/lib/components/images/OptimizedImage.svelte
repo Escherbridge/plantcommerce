@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { Icon } from '$lib/components/icons';
 
 	interface Props {
 		src: string;
@@ -144,25 +145,14 @@
 	{:else if showPlaceholder}
 		<!-- Default placeholder -->
 		<div class="absolute inset-0 flex animate-pulse items-center justify-center bg-base-200">
-			<svg class="h-12 w-12 text-base-content/20" fill="currentColor" viewBox="0 0 24 24">
-				<path
-					d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"
-				/>
-			</svg>
+			<Icon name="image" size={48} class="text-base-content/20" />
 		</div>
 	{/if}
 
 	{#if hasError}
 		<!-- Error state -->
 		<div class="absolute inset-0 flex flex-col items-center justify-center bg-base-200">
-			<svg class="mb-2 h-12 w-12 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-				/>
-			</svg>
+			<Icon name="alert-triangle" size={48} class="mb-2 text-error" />
 			<span class="text-sm text-base-content/60">Failed to load image</span>
 		</div>
 	{:else if isIntersecting || loading === 'eager'}

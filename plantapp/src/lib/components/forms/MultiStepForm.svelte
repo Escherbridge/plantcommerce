@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { MultiFormConfig, FormState } from './types.js';
 	import BaseForm from './BaseForm.svelte';
+	import { Icon } from '$lib/components/icons';
 
 	interface Props {
 		config: MultiFormConfig;
@@ -135,19 +136,7 @@
                   {isActive && !isCurrent ? 'bg-primary' : ''}"
 							>
 								{#if isActive && !isCurrent}
-									<svg
-										class="h-4 w-4 text-white"
-										fill="none"
-										stroke="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="3"
-											d="M5 13l4 4L19 7"
-										/>
-									</svg>
+									<Icon name="check" size={16} class="text-white" />
 								{:else if isCurrent}
 									<div class="h-2.5 w-2.5 rounded-full bg-accent"></div>
 								{/if}
@@ -191,14 +180,7 @@
 					onclick={goToPrevStep}
 					disabled={formState.isSubmitting}
 				>
-					<svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M15 19l-7-7 7-7"
-						/>
-					</svg>
+					<Icon name="chevron-left" size={16} class="mr-2" />
 					{config.prevButtonText || 'Previous'}
 				</button>
 			{/if}
@@ -224,14 +206,7 @@
 					{config.submitButtonText || 'Submit'}
 				{:else}
 					{config.nextButtonText || 'Next'}
-					<svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M9 5l7 7-7 7"
-						/>
-					</svg>
+					<Icon name="chevron-right" size={16} class="ml-2" />
 				{/if}
 			</button>
 		</div>

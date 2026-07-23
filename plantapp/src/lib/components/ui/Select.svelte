@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Icon } from '$lib/components/icons';
 	interface Option {
 		value: string;
 		label: string;
@@ -96,19 +97,7 @@
 		<span class="custom-select__label" class:placeholder={!value}>
 			{selectedLabel}
 		</span>
-		<svg
-			class="custom-select__chevron"
-			class:open
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-			aria-hidden="true"
-		>
-			<polyline points="6 9 12 15 18 9"></polyline>
-		</svg>
+		<Icon name="chevron-down" class="custom-select__chevron {open ? 'open' : ''}" />
 	</button>
 
 	{#if open}
@@ -124,18 +113,7 @@
 				>
 					{opt.label}
 					{#if opt.value === value}
-						<svg
-							class="custom-select__check"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2.5"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							aria-hidden="true"
-						>
-							<polyline points="20 6 9 17 4 12"></polyline>
-						</svg>
+						<Icon name="check" class="custom-select__check" />
 					{/if}
 				</button>
 			{/each}
@@ -169,9 +147,7 @@
 		font-size: 1rem;
 		color: oklch(var(--bc));
 		cursor: pointer;
-		backdrop-filter: blur(var(--glass-blur, 12px));
-		-webkit-backdrop-filter: blur(var(--glass-blur, 12px));
-		box-shadow: var(--shadow-glow-sm);
+		box-shadow: var(--shadow-sm);
 		transition:
 			border-color 250ms var(--ease-out-expo),
 			box-shadow 250ms var(--ease-out-expo),
@@ -181,14 +157,14 @@
 
 	.custom-select__trigger:hover {
 		border-color: var(--input-border-hover);
-		box-shadow: var(--shadow-glow-md);
+		box-shadow: var(--shadow-md);
 	}
 
 	.custom-select__trigger.open,
 	.custom-select__trigger:focus-visible {
 		border-color: var(--input-border-focus);
 		box-shadow: var(--shadow-glow-focus);
-		background: var(--glass-bg-strong);
+		background: var(--input-bg);
 		outline: none;
 	}
 
@@ -225,12 +201,10 @@
 		left: 0;
 		right: 0;
 		z-index: 50;
-		background: var(--glass-bg-strong);
-		backdrop-filter: blur(var(--glass-blur-strong, 20px));
-		-webkit-backdrop-filter: blur(var(--glass-blur-strong, 20px));
-		border: 1.5px solid var(--glass-border);
+		background: var(--input-bg);
+		border: 1.5px solid var(--input-border);
 		border-radius: var(--input-radius, 10px);
-		box-shadow: var(--shadow-glow-lg);
+		box-shadow: var(--shadow-lg);
 		padding: 0.375rem;
 		max-height: 18rem;
 		overflow-y: auto;

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Icon } from '$lib/components/icons';
 	interface Props {
 		config: { url: string; provider?: string; aspectRatio?: string };
 	}
@@ -50,13 +51,7 @@
 	{:else}
 		<div class="flex items-center justify-center bg-base-200/50 p-8 text-base-content/60">
 			<div class="text-center">
-				<svg
-					viewBox="0 0 24 24"
-					class="mx-auto mb-2 h-8 w-8 opacity-40"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="1.5"><circle cx="12" cy="12" r="10" /><path d="M15 9l-6 6M9 9l6 6" /></svg
-				>
+				<Icon name="alert-circle" size={32} class="mx-auto mb-2 opacity-40" />
 				<p class="text-sm">This embed provider is not supported</p>
 			</div>
 		</div>

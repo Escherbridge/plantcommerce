@@ -1,7 +1,9 @@
+import type { IconName } from '$lib/components/icons';
+
 export interface NavItem {
 	label: string;
 	href: string;
-	icon: string; // SVG path data (d attribute value)
+	icon: IconName;
 	badge?: number | string;
 }
 

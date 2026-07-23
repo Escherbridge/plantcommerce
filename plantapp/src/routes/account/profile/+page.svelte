@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '$lib/components/platform/platform.css';
+	import Icon from '$lib/components/icons/Icon.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -169,63 +170,19 @@
 		<h2 class="platform-card__title" style="margin-bottom: 1.25rem;">Account Actions</h2>
 		<div class="actions-stack">
 			<a href="/account/settings" class="platform-action-btn">
-				<svg
-					viewBox="0 0 24 24"
-					class="action-icon"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M3 5h18v14H3V5zM3 5l9 7 9-7" />
-				</svg>
+				<Icon name="mail" size={20} />
 				Email Preferences
 			</a>
 			<a href="/account/settings" class="platform-action-btn">
-				<svg
-					viewBox="0 0 24 24"
-					class="action-icon"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path
-						d="M15 17h5l-1.4-1.4A6 6 0 0018 11V8a6 6 0 00-12 0v3c0 1.3-.4 2.5-1.2 3.6L4 17h5m6 0v1a3 3 0 01-6 0v-1m6 0H9"
-					/>
-				</svg>
+				<Icon name="bell" size={20} />
 				Notification Settings
 			</a>
 			<a href="/account/settings" class="platform-action-btn">
-				<svg
-					viewBox="0 0 24 24"
-					class="action-icon"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-				</svg>
+				<Icon name="moon" size={20} />
 				Theme Preferences
 			</a>
 			<button class="platform-action-btn platform-action-btn--danger">
-				<svg
-					viewBox="0 0 24 24"
-					class="action-icon"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path
-						d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
-					/>
-				</svg>
+				<Icon name="alert-triangle" size={20} />
 				Delete Account
 			</button>
 		</div>
@@ -237,11 +194,5 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
-	}
-
-	.action-icon {
-		width: 1.25rem;
-		height: 1.25rem;
-		flex-shrink: 0;
 	}
 </style>

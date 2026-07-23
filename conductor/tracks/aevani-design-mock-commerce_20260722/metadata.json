@@ -1,0 +1,16 @@
+{
+  "id": "aevani-design-mock-commerce_20260722",
+  "title": "Aevani Design Elevation & Mock Commerce",
+  "status": "complete",
+  "priority": "P0",
+  "createdAt": "2026-07-22",
+  "updatedAt": "2026-07-22",
+  "dependencies": [],
+  "tags": [
+    "design-system",
+    "catalogue",
+    "mock-commerce",
+    "accessibility",
+    "browser-qa"
+  ]
+}

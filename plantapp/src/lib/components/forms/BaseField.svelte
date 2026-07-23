@@ -3,6 +3,7 @@
 	import FileUpload from './FileUpload.svelte';
 	import RichTextEditor from './RichTextEditor.svelte';
 	import DatePicker from './DatePicker.svelte';
+	import { Icon } from '$lib/components/icons';
 
 	interface Props {
 		config: FormFieldConfig;
@@ -209,13 +210,7 @@
 
 	{#if hasError}
 		<div class="field-error">
-			<svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-				<path
-					fill-rule="evenodd"
-					d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-					clip-rule="evenodd"
-				/>
-			</svg>
+			<Icon name="alert-circle" size={16} class="shrink-0" />
 			{error}
 		</div>
 	{/if}
@@ -267,7 +262,7 @@
 		transform: translateY(-2rem) scale(0.8);
 	}
 
-	/* ── Glass-panel input (Frutiger Aero) ── */
+	/* ── Field surface ── */
 	.field-input {
 		display: block;
 		width: 100%;
@@ -280,9 +275,7 @@
 		font-size: 1rem;
 		color: oklch(var(--bc));
 		outline: none;
-		backdrop-filter: blur(var(--glass-blur, 12px));
-		-webkit-backdrop-filter: blur(var(--glass-blur, 12px));
-		box-shadow: var(--shadow-glow-sm);
+		box-shadow: var(--shadow-sm);
 		transition:
 			border-color 250ms var(--ease-out-expo),
 			box-shadow 250ms var(--ease-out-expo),
@@ -291,13 +284,13 @@
 
 	.field-input:hover {
 		border-color: var(--input-border-hover);
-		box-shadow: var(--shadow-glow-md);
+		box-shadow: var(--shadow-md);
 	}
 
 	.field-input:focus {
 		border-color: var(--input-border-focus);
 		box-shadow: var(--shadow-glow-focus);
-		background: var(--glass-bg-strong, rgba(255, 255, 255, 0.72));
+		background: var(--input-bg);
 	}
 
 	.field-input--error {
@@ -309,7 +302,6 @@
 	.field-input:disabled {
 		cursor: not-allowed;
 		opacity: 0.5;
-		backdrop-filter: none;
 	}
 
 	/* Textarea specifics */
@@ -347,10 +339,9 @@
 		border: 1.5px solid var(--input-border);
 		border-radius: 5px;
 		background: var(--input-bg);
-		backdrop-filter: blur(8px);
 		cursor: pointer;
 		position: relative;
-		box-shadow: var(--shadow-glow-sm);
+		box-shadow: var(--shadow-sm);
 		transition:
 			border-color 250ms var(--ease-out-expo),
 			background-color 250ms var(--ease-out-expo),

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import type { LayoutData } from './$types';
+	import { Icon } from '$lib/components/icons';
 
 	let { data, children }: { data: LayoutData; children: any } = $props();
 
@@ -85,31 +86,13 @@
 			onclick={() => (sidebarOpen = !sidebarOpen)}
 			aria-label="Toggle curriculum sidebar"
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="h-5 w-5"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-				stroke-width="2"
-			>
-				<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-			</svg>
+			<Icon name="menu" size={20} />
 		</button>
 		<a
 			href="/learn/my-courses"
 			class="hidden items-center gap-1 font-mono text-xs tracking-wider text-base-content/50 uppercase hover:text-base-content sm:flex"
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="h-3 w-3"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-				stroke-width="2"
-			>
-				<path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-			</svg>
+			<Icon name="arrow-left" size={12} />
 			Exit
 		</a>
 		<div class="min-w-0 flex-1">
@@ -161,31 +144,9 @@
 								>
 									<span class="flex h-5 w-5 flex-shrink-0 items-center justify-center">
 										{#if isCompleted}
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												class="h-5 w-5 text-success"
-												fill="none"
-												viewBox="0 0 24 24"
-												stroke="currentColor"
-												stroke-width="2.5"
-											>
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-												/>
-											</svg>
+											<Icon name="check-circle" size={20} class="text-success" />
 										{:else}
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												class="h-4 w-4 text-base-content/40"
-												fill="none"
-												viewBox="0 0 24 24"
-												stroke="currentColor"
-												stroke-width="1.5"
-											>
-												<circle cx="12" cy="12" r="9" />
-											</svg>
+											<Icon name="circle" size={16} class="text-base-content/40" />
 										{/if}
 									</span>
 									<span class="line-clamp-2 flex-1">{lesson.title}</span>

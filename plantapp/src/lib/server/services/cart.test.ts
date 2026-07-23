@@ -64,6 +64,25 @@ describe('CartService', () => {
 	});
 
 	describe('addItem', () => {
+		it('subtracts reserved inventory before accepting a quantity', async () => {
+			const limitMock = vi.fn().mockResolvedValue([
+				{
+					id: 101,
+					price: '10.00',
+					trackInventory: true,
+					stockQuantity: 10,
+					reservedQuantity: 9,
+					isActive: true
+				}
+			]);
+			const whereMock = vi.fn().mockReturnValue({ limit: limitMock });
+			const fromMock = vi.fn().mockReturnValue({ where: whereMock });
+			(db.select as any).mockReturnValue({ from: fromMock });
+
+			await expect(CartService.addItem(101, 2, 'user123')).rejects.toThrow('Insufficient stock');
+			expect(db.insert).not.toHaveBeenCalled();
+		});
+
 		it('should add new item to cart', async () => {
 			// Mock product check
 			const productLimitMock = vi.fn().mockResolvedValue([
@@ -72,6 +91,7 @@ describe('CartService', () => {
 					price: '10.00',
 					trackInventory: true,
 					stockQuantity: 100,
+					reservedQuantity: 0,
 					isActive: true
 				}
 			]);
@@ -112,6 +132,7 @@ describe('CartService', () => {
 					price: '10.00',
 					trackInventory: true,
 					stockQuantity: 100,
+					reservedQuantity: 0,
 					isActive: true
 				}
 			]);

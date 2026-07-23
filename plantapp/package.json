@@ -24,6 +24,10 @@
 		"catalog:seed:apply": "npx tsx scripts/catalog-seed.ts apply",
 		"catalog:seed:verify": "npx tsx scripts/catalog-seed.ts verify",
 		"catalog:seed:rollback": "npx tsx scripts/catalog-seed.ts rollback",
+		"catalog:enrichment:plan": "npx tsx scripts/catalog-enrichment.ts plan",
+		"catalog:enrichment:apply": "npx tsx scripts/catalog-enrichment.ts apply",
+		"catalog:enrichment:verify": "npx tsx scripts/catalog-enrichment.ts verify",
+		"catalog:enrichment:backup": "node scripts/catalog-enrichment-backup.mjs",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build"
 	},

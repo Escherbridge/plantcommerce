@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { Icon } from '$lib/components/icons';
 	import { trpc } from '$lib/trpc/client';
 	import { invalidateAll } from '$app/navigation';
 
@@ -62,17 +63,7 @@
 				</p>
 			</div>
 			<button class="platform-action-btn admin-header-btn" onclick={() => (showForm = !showForm)}>
-				<svg
-					viewBox="0 0 24 24"
-					class="h-5 w-5"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M12 5v14M5 12h14" />
-				</svg>
+				<Icon name="plus" size={20} />
 				New Template
 			</button>
 		</div>

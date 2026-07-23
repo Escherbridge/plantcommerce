@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Container } from '$lib/components/layout';
 	import type { PageData } from './$types';
+	import { Icon } from '$lib/components/icons';
 
 	let { data }: { data: PageData } = $props();
 
@@ -45,20 +46,7 @@
 			<div
 				class="mx-auto max-w-2xl rounded-3xl border border-base-200/50 bg-base-100 p-16 text-center"
 			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="mx-auto mb-6 h-20 w-20 text-base-content/20"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-					stroke-width="1.5"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-					/>
-				</svg>
+				<Icon name="shield-check" size={80} class="mx-auto mb-6 text-base-content/20" />
 				<h3 class="font-display mb-3 text-2xl font-bold tracking-tight uppercase">
 					No Certificates Yet
 				</h3>
@@ -82,24 +70,9 @@
 						class="overflow-hidden rounded-3xl border border-base-200/50 bg-base-100 shadow-md transition-all hover:shadow-xl"
 					>
 						<!-- Certificate visual -->
-						<div
-							class="relative bg-gradient-to-br from-primary via-primary to-primary/80 p-8 text-primary-content"
-						>
+						<div class="relative bg-primary p-8 text-primary-content">
 							<div class="absolute top-4 right-4 opacity-20">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									class="h-16 w-16"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="1"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-									/>
-								</svg>
+								<Icon name="shield-check" size={64} />
 							</div>
 							<span class="text-editorial font-mono text-xs tracking-widest text-secondary"
 								>CERTIFICATE OF COMPLETION</span

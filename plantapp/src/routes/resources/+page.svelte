@@ -1,16 +1,17 @@
 <script lang="ts">
 	import { Container, Section } from '$lib/components/layout';
 	import { Grid } from '$lib/components/layout';
+	import { Icon, type IconName } from '$lib/components/icons';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 
-	const resourceTypes = [
-		{ name: 'Downloadable Guides', icon: 'book', slug: 'guides' },
+	const resourceTypes: Array<{ name: string; slug: string; icon: IconName }> = [
+		{ name: 'Downloadable Guides', icon: 'book-open', slug: 'guides' },
 		{ name: 'Video Tutorials', icon: 'video', slug: 'videos' },
-		{ name: 'Webinars', icon: 'graduation', slug: 'webinars' },
+		{ name: 'Webinars', icon: 'graduation-cap', slug: 'webinars' },
 		{ name: 'Research Papers', icon: 'search', slug: 'research' },
-		{ name: 'Community Forums', icon: 'chat', slug: 'forums' }
+		{ name: 'Community Forums', icon: 'message-circle', slug: 'forums' }
 	];
 </script>
 
@@ -25,80 +26,47 @@
 		</div>
 
 		<!-- Resource Type Cards -->
-		<Grid columns={3} gap={6} class="mb-12">
-			{#each resourceTypes as type}
+		<Grid columns={{ sm: 1, md: 2, xl: 5 }} gap="md" class="editorial-category-grid mb-12">
+			{#each resourceTypes as type, index}
 				<a
 					href="/resources?type={type.slug}"
-					class="card rounded-3xl border border-base-200/30 bg-base-100 shadow-md transition-shadow hover:shadow-lg"
+					class="group flex min-h-52 w-full flex-col border border-base-content/30 bg-base-100 p-5 text-left transition-colors hover:border-primary hover:bg-base-200/60"
+					class:border-primary={data.selectedType === type.slug}
+					class:bg-base-200={data.selectedType === type.slug}
+					aria-current={data.selectedType === type.slug ? 'page' : undefined}
 				>
-					<div class="card-body items-center text-center">
-						<div class="mb-4">
-							{#if type.icon === 'book'}
-								<svg
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									class="h-12 w-12 text-primary"
-								>
-									<path
-										d="M4 4h6a2 2 0 012 2v14a1 1 0 00-1-1H4V4zM20 4h-6a2 2 0 00-2 2v14a1 1 0 011-1h7V4z"
-									/>
-								</svg>
-							{:else if type.icon === 'video'}
-								<svg
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									class="h-12 w-12 text-primary"
-								>
-									<path d="M15 10l5-3v10l-5-3M3 5h12v14H3V5z" />
-								</svg>
-							{:else if type.icon === 'graduation'}
-								<svg
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									class="h-12 w-12 text-primary"
-								>
-									<path d="M2 10l10-5 10 5-10 5-10-5zM6 12v5l6 3 6-3v-5" />
-								</svg>
-							{:else if type.icon === 'search'}
-								<svg
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									class="h-12 w-12 text-primary"
-								>
-									<path d="M11 3a8 8 0 100 16 8 8 0 000-16zM21 21l-4.3-4.3" />
-								</svg>
-							{:else if type.icon === 'chat'}
-								<svg
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									class="h-12 w-12 text-primary"
-								>
-									<path
-										d="M21 11.5a8.4 8.4 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.4 8.4 0 01-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.4 8.4 0 013.8-.9h.5a8.5 8.5 0 018 8v.5z"
-									/>
-								</svg>
-							{/if}
-						</div>
-						<p class="mb-1 font-mono text-xs tracking-widest text-secondary uppercase">Resource</p>
-						<h2 class="font-display card-title tracking-tight uppercase">{type.name}</h2>
+					<div class="mb-8 flex items-start justify-between gap-4">
+						<span class="text-lime-ink font-mono text-xs font-semibold tracking-widest">
+							0{index + 1}
+						</span>
+						<span
+							class="flex h-12 w-12 items-center justify-center border border-primary bg-accent text-accent-content"
+						>
+							<Icon name={type.icon} size={32} />
+						</span>
 					</div>
+					<p class="text-lime-ink mb-2 font-mono text-xs font-semibold tracking-widest uppercase">
+						{data.selectedType === type.slug ? 'Selected resource' : 'Resource'}
+					</p>
+					<h2
+						class="font-display mt-auto text-xl leading-tight font-semibold tracking-tight uppercase"
+					>
+						{type.name}
+					</h2>
 				</a>
 			{/each}
 		</Grid>
 
 		<!-- Resources List -->
 		<div class="space-y-6">
-			{#if data.resources && data.resources.length > 0}
+			{#if data.loadStatus === 'error'}
+				<div class="border border-error bg-base-100 p-6" role="alert">
+					<h2 class="font-display text-2xl font-semibold uppercase">
+						Resources could not be loaded
+					</h2>
+					<p class="mt-2 text-base-content/75">Please try again later or contact support.</p>
+				</div>
+			{:else if data.resources && data.resources.length > 0}
 				{#each data.resources as resource}
 					<div class="card rounded-3xl border border-base-200/30 bg-base-100 shadow-md">
 						<div class="card-body">

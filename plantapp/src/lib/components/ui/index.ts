@@ -11,7 +11,6 @@ export { default as MarqueeBar } from './MarqueeBar.svelte';
 export { default as SectionHeader } from './SectionHeader.svelte';
 export { default as StatTile } from './StatTile.svelte';
 export { default as Modal } from './Modal.svelte';
-export { default as ParallaxHero } from './ParallaxHero.svelte';
 export { default as ScrollReveal } from './ScrollReveal.svelte';
 export { default as Skeleton } from './Skeleton.svelte';
 export { default as TextReveal } from './TextReveal.svelte';

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import OptimizedImage from './OptimizedImage.svelte';
+	import { Icon } from '$lib/components/icons';
 
 	interface ImageItem {
 		src: string;
@@ -123,7 +124,7 @@
 
 			{#if image.title || image.description}
 				<div
-					class="absolute inset-0 flex items-end bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+					class="absolute inset-0 flex items-end bg-black/65 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 				>
 					<div class="p-4 text-white">
 						{#if image.title}
@@ -161,14 +162,7 @@
 			onclick={closeLightbox}
 			aria-label="Close lightbox"
 		>
-			<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M6 18L18 6M6 6l12 12"
-				/>
-			</svg>
+			<Icon name="x" />
 		</button>
 
 		<!-- Previous button -->
@@ -181,14 +175,7 @@
 				}}
 				aria-label="Previous image"
 			>
-				<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M15 19l-7-7 7-7"
-					/>
-				</svg>
+				<Icon name="chevron-left" />
 			</button>
 		{/if}
 
@@ -202,9 +189,7 @@
 				}}
 				aria-label="Next image"
 			>
-				<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-				</svg>
+				<Icon name="chevron-right" />
 			</button>
 		{/if}
 
@@ -227,9 +212,7 @@
 			/>
 
 			{#if images[currentImageIndex].title || images[currentImageIndex].description}
-				<div
-					class="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white"
-				>
+				<div class="absolute right-0 bottom-0 left-0 bg-black/80 p-6 text-white">
 					{#if images[currentImageIndex].title}
 						<h3 class="mb-2 text-lg font-semibold">{images[currentImageIndex].title}</h3>
 					{/if}

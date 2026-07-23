@@ -3,6 +3,7 @@
 	import { trpc } from '$lib/trpc/client';
 	import { goto, invalidateAll } from '$app/navigation';
 	import type { PageData } from './$types';
+	import { Icon } from '$lib/components/icons';
 
 	let { data }: { data: PageData } = $props();
 
@@ -82,20 +83,7 @@
 			<div
 				class="mt-4 flex items-center gap-2 font-mono text-xs tracking-wider text-base-content/50 uppercase"
 			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-4 w-4"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-					stroke-width="1.5"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-					/>
-				</svg>
+				<Icon name="clock" size={16} />
 				<span>{lesson.estimatedMinutes} min read</span>
 			</div>
 		{/if}
@@ -137,16 +125,7 @@
 				{:else}
 					Mark Complete
 					{#if nextLesson}
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="ml-2 h-4 w-4"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-						</svg>
+						<Icon name="arrow-right" size={16} class="ml-2" />
 					{/if}
 				{/if}
 			</button>
@@ -163,16 +142,7 @@
 				<span
 					class="flex items-center gap-2 font-mono text-xs tracking-wider text-base-content/50 uppercase"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-3 w-3"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						stroke-width="2"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-					</svg>
+					<Icon name="arrow-left" size={12} />
 					Previous
 				</span>
 				<div
@@ -194,16 +164,7 @@
 					class="flex items-center justify-end gap-2 font-mono text-xs tracking-wider text-base-content/50 uppercase"
 				>
 					Next
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-3 w-3"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						stroke-width="2"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-					</svg>
+					<Icon name="arrow-right" size={12} />
 				</span>
 				<div
 					class="font-display mt-1 line-clamp-1 text-sm font-bold transition-colors group-hover:text-primary"

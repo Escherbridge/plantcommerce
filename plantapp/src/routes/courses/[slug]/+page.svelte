@@ -3,6 +3,7 @@
 	import { trpc } from '$lib/trpc/client';
 	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
+	import { Icon } from '$lib/components/icons';
 
 	let { data }: { data: PageData } = $props();
 
@@ -88,16 +89,7 @@
 					href="/courses"
 					class="inline-flex items-center gap-2 font-mono text-sm tracking-wider text-primary-content/70 uppercase hover:text-primary-content"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-4 w-4"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						stroke-width="2"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-					</svg>
+					<Icon name="arrow-left" size={16} />
 					<span>Back to Catalog</span>
 				</a>
 
@@ -136,57 +128,18 @@
 
 				<div class="flex flex-wrap items-center gap-6 pt-4">
 					<div class="flex items-center gap-2 text-primary-content/70">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="h-5 w-5"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							stroke-width="1.5"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-							/>
-						</svg>
+						<Icon name="user" size={20} />
 						<span class="font-mono text-sm">{instructorDisplayName}</span>
 					</div>
 					{#if course.enrollmentCount !== undefined}
 						<div class="flex items-center gap-2 text-primary-content/70">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="h-5 w-5"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="1.5"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-								/>
-							</svg>
+							<Icon name="users" size={20} />
 							<span class="font-mono text-sm">{course.enrollmentCount} enrolled</span>
 						</div>
 					{/if}
 					{#if course.durationEstimate}
 						<div class="flex items-center gap-2 text-primary-content/70">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="h-5 w-5"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="1.5"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-								/>
-							</svg>
+							<Icon name="clock" size={20} />
 							<span class="font-mono text-sm">{course.durationEstimate} min</span>
 						</div>
 					{/if}
@@ -237,42 +190,15 @@
 
 					<div class="mt-6 space-y-3 border-t border-base-200 pt-6 text-sm">
 						<div class="flex items-center gap-3">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="h-5 w-5 text-primary"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-							</svg>
+							<Icon name="check" size={20} class="text-primary" />
 							<span class="text-base-content/70">Lifetime access</span>
 						</div>
 						<div class="flex items-center gap-3">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="h-5 w-5 text-primary"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-							</svg>
+							<Icon name="check" size={20} class="text-primary" />
 							<span class="text-base-content/70">Certificate of completion</span>
 						</div>
 						<div class="flex items-center gap-3">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="h-5 w-5 text-primary"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-							</svg>
+							<Icon name="check" size={20} class="text-primary" />
 							<span class="text-base-content/70">{totalLessons} lessons</span>
 						</div>
 					</div>
@@ -322,44 +248,21 @@
 											</p>
 										</div>
 									</div>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										class="h-5 w-5 flex-shrink-0 text-base-content/40 transition-transform {openModuleIds.has(
+									<Icon
+										name="chevron-down"
+										size={20}
+										class="flex-shrink-0 text-base-content/40 transition-transform {openModuleIds.has(
 											mod.id
 										)
 											? 'rotate-180'
 											: ''}"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="2"
-									>
-										<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-									</svg>
+									/>
 								</button>
 								{#if openModuleIds.has(mod.id) && mod.lessons && mod.lessons.length > 0}
 									<div class="divide-y divide-base-200/50 border-t border-base-200/50">
 										{#each mod.lessons as lesson}
 											<div class="flex items-center gap-3 p-5 pl-12">
-												<svg
-													xmlns="http://www.w3.org/2000/svg"
-													class="h-4 w-4 text-base-content/40"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-													stroke-width="1.5"
-												>
-													<path
-														stroke-linecap="round"
-														stroke-linejoin="round"
-														d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-													/>
-													<path
-														stroke-linecap="round"
-														stroke-linejoin="round"
-														d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-													/>
-												</svg>
+												<Icon name="play-circle" size={16} class="text-base-content/40" />
 												<span class="flex-1 text-sm">{lesson.title}</span>
 												{#if lesson.isPreview}
 													<span
@@ -399,20 +302,7 @@
 						<div
 							class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-primary/10"
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="h-8 w-8 text-primary"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="1.5"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-								/>
-							</svg>
+							<Icon name="user" size={32} class="text-primary" />
 						</div>
 						<div>
 							<h3 class="font-display text-lg font-bold">{instructorDisplayName}</h3>

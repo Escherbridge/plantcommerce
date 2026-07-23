@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Icon } from '$lib/components/icons';
 	interface Props {
 		messages: string[];
 		divider?: string;
@@ -77,17 +78,7 @@
 			       px-3 transition-colors"
 			aria-label="Dismiss announcements"
 		>
-			<svg
-				class="h-3.5 w-3.5"
-				viewBox="0 0 14 14"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-			>
-				<line x1="2" y1="2" x2="12" y2="12" />
-				<line x1="12" y1="2" x2="2" y2="12" />
-			</svg>
+			<Icon name="x" size={14} />
 		</button>
 	</div>
 {/if}

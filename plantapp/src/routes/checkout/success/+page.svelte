@@ -1,351 +1,126 @@
 <script lang="ts">
+	import { formatMoney } from '$lib/commerce/contracts';
+	import { MockCommerceNotice } from '$lib/components/commerce';
 	import type { PageData } from './$types';
-
 	let { data }: { data: PageData } = $props();
 
-	let retryCount = $state(0);
-	const maxRetries = 10;
-
-	// Auto-refresh if order is still processing (webhook hasn't fired yet)
 	$effect(() => {
-		if (data.status === 'processing' && retryCount < maxRetries) {
+		if (data.status === 'processing' && data.pollAttempt < 10) {
 			const timer = setTimeout(() => {
-				retryCount++;
-				// Reload the page to check again
-				window.location.reload();
+				const nextUrl = new URL(window.location.href);
+				nextUrl.searchParams.set('poll', String(data.pollAttempt + 1));
+				window.location.replace(nextUrl);
 			}, 3000);
-
 			return () => clearTimeout(timer);
 		}
 	});
 </script>
 
 <svelte:head>
-	<title
-		>Order {data.status === 'complete'
-			? 'Confirmed'
-			: data.status === 'access_required'
-				? 'Details Protected'
-				: 'Processing'} | Aevani</title
-	>
+	<title>{data.context.isMock ? 'Test order result' : 'Order result'} | Aevani</title>
+	{#if data.context.isMock}<meta name="robots" content="noindex,nofollow" />{/if}
 </svelte:head>
 
-<div class="success-page">
-	{#if data.status === 'complete' && data.order}
-		<div class="success-container">
-			<div class="success-icon">
-				<svg
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-					<polyline points="22 4 12 14.01 9 11.01" />
-				</svg>
-			</div>
+{#if data.context.isMock}<MockCommerceNotice label={data.context.label} />{/if}
 
-			<h1>Order Confirmed</h1>
-			<p class="order-number">Order #{data.order.orderNumber}</p>
-			<p class="confirmation-text">
-				Thank you for your purchase! A confirmation email has been sent to <strong
-					>{data.order.customerEmail}</strong
-				>.
+<main class="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6">
+	{#if data.status === 'complete' && data.demoOrder}
+		<section class="rounded-3xl border border-base-300 p-6 sm:p-10">
+			<MockCommerceNotice compact label="Mock/test order success" />
+			<p class="mt-6 font-mono text-xs font-bold tracking-[0.18em] uppercase">
+				Simulation complete
 			</p>
-
-			<!-- Order Summary -->
-			<div class="order-summary">
-				<h2>Order Summary</h2>
-
-				<div class="items-list">
-					{#each data.order.items as item}
-						<div class="order-item">
-							<div class="item-info">
-								<span class="item-name">{item.productName}</span>
-								<span class="item-qty">x{item.quantity}</span>
-							</div>
-							<span class="item-price">${parseFloat(item.totalPrice).toFixed(2)}</span>
-						</div>
-					{/each}
-				</div>
-
-				<div class="totals">
-					<div class="total-row">
-						<span>Subtotal</span>
-						<span>${parseFloat(data.order.subtotalAmount).toFixed(2)}</span>
-					</div>
-					<div class="total-row">
-						<span>Tax</span>
-						<span>${parseFloat(data.order.taxAmount).toFixed(2)}</span>
-					</div>
-					<div class="total-row">
-						<span>Shipping</span>
-						<span>${parseFloat(data.order.shippingAmount).toFixed(2)}</span>
-					</div>
-					{#if parseFloat(data.order.discountAmount) > 0}
-						<div class="total-row discount">
-							<span>Discount</span>
-							<span>-${parseFloat(data.order.discountAmount).toFixed(2)}</span>
-						</div>
-					{/if}
-					<div class="total-row total">
-						<span>Total</span>
-						<span>${parseFloat(data.order.totalAmount).toFixed(2)}</span>
-					</div>
-				</div>
-			</div>
-
-			<div class="actions">
-				<a href="/products" class="btn-continue">Continue Shopping</a>
-				<a href="/account/orders" class="btn-orders">View Orders</a>
-			</div>
-		</div>
-	{:else if data.status === 'access_required'}
-		<div class="success-container processing">
-			<h1>Order Details Protected</h1>
-			<p class="confirmation-text">
-				We can’t display order details in this browser. If you made a payment, wait for an
-				order-confirmation email before treating it as complete.
+			<h1 class="font-display mt-2 text-4xl font-bold uppercase sm:text-6xl">
+				Test order simulated
+			</h1>
+			<p class="mt-4 text-lg leading-relaxed text-base-content/75">
+				No payment was taken. No email was sent. No inventory, fulfillment, production database,
+				account, or real order was created.
 			</p>
-			<a href="/products" class="btn-continue">Continue Shopping</a>
-		</div>
+			<p class="mt-6 font-mono font-bold">{data.demoOrder.reference}</p>
+			<div class="mt-8 divide-y divide-base-300 border-y border-base-300">
+				{#each data.demoOrder.items as item}
+					<div class="flex justify-between gap-4 py-4">
+						<span
+							>{item.product.name} × {item.quantity}<small class="block text-base-content/75"
+								>Test price</small
+							></span
+						>
+						<strong class="font-mono"
+							>{formatMoney({
+								...item.unitPrice,
+								amountMinor: item.unitPrice.amountMinor * item.quantity
+							})}</strong
+						>
+					</div>
+				{/each}
+			</div>
+			<dl class="mt-6 space-y-2">
+				<div class="flex justify-between">
+					<dt>Test subtotal</dt>
+					<dd>{formatMoney(data.demoOrder.subtotal)}</dd>
+				</div>
+				<div class="flex justify-between">
+					<dt>Test tax</dt>
+					<dd>{formatMoney(data.demoOrder.tax)}</dd>
+				</div>
+				<div class="flex justify-between">
+					<dt>Test shipping</dt>
+					<dd>{formatMoney(data.demoOrder.shipping)}</dd>
+				</div>
+				<div class="flex justify-between border-t border-base-300 pt-3 text-lg font-bold">
+					<dt>Test total</dt>
+					<dd class="font-mono">{formatMoney(data.demoOrder.total)}</dd>
+				</div>
+			</dl>
+			<a class="btn mt-8 btn-primary" href="/products">Continue testing catalogue</a>
+		</section>
+	{:else if data.status === 'complete' && data.databaseOrder}
+		<section class="rounded-3xl border border-base-300 p-6 text-center sm:p-10">
+			<h1 class="font-display text-4xl font-bold uppercase sm:text-6xl">Order confirmed</h1>
+			<p class="mt-4 font-mono font-bold">{data.databaseOrder.orderNumber}</p>
+			<p class="mt-4 text-base-content/70">
+				Your payment was confirmed and the order record is available below. Keep this reference for
+				support.
+			</p>
+			<a class="btn mt-8 btn-primary" href="/account/orders/{data.databaseOrder.orderNumber}"
+				>View order</a
+			>
+		</section>
 	{:else if data.status === 'processing'}
-		<div class="success-container processing">
-			<div class="processing-icon">
-				<svg
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<circle cx="12" cy="12" r="10" />
-					<polyline points="12 6 12 12 16 14" />
-				</svg>
-			</div>
-			<h1>Processing Your Order</h1>
-			<p class="confirmation-text">
-				We are confirming your checkout. Please do not submit another payment while this page
-				updates.
+		<section class="rounded-3xl border border-base-300 p-10 text-center">
+			<h1 class="font-display text-4xl font-bold uppercase">
+				{data.pollAttempt < 10 ? 'Confirming payment' : 'Confirmation is taking longer'}
+			</h1>
+			<p class="mt-4 text-base-content/70">
+				{data.pollAttempt < 10
+					? 'Please do not submit another payment while the secure confirmation completes.'
+					: 'Do not submit another payment. Refresh this page later or contact support with your checkout reference.'}
 			</p>
-			<div class="spinner"></div>
-			{#if retryCount >= maxRetries}
-				<p class="retry-message">
-					This is taking longer than expected. Wait for an order-confirmation email before
-					considering the order complete.
-				</p>
-				<a href="/products" class="btn-continue">Continue Shopping</a>
+			{#if data.pollAttempt >= 10}
+				<div class="mt-6 flex flex-wrap justify-center gap-3">
+					<button
+						class="btn btn-primary"
+						type="button"
+						onclick={() => {
+							const nextUrl = new URL(window.location.href);
+							nextUrl.searchParams.delete('poll');
+							window.location.assign(nextUrl);
+						}}
+					>
+						Check again
+					</button>
+					<a class="btn" href="/contact">Contact support</a>
+				</div>
 			{/if}
-		</div>
+		</section>
 	{:else}
-		<div class="success-container error">
-			<h1>Something went wrong</h1>
-			<p class="confirmation-text">
-				We couldn't find your order. If you completed a payment, don't worry — your order will still
-				be processed.
+		<section class="rounded-3xl border border-base-300 p-10 text-center">
+			<h1 class="font-display text-4xl font-bold uppercase">Order details protected</h1>
+			<p class="mt-4 text-base-content/70">
+				This browser does not have access to that order result.
 			</p>
-			<a href="/products" class="btn-continue">Continue Shopping</a>
-		</div>
+			<a class="btn mt-6" href="/products">Return to catalogue</a>
+		</section>
 	{/if}
-</div>
-
-<style>
-	.success-page {
-		min-height: 60vh;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 2rem 1rem;
-	}
-
-	.success-container {
-		max-width: 600px;
-		width: 100%;
-		text-align: center;
-	}
-
-	.success-icon svg,
-	.processing-icon svg {
-		width: 4rem;
-		height: 4rem;
-		margin-bottom: 1.5rem;
-	}
-
-	.success-icon svg {
-		color: oklch(var(--su));
-	}
-
-	.processing-icon svg {
-		color: oklch(var(--wa));
-		animation: spin 2s linear infinite;
-	}
-
-	@keyframes spin {
-		from {
-			transform: rotate(0deg);
-		}
-		to {
-			transform: rotate(360deg);
-		}
-	}
-
-	h1 {
-		font-family: var(--font-display);
-		font-size: 2rem;
-		font-weight: 700;
-		color: oklch(var(--bc));
-		margin-bottom: 0.5rem;
-	}
-
-	.order-number {
-		font-family: var(--font-mono, monospace);
-		font-size: 1rem;
-		color: oklch(var(--bc) / 0.6);
-		margin-bottom: 1rem;
-	}
-
-	.confirmation-text {
-		font-size: 1rem;
-		color: oklch(var(--bc) / 0.7);
-		line-height: 1.6;
-		margin-bottom: 2rem;
-	}
-
-	.order-summary {
-		text-align: left;
-		background: oklch(var(--b2));
-		border-radius: var(--input-radius, 10px);
-		padding: 1.5rem;
-		margin-bottom: 2rem;
-		border: 1px solid oklch(var(--bc) / 0.1);
-	}
-
-	.order-summary h2 {
-		font-family: var(--font-display);
-		font-size: 1rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.06em;
-		color: oklch(var(--bc) / 0.5);
-		margin-bottom: 1rem;
-	}
-
-	.items-list {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-		margin-bottom: 1rem;
-		padding-bottom: 1rem;
-		border-bottom: 1px solid oklch(var(--bc) / 0.1);
-	}
-
-	.order-item {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-
-	.item-info {
-		display: flex;
-		gap: 0.5rem;
-		align-items: center;
-	}
-
-	.item-name {
-		font-size: 0.9375rem;
-		color: oklch(var(--bc));
-	}
-
-	.item-qty {
-		font-size: 0.8125rem;
-		color: oklch(var(--bc) / 0.5);
-	}
-
-	.item-price {
-		font-family: var(--font-mono, monospace);
-		font-size: 0.9375rem;
-		color: oklch(var(--bc));
-	}
-
-	.totals {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-
-	.total-row {
-		display: flex;
-		justify-content: space-between;
-		font-size: 0.9375rem;
-		color: oklch(var(--bc) / 0.7);
-	}
-
-	.total-row.discount {
-		color: oklch(var(--su));
-	}
-
-	.total-row.total {
-		font-weight: 700;
-		font-size: 1.125rem;
-		color: oklch(var(--bc));
-		padding-top: 0.5rem;
-		border-top: 1px solid oklch(var(--bc) / 0.1);
-	}
-
-	.actions {
-		display: flex;
-		gap: 1rem;
-		justify-content: center;
-		flex-wrap: wrap;
-	}
-
-	.btn-continue,
-	.btn-orders {
-		display: inline-flex;
-		align-items: center;
-		padding: 0.75rem 1.5rem;
-		border-radius: var(--input-radius, 10px);
-		font-family: var(--font-display);
-		font-size: 0.875rem;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
-		text-decoration: none;
-		transition: opacity 150ms ease;
-	}
-
-	.btn-continue {
-		background: oklch(var(--p));
-		color: oklch(var(--pc));
-	}
-
-	.btn-orders {
-		background: oklch(var(--b2));
-		color: oklch(var(--bc));
-		border: 1.5px solid oklch(var(--bc) / 0.15);
-	}
-
-	.btn-continue:hover,
-	.btn-orders:hover {
-		opacity: 0.9;
-	}
-
-	.spinner {
-		width: 2rem;
-		height: 2rem;
-		border: 3px solid oklch(var(--bc) / 0.1);
-		border-top-color: oklch(var(--p));
-		border-radius: 50%;
-		animation: spin 0.8s linear infinite;
-		margin: 1rem auto;
-	}
-
-	.retry-message {
-		font-size: 0.875rem;
-		color: oklch(var(--wa));
-		margin-bottom: 1.5rem;
-	}
-</style>
+</main>

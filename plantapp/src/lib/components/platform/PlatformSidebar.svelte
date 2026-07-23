@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import type { NavigationConfig, PlatformUser } from './types';
 	import PortalSwitcher from './PortalSwitcher.svelte';
+	import { Icon } from '$lib/components/icons';
 
 	interface Props {
 		navigation: NavigationConfig;
@@ -156,16 +157,7 @@
 								aria-current={active ? 'page' : undefined}
 								title={collapsed ? item.label : undefined}
 							>
-								<svg
-									viewBox="0 0 24 24"
-									class="nav-icon"
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									aria-hidden="true"
-								>
-									<path d={item.icon} stroke-linecap="round" stroke-linejoin="round" />
-								</svg>
+								<Icon name={item.icon} class="nav-icon" />
 								{#if !collapsed}
 									<span class="nav-label">{item.label}</span>
 									{#if item.badge !== undefined}
@@ -185,20 +177,7 @@
 		<PortalSwitcher role={user.role} {currentPath} {collapsed} />
 		<div class="sidebar-divider"></div>
 		<a href="/" class="sidebar-footer-item" title={collapsed ? 'Back to Store' : undefined}>
-			<svg
-				viewBox="0 0 24 24"
-				class="nav-icon"
-				stroke="currentColor"
-				stroke-width="1.5"
-				fill="none"
-				aria-hidden="true"
-			>
-				<path
-					d="M3 10l9-7 9 7v10a1 1 0 01-1 1H4a1 1 0 01-1-1V10z"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				/>
-			</svg>
+			<Icon name="home" class="nav-icon" />
 			{#if !collapsed}
 				<span class="nav-label">Back to Store</span>
 			{/if}
@@ -210,20 +189,7 @@
 				onclick={onlogout}
 				title={collapsed ? 'Logout' : undefined}
 			>
-				<svg
-					viewBox="0 0 24 24"
-					class="nav-icon"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					aria-hidden="true"
-				>
-					<path
-						d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					/>
-				</svg>
+				<Icon name="log-out" class="nav-icon" />
 				{#if !collapsed}
 					<span class="nav-label">Logout</span>
 				{/if}
@@ -238,17 +204,7 @@
 			aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
 			title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
 		>
-			<svg
-				viewBox="0 0 24 24"
-				class="nav-icon collapse-chevron"
-				class:rotated={collapsed}
-				stroke="currentColor"
-				stroke-width="1.5"
-				fill="none"
-				aria-hidden="true"
-			>
-				<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" />
-			</svg>
+			<Icon name="chevron-left" class="nav-icon collapse-chevron {collapsed ? 'rotated' : ''}" />
 		</button>
 	</div>
 </aside>
@@ -275,16 +231,7 @@
 			<span class="sidebar-role-badge {roleBadgeClass}">{user.role}</span>
 		</div>
 		<button class="mobile-close-btn" onclick={closeMobile} aria-label="Close sidebar">
-			<svg
-				viewBox="0 0 24 24"
-				class="nav-icon"
-				stroke="currentColor"
-				stroke-width="1.5"
-				fill="none"
-				aria-hidden="true"
-			>
-				<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
-			</svg>
+			<Icon name="x" class="nav-icon" />
 		</button>
 	</div>
 
@@ -306,16 +253,7 @@
 								aria-current={active ? 'page' : undefined}
 								onclick={closeMobile}
 							>
-								<svg
-									viewBox="0 0 24 24"
-									class="nav-icon"
-									stroke="currentColor"
-									stroke-width="1.5"
-									fill="none"
-									aria-hidden="true"
-								>
-									<path d={item.icon} stroke-linecap="round" stroke-linejoin="round" />
-								</svg>
+								<Icon name={item.icon} class="nav-icon" />
 								<span class="nav-label">{item.label}</span>
 								{#if item.badge !== undefined}
 									<span class="nav-badge">{item.badge}</span>
@@ -333,20 +271,7 @@
 		<PortalSwitcher role={user.role} {currentPath} collapsed={false} />
 		<div class="sidebar-divider"></div>
 		<a href="/" class="sidebar-footer-item" onclick={closeMobile}>
-			<svg
-				viewBox="0 0 24 24"
-				class="nav-icon"
-				stroke="currentColor"
-				stroke-width="1.5"
-				fill="none"
-				aria-hidden="true"
-			>
-				<path
-					d="M3 10l9-7 9 7v10a1 1 0 01-1 1H4a1 1 0 01-1-1V10z"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				/>
-			</svg>
+			<Icon name="home" class="nav-icon" />
 			<span class="nav-label">Back to Store</span>
 		</a>
 
@@ -358,20 +283,7 @@
 					closeMobile();
 				}}
 			>
-				<svg
-					viewBox="0 0 24 24"
-					class="nav-icon"
-					stroke="currentColor"
-					stroke-width="1.5"
-					fill="none"
-					aria-hidden="true"
-				>
-					<path
-						d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					/>
-				</svg>
+				<Icon name="log-out" class="nav-icon" />
 				<span class="nav-label">Logout</span>
 			</button>
 		{/if}

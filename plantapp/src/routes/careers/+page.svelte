@@ -1,36 +1,45 @@
 <script lang="ts">
 	import { Container, Section } from '$lib/components/layout';
 	import { Grid } from '$lib/components/layout';
+	import { Icon, type IconName } from '$lib/components/icons';
 
 	const benefits = [
 		{
 			title: 'Competitive Salary',
-			icon: 'money',
+			icon: 'dollar-circle' as IconName,
 			description: 'Market-leading compensation packages'
 		},
 		{
 			title: 'Health Insurance',
-			icon: 'hospital',
+			icon: 'hospital' as IconName,
 			description: 'Comprehensive medical, dental, and vision'
 		},
-		{ title: 'Remote Work', icon: 'home', description: 'Flexible work-from-home options' },
+		{
+			title: 'Remote Work',
+			icon: 'home' as IconName,
+			description: 'Flexible work-from-home options'
+		},
 		{
 			title: '401(k) Matching',
-			icon: 'trending',
+			icon: 'trending-up' as IconName,
 			description: 'Generous retirement contributions'
 		},
-		{ title: 'Paid Time Off', icon: 'vacation', description: 'Unlimited PTO policy' },
+		{ title: 'Paid Time Off', icon: 'sun' as IconName, description: 'Unlimited PTO policy' },
 		{
 			title: 'Learning Budget',
-			icon: 'book',
+			icon: 'book-open' as IconName,
 			description: 'Annual education and conference budget'
 		},
 		{
 			title: 'Wellness Programs',
-			icon: 'wellness',
+			icon: 'heart' as IconName,
 			description: 'Gym memberships and wellness initiatives'
 		},
-		{ title: 'Product Discounts', icon: 'gift', description: '50% off all Aevani products' }
+		{
+			title: 'Product Discounts',
+			icon: 'gift' as IconName,
+			description: '50% off all Aevani products'
+		}
 	];
 
 	const openings = [
@@ -105,15 +114,7 @@
 				<ul class="mx-auto max-w-2xl space-y-3">
 					{#each values as value}
 						<li class="flex items-start gap-3">
-							<svg
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="1.5"
-								fill="none"
-								class="mt-0.5 h-5 w-5 shrink-0"
-							>
-								<path d="M5 13l4 4L19 7" />
-							</svg>
+							<Icon name="check" size={20} class="mt-0.5 shrink-0" />
 							<span class="text-lg">{value}</span>
 						</li>
 					{/each}
@@ -131,91 +132,7 @@
 					<div class="card rounded-3xl border border-base-200/30 bg-base-100 shadow-md">
 						<div class="card-body items-center text-center">
 							<div class="mb-3">
-								{#if benefit.icon === 'money'}
-									<svg
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="1.5"
-										fill="none"
-										class="h-10 w-10 text-primary"
-									>
-										<path d="M12 2a10 10 0 100 20 10 10 0 000-20zM12 6v12M8 10h8M9 14h6" />
-									</svg>
-								{:else if benefit.icon === 'hospital'}
-									<svg
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="1.5"
-										fill="none"
-										class="h-10 w-10 text-primary"
-									>
-										<path d="M3 3h18v18H3V3zM12 7v10M7 12h10" />
-									</svg>
-								{:else if benefit.icon === 'home'}
-									<svg
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="1.5"
-										fill="none"
-										class="h-10 w-10 text-primary"
-									>
-										<path d="M3 10l9-7 9 7v10a1 1 0 01-1 1H4a1 1 0 01-1-1V10z" />
-									</svg>
-								{:else if benefit.icon === 'trending'}
-									<svg
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="1.5"
-										fill="none"
-										class="h-10 w-10 text-primary"
-									>
-										<path d="M3 17l6-6 4 4 8-8M14 7h7v7" />
-									</svg>
-								{:else if benefit.icon === 'vacation'}
-									<svg
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="1.5"
-										fill="none"
-										class="h-10 w-10 text-primary"
-									>
-										<path d="M12 3v18M8 8c0-3 4-5 4-5s4 2 4 5M6 13c0-4 6-7 6-7s6 3 6 7" />
-									</svg>
-								{:else if benefit.icon === 'book'}
-									<svg
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="1.5"
-										fill="none"
-										class="h-10 w-10 text-primary"
-									>
-										<path
-											d="M4 4h6a2 2 0 012 2v14a1 1 0 00-1-1H4V4zM20 4h-6a2 2 0 00-2 2v14a1 1 0 011-1h7V4z"
-										/>
-									</svg>
-								{:else if benefit.icon === 'wellness'}
-									<svg
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="1.5"
-										fill="none"
-										class="h-10 w-10 text-primary"
-									>
-										<path d="M12 2a10 10 0 100 20 10 10 0 000-20zM8 14s1.5 2 4 2 4-2 4-2" />
-									</svg>
-								{:else if benefit.icon === 'gift'}
-									<svg
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="1.5"
-										fill="none"
-										class="h-10 w-10 text-primary"
-									>
-										<path
-											d="M3 8h18v12H3V8zM12 8v12M3 12h18M8 8V6a2 2 0 014 0v2M16 8V6a2 2 0 00-4 0v2"
-										/>
-									</svg>
-								{/if}
+								<Icon name={benefit.icon} size={40} class="text-primary" />
 							</div>
 							<p class="mb-1 font-mono text-xs tracking-widest text-secondary uppercase">Perk</p>
 							<h3 class="font-display font-bold tracking-tight uppercase">{benefit.title}</h3>

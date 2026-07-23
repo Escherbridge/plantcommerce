@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Container } from '$lib/components/layout';
 	import type { PageData } from './$types';
+	import { Icon } from '$lib/components/icons';
 
 	let { data }: { data: PageData } = $props();
 
@@ -56,16 +57,7 @@
 						<div
 							class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-success text-success-content"
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="h-7 w-7"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2.5"
-							>
-								<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-							</svg>
+							<Icon name="check" size={28} />
 						</div>
 						<div>
 							<div class="font-display text-xl font-bold tracking-tight uppercase">
@@ -78,23 +70,10 @@
 					</div>
 
 					<!-- Certificate body -->
-					<div class="bg-gradient-to-br from-base-100 via-base-100 to-primary/5 p-8 lg:p-12">
+					<div class="bg-base-100 p-8 lg:p-12">
 						<div class="space-y-6 text-center">
 							<div class="inline-block">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									class="mx-auto h-20 w-20 text-primary"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="1.25"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-									/>
-								</svg>
+								<Icon name="shield-check" size={80} class="mx-auto text-primary" />
 							</div>
 
 							<div>
@@ -145,16 +124,7 @@
 						<div
 							class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-error text-error-content"
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="h-7 w-7"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2.5"
-							>
-								<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-							</svg>
+							<Icon name="x" size={28} />
 						</div>
 						<div>
 							<div class="font-display text-xl font-bold tracking-tight uppercase">Not Found</div>

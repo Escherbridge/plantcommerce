@@ -2,6 +2,7 @@
 	import { Container, Section } from '$lib/components/layout';
 	import { Accordion } from '$lib/components/ui';
 	import type { PageData } from './$types';
+	import { Icon } from '$lib/components/icons';
 
 	let { data }: { data: PageData } = $props();
 
@@ -64,17 +65,7 @@
 		{:else}
 			<div class="py-12 text-center">
 				<div class="mb-4 flex justify-center">
-					<svg
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						stroke-width="1.5"
-						fill="none"
-						class="h-16 w-16 text-base-content/30"
-					>
-						<path
-							d="M12 2a10 10 0 100 20 10 10 0 000-20zM9.1 9a3 3 0 015.8 1c0 2-3 3-3 3M12 17h0"
-						/>
-					</svg>
+					<Icon name="help-circle" size={64} class="text-base-content/30" />
 				</div>
 				<p class="text-xl text-base-content/70">No FAQs available for this category.</p>
 			</div>
