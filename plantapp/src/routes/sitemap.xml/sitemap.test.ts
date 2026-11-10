@@ -35,7 +35,14 @@ describe('public crawler discovery', () => {
 		expect(source).not.toContain('PUBLIC_BASE_URL');
 		expect(source).not.toContain('RAILWAY_PUBLIC_DOMAIN');
 
-		for (const excludedRoute of ['/cart', '/checkout', '/login', '/register', '/search']) {
+		for (const excludedRoute of [
+			'/cart',
+			'/checkout',
+			'/login',
+			'/register',
+			'/search',
+			'/api/admin/seller-applications'
+		]) {
 			expect(xml).not.toContain(`<loc>https://aevani.com${excludedRoute}</loc>`);
 			expect(isPublicIndexablePath(excludedRoute)).toBe(false);
 		}
