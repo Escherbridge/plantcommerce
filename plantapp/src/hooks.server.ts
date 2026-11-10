@@ -3,7 +3,11 @@ import { sequence } from '@sveltejs/kit/hooks';
 import * as auth from '$lib/server/auth';
 import { ensureAdditiveMigrations } from '$lib/server/db/applyAdditiveMigrations';
 import { readGuestCartSessionId } from '$lib/server/guestCart';
+import { installStaticIconContentTypes } from '$lib/server/staticIcons';
 import { handleError } from '$lib/utils/errorHandler';
+
+// Static icons are served before handle(), so this has to run at startup.
+installStaticIconContentTypes();
 
 const handleMigrations: Handle = async ({ event, resolve }) => {
 	await ensureAdditiveMigrations();
