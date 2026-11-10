@@ -205,15 +205,23 @@ export interface CategoryParams {
 }
 
 /**
- * Public catalogue rows must not carry placeholder shipping or warranty claims.
- * The columns stay in the database; list responses simply omit them.
+ * Public catalogue rows must not carry placeholder shipping, warranty, or rating
+ * claims. The columns stay in the database; public responses simply omit them.
  */
-export function omitPublicListingClaims<T extends { warranty?: unknown; shippingNote?: unknown }>(
+const publicListingClaimFields = [
+	'warranty',
+	'shippingNote',
+	'ratingAverage',
+	'reviewCount',
+	'reviews',
+	'aggregateRating'
+] as const;
+
+export function omitPublicListingClaims<T extends object>(
 	product: T
-): Omit<T, 'warranty' | 'shippingNote'> {
-	const rest = { ...product };
-	delete rest.warranty;
-	delete rest.shippingNote;
+): Omit<T, (typeof publicListingClaimFields)[number]> {
+	const rest = { ...product } as T & Record<(typeof publicListingClaimFields)[number], unknown>;
+	for (const field of publicListingClaimFields) delete rest[field];
 	return rest;
 }
 
@@ -444,7 +452,10 @@ export class ProductService {
 	 */
 	static async getProductBySlug(
 		slug: string
-	): Promise<Omit<ProductWithImages, 'warranty' | 'shippingNote'> | null> {
+	): Promise<Omit<
+		ProductWithImages,
+		'warranty' | 'shippingNote' | 'ratingAverage' | 'reviewCount' | 'reviews'
+	> | null> {
 		const productResult = await db
 			.select()
 			.from(table.product)
@@ -762,7 +773,10 @@ export class ProductService {
 	 */
 	static async getProducts(filter: ProductFilter): Promise<
 		Array<{
-			product: Omit<table.Product, 'warranty' | 'shippingNote'> & {
+			product: Omit<
+				table.Product,
+				'warranty' | 'shippingNote' | 'ratingAverage' | 'reviewCount'
+			> & {
 				images?: Array<{ url: string; altText: string | null }>;
 			};
 			category: {

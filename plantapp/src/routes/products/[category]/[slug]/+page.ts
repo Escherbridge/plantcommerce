@@ -122,17 +122,6 @@ function normalizeProduct(row: any) {
 		} | null,
 		relatedProductIds: (Array.isArray(p.relatedProductIds) ? p.relatedProductIds : []) as number[],
 		currency: (p.currency ?? 'USD') as string,
-		ratingAverage: (p.ratingAverage ?? null) as string | null,
-		reviewCount: (p.reviewCount ?? 0) as number,
-		reviews: (Array.isArray(p.reviews) ? p.reviews : []) as Array<{
-			id: number;
-			authorName: string;
-			rating: number;
-			title: string | null;
-			body: string;
-			isVerifiedPurchase: boolean;
-			createdAt: string | Date;
-		}>,
 		category: cat
 			? { id: cat.id, name: cat.name, slug: cat.slug, description: cat.description ?? null }
 			: null,
