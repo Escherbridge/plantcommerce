@@ -42,7 +42,24 @@
 
 <section class="w-full bg-base-100 py-16 lg:py-24">
 	<Container>
-		{#if certificates.length === 0}
+		{#if data.signedOut}
+			<div
+				class="mx-auto max-w-2xl rounded-3xl border border-base-200/50 bg-base-100 p-16 text-center"
+			>
+				<h2 class="font-display mb-3 text-2xl font-bold tracking-tight uppercase">
+					Sign in to see your certificates
+				</h2>
+				<p class="mb-8 font-light text-base-content/60">
+					Certificates are tied to the account that completed the course.
+				</p>
+				<a
+					href="/login?redirect=/learn/certificates"
+					class="font-display btn rounded-2xl tracking-wider uppercase btn-primary"
+				>
+					Sign in
+				</a>
+			</div>
+		{:else if certificates.length === 0}
 			<div
 				class="mx-auto max-w-2xl rounded-3xl border border-base-200/50 bg-base-100 p-16 text-center"
 			>

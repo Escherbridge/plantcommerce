@@ -1,27 +1,35 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { protectedProcedure, router } from '../trpc';
+import { protectedProcedure, publicProcedure, router } from '../trpc';
 import { CurriculumService } from '../../services/lms/curriculum';
 import { ContentBlockService } from '../../services/lms/contentBlock';
 import { LmsAccessService } from '../../services/lms/access';
+import { LmsCourseService } from '../../services/lms/course';
+import { isPubliclyReadableCourse, publishedCurriculumView } from '../../services/lms/publicRead';
 
 export const lmsCurriculumRouter = router({
 	// Get full curriculum tree for a course
-	getCurriculum: protectedProcedure
+	getCurriculum: publicProcedure
 		.input(z.object({ courseId: z.string() }))
 		.query(async ({ ctx, input }) => {
-			const access = await LmsAccessService.requireCourseRead(ctx.user, input.courseId);
+			const course = await LmsCourseService.getCourseById(input.courseId);
+			if (!course) throw new TRPCError({ code: 'NOT_FOUND', message: 'Course not found' });
+			const manager =
+				!!ctx.user &&
+				(ctx.user.role === 'admin' ||
+					(ctx.user.role === 'instructor' && course.instructorId === ctx.user.id));
 			const curriculum = await CurriculumService.getFullCurriculum(input.courseId);
-			if (access.kind === 'manager') return curriculum;
-
-			return {
-				modules: curriculum.modules
-					.filter((module) => module.isPublished)
-					.map((module) => ({
-						...module,
-						lessons: module.lessons.filter((lesson) => lesson.isPublished)
-					}))
-			};
+			if (manager) return curriculum;
+			if (course.status !== 'published') {
+				throw new TRPCError({ code: 'NOT_FOUND', message: 'Course not found' });
+			}
+			const published = publishedCurriculumView(curriculum);
+			if (isPubliclyReadableCourse(course)) return published;
+			if (!ctx.user) {
+				throw new TRPCError({ code: 'FORBIDDEN', message: 'An active enrollment is required' });
+			}
+			await LmsAccessService.requireCourseRead(ctx.user, input.courseId);
+			return published;
 		}),
 
 	// === MODULES ===
@@ -170,12 +178,9 @@ export const lmsCurriculumRouter = router({
 		}),
 
 	// === CONTENT BLOCKS ===
-	getContentBlocks: protectedProcedure
+	getContentBlocks: publicProcedure
 		.input(z.object({ lessonId: z.string() }))
-		.query(async ({ ctx, input }) => {
-			await LmsAccessService.requireLessonRead(ctx.user, input.lessonId);
-			return ContentBlockService.getContentBlocksByLesson(input.lessonId);
-		}),
+		.query(({ ctx, input }) => LmsAccessService.readLessonBlocks(ctx.user, input.lessonId)),
 
 	createContentBlock: protectedProcedure
 		.input(

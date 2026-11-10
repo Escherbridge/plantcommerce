@@ -10,7 +10,7 @@ export const load: PageLoad = async (event) => {
 	let course: any = null;
 	try {
 		course = await trpc.lms.course.getBySlug.query({ slug: courseSlug });
-	} catch (e) {
+	} catch {
 		throw error(404, 'Course not found');
 	}
 	if (!course) throw error(404, 'Course not found');
@@ -19,8 +19,11 @@ export const load: PageLoad = async (event) => {
 	let curriculum: { modules: any[] } = { modules: [] };
 	try {
 		curriculum = await trpc.lms.curriculum.getCurriculum.query({ courseId: course.id });
-	} catch (e) {
-		console.error('Error loading curriculum:', e);
+	} catch (cause) {
+		console.error(
+			'Error loading curriculum:',
+			cause instanceof Error ? cause.message : 'Request failed'
+		);
 	}
 
 	let currentLesson: any = null;
@@ -47,8 +50,11 @@ export const load: PageLoad = async (event) => {
 	let blocks: any[] = [];
 	try {
 		blocks = await trpc.lms.curriculum.getContentBlocks.query({ lessonId: currentLesson.id });
-	} catch (e) {
-		console.error('Error loading content blocks:', e);
+	} catch (cause) {
+		console.error(
+			'Error loading content blocks:',
+			cause instanceof Error ? cause.message : 'Request failed'
+		);
 	}
 
 	// Hydrate signed URLs for blocks that have a fileId
@@ -58,8 +64,12 @@ export const load: PageLoad = async (event) => {
 				try {
 					const result: any = await trpc.lms.media.getStreamingUrl.query({ fileId: block.fileId });
 					return { ...block, signedUrl: result?.url };
-				} catch (e) {
-					console.error('Error loading signed URL for block:', block.id, e);
+				} catch (cause) {
+					console.error(
+						'Error loading signed URL for block:',
+						block.id,
+						cause instanceof Error ? cause.message : 'Request failed'
+					);
 					return block;
 				}
 			}

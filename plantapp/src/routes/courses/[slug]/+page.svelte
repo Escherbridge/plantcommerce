@@ -2,6 +2,7 @@
 	import { Container } from '$lib/components/layout';
 	import { trpc } from '$lib/trpc/client';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 	import { Icon } from '$lib/components/icons';
 
@@ -49,6 +50,10 @@
 	}
 
 	async function handleEnroll() {
+		if (!$page.data.user) {
+			await goto(`/login?redirect=/courses/${course.slug}`);
+			return;
+		}
 		enrollError = null;
 		enrolling = true;
 		try {
@@ -177,6 +182,8 @@
 						{#if enrolling}
 							<span class="loading loading-sm loading-spinner"></span>
 							Enrolling...
+						{:else if !$page.data.user}
+							Sign in to enroll
 						{:else if course.pricingType === 'free'}
 							Enroll Free
 						{:else}
@@ -261,7 +268,10 @@
 								{#if openModuleIds.has(mod.id) && mod.lessons && mod.lessons.length > 0}
 									<div class="divide-y divide-base-200/50 border-t border-base-200/50">
 										{#each mod.lessons as lesson}
-											<div class="flex items-center gap-3 p-5 pl-12">
+											<a
+												href="/learn/course/{course.slug}/{lesson.slug}"
+												class="flex items-center gap-3 p-5 pl-12 hover:bg-base-200/40"
+											>
 												<Icon name="play-circle" size={16} class="text-base-content/40" />
 												<span class="flex-1 text-sm">{lesson.title}</span>
 												{#if lesson.isPreview}
@@ -275,7 +285,7 @@
 														>{lesson.estimatedMinutes}m</span
 													>
 												{/if}
-											</div>
+											</a>
 										{/each}
 									</div>
 								{/if}
