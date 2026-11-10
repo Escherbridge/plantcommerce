@@ -15,14 +15,6 @@
 	const succeeded = $derived(form && 'success' in form && form.success === true);
 </script>
 
-<svelte:head>
-	<title>Sell on Aevani</title>
-	<meta
-		name="description"
-		content="We're onboarding our first growers and makers. Apply to sell what you grow or make on Aevani."
-	/>
-</svelte:head>
-
 <Section>
 	<Container>
 		<div class="mx-auto max-w-3xl space-y-8 py-10">
@@ -30,12 +22,19 @@
 				<p class="font-mono text-xs font-semibold tracking-widest text-secondary uppercase">
 					Sell on Aevani
 				</p>
-				<h1 class="font-display text-4xl tracking-tight uppercase md:text-5xl">
-					We're onboarding our first growers and makers.
-				</h1>
+				<h1 class="font-display text-4xl tracking-tight md:text-5xl">A flat 8%. That's the fee.</h1>
+				<p class="max-w-2xl text-lg text-base-content/80">
+					We're onboarding our first growers and makers. Card processing is included. There are no
+					listing fees, no monthly fees, and no ad fees.
+				</p>
 				<p class="max-w-2xl text-lg text-base-content/70">
-					The catalogue is a preview. Nothing in it is for sale yet. If you grow or make something
-					you want to offer here, tell us about it and we'll follow up by email.
+					The catalogue is a preview. Nothing in it is for sale yet. If you grow or make hydroponic,
+					aquaponic, silvopasture, or agroforestry tools, or the parts and guides that keep them
+					running, tell us about it. We follow up by email.
+				</p>
+				<p class="max-w-2xl text-base-content/70">
+					<a href="https://plantgeo.aevani.com">Plan a site first on PlantGeo</a>. Items picked for
+					a plan are not for sale yet.
 				</p>
 			</header>
 
@@ -43,8 +42,8 @@
 				<div class="rounded-2xl border border-success/30 bg-success/10 p-6" role="status">
 					<h2 class="font-display text-2xl tracking-tight uppercase">Application received</h2>
 					<p class="mt-3 text-base-content/80">
-						Thanks. We saved your application and will reply to the email you entered if we're a
-						fit. There is no listing or sales commitment yet.
+						Thanks. We saved your application and will reply to the email you entered. If we list
+						you, the fee is a flat 8%. Card processing is included. There are no other fees.
 					</p>
 				</div>
 			{:else}

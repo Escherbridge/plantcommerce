@@ -1,4 +1,5 @@
 import type { PageLoad } from './$types';
+import { cornerstoneEssays } from '$lib/content/essays';
 import { isRetiredLiveGoodsFaq } from '$lib/content/retiredClaims';
 import { createCallerClient } from '$lib/trpc/client';
 
@@ -7,7 +8,6 @@ export const load: PageLoad = async (event) => {
 	type PublishedPages = Awaited<ReturnType<typeof trpc.content.getPublishedPages.query>>;
 	// Load featured content from each category
 	let guides: PublishedPages = [];
-	let blog: PublishedPages = [];
 	let faqs: PublishedPages = [];
 	let resources: PublishedPages = [];
 
@@ -15,12 +15,6 @@ export const load: PageLoad = async (event) => {
 		guides = await trpc.content.getPublishedPages.query({ type: 'guide', limit: 3 });
 	} catch (e) {
 		console.error('Error loading guides:', e);
-	}
-
-	try {
-		blog = await trpc.content.getPublishedPages.query({ type: 'blog_post', limit: 3 });
-	} catch (e) {
-		console.error('Error loading blog:', e);
 	}
 
 	try {
@@ -38,7 +32,12 @@ export const load: PageLoad = async (event) => {
 
 	return {
 		guides: guides || [],
-		blog: blog || [],
+		blog: cornerstoneEssays.map((essay) => ({
+			title: essay.title,
+			slug: essay.slug,
+			excerpt: essay.excerpt,
+			publishedAt: essay.publishedAt
+		})),
 		faqs: faqs || [],
 		resources: resources || []
 	};

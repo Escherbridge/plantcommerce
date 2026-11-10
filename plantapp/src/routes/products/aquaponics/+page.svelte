@@ -38,7 +38,7 @@
 	<header class="cat-head">
 		<span class="eyebrow">Growing systems</span>
 		<h1 class="cat-title">{TITLE}</h1>
-		<p class="cat-lead">{LEAD}</p>
+		<p class="cat-lead">The catalogue is a preview. Nothing in it is for sale yet. {LEAD}</p>
 	</header>
 
 	<nav class="chips" aria-label="Browse categories">

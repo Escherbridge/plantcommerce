@@ -5,17 +5,22 @@
 	import Toast from '$lib/components/ui/Toast.svelte';
 	import LeafMark from '$lib/components/ui/LeafMark.svelte';
 	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
 	import { trpc } from '$lib/trpc/client';
 	import { browser } from '$app/environment';
 	import { cart } from '$lib/stores/cart';
 	import SEO from '$lib/components/SEO.svelte';
-	import { isPublicIndexablePath, publicSite, publicSiteUrl } from '$lib/config/site';
+	import {
+		escherbridgeProjects,
+		isPublicIndexablePath,
+		publicRouteMetadata,
+		publicSiteUrl
+	} from '$lib/config/site';
 	import { tick } from 'svelte';
 
 	const currentYear = new Date().getFullYear();
 	const currentUrl = $derived($page.url.pathname);
 	const absoluteUrl = $derived(publicSiteUrl(currentUrl));
+	const routeMeta = $derived(publicRouteMetadata(currentUrl));
 	// Product detail passes its own share image into <SEO>.
 	const pageSetsShareImage = $derived(/^\/products\/[^/]+\/[^/]+\/?$/.test(currentUrl));
 	const affiliateHoldPath = $derived(
@@ -177,13 +182,6 @@
 		]
 	};
 
-	// Newsletter — no dedicated endpoint yet; route interested growers to contact.
-	let newsletterEmail = $state('');
-	function handleNewsletterSubmit(event: SubmitEvent) {
-		event.preventDefault();
-		void goto('/contact');
-	}
-
 	function scrollToTop() {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
@@ -191,8 +189,8 @@
 
 <svelte:head>
 	<SEO
-		title={publicSite.defaultTitle}
-		description={publicSite.description}
+		title={routeMeta.title}
+		description={routeMeta.description}
 		url={absoluteUrl}
 		useDefaultImage={!pageSetsShareImage}
 	/>
@@ -307,21 +305,10 @@
 				<!-- (a) Newsletter row -->
 				<div class="newsletter-row">
 					<div class="newsletter-copy">
-						<h2 class="newsletter-title">Field notes, monthly</h2>
 						<p class="newsletter-blurb">
-							Growing experiments, honest results, and what we're planting next — sent once a month.
+							A monthly field note is planned. Sign-up is not open yet.
 						</p>
 					</div>
-					<form class="newsletter-form" onsubmit={handleNewsletterSubmit}>
-						<input
-							type="email"
-							class="newsletter-input"
-							placeholder="you@example.com"
-							aria-label="Email address"
-							bind:value={newsletterEmail}
-						/>
-						<button type="submit" class="newsletter-submit">Subscribe</button>
-					</form>
 				</div>
 
 				<!-- (b) 5-column grid -->
@@ -380,7 +367,7 @@
 
 					<!-- Link columns — mobile accordion via details/summary -->
 					<details class="footer-section" open>
-						<summary class="footer-title">Shop</summary>
+						<summary class="footer-title">Catalogue</summary>
 						<ul class="footer-links">
 							{#each footerLinks.shop as link}
 								<li><a href={link.href} class="footer-link">{link.label}</a></li>
@@ -415,6 +402,17 @@
 						</ul>
 					</details>
 				</div>
+
+				<nav class="footer-sisters" aria-label="An Escherbridge project">
+					<p class="footer-title">An Escherbridge project</p>
+					<ul class="footer-sisters__list">
+						{#each escherbridgeProjects as site}
+							<li>
+								<a class="footer-link" href={site.href}>{site.label}</a>
+							</li>
+						{/each}
+					</ul>
+				</nav>
 
 				<!-- (c) Legal bar -->
 				<div class="footer-bottom">
@@ -721,73 +719,11 @@
 		max-width: 30rem;
 	}
 
-	.newsletter-title {
-		font-family: var(--font-display, sans-serif);
-		font-size: 1.6rem;
-		font-weight: 600;
-		letter-spacing: -0.015em;
-		color: #f4f1ea;
-		line-height: 1.1;
-	}
-
 	.newsletter-blurb {
 		font-family: var(--font-body, sans-serif);
 		font-size: 0.95rem;
 		color: #7c9585;
 		line-height: 1.5;
-	}
-
-	.newsletter-form {
-		display: flex;
-		gap: 0.5rem;
-		flex: 1 1 20rem;
-		max-width: 26rem;
-	}
-
-	.newsletter-input {
-		flex: 1;
-		min-width: 0;
-		padding: 0.8rem 1.1rem;
-		border-radius: 999px;
-		background: rgba(255, 255, 255, 0.06);
-		border: 1px solid rgba(255, 255, 255, 0.14);
-		color: #f4f1ea;
-		font-family: var(--font-body, sans-serif);
-		font-size: 0.9rem;
-		transition:
-			border-color 0.2s ease,
-			background-color 0.2s ease;
-	}
-
-	.newsletter-input::placeholder {
-		color: #5a7263;
-	}
-
-	.newsletter-input:focus {
-		outline: none;
-		border-color: rgba(143, 216, 180, 0.55);
-		background: rgba(255, 255, 255, 0.09);
-	}
-
-	.newsletter-submit {
-		flex-shrink: 0;
-		padding: 0.8rem 1.5rem;
-		border: none;
-		border-radius: 999px;
-		background: linear-gradient(180deg, #a8e6c8, #7cc9a2);
-		color: #14261b;
-		font-family: var(--font-body, sans-serif);
-		font-size: 0.9rem;
-		font-weight: 600;
-		cursor: pointer;
-		transition:
-			transform 0.2s ease,
-			box-shadow 0.2s ease;
-	}
-
-	.newsletter-submit:hover {
-		transform: translateY(-1px);
-		box-shadow: 0 8px 22px rgba(124, 201, 162, 0.35);
 	}
 
 	/* (b) Footer grid */
@@ -966,6 +902,21 @@
 
 	.footer-link:hover {
 		color: #f4f1ea;
+	}
+
+	.footer-sisters {
+		margin-top: 2rem;
+		padding-top: 1.25rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+	}
+
+	.footer-sisters__list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.45rem 1.25rem;
+		margin: 0.75rem 0 0;
+		padding: 0;
+		list-style: none;
 	}
 
 	/* (c) Legal bar */

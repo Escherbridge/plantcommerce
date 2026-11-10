@@ -174,7 +174,7 @@
 					<div>
 						<span class="text-editorial font-mono tracking-widest text-secondary">INSIGHTS</span>
 						<h2 class="font-display mt-2 text-3xl font-bold tracking-tight uppercase lg:text-4xl">
-							Latest from Our Blog
+							Field notes
 						</h2>
 					</div>
 					<a href="/blog" class="font-display btn tracking-wider uppercase btn-outline btn-sm"
