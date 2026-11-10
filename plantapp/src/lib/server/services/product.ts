@@ -442,7 +442,9 @@ export class ProductService {
 	/**
 	 * Get product by slug
 	 */
-	static async getProductBySlug(slug: string): Promise<ProductWithImages | null> {
+	static async getProductBySlug(
+		slug: string
+	): Promise<Omit<ProductWithImages, 'warranty' | 'shippingNote'> | null> {
 		const productResult = await db
 			.select()
 			.from(table.product)
@@ -453,7 +455,8 @@ export class ProductService {
 			return null;
 		}
 
-		return await this.getProductById(productResult[0].id);
+		const product = await this.getProductById(productResult[0].id);
+		return product ? omitPublicListingClaims(product) : null;
 	}
 
 	/**

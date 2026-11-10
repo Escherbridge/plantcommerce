@@ -112,8 +112,8 @@ function normalizeProduct(row: any) {
 		faqs: (Array.isArray(p.faqs) ? p.faqs : []) as { q: string; a: string }[],
 		badges: (Array.isArray(p.badges) ? p.badges : []) as string[],
 		testBedNote: (p.testBedNote ?? null) as string | null,
-		warranty: (p.warranty ?? null) as string | null,
-		shippingNote: (p.shippingNote ?? null) as string | null,
+		warranty: null,
+		shippingNote: null,
 		bundleOffer: (p.bundleOffer ?? null) as {
 			title: string;
 			price: string;
