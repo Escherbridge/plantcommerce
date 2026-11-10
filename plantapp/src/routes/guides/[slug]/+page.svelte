@@ -3,53 +3,38 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { publicSiteUrl } from '$lib/config/site';
+	import { articleBreadcrumbData, articleStructuredData } from '$lib/content/research';
 	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 	const sector = $derived(data.sector);
 	const page = $derived(data.guide?.page);
-	const title = $derived(sector ? `${sector.name} — Guides | Aevani` : `${page?.title} — Aevani`);
+	const title = $derived(sector ? sector.seoTitle : `${page?.title} — Aevani`);
 	const description = $derived(
 		sector?.description ||
 			page?.metaDescription ||
 			page?.excerpt ||
 			'A growing note from Escherbridge.'
 	);
-	const url = $derived(publicSiteUrl(`/guides/${sector?.slug ?? page?.slug}`));
+	const url = $derived(sector?.canonical ?? publicSiteUrl(`/guides/${page?.slug}`));
 </script>
 
-<SEO {title} {description} {url} type="article" author="Escherbridge" />
-{#if sector}
-	<StructuredData
+<svelte:head>
+	<SEO
+		{title}
+		{description}
+		{url}
 		type="article"
-		data={{
-			headline: sector.title,
-			description: sector.description,
-			dateModified: sector.reviewedAt,
-			author: { '@type': 'Organization', name: 'Escherbridge' },
-			publisher: { '@type': 'Organization', name: 'Escherbridge, LLC' },
-			mainEntityOfPage: url,
-			citation: sector.sources.map((source) => ({
-				'@type': 'CreativeWork',
-				name: source.title,
-				url: source.href,
-				datePublished: source.year,
-				author: { '@type': 'Organization', name: source.organization }
-			}))
-		}}
+		author="Escherbridge"
+		publishedTime={sector?.publishedAt ?? null}
+		modifiedTime={sector?.reviewedAt ?? null}
 	/>
-	<StructuredData
-		type="breadcrumb"
-		data={{
-			itemListElement: [
-				{ '@type': 'ListItem', position: 1, name: 'Home', item: publicSiteUrl('/') },
-				{ '@type': 'ListItem', position: 2, name: 'Guides', item: publicSiteUrl('/guides') },
-				{ '@type': 'ListItem', position: 3, name: sector.name, item: url }
-			]
-		}}
-	/>
-	<GuideSector {sector} />
+</svelte:head>
+{#if sector}
+	<StructuredData type="article" data={articleStructuredData(sector)} />
+	<StructuredData type="breadcrumb" data={articleBreadcrumbData(sector)} />
+	<GuideSector guide={sector} />
 {:else if page}
 	<StructuredData
 		type="article"

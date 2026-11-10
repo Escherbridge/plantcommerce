@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';
 import { isPublicIndexablePath } from '$lib/config/site';
-import { _publicSitemapRoutes, _renderPublicSitemap } from './+server';
+import { _publicSitemapRoutes, _publishedContentPaths, _renderPublicSitemap } from './+server';
 
 describe('public crawler discovery', () => {
 	it('publishes public learn, catalog, and support routes at the apex', async () => {
@@ -86,6 +86,15 @@ describe('public crawler discovery', () => {
 		expect(withContent).toContain('<loc>https://aevani.com/guides/understanding-soil-health</loc>');
 		expect(withContent).toContain('<loc>https://aevani.com/blog/hydroponics-for-beginners</loc>');
 		expect(withContent).toContain('<loc>https://aevani.com/products/hydroponics/tower</loc>');
+
+		const published = _renderPublicSitemap('https://aevani.com', _publishedContentPaths());
+		expect(published).toContain('<loc>https://aevani.com/guides/hydroponics-intermountain</loc>');
+		expect(published).toContain('<loc>https://aevani.com/guides/small-scale-aquaponics</loc>');
+		expect(published).toContain('<loc>https://aevani.com/guides/temperate-silvopasture</loc>');
+		expect(published).toContain('<loc>https://aevani.com/guides/understanding-soil-health</loc>');
+		expect(published).toContain(
+			'<loc>https://aevani.com/guides/getting-started-companion-planting</loc>'
+		);
 	});
 
 	it('keeps private, administrative, API, and capability paths out of crawling', async () => {
