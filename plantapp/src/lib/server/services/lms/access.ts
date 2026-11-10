@@ -3,6 +3,8 @@ import { and, eq, gt, isNull, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import * as lmsTable from '$lib/server/db/lms-schema';
+import { ContentBlockService } from './contentBlock';
+import { isPubliclyReadableCourse } from './publicRead';
 
 export interface LmsAccessActor {
 	id: string;
@@ -123,6 +125,25 @@ export class LmsAccessService {
 			forbidden('This lesson is not available to learners');
 		}
 		return { ...access, lesson };
+	}
+
+	static async readLessonBlocks(actor: LmsAccessActor | null, lessonId: string) {
+		const lesson = await this.findLesson(lessonId);
+		const module = await this.findModule(lesson.moduleId);
+		const course = await this.findCourse(module.courseId);
+		const manager =
+			!!actor &&
+			(actor.role === 'admin' || (actor.role === 'instructor' && course.instructorId === actor.id));
+		if (manager) return ContentBlockService.getContentBlocksByLesson(lessonId);
+		if (course.status !== 'published' || !module.isPublished || !lesson.isPublished) {
+			notFound('Lesson not found');
+		}
+		if (isPubliclyReadableCourse(course)) {
+			return ContentBlockService.getContentBlocksByLesson(lessonId);
+		}
+		if (!actor) forbidden('An active enrollment is required');
+		await this.requireLessonRead(actor, lessonId);
+		return ContentBlockService.getContentBlocksByLesson(lessonId);
 	}
 
 	static async requireContentBlockManager(actor: LmsAccessActor, blockId: string) {
