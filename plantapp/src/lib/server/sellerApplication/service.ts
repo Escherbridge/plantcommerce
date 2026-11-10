@@ -1,10 +1,36 @@
-import { and, eq } from 'drizzle-orm';
+import { and, desc, eq, gt } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { EmailService } from '$lib/server/services/email';
 import type { SellerApplicationInput } from './intake';
 
+export const SELLER_APPLICATION_LIST_LIMIT = 500;
+
 export type StoredSellerApplication = SellerApplicationInput & { id: number };
+
+export type SellerApplicationRecord = {
+	id: number;
+	name: string;
+	email: string;
+	businessName: string;
+	websiteOrSocial: string | null;
+	offerings: string;
+	location: string;
+	message: string;
+	createdAt: Date;
+};
+
+const sellerApplicationColumns = {
+	id: table.sellerApplication.id,
+	name: table.sellerApplication.name,
+	email: table.sellerApplication.email,
+	businessName: table.sellerApplication.businessName,
+	websiteOrSocial: table.sellerApplication.websiteOrSocial,
+	offerings: table.sellerApplication.offerings,
+	location: table.sellerApplication.location,
+	message: table.sellerApplication.message,
+	createdAt: table.sellerApplication.createdAt
+};
 
 export class SellerApplicationService {
 	static async create(input: SellerApplicationInput): Promise<StoredSellerApplication> {
@@ -24,6 +50,15 @@ export class SellerApplicationService {
 		const application = { ...input, id: row.id };
 		await this.notifyAdmins(application);
 		return application;
+	}
+
+	/** Newest stored applications, optionally those created after `since`. Capped at 500 rows. */
+	static async list(since?: Date): Promise<SellerApplicationRecord[]> {
+		const selected = db.select(sellerApplicationColumns).from(table.sellerApplication);
+		const scoped = since ? selected.where(gt(table.sellerApplication.createdAt, since)) : selected;
+		return scoped
+			.orderBy(desc(table.sellerApplication.createdAt))
+			.limit(SELLER_APPLICATION_LIST_LIMIT);
 	}
 
 	/** Best-effort notice to active admins when account email is already configured. */

@@ -68,7 +68,8 @@ describe('public crawler discovery', () => {
 			'/register',
 			'/search',
 			'/warranty',
-			'/help'
+			'/help',
+			'/api/admin/seller-applications'
 		]) {
 			expect(xml).not.toContain(`<loc>https://aevani.com${excludedRoute}</loc>`);
 			expect(isPublicIndexablePath(excludedRoute)).toBe(false);
