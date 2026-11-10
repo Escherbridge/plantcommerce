@@ -16,6 +16,8 @@
 	const currentYear = new Date().getFullYear();
 	const currentUrl = $derived($page.url.pathname);
 	const absoluteUrl = $derived(publicSiteUrl(currentUrl));
+	// Product detail passes its own share image into <SEO>.
+	const pageSetsShareImage = $derived(/^\/products\/[^/]+\/[^/]+\/?$/.test(currentUrl));
 	const robotsDirective = $derived(
 		isPublicIndexablePath(currentUrl) ? 'index, follow' : 'noindex, nofollow'
 	);
@@ -187,7 +189,12 @@
 </script>
 
 <svelte:head>
-	<SEO title={publicSite.defaultTitle} description={publicSite.description} url={absoluteUrl} />
+	<SEO
+		title={publicSite.defaultTitle}
+		description={publicSite.description}
+		url={absoluteUrl}
+		useDefaultImage={!pageSetsShareImage}
+	/>
 	<meta name="robots" content={robotsDirective} />
 </svelte:head>
 
