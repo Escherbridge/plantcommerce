@@ -44,7 +44,7 @@
 					<h2 class="font-display text-2xl tracking-tight uppercase">Application received</h2>
 					<p class="mt-3 text-base-content/80">
 						Thanks. We saved your application and will reply to the email you entered if we're a
-						fit. There is no listing, fee, or sales commitment yet.
+						fit. There is no listing or sales commitment yet.
 					</p>
 				</div>
 			{:else}
@@ -190,6 +190,14 @@
 						{#if fieldErrors.message}
 							<p class="text-sm text-error">{fieldErrors.message}</p>
 						{/if}
+					</div>
+
+					<div class="space-y-2 rounded-2xl border border-base-300 p-5">
+						<h2 class="font-display text-xl tracking-tight uppercase">Seller fees</h2>
+						<p class="text-base-content/80">
+							Aevani charges a flat 8% commission on each sale. Card processing is included, and
+							Aevani absorbs it. There are no listing fees, monthly fees, or ad fees.
+						</p>
 					</div>
 
 					<button class="font-display btn tracking-wider uppercase btn-primary" type="submit">

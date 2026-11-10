@@ -72,6 +72,14 @@
 				</p>
 			</section>
 
+			<section class="space-y-3" id="seller-fees">
+				<h2 class="font-display text-2xl tracking-tight uppercase">Seller fees</h2>
+				<p class="text-base-content/70">
+					Aevani charges a flat 8% commission on each sale. Card processing is included, and Aevani
+					absorbs it. There are no listing fees, monthly fees, or ad fees.
+				</p>
+			</section>
+
 			<section class="space-y-3">
 				<h2 class="font-display text-2xl tracking-tight uppercase">Affiliate program</h2>
 				<p class="text-base-content/70">
