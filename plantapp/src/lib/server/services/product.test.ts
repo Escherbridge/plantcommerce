@@ -20,17 +20,25 @@ vi.mock('./file', () => ({
 }));
 
 describe('omitPublicListingClaims', () => {
-	it('drops placeholder shipping and warranty strings from catalogue rows', () => {
+	it('drops placeholder shipping, warranty, and rating claims from catalogue rows', () => {
 		const row = omitPublicListingClaims({
 			id: 1,
 			name: 'Tower',
 			warranty: '2-yr warranty · parts stocked',
-			shippingNote: 'free shipping over $75 · arrives in 3–5 days'
+			shippingNote: 'free shipping over $75 · arrives in 3–5 days',
+			ratingAverage: '4.80',
+			reviewCount: 12,
+			aggregateRating: { ratingValue: 4.8, reviewCount: 12 },
+			reviews: [{ rating: 5, body: 'Invented review' }]
 		});
 
 		expect(row).toEqual({ id: 1, name: 'Tower' });
-		expect(JSON.stringify(row)).not.toMatch(/free shipping/i);
-		expect(JSON.stringify(row)).not.toMatch(/2-yr warranty/i);
+		const serialized = JSON.stringify(row);
+		expect(serialized).not.toMatch(/free shipping/i);
+		expect(serialized).not.toMatch(/2-yr warranty/i);
+		expect(serialized).not.toMatch(/reviewCount|aggregateRating|ratingAverage|"rating"/);
+		expect(serialized).not.toContain('4.80');
+		expect(serialized).not.toContain('Invented review');
 	});
 });
 
