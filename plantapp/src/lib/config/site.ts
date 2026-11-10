@@ -9,6 +9,7 @@ export const SITE_URL = 'https://aevani.com' as const;
 
 export const publicIndexablePaths = [
 	'/',
+	'/sell',
 	'/learn',
 	'/courses',
 	'/guides',

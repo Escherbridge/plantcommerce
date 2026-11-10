@@ -1,8 +1,9 @@
 import { sqlClient } from '$lib/server/db';
 import comingSoonSql from '../../../../drizzle/0010_product_coming_soon.sql?raw';
+import sellerApplicationSql from '../../../../drizzle/0011_seller_application.sql?raw';
 import { executableMigrationSql } from './additiveMigration';
 
-const migrations = [comingSoonSql];
+const migrations = [comingSoonSql, sellerApplicationSql];
 
 let pending: Promise<void> | null = null;
 

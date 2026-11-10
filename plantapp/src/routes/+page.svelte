@@ -10,10 +10,6 @@
 
 	// Featured field kit + real catalogue count from the server load.
 	const featuredProducts = $derived(data.featuredProducts ?? []);
-	const productCount = $derived(data.productCount ?? 0);
-
-	// Hero product stat: real catalogue count where available, else the brand default.
-	const productStat = $derived(productCount > 0 ? `${productCount}+` : '38+');
 
 	// Growing systems — four ways to grow, each linking to its catalogue slug.
 	const systems = [
@@ -22,8 +18,7 @@
 			title: 'Hydroponics',
 			href: '/products/hydroponics',
 			image: assetManifest.verticalTower,
-			description:
-				'Soil-free growing that fits more harvest into less space, using up to 90% less water than a conventional bed.'
+			description: 'Soil-free growing that fits more harvest into less space.'
 		},
 		{
 			number: '02',
@@ -54,20 +49,20 @@
 	// Why Aevani — four value props (titles verbatim from the design).
 	const values = [
 		{
-			title: 'Tested, not listed',
-			body: 'Every product here earned its place in our own beds first. If it did not survive a real season of use, it never makes the catalogue.'
+			title: 'First growers, first',
+			body: "We're onboarding our first growers and makers. Listings in the catalogue are placeholders until a real seller is ready."
 		},
 		{
-			title: 'Knowledge included',
-			body: 'Gear is only half the story. Every kit ships with the growing guide we wish we had — and the Learn hub is free for everyone.'
+			title: 'Learn stays open',
+			body: 'The Learn hub is free to browse while the marketplace takes shape. No account is required to read it.'
 		},
 		{
-			title: 'Built to be repaired',
-			body: 'We stock the parts that wear out and show you how to swap them. A tower that lasts ten years beats one you replace every two.'
+			title: 'Nothing for sale yet',
+			body: 'Product pages stay up so you can see the shape of the catalogue. Add to cart and checkout are turned off.'
 		},
 		{
 			title: 'Honest by default',
-			body: 'We will tell you what a product cannot do as plainly as what it can. If a crop got top-heavy in our tests, it is in the notes.'
+			body: "We won't publish harvest counts, warranties, or impact numbers we can't stand behind."
 		}
 	];
 
@@ -89,10 +84,10 @@
 </script>
 
 <svelte:head>
-	<title>{publicSite.name} | Field-tested growing systems</title>
+	<title>{publicSite.name} | Onboarding growers and makers</title>
 	<meta
 		name="description"
-		content="Field-tested hydroponic, aquaponic, silvopasture, and agroforestry systems — sold with the guides, spare parts, and honest notes you need to keep things alive."
+		content="We're onboarding our first growers and makers. Browse the Learn hub, and apply to sell what you grow or make."
 	/>
 
 	<StructuredData
@@ -120,34 +115,19 @@
 		<div class="hero__left">
 			<span class="status-badge">
 				<span class="status-badge__dot" aria-hidden="true"></span>
-				Field-tested growing systems
+				We're onboarding our first growers and makers
 			</span>
 
 			<h1 class="hero__title">Grow something that outlasts the season.</h1>
 
 			<p class="hero__lead">
-				Field-tested hydroponic, aquaponic, and agroforestry systems — sold with the guides, the
-				spare parts, and the honest notes you need to actually keep things alive.
+				The catalogue is a preview — nothing in it is for sale yet. If you grow or make something
+				worth sharing, apply to sell on Aevani. The Learn hub stays open while we onboard.
 			</p>
 
 			<div class="hero__ctas">
-				<Button href="/products" variant="primary" size="lg">Shop the catalogue</Button>
-				<Button href="/learn" variant="secondary" size="lg">Start learning — it's free</Button>
-			</div>
-
-			<div class="hero__stats">
-				<div class="hero-stat">
-					<span class="hero-stat__value">{productStat}</span>
-					<span class="hero-stat__label">field-tested products</span>
-				</div>
-				<div class="hero-stat">
-					<span class="hero-stat__value">4</span>
-					<span class="hero-stat__label">growing systems</span>
-				</div>
-				<div class="hero-stat">
-					<span class="hero-stat__value">2-yr</span>
-					<span class="hero-stat__label">warranty</span>
-				</div>
+				<Button href="/sell" variant="primary" size="lg">Sell on Aevani</Button>
+				<Button href="/learn" variant="secondary" size="lg">Explore the Learn hub</Button>
 			</div>
 		</div>
 
@@ -160,12 +140,12 @@
 					fetchpriority="high"
 				/>
 				<div class="float-card float-card--top">
-					<span class="float-card__value">40+ plants</span>
-					<span class="float-card__label">in 2 sq ft of floor space</span>
+					<span class="float-card__value">Preview</span>
+					<span class="float-card__label">Catalogue is not for sale yet</span>
 				</div>
 				<div class="float-card float-card--bottom">
-					<span class="float-card__value">&minus;90% water</span>
-					<span class="float-card__label">vs. conventional beds</span>
+					<span class="float-card__value">Sellers</span>
+					<span class="float-card__label">First growers and makers</span>
 				</div>
 			</div>
 		</div>
@@ -198,7 +178,7 @@
 			<div class="why">
 				<div class="why__intro">
 					<span class="why__eyebrow">Why Aevani</span>
-					<h2 class="why__title">We only sell what we've grown with.</h2>
+					<h2 class="why__title">A place for people who grow and make.</h2>
 				</div>
 				<div class="why__grid">
 					{#each values as value}
@@ -216,8 +196,8 @@
 	{#if featuredProducts.length > 0}
 		<section class="section container">
 			<SectionHeader
-				eyebrow="Current field kit"
-				title="What we're reaching for this season"
+				eyebrow="Catalogue preview"
+				title="Placeholder listings, not for sale yet"
 				actionLabel="Full catalogue"
 				actionHref="/products"
 			/>
@@ -246,8 +226,7 @@
 				<span class="learn-card__eyebrow">Learn hub</span>
 				<h2 class="learn-card__title">Guides written by people with dirt on their keyboards.</h2>
 				<p class="learn-card__body">
-					Step-by-step growing guides, troubleshooting, and field notes straight from our own test
-					beds — free to read, no account required.
+					Growing guides, notes, and courses — free to read, no account required.
 				</p>
 				<span class="learn-card__link">Explore the guides &rarr;</span>
 			</a>
@@ -343,34 +322,6 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 14px;
-	}
-
-	.hero__stats {
-		margin-top: 40px;
-		display: flex;
-		flex-wrap: wrap;
-		gap: 34px;
-	}
-
-	.hero-stat {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-	}
-
-	.hero-stat__value {
-		font-family: var(--font-display);
-		font-size: 30px;
-		font-weight: 700;
-		line-height: 1;
-		letter-spacing: -0.02em;
-		color: #1c3527;
-	}
-
-	.hero-stat__label {
-		font-family: var(--font-body);
-		font-size: 13.5px;
-		color: #5a7263;
 	}
 
 	/* Hero visual */
@@ -650,10 +601,6 @@
 	}
 
 	@media (max-width: 640px) {
-		.hero__stats {
-			gap: 22px;
-		}
-
 		.float-card--top {
 			left: 10px;
 		}

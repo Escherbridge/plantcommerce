@@ -10,6 +10,7 @@ describe('public crawler discovery', () => {
 
 		expect(_publicSitemapRoutes).toEqual([
 			'/',
+			'/sell',
 			'/learn',
 			'/courses',
 			'/guides',

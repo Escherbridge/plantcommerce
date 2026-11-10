@@ -352,22 +352,22 @@
 
 					<!-- Trust tiles describe a purchase. Hide them while the listing is not for sale. -->
 					{#if !p.comingSoon}
-					<div class="trust">
-						<a class="trust__tile" href="/shipping">
-							<span class="trust__label">Free shipping</span>
-							<span class="trust__sub">On qualifying orders</span>
-						</a>
-						<a class="trust__tile" href="/returns">
-							<span class="trust__label">30-day returns</span>
-							<span class="trust__sub">No-fuss guarantee</span>
-						</a>
-						{#if p.warranty}
-							<a class="trust__tile" href="/warranty">
-								<span class="trust__label">Warranty</span>
-								<span class="trust__sub">{p.warranty}</span>
+						<div class="trust">
+							<a class="trust__tile" href="/shipping">
+								<span class="trust__label">Free shipping</span>
+								<span class="trust__sub">On qualifying orders</span>
 							</a>
-						{/if}
-					</div>
+							<a class="trust__tile" href="/returns">
+								<span class="trust__label">30-day returns</span>
+								<span class="trust__sub">No-fuss guarantee</span>
+							</a>
+							{#if p.warranty}
+								<a class="trust__tile" href="/warranty">
+									<span class="trust__label">Warranty</span>
+									<span class="trust__sub">{p.warranty}</span>
+								</a>
+							{/if}
+						</div>
 					{/if}
 				</div>
 			</div>

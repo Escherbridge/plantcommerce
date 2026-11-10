@@ -104,6 +104,10 @@
 	// Mobile navigation structure
 	const mobileNavigation = [
 		{
+			label: 'Sell on Aevani',
+			href: '/sell'
+		},
+		{
 			label: 'Catalog',
 			href: '/products',
 			children: [{ label: 'Catalog Status', href: '/products' }]
@@ -156,6 +160,7 @@
 			{ label: 'Resources', href: '/resources' }
 		],
 		company: [
+			{ label: 'Sell on Aevani', href: '/sell' },
 			{ label: 'About', href: '/about' },
 			{ label: 'Affiliate program', href: '/affiliate' },
 			{ label: 'Contact', href: '/contact' },

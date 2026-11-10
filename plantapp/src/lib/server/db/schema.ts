@@ -293,6 +293,25 @@ export const productReview = pgTable(
 	})
 );
 
+export const sellerApplication = pgTable(
+	'seller_application',
+	{
+		id: serial('id').primaryKey(),
+		name: text('name').notNull(),
+		email: text('email').notNull(),
+		businessName: text('business_name').notNull(),
+		websiteOrSocial: text('website_or_social'),
+		offerings: text('offerings').notNull(),
+		location: text('location').notNull(),
+		message: text('message').notNull(),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		emailIdx: index('seller_application_email_idx').on(table.email),
+		createdIdx: index('seller_application_created_at_idx').on(table.createdAt)
+	})
+);
+
 // ======= AFFILIATE SYSTEM =======
 export const affiliate = pgTable(
 	'affiliate',

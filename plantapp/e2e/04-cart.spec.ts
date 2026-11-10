@@ -6,7 +6,9 @@ test('4. placeholder products stay viewable and cannot be added to the cart', as
 	await page.goto(productPath);
 	await page.waitForLoadState('networkidle');
 
-	await expect(page.getByRole('heading', { level: 1 })).toContainText(/Vertical Tower Garden System/i);
+	await expect(page.getByRole('heading', { level: 1 })).toContainText(
+		/Vertical Tower Garden System/i
+	);
 	await expect(page.getByText(/coming soon/i).first()).toBeVisible();
 	await expect(page.getByRole('button', { name: /Add to cart/i })).toHaveCount(0);
 

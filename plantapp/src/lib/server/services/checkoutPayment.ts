@@ -6,7 +6,7 @@ import type Stripe from 'stripe';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { assertPublicCatalogAvailable } from '../catalogTruth/publicCatalog';
-import { assertProductsPurchasable } from '../commerce/purchasable';
+import { assertProductsPurchasable } from '../commerce/assertPurchasable';
 import {
 	CheckoutDraftService,
 	hashGuestCheckoutSubject,

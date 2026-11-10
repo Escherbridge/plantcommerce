@@ -164,6 +164,40 @@ export class EmailService {
 			idempotencyKey: idempotencyKey('email-change-existing-confirmation', token)
 		});
 	}
+
+	static async sendSellerApplicationNotice(
+		to: string,
+		application: {
+			id: number;
+			name: string;
+			email: string;
+			businessName: string;
+			websiteOrSocial: string | null;
+			offerings: string;
+			location: string;
+			message: string;
+		}
+	): Promise<void> {
+		const lines = [
+			`Name: ${application.name}`,
+			`Email: ${application.email}`,
+			`Business: ${application.businessName}`,
+			`Website or social: ${application.websiteOrSocial ?? '(none)'}`,
+			`Grows or makes: ${application.offerings}`,
+			`Location: ${application.location}`,
+			'',
+			application.message
+		];
+		const text = lines.join('\n');
+		const html = lines.map((line) => `<p>${htmlEscape(line) || '&nbsp;'}</p>`).join('');
+		await this.send({
+			to,
+			subject: `New Aevani seller application from ${application.businessName}`,
+			text,
+			html,
+			idempotencyKey: idempotencyKey('seller-application', String(application.id))
+		});
+	}
 }
 
 export default EmailService;

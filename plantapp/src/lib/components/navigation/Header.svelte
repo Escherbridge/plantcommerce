@@ -71,6 +71,7 @@
 
 	// Primary navigation (Aevani IA)
 	const mainNavigation = [
+		{ label: 'Sell on Aevani', href: '/sell', primary: true },
 		{ label: 'Shop', href: '/products' },
 		{ label: 'Learn', href: '/learn' },
 		{ label: 'Growing systems', href: '/products' },
@@ -164,7 +165,12 @@
 			<!-- Center navigation -->
 			<nav class="desktop-nav" aria-label="Primary">
 				{#each mainNavigation as item}
-					<a href={item.href} class="nav-link" class:active={isActive(item.href)}>
+					<a
+						href={item.href}
+						class="nav-link"
+						class:nav-link--cta={item.href === '/sell'}
+						class:active={isActive(item.href)}
+					>
 						{item.label}
 					</a>
 				{/each}
@@ -172,6 +178,7 @@
 
 			<!-- Right actions -->
 			<div class="header-actions">
+				<a href="/sell" class="sell-link">Sell</a>
 				<a href="/affiliate" class="affiliates-link" class:active={isActive('/affiliate')}>
 					Affiliates
 				</a>
@@ -411,6 +418,44 @@
 	.nav-link.active {
 		color: #1c3527;
 		background-color: rgba(28, 53, 39, 0.06);
+	}
+
+	.nav-link--cta,
+	.nav-link--cta.active {
+		background: #1c3527;
+		color: #f4f1e8;
+		font-weight: 650;
+	}
+
+	.nav-link--cta:hover,
+	.nav-link--cta:focus-visible {
+		background: #14281d;
+		color: #ffffff;
+	}
+
+	.sell-link {
+		display: inline-flex;
+		align-items: center;
+		background: #1c3527;
+		color: #f4f1e8;
+		font-size: 14px;
+		font-weight: 650;
+		text-decoration: none;
+		border-radius: 999px;
+		padding: 0.45rem 0.85rem;
+		white-space: nowrap;
+	}
+
+	.sell-link:hover,
+	.sell-link:focus-visible {
+		background: #14281d;
+		color: #ffffff;
+	}
+
+	@media (min-width: 1024px) {
+		.sell-link {
+			display: none;
+		}
 	}
 
 	/* ---- Right actions ---- */
