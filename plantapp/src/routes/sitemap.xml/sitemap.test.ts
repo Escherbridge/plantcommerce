@@ -94,6 +94,25 @@ describe('public crawler discovery', () => {
 		expect(published).toContain('<loc>https://aevani.com/guides/hydroponics-intermountain</loc>');
 		expect(published).toContain('<loc>https://aevani.com/guides/small-scale-aquaponics</loc>');
 		expect(published).toContain('<loc>https://aevani.com/guides/temperate-silvopasture</loc>');
+		for (const slug of [
+			'hydroponic-ec-ph-nutrients',
+			'choosing-hydroponic-system',
+			'raised-beds',
+			'high-tunnels-hoop-houses',
+			'hydroponic-troubleshooting-root-rot',
+			'deep-water-culture',
+			'kratky-method',
+			'container-gardening',
+			'greenhouse-ventilation-heat',
+			'season-extension-covers-frames',
+			'aquaponic-biofilter-cycling',
+			'greenhouse-ipm',
+			'nutrient-film-technique',
+			'aquaponic-system-types',
+			'aquaponic-fish-species'
+		]) {
+			expect(published).toContain(`<loc>https://aevani.com/guides/${slug}</loc>`);
+		}
 		expect(published).toContain('<loc>https://aevani.com/guides/understanding-soil-health</loc>');
 		expect(published).toContain(
 			'<loc>https://aevani.com/guides/getting-started-companion-planting</loc>'

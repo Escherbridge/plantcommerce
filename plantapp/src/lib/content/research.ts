@@ -2,6 +2,21 @@ import indexSource from './research/index.md?raw';
 import hydroponicsSource from './research/hydroponics-intermountain.md?raw';
 import aquaponicsSource from './research/small-scale-aquaponics.md?raw';
 import silvopastureSource from './research/temperate-silvopasture.md?raw';
+import ecPhSource from './research/hydroponic-ec-ph-nutrients.md?raw';
+import choosingSystemSource from './research/choosing-hydroponic-system.md?raw';
+import rootRotSource from './research/hydroponic-troubleshooting-root-rot.md?raw';
+import dwcSource from './research/deep-water-culture.md?raw';
+import kratkySource from './research/kratky-method.md?raw';
+import nftSource from './research/nutrient-film-technique.md?raw';
+import raisedBedsSource from './research/raised-beds.md?raw';
+import containersSource from './research/container-gardening.md?raw';
+import highTunnelsSource from './research/high-tunnels-hoop-houses.md?raw';
+import ventilationSource from './research/greenhouse-ventilation-heat.md?raw';
+import coversSource from './research/season-extension-covers-frames.md?raw';
+import ipmSource from './research/greenhouse-ipm.md?raw';
+import cyclingSource from './research/aquaponic-biofilter-cycling.md?raw';
+import systemTypesSource from './research/aquaponic-system-types.md?raw';
+import fishSpeciesSource from './research/aquaponic-fish-species.md?raw';
 import { publicSiteUrl } from '$lib/config/site';
 
 /**
@@ -269,9 +284,27 @@ function parseGuide(raw: string): GuideDocument {
 	};
 }
 
-const documents = [indexSource, hydroponicsSource, aquaponicsSource, silvopastureSource].map(
-	parseGuide
-);
+const documents = [
+	indexSource,
+	hydroponicsSource,
+	aquaponicsSource,
+	silvopastureSource,
+	ecPhSource,
+	choosingSystemSource,
+	rootRotSource,
+	dwcSource,
+	kratkySource,
+	nftSource,
+	raisedBedsSource,
+	containersSource,
+	highTunnelsSource,
+	ventilationSource,
+	coversSource,
+	ipmSource,
+	cyclingSource,
+	systemTypesSource,
+	fishSpeciesSource
+].map(parseGuide);
 
 export const guidesIndex = documents[0];
 export const publishedGuideSectors: readonly GuideDocument[] = documents.slice(1);
@@ -308,18 +341,39 @@ export function guidePlainText(doc: GuideDocument): string {
 	return parts.join('\n');
 }
 
+const systemSectionHeadings = new Set([
+	'Soilless systems',
+	'Soil, beds, and structures',
+	'Aquaponics and silvopasture'
+]);
+
+/** System cards, then the two shorter notes that the index keeps as related. */
 export function indexGuideLinks(
 	doc: GuideDocument = guidesIndex
 ): { name: string; href: string }[] {
-	const heading = doc.blocks.findIndex(
-		(block) => block.kind === 'h2' && block.text === 'The first three'
-	);
-	const list = doc.blocks[heading + 1];
-	if (!list || list.kind !== 'ul') return [];
-	return list.items.flatMap((item) => {
-		const link = item.find((part) => part.kind === 'link');
-		return link && link.kind === 'link' ? [{ name: link.text, href: link.href }] : [];
-	});
+	const links: { name: string; href: string }[] = [];
+	const seen = new Set<string>();
+	let include = false;
+	const take = (parts: GuideInline[]) => {
+		for (const part of parts) {
+			if (part.kind !== 'link' || !part.href.startsWith('/guides/') || part.href === '/guides')
+				continue;
+			if (seen.has(part.href)) continue;
+			seen.add(part.href);
+			links.push({ name: part.text, href: part.href });
+		}
+	};
+	for (const block of doc.blocks) {
+		if (block.kind === 'h2') {
+			if (block.text === 'What Aevani is doing here') break;
+			if (systemSectionHeadings.has(block.text)) include = true;
+			continue;
+		}
+		if (!include) continue;
+		if (block.kind === 'ul') for (const item of block.items) take(item);
+		else if (block.kind === 'p') take(block.inlines);
+	}
+	return links;
 }
 
 const publisher = {
