@@ -119,7 +119,17 @@ describe('public crawler discovery', () => {
 			'soilless-seed-starting',
 			'hydroponic-nutrient-disorders',
 			'hydroponic-media',
-			'temperate-food-forest'
+			'temperate-food-forest',
+			'permaculture-guilds',
+			'hugelkultur',
+			'indoor-lighting-dli',
+			'greenhouse-pollination',
+			'winterizing-growing-systems',
+			'soilless-food-safety',
+			'soil-drip-irrigation',
+			'frost-dates-hardiness',
+			'rainwater-irrigation-quality',
+			'outdoor-bed-ipm'
 		]) {
 			expect(published).toContain(`<loc>https://aevani.com/guides/${slug}</loc>`);
 		}

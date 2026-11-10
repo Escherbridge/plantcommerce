@@ -63,7 +63,23 @@ const draftFiles = {
 	'soilless-seed-starting': new URL('./research/soilless-seed-starting.md', import.meta.url),
 	'hydroponic-media': new URL('./research/hydroponic-media.md', import.meta.url),
 	'no-dig-sheet-mulch': new URL('./research/no-dig-sheet-mulch.md', import.meta.url),
-	'temperate-food-forest': new URL('./research/temperate-food-forest.md', import.meta.url)
+	'temperate-food-forest': new URL('./research/temperate-food-forest.md', import.meta.url),
+	'permaculture-guilds': new URL('./research/permaculture-guilds.md', import.meta.url),
+	hugelkultur: new URL('./research/hugelkultur.md', import.meta.url),
+	'indoor-lighting-dli': new URL('./research/indoor-lighting-dli.md', import.meta.url),
+	'greenhouse-pollination': new URL('./research/greenhouse-pollination.md', import.meta.url),
+	'winterizing-growing-systems': new URL(
+		'./research/winterizing-growing-systems.md',
+		import.meta.url
+	),
+	'soilless-food-safety': new URL('./research/soilless-food-safety.md', import.meta.url),
+	'soil-drip-irrigation': new URL('./research/soil-drip-irrigation.md', import.meta.url),
+	'frost-dates-hardiness': new URL('./research/frost-dates-hardiness.md', import.meta.url),
+	'rainwater-irrigation-quality': new URL(
+		'./research/rainwater-irrigation-quality.md',
+		import.meta.url
+	),
+	'outdoor-bed-ipm': new URL('./research/outdoor-bed-ipm.md', import.meta.url)
 } as const;
 
 const publishedGuideHrefs = [
@@ -82,6 +98,8 @@ const publishedGuideHrefs = [
 	'/guides/vertical-growing',
 	'/guides/soilless-seed-starting',
 	'/guides/hydroponic-media',
+	'/guides/indoor-lighting-dli',
+	'/guides/soilless-food-safety',
 	'/guides/raised-beds',
 	'/guides/no-dig-sheet-mulch',
 	'/guides/container-gardening',
@@ -89,7 +107,15 @@ const publishedGuideHrefs = [
 	'/guides/greenhouse-ventilation-heat',
 	'/guides/season-extension-covers-frames',
 	'/guides/greenhouse-ipm',
+	'/guides/greenhouse-pollination',
+	'/guides/winterizing-growing-systems',
 	'/guides/temperate-food-forest',
+	'/guides/permaculture-guilds',
+	'/guides/hugelkultur',
+	'/guides/soil-drip-irrigation',
+	'/guides/frost-dates-hardiness',
+	'/guides/rainwater-irrigation-quality',
+	'/guides/outdoor-bed-ipm',
 	'/guides/small-scale-aquaponics',
 	'/guides/aquaponic-biofilter-cycling',
 	'/guides/aquaponic-system-types',
@@ -386,7 +412,41 @@ describe('research guides', () => {
 				'apple tree guild',
 				'An illustrative scenario',
 				'Sources'
-			]
+			],
+			'permaculture-guilds': ['1 February 2022', 'AG-831', 'An illustrative scenario', 'Sources'],
+			hugelkultur: [
+				'There are no peer-reviewed, scientific studies',
+				'An illustrative scenario',
+				'Sources'
+			],
+			'indoor-lighting-dli': [
+				'12–17',
+				'about 17',
+				'not averaged',
+				'An illustrative scenario',
+				'Sources'
+			],
+			'greenhouse-pollination': [
+				'over pollination',
+				'Gasoline-powered air blowers should not be used',
+				'An illustrative scenario',
+				'Sources'
+			],
+			'winterizing-growing-systems': ['45°F', 'An illustrative scenario', 'Sources'],
+			'soilless-food-safety': [
+				'Produce Safety Rule',
+				'covered farm',
+				'An illustrative scenario',
+				'Sources'
+			],
+			'soil-drip-irrigation': ['Minnesota', 'An illustrative scenario', 'Sources'],
+			'frost-dates-hardiness': [
+				'average annual extreme minimum',
+				'An illustrative scenario',
+				'Sources'
+			],
+			'rainwater-irrigation-quality': ['gallons', 'bleach', 'An illustrative scenario', 'Sources'],
+			'outdoor-bed-ipm': ['sticky', 'An illustrative scenario', 'Sources']
 		};
 
 		const builtHrefs = new Set<string>([...publishedGuideHrefs, ...relatedNoteHrefs]);
@@ -418,7 +478,17 @@ describe('research guides', () => {
 			'soilless-seed-starting',
 			'hydroponic-media',
 			'no-dig-sheet-mulch',
-			'temperate-food-forest'
+			'temperate-food-forest',
+			'permaculture-guilds',
+			'hugelkultur',
+			'indoor-lighting-dli',
+			'greenhouse-pollination',
+			'winterizing-growing-systems',
+			'soilless-food-safety',
+			'soil-drip-irrigation',
+			'frost-dates-hardiness',
+			'rainwater-irrigation-quality',
+			'outdoor-bed-ipm'
 		]);
 		expect(new Set(publishedGuideSectors.map((guide) => guide.seoTitle)).size).toBe(
 			publishedGuideSectors.length

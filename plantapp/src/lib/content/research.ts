@@ -27,6 +27,16 @@ import seedStartingSource from './research/soilless-seed-starting.md?raw';
 import mediaSource from './research/hydroponic-media.md?raw';
 import noDigSource from './research/no-dig-sheet-mulch.md?raw';
 import foodForestSource from './research/temperate-food-forest.md?raw';
+import guildsSource from './research/permaculture-guilds.md?raw';
+import hugelkulturSource from './research/hugelkultur.md?raw';
+import lightingSource from './research/indoor-lighting-dli.md?raw';
+import pollinationSource from './research/greenhouse-pollination.md?raw';
+import winterizingSource from './research/winterizing-growing-systems.md?raw';
+import foodSafetySource from './research/soilless-food-safety.md?raw';
+import soilDripSource from './research/soil-drip-irrigation.md?raw';
+import frostSource from './research/frost-dates-hardiness.md?raw';
+import rainwaterSource from './research/rainwater-irrigation-quality.md?raw';
+import outdoorIpmSource from './research/outdoor-bed-ipm.md?raw';
 import { publicSiteUrl } from '$lib/config/site';
 
 /**
@@ -268,9 +278,15 @@ function sourcesFrom(blocks: GuideBlock[]): GuideSource[] {
 	const list = blocks.slice(heading + 1).find((block) => block.kind === 'ol');
 	if (!list || list.kind !== 'ol') return [];
 	return list.items.map((item) => {
-		const urls = item
+		const httpUrls = item
 			.filter((part) => part.kind === 'link' && part.href.startsWith('http'))
 			.map((part) => (part.kind === 'link' ? part.href : ''));
+		const urls =
+			httpUrls.length > 0
+				? httpUrls
+				: item
+						.filter((part) => part.kind === 'link' && part.href.startsWith('/'))
+						.map((part) => (part.kind === 'link' ? publicSiteUrl(part.href) : ''));
 		const name = inlinePlain(item);
 		const datePublished = datePublishedFromCitation(name);
 		return datePublished ? { name, urls, datePublished } : { name, urls };
@@ -347,7 +363,17 @@ const documents = [
 	seedStartingSource,
 	mediaSource,
 	noDigSource,
-	foodForestSource
+	foodForestSource,
+	guildsSource,
+	hugelkulturSource,
+	lightingSource,
+	pollinationSource,
+	winterizingSource,
+	foodSafetySource,
+	soilDripSource,
+	frostSource,
+	rainwaterSource,
+	outdoorIpmSource
 ].map(parseGuide);
 
 export const guidesIndex = documents[0];

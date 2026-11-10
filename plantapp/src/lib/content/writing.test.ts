@@ -83,7 +83,17 @@ describe('writing module', () => {
 			'soilless-seed-starting',
 			'hydroponic-media',
 			'no-dig-sheet-mulch',
-			'temperate-food-forest'
+			'temperate-food-forest',
+			'permaculture-guilds',
+			'hugelkultur',
+			'indoor-lighting-dli',
+			'greenhouse-pollination',
+			'winterizing-growing-systems',
+			'soilless-food-safety',
+			'soil-drip-irrigation',
+			'frost-dates-hardiness',
+			'rainwater-irrigation-quality',
+			'outdoor-bed-ipm'
 		]);
 	});
 
