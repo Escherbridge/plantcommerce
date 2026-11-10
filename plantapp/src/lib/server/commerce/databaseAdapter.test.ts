@@ -38,6 +38,7 @@ function product(overrides: Record<string, unknown> = {}) {
 		reservedQuantity: 5,
 		trackInventory: true,
 		isFeatured: true,
+		comingSoon: false,
 		category: {
 			id: 2,
 			slug: 'aquaponics',
@@ -114,4 +115,30 @@ describe('database commerce adapter', () => {
 		expect(review.unavailableReason).toMatch(/temporarily unavailable/i);
 		expect(review.contactLabel).not.toContain('Stripe');
 	}, 15_000);
+
+	it('refuses checkout review when a cart product is still coming soon', async () => {
+		vi.stubEnv('SECURE_CHECKOUT_ENABLED', 'true');
+		vi.mocked(CartService.getCart).mockResolvedValue({
+			id: 7,
+			userId: 'user-1',
+			sessionId: null,
+			affiliateLinkId: null,
+			totalAmount: 42.5,
+			totalItems: 1,
+			items: [
+				{
+					id: 3,
+					productId: 12,
+					quantity: 1,
+					unitPrice: '42.50',
+					product: product({ comingSoon: null })
+				}
+			]
+		} as never);
+
+		const review = await databaseCommerceAdapter.getCheckoutReview(event());
+
+		expect(review.canSubmit).toBe(false);
+		expect(review.unavailableReason).toMatch(/coming soon/i);
+	});
 });

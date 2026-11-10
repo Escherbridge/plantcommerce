@@ -22,6 +22,7 @@ export interface ProductWithImages {
 	categoryId: number;
 	isActive: boolean;
 	isFeatured: boolean;
+	comingSoon: boolean | null;
 	tags: any;
 	metaTitle: string | null;
 	metaDescription: string | null;

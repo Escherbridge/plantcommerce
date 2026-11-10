@@ -23,6 +23,7 @@ export interface CartItem {
 		price?: string;
 		stockQuantity?: number;
 		trackInventory?: boolean;
+		comingSoon?: boolean | null;
 		shortDescription?: string | null;
 		/** Direct category slug used to build the product-detail URL segment. */
 		categorySlug?: string | null;

@@ -217,6 +217,9 @@ export const product = pgTable(
 			.references(() => productCategory.id),
 		isActive: boolean('is_active').notNull().default(true),
 		isFeatured: boolean('is_featured').notNull().default(false),
+		// NULL and true are coming soon (not purchasable). false is explicitly sellable.
+		// Existing rows stay NULL so placeholder products are gated without rewriting them.
+		comingSoon: boolean('coming_soon'),
 		tags: text('tags'), // JSON array of tags
 		metaTitle: text('meta_title'),
 		metaDescription: text('meta_description'),
@@ -287,6 +290,25 @@ export const productReview = pgTable(
 	(table) => ({
 		productIdx: index('product_review_product_idx').on(table.productId),
 		ratingRange: check('product_review_rating_range_check', sql`${table.rating} between 1 and 5`)
+	})
+);
+
+export const sellerApplication = pgTable(
+	'seller_application',
+	{
+		id: serial('id').primaryKey(),
+		name: text('name').notNull(),
+		email: text('email').notNull(),
+		businessName: text('business_name').notNull(),
+		websiteOrSocial: text('website_or_social'),
+		offerings: text('offerings').notNull(),
+		location: text('location').notNull(),
+		message: text('message').notNull(),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		emailIdx: index('seller_application_email_idx').on(table.email),
+		createdIdx: index('seller_application_created_at_idx').on(table.createdAt)
 	})
 );
 

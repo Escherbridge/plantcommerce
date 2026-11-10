@@ -1,8 +1,14 @@
 import type { Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import * as auth from '$lib/server/auth';
+import { ensureAdditiveMigrations } from '$lib/server/db/applyAdditiveMigrations';
 import { readGuestCartSessionId } from '$lib/server/guestCart';
 import { handleError } from '$lib/utils/errorHandler';
+
+const handleMigrations: Handle = async ({ event, resolve }) => {
+	await ensureAdditiveMigrations();
+	return resolve(event);
+};
 
 const handleAuth: Handle = async ({ event, resolve }) => {
 	// Guest cart identities are server-issued and never accepted from request payloads.
@@ -52,4 +58,4 @@ const handleSecurityHeaders: Handle = async ({ event, resolve }) => {
 	return response;
 };
 
-export const handle: Handle = sequence(handleAuth, handleSecurityHeaders);
+export const handle: Handle = sequence(handleMigrations, handleAuth, handleSecurityHeaders);

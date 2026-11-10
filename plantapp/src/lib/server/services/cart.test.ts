@@ -72,7 +72,8 @@ describe('CartService', () => {
 					trackInventory: true,
 					stockQuantity: 1,
 					reservedQuantity: 0,
-					isActive: true
+					isActive: true,
+					comingSoon: false
 				}
 			]);
 			const whereMock = vi.fn().mockReturnValue({ limit: limitMock });
@@ -80,6 +81,26 @@ describe('CartService', () => {
 			(db.select as any).mockReturnValue({ from: fromMock });
 
 			await expect(CartService.addItem(101, 2, 'user123')).rejects.toThrow('Insufficient stock');
+			expect(db.insert).not.toHaveBeenCalled();
+		});
+
+		it('rejects a coming soon product before it can be added', async () => {
+			const limitMock = vi.fn().mockResolvedValue([
+				{
+					id: 101,
+					name: 'Preview tower',
+					price: '10.00',
+					trackInventory: false,
+					stockQuantity: 10,
+					isActive: true,
+					comingSoon: null
+				}
+			]);
+			const whereMock = vi.fn().mockReturnValue({ limit: limitMock });
+			const fromMock = vi.fn().mockReturnValue({ where: whereMock });
+			(db.select as any).mockReturnValue({ from: fromMock });
+
+			await expect(CartService.addItem(101, 1, 'user123')).rejects.toThrow(/coming soon/i);
 			expect(db.insert).not.toHaveBeenCalled();
 		});
 
@@ -92,7 +113,8 @@ describe('CartService', () => {
 					trackInventory: true,
 					stockQuantity: 100,
 					reservedQuantity: 0,
-					isActive: true
+					isActive: true,
+					comingSoon: false
 				}
 			]);
 			const productWhereMock = vi.fn().mockReturnValue({ limit: productLimitMock });
@@ -133,7 +155,8 @@ describe('CartService', () => {
 					trackInventory: true,
 					stockQuantity: 100,
 					reservedQuantity: 0,
-					isActive: true
+					isActive: true,
+					comingSoon: false
 				}
 			]);
 			const productWhereMock = vi.fn().mockReturnValue({ limit: productLimitMock });

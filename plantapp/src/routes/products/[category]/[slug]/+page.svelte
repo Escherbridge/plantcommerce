@@ -86,9 +86,10 @@
 							'@type': 'Offer',
 							price: p.price,
 							priceCurrency: currencyCode,
-							availability: p.inStock
-								? 'https://schema.org/InStock'
-								: 'https://schema.org/OutOfStock',
+							availability:
+								p.comingSoon || !p.inStock
+									? 'https://schema.org/OutOfStock'
+									: 'https://schema.org/InStock',
 							url: `https://aevani.com${productUrl}`,
 							itemCondition: 'https://schema.org/NewCondition'
 						}
@@ -135,7 +136,7 @@
 	const rating = $derived(p.ratingAverage ? parseFloat(p.ratingAverage) : 0);
 
 	async function addToCart() {
-		if (adding || !p.inStock) return;
+		if (adding || p.comingSoon || !p.inStock) return;
 		adding = true;
 		try {
 			await cart.addItem(p.id, quantity, p.name);
@@ -220,7 +221,9 @@
 						{#each p.badges as badge (badge)}
 							<Badge variant="tag-green">{badge}</Badge>
 						{/each}
-						{#if p.inStock}
+						{#if p.comingSoon}
+							<Badge variant="dark-glass">Coming soon</Badge>
+						{:else if p.inStock}
 							<Badge variant="water">In stock</Badge>
 						{:else}
 							<Badge variant="dark-glass">Out of stock</Badge>
@@ -265,52 +268,59 @@
 						</ul>
 					{/if}
 
-					<!-- Qty + add to cart -->
-					<div class="buy__actions">
-						<div class="qty" role="group" aria-label="Quantity">
-							<button
-								type="button"
-								class="qty__btn"
-								onclick={decQty}
-								disabled={!p.inStock}
-								aria-label="Decrease quantity">−</button
-							>
-							<input
-								class="qty__input"
-								type="number"
-								min="1"
-								max={p.stockQuantity || 99}
-								bind:value={quantity}
-								disabled={!p.inStock}
-								aria-label="Quantity"
-							/>
-							<button
-								type="button"
-								class="qty__btn"
-								onclick={incQty}
-								disabled={!p.inStock}
-								aria-label="Increase quantity">+</button
-							>
-						</div>
+					<!-- Placeholder catalogue rows stay viewable and cannot be purchased. -->
+					{#if p.comingSoon}
+						<p class="buy__coming-soon">
+							This listing is a preview. We're onboarding growers and makers, so it isn't available
+							to purchase yet.
+						</p>
+					{:else}
+						<div class="buy__actions">
+							<div class="qty" role="group" aria-label="Quantity">
+								<button
+									type="button"
+									class="qty__btn"
+									onclick={decQty}
+									disabled={!p.inStock}
+									aria-label="Decrease quantity">−</button
+								>
+								<input
+									class="qty__input"
+									type="number"
+									min="1"
+									max={p.stockQuantity || 99}
+									bind:value={quantity}
+									disabled={!p.inStock}
+									aria-label="Quantity"
+								/>
+								<button
+									type="button"
+									class="qty__btn"
+									onclick={incQty}
+									disabled={!p.inStock}
+									aria-label="Increase quantity">+</button
+								>
+							</div>
 
-						<Button
-							variant="primary"
-							size="lg"
-							class="buy__cta"
-							loading={adding}
-							disabled={!p.inStock}
-							onclick={addToCart}
-						>
-							{#if p.inStock}
-								Add to cart · {runningTotal}
-							{:else}
-								Out of stock
-							{/if}
-						</Button>
-					</div>
+							<Button
+								variant="primary"
+								size="lg"
+								class="buy__cta"
+								loading={adding}
+								disabled={!p.inStock}
+								onclick={addToCart}
+							>
+								{#if p.inStock}
+									Add to cart · {runningTotal}
+								{:else}
+									Out of stock
+								{/if}
+							</Button>
+						</div>
+					{/if}
 
 					<!-- Bundle offer -->
-					{#if p.bundleOffer}
+					{#if p.bundleOffer && !p.comingSoon}
 						<label class="bundle" class:bundle--on={addBundle}>
 							<input type="checkbox" bind:checked={addBundle} />
 							<span class="bundle__box" aria-hidden="true">
@@ -340,23 +350,25 @@
 						</label>
 					{/if}
 
-					<!-- Trust tiles -->
-					<div class="trust">
-						<a class="trust__tile" href="/shipping">
-							<span class="trust__label">Free shipping</span>
-							<span class="trust__sub">On qualifying orders</span>
-						</a>
-						<a class="trust__tile" href="/returns">
-							<span class="trust__label">30-day returns</span>
-							<span class="trust__sub">No-fuss guarantee</span>
-						</a>
-						{#if p.warranty}
-							<a class="trust__tile" href="/warranty">
-								<span class="trust__label">Warranty</span>
-								<span class="trust__sub">{p.warranty}</span>
+					<!-- Trust tiles describe a purchase. Hide them while the listing is not for sale. -->
+					{#if !p.comingSoon}
+						<div class="trust">
+							<a class="trust__tile" href="/shipping">
+								<span class="trust__label">Free shipping</span>
+								<span class="trust__sub">On qualifying orders</span>
 							</a>
-						{/if}
-					</div>
+							<a class="trust__tile" href="/returns">
+								<span class="trust__label">30-day returns</span>
+								<span class="trust__sub">No-fuss guarantee</span>
+							</a>
+							{#if p.warranty}
+								<a class="trust__tile" href="/warranty">
+									<span class="trust__label">Warranty</span>
+									<span class="trust__sub">{p.warranty}</span>
+								</a>
+							{/if}
+						</div>
+					{/if}
 				</div>
 			</div>
 		</div>
@@ -632,6 +644,13 @@
 		font-weight: 500;
 		color: #7c9585;
 		text-decoration: line-through;
+	}
+	.buy__coming-soon {
+		margin: 0;
+		font-family: var(--font-body);
+		font-size: 15px;
+		line-height: 1.5;
+		color: #3d5346;
 	}
 	.buy__shipping {
 		margin: -6px 0 0;

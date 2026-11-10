@@ -278,16 +278,26 @@ export const databaseCommerceAdapter: CommerceAdapter = {
 		return readDatabaseCart(event);
 	},
 	async getCheckoutReview(event) {
-		const cart = await readDatabaseCart(event);
+		const { CartService } = await import('$lib/server/services/cart');
+		const { productIsPurchasable } = await import('./purchasable');
+		const identity = await databaseIdentity(event);
+		const rawCart = await CartService.getCart(identity.userId, identity.sessionId);
+		const cart = await mapDatabaseCart(rawCart);
 		if (!cart.items.length) throw new Error('Add an item before reviewing checkout');
+		const comingSoon = (rawCart?.items ?? []).some((item) => !productIsPurchasable(item.product));
 		const { calculateCheckoutTotals } = await import('$lib/server/services/checkoutDraft');
 		const { env } = await import('$env/dynamic/private');
-		const canSubmit = env.SECURE_CHECKOUT_ENABLED === 'true';
+		const secureCheckout = env.SECURE_CHECKOUT_ENABLED === 'true';
+		const canSubmit = secureCheckout && !comingSoon;
 		const totals = calculateCheckoutTotals(cart.subtotal.amountMinor);
 		return {
 			idempotencyKey: 'database-checkout',
 			canSubmit,
-			unavailableReason: canSubmit ? null : 'Secure checkout is temporarily unavailable.',
+			unavailableReason: comingSoon
+				? 'These products are coming soon and are not available for purchase.'
+				: canSubmit
+					? null
+					: 'Secure checkout is temporarily unavailable.',
 			cart,
 			subtotal: money(totals.subtotalMinor),
 			tax: money(totals.taxMinor),
@@ -296,18 +306,28 @@ export const databaseCommerceAdapter: CommerceAdapter = {
 			total: money(totals.totalMinor),
 			contactLabel: canSubmit
 				? 'Provided on the secure payment step'
-				: 'Unavailable while secure checkout is disabled',
+				: comingSoon
+					? 'Unavailable while these products are coming soon'
+					: 'Unavailable while secure checkout is disabled',
 			shippingLabel: canSubmit
 				? 'Provided on the secure payment step'
-				: 'Unavailable while secure checkout is disabled'
+				: comingSoon
+					? 'Unavailable while these products are coming soon'
+					: 'Unavailable while secure checkout is disabled'
 		};
 	},
 	async submitCheckout(event) {
+		const { CartService } = await import('$lib/server/services/cart');
+		const { productIsPurchasable } = await import('./purchasable');
+		const identity = await databaseIdentity(event);
+		const rawCart = await CartService.getCart(identity.userId, identity.sessionId);
+		if ((rawCart?.items ?? []).some((item) => !productIsPurchasable(item.product))) {
+			throw new Error('These products are coming soon and are not available for purchase.');
+		}
 		const { env } = await import('$env/dynamic/private');
 		if (env.SECURE_CHECKOUT_ENABLED !== 'true') {
 			throw new Error('Secure checkout is temporarily unavailable');
 		}
-		const identity = await databaseIdentity(event);
 		const buyer = identity.userId
 			? { kind: 'user' as const, userId: identity.userId }
 			: { kind: 'guest' as const, guestCartSessionId: identity.sessionId! };

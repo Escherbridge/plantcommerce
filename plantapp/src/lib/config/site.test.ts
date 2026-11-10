@@ -23,6 +23,7 @@ describe('public site origin', () => {
 	});
 
 	it('indexes public learn, guide, course, and product paths only', () => {
+		expect(isPublicIndexablePath('/sell')).toBe(true);
 		expect(isPublicIndexablePath('/learn')).toBe(true);
 		expect(isPublicIndexablePath('/guides/understanding-soil-health')).toBe(true);
 		expect(isPublicIndexablePath('/blog/hydroponics-for-beginners')).toBe(true);
