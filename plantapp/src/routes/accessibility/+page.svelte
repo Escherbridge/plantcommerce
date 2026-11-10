@@ -139,22 +139,10 @@
 				accessibility barriers:
 			</p>
 
-			<div class="not-prose card my-6 bg-base-100 shadow-xl">
-				<div class="card-body">
-					<h3 class="card-title">Report an Accessibility Issue</h3>
-					<ul class="space-y-2">
-						<li><strong>Email:</strong> accessibility@aevani.com</li>
-						<li><strong>Phone:</strong> 1-800-ACCESS</li>
-						<li>
-							<strong>Mail:</strong> Accessibility Coordinator, 123 Green Street, Portland, OR 97201
-						</li>
-					</ul>
-					<p class="mt-4 text-sm text-base-content/70">
-						We aim to respond to accessibility feedback within 3 business days and propose a
-						solution within 10 business days.
-					</p>
-				</div>
-			</div>
+			<p>
+				Questions about accessibility?
+				<a class="link link-primary" href="/contact">Contact us</a>.
+			</p>
 
 			<h2>Technical Specifications</h2>
 			<p>Accessibility of Aevani relies on the following technologies:</p>
