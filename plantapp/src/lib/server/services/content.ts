@@ -1,4 +1,5 @@
 import { eq, desc, asc, like, and } from 'drizzle-orm';
+import { isRetiredLiveGoodsFaq } from '$lib/content/retiredClaims';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 
@@ -69,7 +70,7 @@ export class ContentService {
 			conditions.push(like(table.contentPage.title, `%${search}%`));
 		}
 
-		return await db
+		const rows = await db
 			.select({
 				id: table.contentPage.id,
 				title: table.contentPage.title,
@@ -90,6 +91,8 @@ export class ContentService {
 			.orderBy(desc(table.contentPage.publishedAt))
 			.limit(limit)
 			.offset(offset);
+
+		return rows.filter((row) => !isRetiredLiveGoodsFaq(row));
 	}
 
 	/**
@@ -114,7 +117,12 @@ export class ContentService {
 			return null;
 		}
 
-		return result[0];
+		const match = result[0];
+		if (isRetiredLiveGoodsFaq(match.page)) {
+			return null;
+		}
+
+		return match;
 	}
 
 	/**

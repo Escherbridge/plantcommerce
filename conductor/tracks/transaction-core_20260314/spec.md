@@ -1,3 +1,10 @@
+---
+type: specification
+title: Transaction Core
+status: archived
+created: 2026-03-14
+---
+
 # Specification: Transaction Core
 
 ## Overview
@@ -229,7 +236,7 @@ The Aevani application has a fully defined database schema (products, categories
 
 ## Open Questions
 
-1. **Shipping strategy:** Should free shipping over $100 (shown in the cart UI) be enforced at the Stripe level, or is it purely a UI display for now?
+1. **Shipping strategy:** Should a cart shipping threshold be enforced at the Stripe level, or is it purely a UI display for now?
 2. **Tax handling:** Should tax be calculated by Stripe Tax, or continue with the hardcoded 8% rate for the initial launch?
 3. **Order status after payment:** Should orders start as `confirmed` (payment received) or `pending` (awaiting admin review)?
 4. **Webhook retry policy:** Stripe retries failed webhooks for up to 3 days. Is the basic idempotency check (unique `stripeSessionId`) sufficient, or do we need a dedicated webhook event log table?

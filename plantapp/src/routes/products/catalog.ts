@@ -22,7 +22,7 @@ const PRODUCT_IMAGE: Record<string, string> = {
 	'commercial-aquaponics-grow-bed': '/assets/toolproduct-aquaponicbed.png',
 	'aquaponics-bell-siphon-kit': '/assets/toolproduct-aquaponicsbellsiphonkit.png',
 	'aquaponics-water-testing-kit': '/assets/toolproduct-aquaponicswatertestingkit.png',
-	'tilapia-fingerlings-starter-pack': '/assets/toolproduct-aquaponicstilapiafingerlings.png',
+	'aquaponics-stocking-notes': '/assets/toolproduct-aquaponicsfish.png',
 	'countertop-aquaponics-starter-system': '/assets/toolproduct-aquaponic.png',
 	// Silvopasture
 	'silvopasture-seed-mix': '/assets/silvopasture-agroforestryproducts-silvopastureseedmix.png',

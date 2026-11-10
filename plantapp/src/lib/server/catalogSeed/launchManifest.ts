@@ -130,7 +130,7 @@ const candidateDrafts: readonly CandidateDraft[] = [
 		'general-gardening-permaculture',
 		'aevani_owned',
 		'R0',
-		'Cultivar, lot, germination, and state seed-label review; no live plants.'
+		'Cultivar, lot, germination, and state seed-label review; seed packets only.'
 	],
 	[
 		'medicinal-herb-garden-kit',
@@ -367,9 +367,9 @@ const candidateDrafts: readonly CandidateDraft[] = [
 		'Reagent SDS, shipping, accuracy, test count, and expiration.'
 	],
 	[
-		'tilapia-aquaponics-illustrated-guide',
+		'aquaponics-illustrated-guide',
 		'AQP-TIG-001',
-		'Tilapia Aquaponics Illustrated Guide',
+		'Aquaponics illustrated guide',
 		'aquaponics',
 		'educational',
 		'R0',

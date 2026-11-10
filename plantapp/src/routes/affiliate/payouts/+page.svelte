@@ -10,16 +10,15 @@
 <div class="platform-content">
 	<div class="platform-header">
 		<h1 class="platform-header__title">Affiliate Payouts</h1>
-		<p class="platform-header__subtitle">When and how your cleared commission is paid.</p>
+		<p class="platform-header__subtitle">The referral program is not open.</p>
 	</div>
 	<div class="platform-card">
 		<div class="platform-empty">
 			<p class="platform-empty__text">
-				Cleared commission is paid out monthly once your balance reaches the $50 minimum payout.
-				Commission clears once an attributed order is fulfilled (shipped or delivered) and is
-				reversed on refund or chargeback. Balances below the minimum roll over to the next month.
+				The referral share has not been set, and this page does not quote one. Direct sellers can
+				apply now.
 			</p>
-			<a href="/affiliate/earnings" class="platform-action-btn">View earnings</a>
+			<a href="/sell" class="platform-action-btn">Sell on Aevani</a>
 		</div>
 	</div>
 </div>

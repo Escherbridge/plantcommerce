@@ -8,40 +8,48 @@
 	const categories = [
 		{
 			title: 'Guides',
-			description: 'Step-by-step tutorials for sustainable farming techniques and best practices',
+			description:
+				'The notes we can stand behind, starting with soil health and companion planting.',
 			href: '/guides',
 			surfaceClass: 'bg-primary text-primary-content',
 			icon: 'book-open' as IconName
 		},
 		{
-			title: 'Blog',
-			description: 'Latest news, insights, and stories from our community of sustainable growers',
+			title: 'Field notes',
+			description: 'Occasional writing. Not a community newspaper, and not a product blog.',
 			href: '/blog',
 			surfaceClass: 'bg-neutral text-neutral-content',
 			icon: 'clipboard-list' as IconName
 		},
 		{
 			title: 'FAQ',
-			description: 'Quick answers to the most common questions about our products and practices',
+			description:
+				'Short answers. If a question is about buying, shipping, or returns, the honest answer today is that nothing is for sale.',
 			href: '/faq',
 			surfaceClass: 'bg-secondary text-secondary-content',
 			icon: 'help-circle' as IconName
 		},
 		{
 			title: 'Resources',
-			description: 'Tools, calculators, downloadable guides, and community resources',
+			description: 'This shelf is empty for now.',
 			href: '/resources',
 			surfaceClass: 'border border-base-300 bg-base-200 text-base-content',
 			icon: 'code' as IconName
 		}
 	];
+
+	const buyingFaq = {
+		title: 'Can I buy something today?',
+		excerpt:
+			'No. The catalogue is a preview. Checkout is off. If you grow or make something that belongs here, apply to sell.'
+	};
 </script>
 
 <svelte:head>
-	<title>Learning Center | Aevani</title>
+	<title>Learn — Aevani</title>
 	<meta
 		name="description"
-		content="Everything you need to know about sustainable agriculture, hydroponics, aquaponics, and regenerative farming."
+		content="Free growing guides and notes. No account required. The shop behind them is still being seeded."
 	/>
 </svelte:head>
 
@@ -49,11 +57,12 @@
 <section class="w-full bg-primary py-24 text-primary-content lg:py-32">
 	<Container>
 		<div class="space-y-6 text-center">
-			<span class="text-editorial font-mono tracking-widest text-secondary">KNOWLEDGE HUB</span>
-			<h1 class="text-display font-display tracking-tight uppercase">Learning Center</h1>
+			<span class="text-editorial font-mono tracking-widest text-secondary">LEARN</span>
+			<h1 class="text-display font-display tracking-tight">Read while the beds are still empty.</h1>
 			<p class="mx-auto max-w-3xl text-xl leading-relaxed font-light text-primary-content/70">
-				Everything you need to know about sustainable agriculture, hydroponics, aquaponics, and
-				regenerative farming
+				Short guides and notes on soil, companion planting, hydroponics, aquaponics, and
+				silvopasture. Free, no account. This is not a complete library, and it does not sell you a
+				kit at the end.
 			</p>
 			<form
 				action="/search"
@@ -211,40 +220,45 @@
 		{/if}
 
 		<!-- Popular FAQs -->
-		{#if data.faqs && data.faqs.length > 0}
-			<div class="mb-20">
-				<div class="mb-8 flex items-end justify-between">
-					<div>
-						<span class="text-editorial font-mono tracking-widest text-secondary"
-							>QUICK ANSWERS</span
-						>
-						<h2 class="font-display mt-2 text-3xl font-bold tracking-tight uppercase lg:text-4xl">
-							Frequently Asked Questions
-						</h2>
-					</div>
-					<a href="/faq" class="font-display btn tracking-wider uppercase btn-outline btn-sm"
-						>View All</a
-					>
+		<div class="mb-20">
+			<div class="mb-8 flex items-end justify-between">
+				<div>
+					<span class="text-editorial font-mono tracking-widest text-secondary">QUICK ANSWERS</span>
+					<h2 class="font-display mt-2 text-3xl font-bold tracking-tight uppercase lg:text-4xl">
+						Frequently Asked Questions
+					</h2>
 				</div>
-				<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-					{#each data.faqs as faq}
-						<a
-							href="/faq#{faq.slug}"
-							class="group rounded-2xl border border-base-200/30 bg-base-100 p-6 shadow-sm transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
-						>
-							<h3
-								class="font-semibold text-base-content transition-colors group-hover:text-primary"
-							>
-								{faq.title}
-							</h3>
-							<p class="mt-2 line-clamp-2 text-sm font-light text-base-content/60">
-								{faq.excerpt ?? 'No summary is available yet.'}
-							</p>
-						</a>
-					{/each}
-				</div>
+				<a href="/faq" class="font-display btn tracking-wider uppercase btn-outline btn-sm"
+					>View All</a
+				>
 			</div>
-		{/if}
+			<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+				<a
+					href="/sell"
+					class="group rounded-2xl border border-base-200/30 bg-base-100 p-6 shadow-sm transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
+				>
+					<h3 class="font-semibold text-base-content transition-colors group-hover:text-primary">
+						{buyingFaq.title}
+					</h3>
+					<p class="mt-2 line-clamp-2 text-sm font-light text-base-content/60">
+						{buyingFaq.excerpt}
+					</p>
+				</a>
+				{#each data.faqs as faq}
+					<a
+						href="/faq#{faq.slug}"
+						class="group rounded-2xl border border-base-200/30 bg-base-100 p-6 shadow-sm transition-all duration-300 hover:border-primary/20 hover:shadow-lg"
+					>
+						<h3 class="font-semibold text-base-content transition-colors group-hover:text-primary">
+							{faq.title}
+						</h3>
+						<p class="mt-2 line-clamp-2 text-sm font-light text-base-content/60">
+							{faq.excerpt ?? 'No summary is available yet.'}
+						</p>
+					</a>
+				{/each}
+			</div>
+		</div>
 
 		<!-- Resources -->
 		{#if data.resources && data.resources.length > 0}
@@ -295,20 +309,17 @@
 			<div
 				class="rounded-xl border border-primary-content/10 bg-primary p-12 text-primary-content shadow-md lg:p-16"
 			>
-				<h2 class="font-display mb-4 text-3xl font-bold tracking-tight uppercase lg:text-4xl">
-					Can't Find What You're Looking For?
+				<h2 class="font-display mb-4 text-3xl font-bold tracking-tight lg:text-4xl">
+					If a guide is missing, write to us.
 				</h2>
-				<p class="mb-8 text-lg font-light text-primary-content/80">
-					Our support team is here to help you succeed
-				</p>
 				<div class="flex flex-wrap justify-center gap-4">
 					<a href="/contact" class="font-display btn tracking-wider uppercase btn-lg btn-secondary"
-						>Contact Support</a
+						>Contact</a
 					>
 					<a
-						href="/help"
+						href="/sell"
 						class="font-display btn border-primary-content bg-transparent tracking-wider text-primary-content uppercase btn-lg hover:bg-primary-content hover:text-primary"
-						>Visit Help Center</a
+						>Sell on Aevani</a
 					>
 				</div>
 			</div>

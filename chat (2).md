@@ -38,7 +38,7 @@ Aquaponics Water Testing Kit
 Prompt: Flat lay of aquaponics water testing kit components on slate surface. Test tubes with colored water samples, pH strips, ammonia/nitrite/nitrate test bottles, thermometer, color comparison chart. Organized, scientific aesthetic. Soft overhead lighting. Conveys precision and care.
 
 Aquaponics Tilapia Fingerlings (Illustration)
-Prompt: Artistic, educational illustration of tilapia fingerlings in crystal-clear water. Shows different growth stages. Botanical illustration style with scientific accuracy. Soft watercolor aesthetic. Educational labels in elegant typography. Deep blues and silvery fish tones.
+Prompt: Artistic, educational illustration of aquaponics fish in crystal-clear water. Shows different growth stages. Botanical illustration style with scientific accuracy. Soft watercolor aesthetic. Educational labels in elegant typography. Deep blues and silvery fish tones.
 
 ### Hydroponic Products
 

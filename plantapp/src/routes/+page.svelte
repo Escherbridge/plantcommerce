@@ -233,12 +233,19 @@
 
 			<div id="affiliate" class="affiliate-card">
 				<span class="affiliate-card__eyebrow">Affiliate program</span>
-				<h2 class="affiliate-card__title">Teach people to grow. Earn while you do.</h2>
+				<h2 class="affiliate-card__title">A referral program will come after the writing does.</h2>
 				<p class="affiliate-card__body">
-					Share the systems you already trust and earn a fair cut on every grower you send our way.
-					Built for educators, market gardeners, and anyone with a following that grows.
+					PlantGeo affiliates will later send people to Aevani, and Aevani will pay a referral share
+					from its own margin, only on completed retail sales. That share has not been set, and
+					applications are not open. Direct sellers, who are the core of this marketplace, can apply
+					now.
 				</p>
-				<Button href="/affiliate/join" variant="primary" size="lg">Join the program</Button>
+				<div class="affiliate-card__actions">
+					<Button href="/sell" variant="primary" size="lg">Sell on Aevani</Button>
+					<a class="affiliate-card__secondary" href="https://plantgeo.aevani.com"
+						>Plan a site on PlantGeo</a
+					>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -567,6 +574,21 @@
 		line-height: 1.6;
 		color: #4a5f52;
 		text-wrap: pretty;
+	}
+
+	.affiliate-card__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px 24px;
+		align-items: center;
+		margin-top: auto;
+	}
+
+	.affiliate-card__secondary {
+		font-family: var(--font-body);
+		font-size: 15px;
+		font-weight: 600;
+		color: #1e4a36;
 	}
 
 	.affiliate-card :global(.btn-plant) {

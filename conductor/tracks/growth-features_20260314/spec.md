@@ -1,3 +1,10 @@
+---
+type: specification
+title: Growth Features
+status: archived
+created: 2026-03-14
+---
+
 # Growth Features -- Specification
 
 ## Overview
@@ -155,7 +162,7 @@ With the core e-commerce loop operational (browse, cart, checkout, order) and th
 
 ### FR-9: Discount Codes and Promotions Engine
 
-**Description:** Comprehensive promotions system supporting percentage off, fixed amount off, free shipping, and BOGO (buy-one-get-one) discount codes.
+**Description:** Promotions system supporting percentage off, fixed amount off, and BOGO (buy-one-get-one) discount codes.
 
 **Acceptance Criteria:**
 - AC-9.1: Admin can create discount codes with: code string, type (percentage, fixed_amount, free_shipping, bogo), value, minimum order amount, maximum discount amount, usage limit (total and per-customer), valid date range, and applicable product/category scope.

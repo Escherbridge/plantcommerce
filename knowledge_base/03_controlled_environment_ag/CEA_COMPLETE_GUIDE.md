@@ -616,7 +616,7 @@ New systems require 4-8 weeks for bacterial colony establishment.
 - For practical stocking: 100 lbs fish generates ~500 lbs of leafy greens annually
 
 **Feed Conversion and Nutrient Output**
-- Feed conversion ratio (FCR): 1.5-2.0 for well-managed tilapia systems
+- Feed conversion ratio (FCR): 1.5-2.0 for well-managed food fish systems
   - Example: 100 lbs fish feed → 50-65 lbs fish growth + 35-50 lbs waste
 
 - Nitrogen excretion:
@@ -639,7 +639,7 @@ New systems require 4-8 weeks for bacterial colony establishment.
 4. Initial stocking: 500 fingerlings (2-3 inches) × 0.1 lbs = 50 lbs
 5. Feeding rate: 50 lbs fish × 1.5% body weight daily = **0.75 lbs feed/day**
 6. Required tank capacity: 50 lbs ÷ 0.5 lbs/gallon = **100 gallons minimum**
-   (Using 1 lb per 2 gallons for tilapia; this example uses 1 per 20, which is high density/commercial)
+   (Using 1 lb per 2 gallons for food fish; this example uses 1 per 20, which is high density/commercial)
 
 **Feeding Rate Adjustment Protocol**
 - Week 1-4 (3" fingerlings): feed 2-3% body weight daily
@@ -1630,7 +1630,7 @@ pH completely independent in each loop:
 
 **Fish Effluent Composition (Typical Aquaponics)**
 ```
-Fish waste naturally contains (mg/L, typical tilapia):
+Fish waste naturally contains (mg/L, typical food fish):
 - Ammonia/Nitrogen: 3-5
 - Phosphorus: 0.5-1.0 (first limiting nutrient often)
 - Potassium: 0.1-0.3 (usually insufficient)

@@ -18,8 +18,17 @@
 	const absoluteUrl = $derived(publicSiteUrl(currentUrl));
 	// Product detail passes its own share image into <SEO>.
 	const pageSetsShareImage = $derived(/^\/products\/[^/]+\/[^/]+\/?$/.test(currentUrl));
+	const affiliateHoldPath = $derived(
+		currentUrl === '/affiliate' ||
+			currentUrl === '/affiliate/join' ||
+			currentUrl === '/affiliate/terms'
+	);
 	const robotsDirective = $derived(
-		isPublicIndexablePath(currentUrl) ? 'index, follow' : 'noindex, nofollow'
+		isPublicIndexablePath(currentUrl)
+			? 'index, follow'
+			: affiliateHoldPath
+				? 'noindex, follow'
+				: 'noindex, nofollow'
 	);
 
 	let { children, data } = $props();
@@ -125,14 +134,6 @@
 			]
 		},
 		{
-			label: 'Affiliate Status',
-			href: '/affiliate/terms',
-			children: [
-				{ label: 'Program Status', href: '/affiliate/terms' },
-				{ label: 'Apply for Review', href: '/affiliate/join' }
-			]
-		},
-		{
 			label: 'Support',
 			href: '/support',
 			children: [
@@ -164,7 +165,7 @@
 		company: [
 			{ label: 'Sell on Aevani', href: '/sell' },
 			{ label: 'About', href: '/about' },
-			{ label: 'Affiliate program', href: '/affiliate' },
+			{ label: 'Affiliate program (not open)', href: '/affiliate' },
 			{ label: 'Contact', href: '/contact' },
 			{ label: 'Press', href: '/press' }
 		],
@@ -291,23 +292,6 @@
 							Cart
 						</a>
 					</nav>
-
-					<div class="user-bottom-bar__actions">
-						<a href="/affiliate/terms" class="user-bottom-bar__affiliate">
-							<svg
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><path
-									d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.8-6.3-3.3-6.3 3.3 1.2-6.8-5-4.9 7-1z"
-								/></svg
-							>
-							Affiliate Status
-						</a>
-					</div>
 				</div>
 			</div>
 		{/if}
@@ -349,7 +333,7 @@
 							<span class="footer-wordmark">AEVANI</span>
 						</a>
 						<p class="footer-tagline">
-							Tools and knowledge for growing systems that give back more than they take.
+							A marketplace for growing tools, and a free Learn hub, operated by Escherbridge, LLC.
 						</p>
 
 						<div class="social-row">
@@ -434,7 +418,10 @@
 
 				<!-- (c) Legal bar -->
 				<div class="footer-bottom">
-					<p class="copyright">&copy; {currentYear} Aevani. Grown with care.</p>
+					<p class="copyright">
+						&copy; {currentYear} Escherbridge, LLC. Aevani is a project of Escherbridge, LLC, Boise,
+						Idaho.
+					</p>
 					<div class="footer-bottom-links">
 						<a href="/privacy" class="footer-bottom-link">Privacy</a>
 						<a href="/terms" class="footer-bottom-link">Terms</a>
@@ -1460,54 +1447,6 @@
 		}
 
 		.user-bottom-bar__link svg {
-			width: 1.25rem;
-			height: 1.25rem;
-		}
-	}
-
-	/* Affiliate CTA */
-	.user-bottom-bar__actions {
-		flex-shrink: 0;
-	}
-
-	.user-bottom-bar__affiliate {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.5rem 1rem;
-		font-family: var(--font-display);
-		font-size: 0.75rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
-		color: oklch(var(--pc));
-		background: linear-gradient(135deg, oklch(var(--s)) 0%, oklch(var(--p)) 100%);
-		border-radius: var(--input-radius, 10px);
-		text-decoration: none;
-		transition:
-			opacity 200ms ease,
-			transform 200ms var(--ease-out-expo);
-		box-shadow: 0 2px 8px rgba(69, 123, 157, 0.2);
-	}
-
-	.user-bottom-bar__affiliate:hover {
-		opacity: 0.9;
-		transform: scale(1.02);
-	}
-
-	.user-bottom-bar__affiliate svg {
-		width: 1rem;
-		height: 1rem;
-		flex-shrink: 0;
-	}
-
-	@media (max-width: 639px) {
-		.user-bottom-bar__affiliate {
-			padding: 0.5rem;
-			font-size: 0;
-		}
-
-		.user-bottom-bar__affiliate svg {
 			width: 1.25rem;
 			height: 1.25rem;
 		}

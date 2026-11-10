@@ -36,7 +36,7 @@ export const assetManifest: Record<string, string> = {
 	ibcFishTank: `${ASSET_BASE}/toolproduct-aquaponicfishtank.png`,
 	growBed: `${ASSET_BASE}/toolproduct-aquaponicbed.png`,
 	bellSiphon: `${ASSET_BASE}/toolproduct-aquaponicsbellsiphonkit.png`,
-	tilapia: `${ASSET_BASE}/toolproduct-aquaponicstilapiafingerlings.png`,
+	aquaponicsFish: `${ASSET_BASE}/toolproduct-aquaponicsfish.png`,
 	waterTesting: `${ASSET_BASE}/toolproduct-aquaponicswatertestingkit.png`,
 	countertopAqua: `${ASSET_BASE}/toolproduct-aquaponic.png`,
 
