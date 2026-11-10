@@ -117,7 +117,7 @@ const routeMetadata: Record<string, { title: string; description: string }> = {
 	'/guides': {
 		title: 'Guides | Aevani',
 		description:
-			'Intermountain growing-system guides: hydroponics, aquaponics, and silvopasture, cited from official sources. The catalogue is a preview and not for sale.'
+			'Growing-system guides on hydroponics, raised beds, high tunnels, aquaponics, and silvopasture, cited from official sources. Practical ranges, common mistakes.'
 	},
 	'/faq': {
 		title: 'FAQ — Aevani',

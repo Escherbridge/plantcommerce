@@ -20,23 +20,22 @@ lastReviewed: 2026-11-10
 
 USDA already has a word for this, and a warning. Silvopasture is trees, forage, and livestock managed as one system, and shade and wind protection are real, documented reasons to do it. It is also more management than a pasture with decorative trees, and this page will not dress it up as a climate ranking or a kit. The figures on this page are official USDA and NOAA figures, with the links left on.
 
-## Hero figures
+Trees can cut the direct cold effect by 50 percent or more and reduce wind velocity by as much as 70 percent, (the USDA's 2008 silvopasture brochure). Those percentages are brochure figures about cold and wind, not a heat-stress percentage, and not a forage-yield guarantee. They were not measured in Idaho in that brochure.
 
-- **Trees can cut the direct cold effect by 50 percent or more and reduce wind velocity by as much as 70 percent** (USDA National Agroforestry Center, *Working Trees for Silvopasture*, First Edition 2008). Those percentages are brochure figures about cold and wind, not a heat-stress percentage, and not a forage-yield guarantee. They were not measured in Idaho in that brochure.
-- **54.8 days** per year with a maximum of 90°F or more at Boise Air Terminal (NOAA, 1991–2020 normals) — which is why shade is not a slogan here.
-- **Zone 7a** in central Boise and **zone 6b** in a foothills area, 2023 USDA Plant Hardiness Zone Map, so species choice is local.
+54.8 days, per year with a maximum of 90°F or more at Boise Air Terminal (NOAA, 1991–2020 normals) — which is why shade is not a slogan here. Zone 7a, at ZIP 83702 and **zone 6b** at ZIP 83716, 2023 USDA Plant Hardiness Zone Map, so species choice is local.
+
 
 ## The bill for a split system
 
 **A pasture with leftover trees is not silvopasture.** USDA’s National Agroforestry Center defines the practice as “the deliberate integration of trees and grazing livestock operations on the same land,” intensively managed for both forest products and forage, with short grazing periods in a rotational system. One stated main advantage is “reducing heat stress in livestock, which improves animal performance and well-being.” Not every pasture in an enterprise has to be silvopasture to use the practice. What the definition does require is intention, rotation, and a plan for tree regeneration. Trees that happened to remain after a fence went up are scenery.
 
-**Shade is a moving target.** Agroforestry Note 8 (revised June 2025) restates the definition: trees and shrubs intentionally integrated with forages and livestock on the same unit of land. Establishment is commonly “add trees to pastures or remove trees from forests and establish or manage existing forages.” Shade reduces solar radiation and livestock heat stress; winter tree shelter “can offer thermal protection for livestock during winter by reducing wind and precipitation that reaches sheltering animals.” The same note warns that as trees mature and cast more shade, “forage yields may decrease,” which may require thinning, pruning, or a more shade-tolerant forage. This page will not quote an unsourced “30–50% less heat stress” line. The 2008 50 percent / 70 percent figures are about cold and wind, and they stay in that sentence.
+**Shade is a moving target.** the Forest Service agroforestry note on Midwestern silvopasture (revised June 2025) restates the definition: trees and shrubs intentionally integrated with forages and livestock on the same unit of land. Establishment is commonly “add trees to pastures or remove trees from forests and establish or manage existing forages.” Shade reduces solar radiation and livestock heat stress; winter tree shelter “can offer thermal protection for livestock during winter by reducing wind and precipitation that reaches sheltering animals.” The same note warns that as trees mature and cast more shade, “forage yields may decrease,” which may require thinning, pruning, or a more shade-tolerant forage. This page will not quote an unsourced “30–50% less heat stress” line. The 2008 50 percent / 70 percent figures are about cold and wind, and they stay in that sentence.
 
-**Dry summers still count.** Boise Air Terminal’s 1991–2020 normals show 11.51 inches of annual precipitation and a nearly dry July (0.21 inches). This is not a southeastern pine-pasture photograph. Tree and forage species still have to match the 2023 half-zone and the dry season, not a generic “temperate” catalog. Central Boise is zone 7a, 0 to 5°F average annual extreme minimum; a foothills area is zone 6b, −5 to 0°F. USDA cautions that zones are 30-year averages, not records, and that other factors include wind, soil, and moisture.
+**Dry summers still count.** Boise Air Terminal’s 1991–2020 normals show 11.51 inches of annual precipitation and a nearly dry July (0.21 inches). This is not a southeastern pine-pasture photograph. Tree and forage species still have to match the 2023 half-zone and the dry season, not a generic “temperate” catalog. Central Boise (83702) is zone 7a, 0 to 5°F average annual extreme minimum; 83716 is zone 6b, −5 to 0°F. USDA cautions that zones are 30-year averages, not records, and that other factors include wind, soil, and moisture.
 
 ## A shared record, applied here
 
-**Start with a written objective, then design tree spacing to that objective.** Note 8 asks for an objective — heat shade, winter shelter, a tree crop, wildlife — before the rows go in. Spacing that tries to do every job at once will do none of them on purpose.
+**Start with a written objective, then design tree spacing to that objective.** the Forest Service agroforestry note asks for an objective — heat shade, winter shelter, a tree crop, wildlife — before the rows go in. Spacing that tries to do every job at once will do none of them on purpose.
 
 **Use rotational, short grazing periods, and protect trunks and regeneration.** That is the practice page, not an invitation to let the animals prune.
 
@@ -50,7 +49,6 @@ Makers and growers can apply at [Sell on Aevani](https://aevani.com/sell). The f
 
 ## Sources
 
-Every stat on this page is cited.
 
 1. USDA National Agroforestry Center, “Silvopasture” practice page. https://www.fs.usda.gov/nac/practices/silvopasture.php
 2. MacFarland, K.; Feibel, S.; Batcheler, M.; Moore, A.; Smith, M.M.; Joslin, A. 2025. “Silvopasture: An Agroforestry Practice.” Agroforestry Note 8 [Revised]. Lincoln, NE: USDA Forest Service, National Agroforestry Center. June 2025. https://www.fs.usda.gov/research/publications/an/silvopasture-an-agroforestry-practice-an8-final-508.pdf
@@ -63,14 +61,15 @@ Every stat on this page is cited.
 
 A USDA Agroforestry Strategic Framework PDF URL tried in the research pass returned 404. No framework figure is used here.
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a client. A five-acre foothills parcel in zone 6b adds a shade paddock for summer days that officially reach 90°F more than fifty times a year, then discovers forage thinning ten years later — the exact problem Note 8 describes. Shade helped the animals. Too much shade eventually taxed the forage. Someone has to thin.
+A five-acre foothills parcel in zone 6b (ZIP 83716) adds a shade paddock for summer days that officially reach 90°F more than fifty times a year, then discovers forage thinning ten years later — the exact problem the Forest Service agroforestry note describes. Shade helped the animals. Too much shade eventually taxed the forage. Someone has to thin.
 
 ## Also in this section
 
 - [Hydroponics in the Intermountain West](/guides/hydroponics-intermountain) — a different system, the same climate.
 - [Small-scale aquaponics](/guides/small-scale-aquaponics) — a tank is a compromise, not a barrel kit.
+- [Temperate food forests: layers, guilds, and how to start](/guides/temperate-food-forest) — a plants-only layered planting, if livestock is not part of the design.
 
 Related: [Understanding soil health](https://aevani.com/guides/understanding-soil-health), [Getting started with companion planting](https://aevani.com/guides/getting-started-companion-planting), [Learn](https://aevani.com/learn), [Sell](https://aevani.com/sell), [PlantGeo](https://plantgeo.aevani.com), and PlantGeo’s [site types](https://plantgeo.aevani.com/site-types).
 

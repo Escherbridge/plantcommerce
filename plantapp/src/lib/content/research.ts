@@ -2,6 +2,41 @@ import indexSource from './research/index.md?raw';
 import hydroponicsSource from './research/hydroponics-intermountain.md?raw';
 import aquaponicsSource from './research/small-scale-aquaponics.md?raw';
 import silvopastureSource from './research/temperate-silvopasture.md?raw';
+import ecPhSource from './research/hydroponic-ec-ph-nutrients.md?raw';
+import choosingSystemSource from './research/choosing-hydroponic-system.md?raw';
+import rootRotSource from './research/hydroponic-troubleshooting-root-rot.md?raw';
+import dwcSource from './research/deep-water-culture.md?raw';
+import kratkySource from './research/kratky-method.md?raw';
+import nftSource from './research/nutrient-film-technique.md?raw';
+import raisedBedsSource from './research/raised-beds.md?raw';
+import containersSource from './research/container-gardening.md?raw';
+import highTunnelsSource from './research/high-tunnels-hoop-houses.md?raw';
+import ventilationSource from './research/greenhouse-ventilation-heat.md?raw';
+import coversSource from './research/season-extension-covers-frames.md?raw';
+import ipmSource from './research/greenhouse-ipm.md?raw';
+import cyclingSource from './research/aquaponic-biofilter-cycling.md?raw';
+import systemTypesSource from './research/aquaponic-system-types.md?raw';
+import fishSpeciesSource from './research/aquaponic-fish-species.md?raw';
+import sourceWaterSource from './research/source-water-testing.md?raw';
+import cropChoiceSource from './research/hydroponic-crop-choice.md?raw';
+import disordersSource from './research/hydroponic-nutrient-disorders.md?raw';
+import dripSource from './research/drip-dutch-bucket.md?raw';
+import ebbSource from './research/ebb-and-flow.md?raw';
+import verticalSource from './research/vertical-growing.md?raw';
+import seedStartingSource from './research/soilless-seed-starting.md?raw';
+import mediaSource from './research/hydroponic-media.md?raw';
+import noDigSource from './research/no-dig-sheet-mulch.md?raw';
+import foodForestSource from './research/temperate-food-forest.md?raw';
+import guildsSource from './research/permaculture-guilds.md?raw';
+import hugelkulturSource from './research/hugelkultur.md?raw';
+import lightingSource from './research/indoor-lighting-dli.md?raw';
+import pollinationSource from './research/greenhouse-pollination.md?raw';
+import winterizingSource from './research/winterizing-growing-systems.md?raw';
+import foodSafetySource from './research/soilless-food-safety.md?raw';
+import soilDripSource from './research/soil-drip-irrigation.md?raw';
+import frostSource from './research/frost-dates-hardiness.md?raw';
+import rainwaterSource from './research/rainwater-irrigation-quality.md?raw';
+import outdoorIpmSource from './research/outdoor-bed-ipm.md?raw';
 import { publicSiteUrl } from '$lib/config/site';
 
 /**
@@ -21,7 +56,8 @@ export type GuideBlock =
 	| { kind: 'h2'; text: string }
 	| { kind: 'p'; inlines: GuideInline[]; standfirst?: boolean }
 	| { kind: 'ul'; items: GuideInline[][] }
-	| { kind: 'ol'; items: GuideInline[][] };
+	| { kind: 'ol'; items: GuideInline[][] }
+	| { kind: 'table'; headers: GuideInline[][]; rows: GuideInline[][][] };
 
 export type GuideSource = {
 	name: string;
@@ -156,6 +192,29 @@ function parseBlocks(body: string): GuideBlock[] {
 			index += 1;
 			continue;
 		}
+		if (line.trimStart().startsWith('|')) {
+			const rawRows: string[][] = [];
+			while (index < lines.length && lines[index].trimStart().startsWith('|')) {
+				const cells = lines[index]
+					.trim()
+					.replace(/^\|/, '')
+					.replace(/\|$/, '')
+					.split('|')
+					.map((cell) => cell.trim());
+				const separator = cells.every((cell) => /^:?-{3,}:?$/.test(cell));
+				if (!separator) rawRows.push(cells);
+				index += 1;
+			}
+			const [headers = [], ...rows] = rawRows;
+			if (headers.length) {
+				blocks.push({
+					kind: 'table',
+					headers: headers.map((cell) => parseInlines(cell)),
+					rows: rows.map((row) => row.map((cell) => parseInlines(cell)))
+				});
+			}
+			continue;
+		}
 		if (line.startsWith('- ')) {
 			const items: GuideInline[][] = [];
 			while (index < lines.length && lines[index].startsWith('- ')) {
@@ -219,9 +278,15 @@ function sourcesFrom(blocks: GuideBlock[]): GuideSource[] {
 	const list = blocks.slice(heading + 1).find((block) => block.kind === 'ol');
 	if (!list || list.kind !== 'ol') return [];
 	return list.items.map((item) => {
-		const urls = item
+		const httpUrls = item
 			.filter((part) => part.kind === 'link' && part.href.startsWith('http'))
 			.map((part) => (part.kind === 'link' ? part.href : ''));
+		const urls =
+			httpUrls.length > 0
+				? httpUrls
+				: item
+						.filter((part) => part.kind === 'link' && part.href.startsWith('/'))
+						.map((part) => (part.kind === 'link' ? publicSiteUrl(part.href) : ''));
 		const name = inlinePlain(item);
 		const datePublished = datePublishedFromCitation(name);
 		return datePublished ? { name, urls, datePublished } : { name, urls };
@@ -269,9 +334,47 @@ function parseGuide(raw: string): GuideDocument {
 	};
 }
 
-const documents = [indexSource, hydroponicsSource, aquaponicsSource, silvopastureSource].map(
-	parseGuide
-);
+const documents = [
+	indexSource,
+	hydroponicsSource,
+	aquaponicsSource,
+	silvopastureSource,
+	ecPhSource,
+	choosingSystemSource,
+	rootRotSource,
+	dwcSource,
+	kratkySource,
+	nftSource,
+	raisedBedsSource,
+	containersSource,
+	highTunnelsSource,
+	ventilationSource,
+	coversSource,
+	ipmSource,
+	cyclingSource,
+	systemTypesSource,
+	fishSpeciesSource,
+	sourceWaterSource,
+	cropChoiceSource,
+	disordersSource,
+	dripSource,
+	ebbSource,
+	verticalSource,
+	seedStartingSource,
+	mediaSource,
+	noDigSource,
+	foodForestSource,
+	guildsSource,
+	hugelkulturSource,
+	lightingSource,
+	pollinationSource,
+	winterizingSource,
+	foodSafetySource,
+	soilDripSource,
+	frostSource,
+	rainwaterSource,
+	outdoorIpmSource
+].map(parseGuide);
 
 export const guidesIndex = documents[0];
 export const publishedGuideSectors: readonly GuideDocument[] = documents.slice(1);
@@ -285,6 +388,10 @@ export function guideHrefs(doc: GuideDocument): string[] {
 		if (block.kind === 'p') visit(block.inlines);
 		if (block.kind === 'ul' || block.kind === 'ol') {
 			for (const item of block.items) visit(item);
+		}
+		if (block.kind === 'table') {
+			for (const cell of block.headers) visit(cell);
+			for (const row of block.rows) for (const cell of row) visit(cell);
 		}
 	}
 	return hrefs;
@@ -303,23 +410,47 @@ export function guidePlainText(doc: GuideDocument): string {
 		if (block.kind === 'eyebrow' || block.kind === 'h1' || block.kind === 'h2')
 			parts.push(block.text);
 		else if (block.kind === 'p') visit(block.inlines);
-		else for (const item of block.items) visit(item);
+		else if (block.kind === 'table') {
+			for (const cell of block.headers) visit(cell);
+			for (const row of block.rows) for (const cell of row) visit(cell);
+		} else for (const item of block.items) visit(item);
 	}
 	return parts.join('\n');
 }
 
+const systemSectionHeadings = new Set([
+	'Soilless systems',
+	'Soil, beds, and structures',
+	'Aquaponics and silvopasture'
+]);
+
+/** System cards, then the two shorter notes that the index keeps as related. */
 export function indexGuideLinks(
 	doc: GuideDocument = guidesIndex
 ): { name: string; href: string }[] {
-	const heading = doc.blocks.findIndex(
-		(block) => block.kind === 'h2' && block.text === 'The first three'
-	);
-	const list = doc.blocks[heading + 1];
-	if (!list || list.kind !== 'ul') return [];
-	return list.items.flatMap((item) => {
-		const link = item.find((part) => part.kind === 'link');
-		return link && link.kind === 'link' ? [{ name: link.text, href: link.href }] : [];
-	});
+	const links: { name: string; href: string }[] = [];
+	const seen = new Set<string>();
+	let include = false;
+	const take = (parts: GuideInline[]) => {
+		for (const part of parts) {
+			if (part.kind !== 'link' || !part.href.startsWith('/guides/') || part.href === '/guides')
+				continue;
+			if (seen.has(part.href)) continue;
+			seen.add(part.href);
+			links.push({ name: part.text, href: part.href });
+		}
+	};
+	for (const block of doc.blocks) {
+		if (block.kind === 'h2') {
+			if (block.text === 'What Aevani is doing here') break;
+			if (systemSectionHeadings.has(block.text)) include = true;
+			continue;
+		}
+		if (!include) continue;
+		if (block.kind === 'ul') for (const item of block.items) take(item);
+		else if (block.kind === 'p') take(block.inlines);
+	}
+	return links;
 }
 
 const publisher = {

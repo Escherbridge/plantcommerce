@@ -58,15 +58,51 @@ describe('writing module', () => {
 		expect(publishedGuideSectors.map((guide) => guide.slug)).toEqual([
 			'hydroponics-intermountain',
 			'small-scale-aquaponics',
-			'temperate-silvopasture'
+			'temperate-silvopasture',
+			'hydroponic-ec-ph-nutrients',
+			'choosing-hydroponic-system',
+			'hydroponic-troubleshooting-root-rot',
+			'deep-water-culture',
+			'kratky-method',
+			'nutrient-film-technique',
+			'raised-beds',
+			'container-gardening',
+			'high-tunnels-hoop-houses',
+			'greenhouse-ventilation-heat',
+			'season-extension-covers-frames',
+			'greenhouse-ipm',
+			'aquaponic-biofilter-cycling',
+			'aquaponic-system-types',
+			'aquaponic-fish-species',
+			'source-water-testing',
+			'hydroponic-crop-choice',
+			'hydroponic-nutrient-disorders',
+			'drip-dutch-bucket',
+			'ebb-and-flow',
+			'vertical-growing',
+			'soilless-seed-starting',
+			'hydroponic-media',
+			'no-dig-sheet-mulch',
+			'temperate-food-forest',
+			'permaculture-guilds',
+			'hugelkultur',
+			'indoor-lighting-dli',
+			'greenhouse-pollination',
+			'winterizing-growing-systems',
+			'soilless-food-safety',
+			'soil-drip-irrigation',
+			'frost-dates-hardiness',
+			'rainwater-irrigation-quality',
+			'outdoor-bed-ipm'
 		]);
 	});
 
-	it('lists the three guides in the field-notes feed', () => {
+	it('lists every published guide in the field-notes feed', () => {
 		const xml = renderFieldNotesFeed('https://aevani.com');
-		expect(xml).toContain('https://aevani.com/guides/hydroponics-intermountain');
-		expect(xml).toContain('https://aevani.com/guides/small-scale-aquaponics');
-		expect(xml).toContain('https://aevani.com/guides/temperate-silvopasture');
+		for (const guide of publishedGuideSectors) {
+			expect(xml).toContain(guide.canonical);
+			expect(xml).toContain(guide.title);
+		}
 		expect(xml).toContain('Escherbridge');
 	});
 });

@@ -36,5 +36,30 @@
 				</li>
 			{/each}
 		</ol>
+	{:else if block.kind === 'table'}
+		<div class="mt-4 overflow-x-auto">
+			<table class="w-full border-collapse text-left text-sm">
+				<thead>
+					<tr>
+						{#each block.headers as cell}
+							<th class="border border-base-300 px-2 py-2 align-top font-semibold">
+								{#each cell as part}<GuideInline {part} />{/each}
+							</th>
+						{/each}
+					</tr>
+				</thead>
+				<tbody>
+					{#each block.rows as row}
+						<tr>
+							{#each row as cell}
+								<td class="border border-base-300 px-2 py-2 align-top">
+									{#each cell as part}<GuideInline {part} />{/each}
+								</td>
+							{/each}
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	{/if}
 {/each}

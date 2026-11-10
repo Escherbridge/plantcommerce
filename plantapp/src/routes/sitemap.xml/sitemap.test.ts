@@ -94,6 +94,45 @@ describe('public crawler discovery', () => {
 		expect(published).toContain('<loc>https://aevani.com/guides/hydroponics-intermountain</loc>');
 		expect(published).toContain('<loc>https://aevani.com/guides/small-scale-aquaponics</loc>');
 		expect(published).toContain('<loc>https://aevani.com/guides/temperate-silvopasture</loc>');
+		for (const slug of [
+			'hydroponic-ec-ph-nutrients',
+			'choosing-hydroponic-system',
+			'raised-beds',
+			'high-tunnels-hoop-houses',
+			'hydroponic-troubleshooting-root-rot',
+			'deep-water-culture',
+			'kratky-method',
+			'container-gardening',
+			'greenhouse-ventilation-heat',
+			'season-extension-covers-frames',
+			'aquaponic-biofilter-cycling',
+			'greenhouse-ipm',
+			'nutrient-film-technique',
+			'aquaponic-system-types',
+			'aquaponic-fish-species',
+			'drip-dutch-bucket',
+			'ebb-and-flow',
+			'hydroponic-crop-choice',
+			'no-dig-sheet-mulch',
+			'source-water-testing',
+			'vertical-growing',
+			'soilless-seed-starting',
+			'hydroponic-nutrient-disorders',
+			'hydroponic-media',
+			'temperate-food-forest',
+			'permaculture-guilds',
+			'hugelkultur',
+			'indoor-lighting-dli',
+			'greenhouse-pollination',
+			'winterizing-growing-systems',
+			'soilless-food-safety',
+			'soil-drip-irrigation',
+			'frost-dates-hardiness',
+			'rainwater-irrigation-quality',
+			'outdoor-bed-ipm'
+		]) {
+			expect(published).toContain(`<loc>https://aevani.com/guides/${slug}</loc>`);
+		}
 		expect(published).toContain('<loc>https://aevani.com/guides/understanding-soil-health</loc>');
 		expect(published).toContain(
 			'<loc>https://aevani.com/guides/getting-started-companion-planting</loc>'
