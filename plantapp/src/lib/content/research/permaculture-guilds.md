@@ -26,7 +26,7 @@ Kansas State University horticulture newsletter, “Permaculture Planting Guilds
 
 Designs “often begin at the center with the main crop,” typically one or more trees in the canopy. Beneath: shrubs (and vines); then an herbaceous layer; then groundcovers; then a root layer. Quick tips in that newsletter: “Select plants with similar water requirements.” “Vary the root systems to reduce competition for nutrients.” “Choose plants based on their function ensuring each plant has two to three uses. Some examples include: food, medicine, aesthetics, craft value.” The newsletter points readers to a Midwest Permaculture e-booklet for “an in-depth look.” That booklet is not an official source, and this page does not import its recipes.
 
-NC State Extension Gardener Handbook, Appendix G, “Permaculture Design,” by Abbey Piner. The handbook page lists a publication date of 1 February 2022 (AG-831). No later revision date is given, and none is invented here. A fruit-tree guild plants several other plants around the base of a tree, “chosen and placed intentionally for its ability to support the tree and surrounding plants in some way. A guild might include a productive fruit tree, a mulching plant, a plant whose roots slow erosion and hold soil, a plant that attracts beneficial insects, and a plant to block the wind.” Figure G–6 is “an apple tree guild with pollinator attracting crown vetch (*Securigera varia*), a dynamic accumulator comfrey (*Symphytum* spp.), and human attracting strawberries planted below.” That figure is NCSU’s illustrated example, not an Aevani plant list. Check local invasive-species lists before planting anything from an example, including crown vetch.
+NC State Extension Gardener Handbook, Appendix G, “Permaculture Design,” by Abbey Piner. The handbook page lists a publication date of 1 February 2022 (AG-831). No later revision date is given, and none is invented here. A fruit-tree guild plants several other plants around the base of a tree, “chosen and placed intentionally for its ability to support the tree and surrounding plants in some way. A guild might include a productive fruit tree, a mulching plant, a plant whose roots slow erosion and hold soil, a plant that attracts beneficial insects, and a plant to block the wind.” Figure the Midwestern woodland-garden note is “an apple tree guild with pollinator attracting crown vetch (*Securigera varia*), a dynamic accumulator comfrey (*Symphytum* spp.), and human attracting strawberries planted below.” That figure is NCSU’s illustrated example, not an Aevani plant list. Check local invasive-species lists before planting anything from an example, including crown vetch.
 
 Kansas State’s printed examples — false indigo (*Baptisia australis*) and clover (*Trifolium repens*) as nitrogen-fixing herbaceous plants; strawberries (*Fragaria × ananassa*) and white clover as groundcovers that “are able to block other aggressive plants from invading” — are likewise K-State’s examples, not a local planting list. These pages do not answer “what should I plant in Idaho.” Match water needs and functions, and check local extension.
 
@@ -46,14 +46,14 @@ Treating a two-page newsletter as a production manual is the first. Hearing “p
 
 ## Sources
 
-Every stat on this page is cited. The official record is two short extension pieces, and the page is written that way on purpose.
+The official record is two short extension pieces, and the page is written that way on purpose.
 
 1. Domenghini, Cynthia. “Permaculture Planting Guilds.” Kansas State University horticulture newsletter, May 20, 2024. https://hnr.k-state.edu/extension/horticulture-resource-center/horticulture-newsletter/documents/2024/may2024/Permaculture%20Planting%20Guilds.pdf
 2. Piner, Abbey. “Permaculture Design.” Appendix G, NC State Extension Gardener Handbook, 1 February 2022 (AG-831). https://content.ces.ncsu.edu/extension-gardener-handbook/appendix-g-permaculture-design
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. A copied seven-layer stack, mint through the strawberries, no water plan. Kansas State already said match water needs.
+A copied seven-layer stack, mint through the strawberries, no water plan. Kansas State already said match water needs.
 
 ## Also in this section
 

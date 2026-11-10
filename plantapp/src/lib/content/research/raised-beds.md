@@ -20,11 +20,12 @@ lastReviewed: 2026-11-10
 
 A raised bed helps when it is narrow enough to reach, deep enough to root, filled on purpose, and watered as a bed that dries faster than the ground. The boards are just what hold those decisions in place. Lumber is not a growing method, and a box filled with the same clay you were trying to escape is still a clay garden, just higher. The figures below are land-grant dimensions, not a lumber-yard plan.
 
-## Hero figures
+Width:, 3 to 4 feet, and no wider than 4 feet if you need to reach the middle from both sides (Utah State University Extension, February 2012; UF/IFAS Gardening Solutions, page opened 2026-11-10).
 
-- **Width:** 3 to 4 feet, and no wider than 4 feet if you need to reach the middle from both sides (Utah State University Extension, February 2012; UF/IFAS Gardening Solutions, page opened 2026-11-10).
-- **Depth:** USU says a framed box “should be at least 6 to 12 inches high to accommodate the rooting depth of most vegetables.” Beds shallower than 12 inches should have no bottom, so roots can reach the soil below; till that soil 6 to 12 inches deep before filling. UF gives a wider band: depth “should be between 6 and 24 inches.” If the surface needs to be higher than 24 inches, UF says to elevate the whole bed and add a sturdy bottom with drainage holes.
-- **Walkways:** USU wants aisles wide enough for a wheelbarrow. UF recommends leaving 3 feet between beds for wheelbarrow access, or a walkway of 18 inches or more otherwise. USU’s unframed beds are 8 to 12 inches above the surrounding soil, 3 to 4 feet wide, and typically 4 or more feet long. UF notes that length has “no one-size-fits-all”; eight feet is common.
+Depth:, USU says a framed box “should be at least 6 to 12 inches high to accommodate the rooting depth of most vegetables.” Beds shallower than 12 inches should have no bottom, so roots can reach the soil below; till that soil 6 to 12 inches deep before filling. UF gives a wider band: depth “should be between 6 and 24 inches.” If the surface needs to be higher than 24 inches, UF says to elevate the whole bed and add a sturdy bottom with drainage holes.
+
+Walkways:, USU wants aisles wide enough for a wheelbarrow. UF recommends leaving 3 feet between beds for wheelbarrow access, or a walkway of 18 inches or more otherwise. USU’s unframed beds are 8 to 12 inches above the surrounding soil, 3 to 4 feet wide, and typically 4 or more feet long. UF notes that length has “no one-size-fits-all”; eight feet is common.
+
 
 ## Fill the bed on purpose
 
@@ -58,24 +59,25 @@ Building wider than you can reach is the first one; both USU and UF cap practica
 
 ## Sources
 
-Every stat on this page is cited.
 
 1. Heflebower, Rick; Katie Wagner; JayDee Gunnell; and JoDeane Condrat. “Raised Bed Gardening.” Utah State University Extension, February 2012. Peer-reviewed fact sheet. https://extension.usu.edu/yardandgarden/research/raised-bed-gardening
 2. UF/IFAS Gardening Solutions, “Building Raised Beds.” https://gardeningsolutions.ifas.ufl.edu/design/types-of-gardens/building-raised-beds/ — page opened 2026-11-10 (site © 2026). A separate byline date was not printed at the top of the page opened, so this guide does not invent one.
 3. Cornell Cooperative Extension St. Lawrence County, “How to Build a Raised Garden Bed.” https://stlawrence.cce.cornell.edu/resources/how-to-build-a-raised-garden-bed — opened 2026-11-10 and used as a third land-grant pointer, not as a source of extra dimensions.
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. A six-foot-wide box is filled with unamended yard clay and watered with a sprinkler that paints the aisle. The middle dries out, the edges stay soggy, and the reach problem was designed in with the first cut of lumber.
+A six-foot-wide box is filled with unamended yard clay and watered with a sprinkler that paints the aisle. The middle dries out, the edges stay soggy, and the reach problem was designed in with the first cut of lumber.
 
 ## Also in this section
 
 - [Container gardening: pot size, media, and watering](/guides/container-gardening) — if you do not have a plot, official pot diameters and a soilless mix are the first decisions.
-- [High tunnels and hoop houses](/guides/high-tunnels-hoop-houses) — a hoop of plastic is a management job, and for NRCS Practice 325, raised beds in the tunnel are limited to 12 inches.
+- [High tunnels and hoop houses](/guides/high-tunnels-hoop-houses) — a hoop of plastic is a management job, and for the NRCS high-tunnel practice, raised beds in the tunnel are limited to 12 inches.
 - [Understanding soil health](/guides/understanding-soil-health) — what a soil test is for, before you argue with the fill.
 - [Temperate silvopasture](/guides/temperate-silvopasture) — a different scale of perennial system, if the question is the whole parcel rather than a box.
 - [No-dig beds and sheet mulching](/guides/no-dig-sheet-mulch) — the unframed sibling: a light-blocking sheet and organic layers, planted after they decompose, or sooner with finished compost on top.
 - [Temperate food forests: layers, guilds, and how to start](/guides/temperate-food-forest) — a layered planting, if the question is a yard rather than a box.
+- [Drip irrigation for raised beds and high tunnels](/guides/soil-drip-irrigation) — official pages already picked drip or a soaker for the box, and they schedule from soil moisture.
+- [Hügelkultur: what extension actually says](/guides/hugelkultur) — WSU’s alternative is a soil mound with mulch, or a framed bed, not a collapsing wood core over contaminated soil.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel, including a difficult native soil or a foothills slope, [plan the land on PlantGeo](https://plantgeo.aevani.com) first. The [Ada County sample plan](https://plantgeo.aevani.com/plan/sample-ada-county) is a demonstration on live map data, not a client.
 

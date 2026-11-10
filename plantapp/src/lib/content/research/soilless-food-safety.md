@@ -36,9 +36,9 @@ Worker health and hygiene and role-specific training “must be provided to peop
 
 NECAFS, *Cleaning and Sanitizing* (same series): “The cleaning and sanitizing requirements of the… Produce Safety Rule (FSMA PSR) apply to hydroponic and aquaponic production environments as well as packing areas.” The objective is to identify food-contact and non-food-contact surfaces and to build a cleaning-and-sanitizing schedule and SOPs. That is the official “clean the surfaces the water and the harvest actually touch” pointer, not a copied SOP, and not a bleach-in-the-tank recipe.
 
-FAO Technical Paper 589 (2014) has harvest-hygiene lines such as not letting system water, wet hands, or wet gloves touch the harvest, and keeping animal feces out of the system. Those are a supporting aquaponic hygiene note, labeled FAO 2014, not U.S. law.
+FAO's 2014 aquaponics manual has harvest-hygiene lines such as not letting system water, wet hands, or wet gloves touch the harvest, and keeping animal feces out of the system. Those are a supporting aquaponic hygiene note, labeled FAO 2014, not U.S. law.
 
-University of Kentucky CCD-CP-63 (2025) already discusses postharvest bacterial soft rot and “do not introduce diseased plugs.” Those points live in the [troubleshooting](/guides/hydroponic-troubleshooting-root-rot) and [seed-starting](/guides/soilless-seed-starting) guides and are not reprinted as disease tables here.
+University of Kentucky's 2025 lettuce systems guide already discusses postharvest bacterial soft rot and “do not introduce diseased plugs.” Those points live in the [troubleshooting](/guides/hydroponic-troubleshooting-root-rot) and [seed-starting](/guides/soilless-seed-starting) guides and are not reprinted as disease tables here.
 
 ## Common mistakes
 
@@ -54,16 +54,15 @@ Assuming soilless means there is no food-safety problem is the first. Letting pr
 
 ## Sources
 
-Every stat on this page is cited.
 
 1. U.S. Food and Drug Administration. “FSMA Final Rule on Produce Safety.” https://www.fda.gov/food/food-safety-modernization-act-fsma/fsma-final-rule-produce-safety
 2. University of Vermont Extension / Northeast Center to Advance Food Safety (NECAFS). *Introduction to Produce Safety for Hydroponic & Aquaponic Growers.* February 2024. https://www.uvm.edu/d10-files/documents/2024-06/Introduction_to_Produce_Safety_for_Hydroponic_and_Aquaponic_Growers.pdf Hub: https://www.uvm.edu/extension/necafs/produce-safety-hydroponic-and-aquaponic-operations
 3. University of Vermont Extension / NECAFS. *Cleaning and Sanitizing.* Same series. https://www.uvm.edu/d10-files/documents/2024-06/Cleaning_Sanitizing_Produce_Safety_Hydroponic_Aquaponic_Operations.pdf
 4. Somerville et al. FAO Fisheries and Aquaculture Technical Paper No. 589, 2014, harvest-hygiene lines only. https://www.fao.org/4/i4021e/i4021e.pdf
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer, not a testimonial, and not an outbreak story. A raft lifted so that tank water runs over the leaves, then a shared knife, no handwash. UVM already described the drip path.
+A raft lifted so that tank water runs over the leaves, then a shared knife, no handwash. UVM already described the drip path.
 
 ## Also in this section
 

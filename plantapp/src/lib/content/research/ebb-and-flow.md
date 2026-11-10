@@ -20,14 +20,14 @@ lastReviewed: 2026-11-10
 
 The official flood schedule we opened is a lettuce seedling bench, not a house recipe for a finished crop. Ebb-and-flow is a media bench that floods and then drains so roots get both solution and air. Official pages describe that layout clearly. What they do not, in the documents opened for this page, is hand you a production-crop timer. The internet is full of clocks. The complete official schedule here is Cornell’s 2013 nursery bench.
 
-## Hero figures, labeled by source
+University of Kentucky's 2025 lettuce systems guide places ebb-and-flow among soilless-medium systems, not among water-culture loops. “Plants can be grown in soilless medium (drip or ebb-and-flow benches) or in nutrient solution with or without the support of an inert medium (deep water culture and nutrient film technique).” The official distinction is that the crop sits in a medium that is periodically flooded, as drip does with a different delivery method, not in a continuous film or raft.
 
-- **University of Kentucky CCD-CP-63 (2025)** places ebb-and-flow among soilless-medium systems, not among water-culture loops. “Plants can be grown in soilless medium (drip or ebb-and-flow benches) or in nutrient solution with or without the support of an inert medium (deep water culture and nutrient film technique).” The official distinction is that the crop sits in a medium that is periodically flooded, as drip does with a different delivery method, not in a continuous film or raft.
-- **Cornell University Controlled Environment Agriculture, *Hydroponic Lettuce Handbook* (2013),** describes ebb-and-flood benches as a way “to uniformly supply the germinating seedlings with water and nutrients.” Solution is “pumped into the Ebb and Flood bench” and “automatically drained after a given” interval. For Days 0–5 of that lettuce recipe, “Trays on an Ebb and Flood bench are sub-irrigated with RO water for 1/4 hour every 12 hours.” From Day 6: “The sub-irrigation system if using an ebb and flood table is scheduled for flooding four times per day, or every six hours, for 1/4 hr (15 min).” Those times are a commercial lettuce-propagation schedule in a named handbook, not a universal production-crop cycle.
+Cornell's 2013 lettuce handbook describes ebb-and-flood benches as a way “to uniformly supply the germinating seedlings with water and nutrients.” Solution is “pumped into the Ebb and Flood bench” and “automatically drained after a given” interval. For Days 0–5 of that lettuce recipe, “Trays on an Ebb and Flood bench are sub-irrigated with RO water for 1/4 hour every 12 hours.” From Day 6: “The sub-irrigation system if using an ebb and flood table is scheduled for flooding four times per day, or every six hours, for 1/4 hr (15 min).” Those times are a commercial lettuce-propagation schedule in a named handbook, not a universal production-crop cycle.
 
-FAO Technical Paper 589 (2014) describes flood-and-drain media beds in an aquaponic loop, not as a hydroponic fertilizer-bench recipe. In that paper, some aquaponic media beds “are designed to flood-and-drain, which means that the water level rises to a certain point and then completely drains. This adds oxygen to the plant roots and aids in the biofiltration of the ammonia.” That is a related layout idea, labeled aquaponic, and it belongs with [aquaponic system types](/guides/aquaponic-system-types). This page does not import an FAO fish-loop cycle into a hydroponic fertilizer tank.
+FAO's 2014 aquaponics manual describes flood-and-drain media beds in an aquaponic loop, not as a hydroponic fertilizer-bench recipe. In that paper, some aquaponic media beds “are designed to flood-and-drain, which means that the water level rises to a certain point and then completely drains. This adds oxygen to the plant roots and aids in the biofiltration of the ammonia.” That is a related layout idea, labeled aquaponic, and it belongs with [aquaponic system types](/guides/aquaponic-system-types). This page does not import an FAO fish-loop cycle into a hydroponic fertilizer tank.
 
 No official home-hobby flood-and-drain minute schedule for a finished fruiting crop was opened for this page. Hobby “15 minutes on, 45 off” charts are not cited as fact, and this page does not invent a substitute.
+
 
 ## How the bench works
 
@@ -51,15 +51,15 @@ Treating ebb-and-flow as NFT with a deeper puddle is the first. Copying Cornell�
 
 ## Sources
 
-Every stat on this page is cited. The production-timer record in the official pages we opened is thin, and the page is written that way on purpose.
+The production-timer record in the official pages we opened is thin, and the page is written that way on purpose.
 
 1. Sharma et al. University of Kentucky CCD-CP-63, 2025. https://ccd.uky.edu/sites/default/files/2026-02/ccd-cp-63_hydrolettuce-updated_accessible.pdf
 2. Cornell CEA Program. *Hydroponic Lettuce Handbook*. 2013. https://cpb-us-e1.wpmucdn.com/blogs.cornell.edu/dist/8/8824/files/2019/06/Cornell-CEA-Lettuce-Handbook-.pdf
 3. Somerville et al. FAO Fisheries and Aquaculture Technical Paper No. 589, 2014, media-bed irrigation, labeled aquaponic only. https://www.fao.org/4/i4021e/i4021e.pdf
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. A fruiting-crop table run on a copied internet cycle, the medium staying wet, the roots browning. The [troubleshooting](/guides/hydroponic-troubleshooting-root-rot) guide covers root rot. This page does not invent the “correct” minutes for that crop.
+A fruiting-crop table run on a copied internet cycle, the medium staying wet, the roots browning. The [troubleshooting](/guides/hydroponic-troubleshooting-root-rot) guide covers root rot. This page does not invent the “correct” minutes for that crop.
 
 ## Also in this section
 

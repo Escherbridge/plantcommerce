@@ -20,18 +20,18 @@ lastReviewed: 2026-11-10
 
 The bacteria have to finish the job before the fish do.
 
-Cycling is the slow, measurable start-up of a nitrifying colony. FAO Technical Paper 589 already defines when it is finished, and stocking fish to “feed the filter” makes them live through the ammonia and nitrite spike the process is designed to produce. People often want the tank to look busy before the bacteria have clocked in. The finish line is a test kit, not a decorated barrel. This page is about start-up only. Density, the pH compromise, and species belong in [small-scale aquaponics](/guides/small-scale-aquaponics) and the [fish-species](/guides/aquaponic-fish-species) guide.
+Cycling is the slow, measurable start-up of a nitrifying colony. FAO's 2014 aquaponics manual already defines when it is finished, and stocking fish to “feed the filter” makes them live through the ammonia and nitrite spike the process is designed to produce. People often want the tank to look busy before the bacteria have clocked in. The finish line is a test kit, not a decorated barrel. This page is about start-up only. Density, the pH compromise, and species belong in [small-scale aquaponics](/guides/small-scale-aquaponics) and the [fish-species](/guides/aquaponic-fish-species) guide.
 
-## Hero figures
+These numbers are FAO's 2014 aquaponics manual, unless labeled otherwise.
 
-These numbers are FAO 2014, Chapter 5, unless labeled otherwise.
+System cycling is “the initial process of building a bacterial colony” in a new unit. “This takes 3–5 weeks; cycling is a slow process that requires patience.” Progress is measured by monitoring nitrogen levels. The paper’s complete-cycling band is “about 25–40 days,” and if the water temperature is cool, complete cycling may take longer. This page does not invent a second number for the cool-water case.
 
-- System cycling is “the initial process of building a bacterial colony” in a new unit. “This takes 3–5 weeks; cycling is a slow process that requires patience.” Progress is measured by monitoring nitrogen levels. The paper’s complete-cycling band is “about 25–40 days,” and if the water temperature is cool, complete cycling may take longer. This page does not invent a second number for the cool-water case.
-- Ammonia-oxidizing bacteria start forming a colony and oxidizing ammonia to nitrite “within 5–7 days after the first addition of ammonia.” After another 5–7 days, nitrite rises and attracts the bacteria that oxidize nitrite to nitrate. Figure 5.3 shows ammonia, nitrite, and nitrate trends “over the first 20–25 days of cycling.”
-- The target ammonia level while feeding the colony is 1–2 mg/litre. “If ammonia levels ever exceed 3 mg/litre, it is necessary to do a water exchange to dilute the ammonia in order to prevent it from inhibiting the bacteria.” Monitor nitrogen “every 2–3 days” and record the levels. “The end of the cycling process is defined as when the nitrate level is steadily increasing, the nitrite level is 0 mg/litre” and ammonia is likewise down.
-- “Only once the ammonia and nitrite levels are below 1 mg/litre it is safe to start stocking the fish. Always start stocking the fish slowly.”
+Ammonia-oxidizing bacteria start forming a colony and oxidizing ammonia to nitrite “within 5–7 days after the first addition of ammonia.” After another 5–7 days, nitrite rises and attracts the bacteria that oxidize nitrite to nitrate. A figure in that chapter shows ammonia, nitrite, and nitrate trends “over the first 20–25 days of cycling.”
 
-Oklahoma State HLA-6729 could not be retrieved for the brief behind this guide (HTML 403, PDF 404). No OSU cycling table was invented to fill the gap.
+The target ammonia level while feeding the colony is 1–2 mg/litre. “If ammonia levels ever exceed 3 mg/litre, it is necessary to do a water exchange to dilute the ammonia in order to prevent it from inhibiting the bacteria.” Monitor nitrogen “every 2–3 days” and record the levels. “The end of the cycling process is defined as when the nitrate level is steadily increasing, the nitrite level is 0 mg/litre” and ammonia is likewise down.
+
+“Only once the ammonia and nitrite levels are below 1 mg/litre it is safe to start stocking the fish. Always start stocking the fish slowly.” Oklahoma State's aquaponics fact sheet could not be retrieved for the brief behind this guide (HTML 403, PDF 404). No OSU cycling table was invented to fill the gap.
+
 
 ## How to do it without making the fish do the suffering
 
@@ -43,7 +43,7 @@ University of Arizona Cooperative Extension, “Aquaponics Basics,” restates t
 
 Southern Regional Aquaculture Center Publication 4502 (February 2012) is a recirculating-aquaculture biofilter start-up note, not an aquaponics manual. It correctly describes the two-step nitrification (ammonia to nitrite by *Nitrosomonas*-group bacteria, nitrite to nitrate by nitrite-oxidizing bacteria) and a fishless start. Its start-up targets, including ammonia “between 3 and 5 mg/L” and a pH band of 6.8–7.2 “best” for that RAS procedure, are not FAO’s aquaponic cycling targets (1–2 mg/litre ammonia; exchange above 3; fish only when ammonia and nitrite are below 1). Cite SRAC for the chemistry and the general idea of starting a biofilter without animals, and do not apply those RAS numbers to a plant loop.
 
-Layout choice still matters, and so does species. See [aquaponic system types](/guides/aquaponic-system-types) for media beds versus NFT and rafts, and [choosing aquaponic fish](/guides/aquaponic-fish-species) for temperature windows. This page does not restock FAO Table 3.2 or the 20 kg / 1,000 L cap; those already live on the stocking guide.
+Layout choice still matters, and so does species. See [aquaponic system types](/guides/aquaponic-system-types) for media beds versus NFT and rafts, and [choosing aquaponic fish](/guides/aquaponic-fish-species) for temperature windows. This page does not restock FAO's water-quality table or the 20 kg / 1,000 L cap; those already live on the stocking guide.
 
 ## Common mistakes
 
@@ -59,15 +59,14 @@ Adding fish to create ammonia, then being surprised they are in a toxic spike FA
 
 ## Sources
 
-Every stat on this page is cited.
 
 1. Somerville, C., Cohen, M., Pantanella, E., Stankus, A. & Lovatelli, A. 2014. *Small-scale aquaponic food production: Integrated fish and plant farming.* FAO Fisheries and Aquaculture Technical Paper No. 589. Rome, FAO. Chapter 5, section 5.4. https://www.fao.org/4/i4021e/i4021e.pdf
 2. University of Arizona Cooperative Extension, “Aquaponics Basics: How Fish, Plants, and Microbes Work Together.” https://www.extension.arizona.edu/publication/aquaponics-basics-how-fish-plants-and-microbes-work-together — opened 2026-11-10; a separate bulletin date was not invented.
 3. DeLong, Dennis P., and Thomas M. Losordo. “How to Start a Biofilter.” SRAC Publication No. 4502, February 2012. Cited for RAS chemistry only, not as aquaponic cycling targets. https://srac.msstate.edu/pdfs/Fact%20Sheets/4502%20How%20to%20Start%20a%20Biofilter.pdf
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. A weekend stocking “so the tank looks finished,” no test kit, and a mid-cycle nitrite peak. The fish were asked to be the ammonia source and then to survive it.
+A weekend stocking “so the tank looks finished,” no test kit, and a mid-cycle nitrite peak. The fish were asked to be the ammonia source and then to survive it.
 
 ## Also in this section
 

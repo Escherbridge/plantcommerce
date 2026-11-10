@@ -22,19 +22,20 @@ Brown roots are usually a water problem, not a mystery disease.
 
 The official lettuce and controlled-environment guides already tie soft, brown roots and a drifting reservoir to warm solution, low dissolved oxygen, dirty starting material, and unsanitized gear. They do not start with a bottle of miracle treatment. The internet often wants a dose. The useful first tools are a thermometer, a dissolved-oxygen reading if the roots sit in water, and the same EC and pH meters the [nutrient guide](/guides/hydroponic-ec-ph-nutrients) already assumes you own.
 
-## Hero figures
-
 These are lettuce and CEA set points, not a universal law for every crop and every room.
 
-- **Cornell CEA lettuce handbook (2013):** lettuce “will grow satisfactorily at a DO level of at least 4 ppm.” If no oxygen is added to the pond, DO “will drop to nearly 0 ppm,” and the absence of oxygen “will stop the process of respiration and seriously damage and kill the plant.” The level is usually maintained at 8 ppm, in a 7–10 ppm band, with “no advantage to 20.” A set-point table lists 7 mg/L or ppm, and “crop failure if less than 3 ppm.” Figure 18: DO should be greater than 4 ppm to prevent growth inhibition; visible signs of stress may be observed at 3 ppm.
-- **University of Kentucky CCD-CP-63 (2025), lettuce DWC:** “Need air pump and air stones, 6–8 ppm dissolved oxygen.” A dissolved-oxygen meter “is also highly valuable for ensuring oxygen availability in the root zone, which supports healthy root development and reduces the risk of root diseases.”
-- **Neil Mattson’s 2018 leafy-green teaching notes:** a typical nutrient-solution temperature of 65–75°F to delay bolting and “reduce Pythium infection,” with dissolved oxygen of 7 ppm and crop failure below 3 ppm. Those are conference teaching notes from a named Cornell CEA faculty member, not a trial report, and they are not a climate-wide promise.
+Cornell's 2013 lettuce handbook says lettuce “will grow satisfactorily at a DO level of at least 4 ppm.” If no oxygen is added to the pond, DO “will drop to nearly 0 ppm,” and the absence of oxygen “will stop the process of respiration and seriously damage and kill the plant.” The level is usually maintained at 8 ppm, in a 7–10 ppm band, with “no advantage to 20.” A set-point table lists 7 mg/L or ppm, and “crop failure if less than 3 ppm.” A figure in Cornell's handbook notes that DO should be greater than 4 ppm to prevent growth inhibition; visible signs of stress may be observed at 3 ppm.
+
+University of Kentucky's 2025 lettuce systems guide, on deep-water culture, says “Need air pump and air stones, 6–8 ppm dissolved oxygen.” A dissolved-oxygen meter “is also highly valuable for ensuring oxygen availability in the root zone, which supports healthy root development and reduces the risk of root diseases.”
+
+Neil Mattson’s 2018 leafy-green teaching notes: a typical nutrient-solution temperature of 65–75°F to delay bolting and “reduce Pythium infection,” with dissolved oxygen of 7 ppm and crop failure below 3 ppm. Those are conference teaching notes from a named Cornell CEA faculty member, not a trial report, and they are not a climate-wide promise.
+
 
 ## What you are looking at
 
 University of Kentucky describes Pythium root rot (*Pythium* spp., *Phytopythium* spp., *Globosporangium* spp.) as caused by “a group of soilborne, fungus-like pathogens.” Symptoms: plants wilt, with marginal leaf scorch or yellowing of outer leaves that becomes more severe as root rot progresses; “roots become soft, mushy, and grayish-brown, and the cortex” is affected. Management listed there includes: do not introduce diseased plugs into production systems, and remove diseased plants as soon as they appear. Handheld infrared thermometers are recommended to monitor leaf and nutrient-solution temperatures.
 
-In UKY’s system comparison, DWC oxygenation needs an air pump and air stones at 6–8 ppm; NFT relies on a continuous thin film; drip and media systems rely on air space in the substrate. UF/IFAS HS405 (original January 2010) is the design reminder: in a recirculating water-culture system a root pathogen can spread, which is one reason some fruiting-crop growers use non-recirculating media systems where “root infections remain localized.” That is a layout implication, not a Florida industry history. [Choosing a first hydroponic system](/guides/choosing-hydroponic-system) is the comparison page if the build itself is still the question.
+In UKY’s system comparison, DWC oxygenation needs an air pump and air stones at 6–8 ppm; NFT relies on a continuous thin film; drip and media systems rely on air space in the substrate. Florida's hydroponic systems guide, originally published in January 2010, is the design reminder: in a recirculating water-culture system a root pathogen can spread, which is one reason some fruiting-crop growers use non-recirculating media systems where “root infections remain localized.” That is a layout implication, not a Florida industry history. [Choosing a first hydroponic system](/guides/choosing-hydroponic-system) is the comparison page if the build itself is still the question.
 
 Cornell also notes that for sufficiently small systems, an air pump and aquarium air stone can add air, “but the dissolved oxygen level achieved will not be as high as can be achieved with pure oxygen,” which is the commercial pond method in that handbook. An air stone helps. It is not a magic substitute for a measured DO floor.
 
@@ -74,7 +75,6 @@ Treating brown roots as a nutrient deficiency and raising EC is the first. Chasi
 
 ## Sources
 
-Every stat on this page is cited.
 
 1. Sharma, Arundathi, Kim Leonberger, Nicole Gauthier, and Qinglu Ying. “Hydroponic Lettuce Production in Controlled Environments.” University of Kentucky Center for Crop Diversification, CCD-CP-63, 2025. https://ccd.uky.edu/sites/default/files/2026-02/ccd-cp-63_hydrolettuce-updated_accessible.pdf
 2. Cornell University CEA Program, *Hydroponic Lettuce Handbook*, © 2013. https://cpb-us-e1.wpmucdn.com/blogs.cornell.edu/dist/8/8824/files/2019/06/Cornell-CEA-Lettuce-Handbook-.pdf
@@ -86,9 +86,9 @@ Forum threads cited only as question evidence, not as treatment sources:
 5. r/Hydroponics, “Beginner hydro grower lost in algae + root rot, need advice,” 29 September 2025. https://www.reddit.com/r/Hydroponics/comments/1nsyryw/beginner_hydro_grower_lost_in_algae_root_rot_need/
 6. r/Hydroponics, “First hydro, brown roots,” 5 July 2023. https://www.reddit.com/r/Hydroponics/comments/14qvkiv/first_hydro_brown_roots/
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. A warm indoor bucket, no air stone, lid off so light hits the solution, and seedlings from a reused tray. The roots turn brown, algae come back after a water change, and the missing ingredient was not a treatment bottle.
+A warm indoor bucket, no air stone, lid off so light hits the solution, and seedlings from a reused tray. The roots turn brown, algae come back after a water change, and the missing ingredient was not a treatment bottle.
 
 ## Also in this section
 

@@ -22,25 +22,26 @@ Three organisms share one sump: fish, plants, and nitrifying bacteria. The Food 
 
 The figures on this page are FAO’s, with the links left on, plus official Intermountain climate context when the loop sits outdoors.
 
-## Hero figures
+pH 6–7,, FAO’s recommended aquaponic compromise (the water-quality table in FAO's 2014 aquaponics manual).
 
-- **pH 6–7**, FAO’s recommended aquaponic compromise (Technical Paper No. 589, 2014, Table 3.2).
-- **Ammonia close to zero**, or at most 0.25–1.0 mg/L, in a fully functioning unit with adequate biofiltration (same paper, Chapter 3).
-- **Stocking cap of 20 kg of fish per 1,000 litres** for the small-scale units described in the paper. Those units hold about 1,000 litres and “should contain 10–20 kg of fish.”
+Ammonia close to zero,, or at most 0.25–1.0 mg/L, in a fully functioning unit with adequate biofiltration (the same manual).
+
+Stocking cap of 20 kg of fish per 1,000 litres, for the small-scale units described in the paper. Those units hold about 1,000 litres and “should contain 10–20 kg of fish.”
+
 
 ## The bill for a split system
 
-**Chasing one organism’s optimum.** FAO Table 3.1 gives general tolerance ranges: warm-water fish 22–32°C, pH 6–8.5, ammonia <3 mg/L, nitrite <1 mg/L, dissolved oxygen 4–6 mg/L; cold-water fish 10–18°C, ammonia <1 mg/L, nitrite <0.1 mg/L, dissolved oxygen 6–8 mg/L; plants 16–30°C, pH 5.5–7.5, ammonia <30 mg/L; nitrifying bacteria 14–34°C, pH 6–8.5, dissolved oxygen 4–8 mg/L. The overlap is real, and it is not identical. Table 3.2 is the recommended compromise: water temperature 18–30°C, pH 6–7, ammonia <1 mg/L, nitrite <1 mg/L, nitrate 5–150 mg/L, and dissolved oxygen >5 mg/L. That is an explicit compromise among fish, plants, and bacteria, not the optimum for any one of them. Plants prefer a lower pH than many fish. Cold-water fish have a tighter nitrite limit (<0.1 mg/L) than the aquaponic compromise. A design that optimises for one column will quietly injure the other two.
+**Chasing one organism’s optimum.** FAO the species table gives general tolerance ranges: warm-water fish 22–32°C, pH 6–8.5, ammonia <3 mg/L, nitrite <1 mg/L, dissolved oxygen 4–6 mg/L; cold-water fish 10–18°C, ammonia <1 mg/L, nitrite <0.1 mg/L, dissolved oxygen 6–8 mg/L; plants 16–30°C, pH 5.5–7.5, ammonia <30 mg/L; nitrifying bacteria 14–34°C, pH 6–8.5, dissolved oxygen 4–8 mg/L. The overlap is real, and it is not identical. the water-quality table is the recommended compromise: water temperature 18–30°C, pH 6–7, ammonia <1 mg/L, nitrite <1 mg/L, nitrate 5–150 mg/L, and dissolved oxygen >5 mg/L. That is an explicit compromise among fish, plants, and bacteria, not the optimum for any one of them. Plants prefer a lower pH than many fish. Cold-water fish have a tighter nitrite limit (<0.1 mg/L) than the aquaponic compromise. A design that optimises for one column will quietly injure the other two.
 
 **Invisible nitrogen.** In a fully functioning unit with adequate biofiltration, ammonia and nitrite “should be close to zero, or at most 0.25–1.0 mg/litre.” That sentence should not be softened. “The fish look fine today” is not a test kit.
 
 **Overstocking the romance.** The paper’s recommended maximum stocking density for these small-scale units is 20 kg of fish per 1,000 litres of fish-tank water. “New aquaponic farmers are strongly recommended not to exceed the stocking density of 20 kg per 1,000 litres,” especially where electricity is not guaranteed, “because a brief interruption can kill all of the fish within an hour at high stocking densities.” The density warning is clearer than a metaphor. It is also in the source.
 
-If the loop sits in a tunnel or greenhouse, the outdoor climate still counts. Boise Air Terminal’s 1991–2020 normals include 11.51 inches of annual precipitation and a July mean daily maximum of 92.7°F (NOAA). USU Extension recorded more than 120°F on a sunny early-March day in a Northern Utah high tunnel without ventilation. Source-water pH and EC remain a constraint before any recipe (University of Arizona CEAC, Chapter 10).
+If the loop sits in a tunnel or greenhouse, the outdoor climate still counts. Boise Air Terminal’s 1991–2020 normals include 11.51 inches of annual precipitation and a July mean daily maximum of 92.7°F (NOAA). USU Extension recorded more than 120°F on a sunny early-March day in a Northern Utah high tunnel without ventilation. Source-water pH and EC remain a constraint before any recipe (University of Arizona CEAC, a later chapter of FAO's aquaponics manual).
 
 ## A shared record, applied here
 
-**Test against Table 3.2, on a schedule.** pH, ammonia, nitrite, nitrate, and, if you can, dissolved oxygen. The compromise is a range you measure, not a vibe you remember.
+**Test against the water-quality table, on a schedule.** pH, ammonia, nitrite, nitrate, and, if you can, dissolved oxygen. The compromise is a range you measure, not a vibe you remember.
 
 **Size the plant area from the feed-rate ratio, not from a wish for more lettuce.** FAO’s recommended daily fish feed rates are 40–50 grams of feed per square metre of plant growing area per day for leafy greens, and 50–80 grams per square metre per day for fruiting vegetables, assuming an industry-standard fish feed of 32 percent protein in the later feed-rate-ratio discussion. A worked example in the same paper: to produce 25 heads of lettuce per week, a system should have 10–20 kg of fish, fed 200 grams of feed per day, and a growing area of 4 m², with lettuce taking 4 weeks from transplant in that example. That is a calculation in the paper, not an Aevani trial, not a local result, and not a typical backyard yield.
 
@@ -54,7 +55,6 @@ Sellers of real systems can apply at [Sell on Aevani](https://aevani.com/sell). 
 
 ## Sources
 
-Every stat on this page is cited.
 
 1. Somerville, C., Cohen, M., Pantanella, E., Stankus, A. and Lovatelli, A. 2014. *Small-scale aquaponic food production: Integrated fish and plant farming.* FAO Fisheries and Aquaculture Technical Paper No. 589. Rome, FAO. ISBN 978-92-5-108532-5 (print), 978-92-5-108533-2 (PDF). Official PDF: https://www.fao.org/4/i4021e/i4021e.pdf
 2. Same work, open-knowledge host copy (confirm any quote against the fao.org/4 PDF). https://openknowledge.fao.org/server/api/core/bitstreams/bbcb479b-d12a-4cdf-af91-79b579ea9998/content
@@ -66,9 +66,9 @@ Every stat on this page is cited.
 
 A dedicated USDA or Idaho land-grant aquaponics primer was not independently opened with a usable, dated URL for this guide. No such primer was invented. The FAO paper is the primary technical source.
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer story. A classroom loop stocks “enough tilapia to look busy,” skips the test kit, and learns FAO’s density warning the hard way during a weekend power cut. The seating chart was already public. The tank was not a negotiation that could be postponed.
+A classroom loop stocks “enough tilapia to look busy,” skips the test kit, and learns FAO’s density warning the hard way during a weekend power cut. The seating chart was already public. The tank was not a negotiation that could be postponed.
 
 ## Also in this section
 

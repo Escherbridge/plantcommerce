@@ -30,7 +30,7 @@ Penn State Extension, “High Tunnel Production,” updated 13 March 2023: early
 
 Utah State University Extension, “Irrigation System Maintenance,” published July 2021, peer-reviewed, by Candace Schaible, Kelly Kopp, and Jennie Hoover: prepare the system for winter by turning the irrigation controller off; “water should be drained from the system to protect any components that could freeze. Your system may have drain valves that can be opened for drainage, or you may have to blow out the system using pressurized air. If pressurized air is required, you may wish to have your irrigation system blown out by an irrigation professional.” That is garden and landscape irrigation maintenance, and this page says so.
 
-Ohio State University Extension HYG-1647-2000, *Container Vegetable Gardening*, Karen Demboski, Annette Swanberg, and Jane C. Martin, already used in the [container gardening](/guides/container-gardening) guide: “Most non-porous containers may be left outside over the winter, although you may want to store them” to keep them clean. “Porous clay containers should be brought inside to prevent cracking due to freezing temperatures.”
+Ohio State University Extension Ohio State's 2000 container-gardening fact sheet, *Container Vegetable Gardening*, Karen Demboski, Annette Swanberg, and Jane C. Martin, already used in the [container gardening](/guides/container-gardening) guide: “Most non-porous containers may be left outside over the winter, although you may want to store them” to keep them clean. “Porous clay containers should be brought inside to prevent cracking due to freezing temperatures.”
 
 The USDA Plant Hardiness Zone Map (2023) tells you the average annual extreme minimum temperature, not when frost will come this spring. That distinction is on the [frost dates and hardiness](/guides/frost-dates-hardiness) guide, not reprinted here. Climate around a closed loop is on the [Intermountain hydroponics](/guides/hydroponics-intermountain) page; the structure itself is on [high tunnels](/guides/high-tunnels-hoop-houses).
 
@@ -52,7 +52,6 @@ Leaving a tunnel closed on a sunny late-winter day is the first (USU). Heating a
 
 ## Sources
 
-Every stat on this page is cited.
 
 1. Black, Bridgette, and Dan Drost. “Temperature Management in High Tunnels and Greenhouses in the Intermountain West.” Utah State University Extension, April 2010. https://extension.usu.edu/smallfarms/files/Greenhouses_Temp.Mgmt.pdf
 2. Penn State Extension. “High Tunnel Production.” Updated 13 March 2023. https://extension.psu.edu/high-tunnel-production
@@ -60,9 +59,9 @@ Every stat on this page is cited.
 4. Demboski, Karen; Annette Swanberg; and Jane C. Martin. *Container Vegetable Gardening.* Ohio State University Extension HYG-1647-2000. https://lucas.osu.edu/sites/lucas/files/imce/LocalFood/1647.pdf
 5. USDA Agricultural Research Service, 2023 Plant Hardiness Zone Map, via [Frost dates, hardiness zones, and planting calendars](/guides/frost-dates-hardiness). https://planthardiness.ars.usda.gov/
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. A sealed hoop house on a 60-degree March afternoon, then a night in the 20s, drip lines still full of water, terracotta left on the step. Official pages already named each failure.
+A sealed hoop house on a 60-degree March afternoon, then a night in the 20s, drip lines still full of water, terracotta left on the step. Official pages already named each failure.
 
 ## Also in this section
 

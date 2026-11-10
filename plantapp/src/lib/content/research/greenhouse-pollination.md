@@ -34,7 +34,7 @@ SDSU describes the manual and mechanical options. Tapping support strings or wir
 
 Bumble bees, in SDSU’s account, “are active from sunrise to sunset and at low temperatures (as low as 41°F).” “Using bumble bees in small high tunnels can lead to over pollination and injury to the flowers because even the smallest hive has more bees than a small high tunnel can sustain.” Work with the supplier on hive size. This page does not invent a bees-per-square-foot figure that the opened pages do not print, and it does not name a hive brand.
 
-University of Kentucky ID-235 (revised October 2018), already used in the [greenhouse IPM](/guides/greenhouse-ipm) guide: close and remove bumblebee colonies before using pollinator-toxic insecticides, storing bees in a shady location for a day before returning them. Only greenhouse-and-crop labeled pesticides. This page is not a spray chart.
+University of Kentucky Purdue's greenhouse and high-tunnel guide (revised October 2018), already used in the [greenhouse IPM](/guides/greenhouse-ipm) guide: close and remove bumblebee colonies before using pollinator-toxic insecticides, storing bees in a shady location for a day before returning them. Only greenhouse-and-crop labeled pesticides. This page is not a spray chart.
 
 Ventilation and heat around the same structure are on the [ventilation](/guides/greenhouse-ventilation-heat) and [high tunnels](/guides/high-tunnels-hoop-houses) guides. Early covers also appear in the [season-extension](/guides/season-extension-covers-frames) guide; they still have to come off for bloom.
 
@@ -52,16 +52,15 @@ Leaving row covers on through bloom is the first (Penn State). Blaming “bad se
 
 ## Sources
 
-Every stat on this page is cited.
 
 1. Penn State Extension. “High Tunnel Production.” Updated 13 March 2023. https://extension.psu.edu/high-tunnel-production
 2. Bessin, Ric; John Obrycki; Emily Pfeufer; Rachel Rudolph; Shawn Wright; and Cheryl Kaiser, ed. *An IPM Scouting Guide for Common Problems of High Tunnel and Greenhouse Vegetable Crops in Kentucky.* University of Kentucky Cooperative Extension ID-235, revised October 2018. https://greenhousehort.mgcafe.uky.edu/sites/greenhousehort.ca.uky.edu/files/2022-03/Integrated%20Pest%20Management%20Scouting%20Guide%20for%20Common%20Problems%20of%20High%20Tunnel%20and%20Greenhouse%20Vegetable%20Crops%20in%20Kentucky.pdf
 3. Brust, Jerry. “Problems with Pollination in High Tunnel Tomatoes.” University of Maryland Extension, updated 22 October 2024. https://extension.umd.edu/resource/problems-pollination-high-tunnel-tomatoes
 4. Njue, Geoffrey. “Pollinating Tomatoes in High Tunnels.” SDSU Extension, updated 3 April 2019. https://extension.sdstate.edu/pollinating-tomatoes-high-tunnels
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. Row covers left on through bloom, then a full-size hive in a tiny tunnel, flowers bruised. Penn State and SDSU already named both mistakes.
+Row covers left on through bloom, then a full-size hive in a tiny tunnel, flowers bruised. Penn State and SDSU already named both mistakes.
 
 ## Also in this section
 

@@ -24,11 +24,11 @@ Livestock and trees are a different guide: [temperate silvopasture](/guides/temp
 
 ## Layers and guilds, labeled by source
 
-South Dakota State University Extension MC-04302, *Edible Landscaping & Food Forests*, Robin Buterbaugh, © 2026 South Dakota Board of Regents: “A food forest is a diverse planting of edible and beneficial plants that mimic the layers found in a forest.” “Food forests contain plants at multiple levels with specific characteristics that support each other to function as a whole system.” Layers named in the publication’s text and graphics include a canopy (large fruit or nut trees), a low or dwarf tree layer, a shrub layer (berries), an herb layer, a ground-cover or surface-soil layer, a root layer, and a vertical or vine layer. The graphic also marks insectaries, nitrogen-fixers, medicinals, windbreak, and shade. “A food forest can be many acres, several acres, or even a single tree in your yard with the supporting plants around it.” “Guilds are a type of polyculture that includes a tree and other plants grown in layers that help each other in some way.” Tips: “Observe and learn from the local ecosystem about what plants work best.” “Start small, work in phases so you don’t get overwhelmed. Begin with one fruit tree guild and expand from there if you have the time and space.”
+South Dakota State University Extension the Midwestern food-forest publication2, *Edible Landscaping & Food Forests*, Robin Buterbaugh, © 2026 South Dakota Board of Regents: “A food forest is a diverse planting of edible and beneficial plants that mimic the layers found in a forest.” “Food forests contain plants at multiple levels with specific characteristics that support each other to function as a whole system.” Layers named in the publication’s text and graphics include a canopy (large fruit or nut trees), a low or dwarf tree layer, a shrub layer (berries), an herb layer, a ground-cover or surface-soil layer, a root layer, and a vertical or vine layer. The graphic also marks insectaries, nitrogen-fixers, medicinals, windbreak, and shade. “A food forest can be many acres, several acres, or even a single tree in your yard with the supporting plants around it.” “Guilds are a type of polyculture that includes a tree and other plants grown in layers that help each other in some way.” Tips: “Observe and learn from the local ecosystem about what plants work best.” “Start small, work in phases so you don’t get overwhelmed. Begin with one fruit tree guild and expand from there if you have the time and space.”
 
 The publication includes example plant lists. If those lists are used at all, they are SDSU’s examples, not an Intermountain recommendation. Check local extension and invasive-species guidance before planting a species from a South Dakota list in another climate. This page does not reprint those lists as a shopping catalog.
 
-NC State Extension Gardener Handbook, Appendix G, “Permaculture Design,” by Abbey Piner (Urban Horticulturalist, Horticultural Science). The handbook page lists a publication date of 1 February 2022 (AG-831). No later revision date is given, and none is invented here. A fruit-tree guild, in that appendix, plants several other plants around the base of a tree, “chosen and placed intentionally for its ability to support the tree and surrounding plants in some way. A guild might include a productive fruit tree, a mulching plant, a plant whose roots slow erosion and hold soil, a plant that attracts beneficial insects, and a plant to block the wind.” Figure G–6 is “an apple tree guild with pollinator attracting crown vetch (*Securigera varia*), a dynamic accumulator comfrey (*Symphytum* spp.), and human attracting strawberries planted below.” That figure is NCSU’s illustrated example, not an Aevani plant list, and not a planting recommendation. Check local invasive-species lists before planting anything from an example guild, including crown vetch. This page does not add invasiveness claims the appendix does not make.
+NC State Extension Gardener Handbook, Appendix G, “Permaculture Design,” by Abbey Piner (Urban Horticulturalist, Horticultural Science). The handbook page lists a publication date of 1 February 2022 (AG-831). No later revision date is given, and none is invented here. A fruit-tree guild, in that appendix, plants several other plants around the base of a tree, “chosen and placed intentionally for its ability to support the tree and surrounding plants in some way. A guild might include a productive fruit tree, a mulching plant, a plant whose roots slow erosion and hold soil, a plant that attracts beneficial insects, and a plant to block the wind.” Figure the Midwestern woodland-garden note is “an apple tree guild with pollinator attracting crown vetch (*Securigera varia*), a dynamic accumulator comfrey (*Symphytum* spp.), and human attracting strawberries planted below.” That figure is NCSU’s illustrated example, not an Aevani plant list, and not a planting recommendation. Check local invasive-species lists before planting anything from an example guild, including crown vetch. This page does not add invasiveness claims the appendix does not make.
 
 ## How to start, without flattening two sequences
 
@@ -59,20 +59,22 @@ Treating a two-page extension publication as a production manual, or inventing y
 
 ## Sources
 
-Every stat on this page is cited. The official record is two short extension pieces, and the page is written that way on purpose.
+The official record is two short extension pieces, and the page is written that way on purpose.
 
 1. Buterbaugh, Robin. *Edible Landscaping & Food Forests.* SDSU Extension MC-04302. © 2026 South Dakota Board of Regents. https://extension.sdstate.edu/edible-landscaping-and-food-forests and PDF https://extension.sdstate.edu/sites/default/files/2026-06/MC-04302-v2.pdf
 2. Piner, Abbey. “Permaculture Design.” Appendix G, NC State Extension Gardener Handbook, 1 February 2022 (AG-831). https://content.ces.ncsu.edu/extension-gardener-handbook/appendix-g-permaculture-design
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. A weekend “food forest” of random saplings, no paths, no sheet mulch, no water plan, and a later weedy thicket. SDSU already wrote the order.
+A weekend “food forest” of random saplings, no paths, no sheet mulch, no water plan, and a later weedy thicket. SDSU already wrote the order.
 
 ## Also in this section
 
 - [No-dig beds and sheet mulching](/guides/no-dig-sheet-mulch) — the official cardboard-and-layers method SDSU points to in site preparation.
 - [Raised beds: width, depth, and soil](/guides/raised-beds) — a framed bed, if that is the scale you actually have.
 - [Temperate silvopasture](/guides/temperate-silvopasture) — trees and forage with livestock, a different page.
+- [Permaculture planting guilds](/guides/permaculture-guilds) — the guild as a design unit, from Kansas State and NCSU, without a pest-control guarantee.
+- [Hügelkultur: what extension actually says](/guides/hugelkultur) — a woody mound is a different method, and WSU already said there are no peer-reviewed studies of it.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel, [plan the land on PlantGeo](https://plantgeo.aevani.com). Catalogue listings, where they appear beside a plant, are a preview and not for sale yet.
 

@@ -28,11 +28,11 @@ Irrigation may be flood-and-drain (“adds oxygen to the plant roots and aids in
 
 ## NFT and DWC, labeled FAO 2014
 
-“Dedicated filtration is of critical importance in both NFT and DWC units. Whereas the medium in the media bed technique serves as a biofilter and a mechanical filter, the NFT and DWC techniques do not have this luxury. Therefore, both types of filters need to be deliberately constructed: first, a physical trap to catch the solid wastes, and then a biological filter for nitrification.” The publication’s small-scale NFT/DWC layout is a “Figure 8” with one pump and a bidirectional split, “generally” returning “80 percent of the water to the fish tanks and the remaining 20 percent to the grow beds or canals.” That 80/20 split is a described small-scale pattern, not a law.
+“Dedicated filtration is of critical importance in both NFT and DWC units. Whereas the medium in the media bed technique serves as a biofilter and a mechanical filter, the NFT and DWC techniques do not have this luxury. Therefore, both types of filters need to be deliberately constructed: first, a physical trap to catch the solid wastes, and then a biological filter for nitrification.” The publication’s small-scale NFT/DWC layout is a “a figure in FAO's manual” with one pump and a bidirectional split, “generally” returning “80 percent of the water to the fish tanks and the remaining 20 percent to the grow beds or canals.” That 80/20 split is a described small-scale pattern, not a law.
 
 NFT grow-pipe figures, already cited in the [hydroponic NFT](/guides/nutrient-film-technique) guide: flow “no greater than 1–2 litres/min” per grow pipe; slope “about 1 cm/m”; 11 cm diameter pipes for larger fruiting vegetables or small-scale mixed plantings, 7.5 cm for smaller leafy crops. Label those as aquaponic-pipe figures. Evaporation in NFT is “very low” because water is shielded from the sun; the technique is “far more complicated and expensive than media beds.”
 
-On aquaponic DWC, plants sit in polystyrene sheets with roots hanging in the canal. “This method is the most common for large commercial aquaponics growing one specific crop (typically lettuce, salad leaves or basil).” “The recommended depth is 30 cm to allow for adequate plant root space.” Canal retention time is generally “1–4 hours.” Aeration is vital; the [deep water culture](/guides/deep-water-culture) guide already covers dissolved-oxygen floors, and this page does not invent a second DO target. A “special case” DWC can skip extra filters at “a very low stocking density of fish (i.e. 1–1.5 kg of fish per m3 of fish tank),” relying on roots and canal surfaces for nitrifying bacteria. That is FAO’s low-density variant, not a general stocking rule. The existing stocking guide already holds Table 3.2 and the 20 kg / 1,000 litre cap.
+On aquaponic DWC, plants sit in polystyrene sheets with roots hanging in the canal. “This method is the most common for large commercial aquaponics growing one specific crop (typically lettuce, salad leaves or basil).” “The recommended depth is 30 cm to allow for adequate plant root space.” Canal retention time is generally “1–4 hours.” Aeration is vital; the [deep water culture](/guides/deep-water-culture) guide already covers dissolved-oxygen floors, and this page does not invent a second DO target. A “special case” DWC can skip extra filters at “a very low stocking density of fish (i.e. 1–1.5 kg of fish per m3 of fish tank),” relying on roots and canal surfaces for nitrifying bacteria. That is FAO’s low-density variant, not a general stocking rule. The existing stocking guide already holds the water-quality table and the 20 kg / 1,000 litre cap.
 
 ## UVI as the commercial raft picture
 
@@ -54,15 +54,14 @@ Choosing NFT or rafts “because they look commercial,” then omitting the mech
 
 ## Sources
 
-Every stat on this page is cited.
 
 1. Somerville, C., Cohen, M., Pantanella, E., Stankus, A. & Lovatelli, A. 2014. *Small-scale aquaponic food production.* FAO Fisheries and Aquaculture Technical Paper No. 589. Chapter 4. https://www.fao.org/4/i4021e/i4021e.pdf
 2. Rakocy, J.E., Bailey, D.S., Shultz, R.C. & Danaher, J.J. “A Commercial-Scale Aquaponic System Developed at the University of the Virgin Islands.” PDF opened 2026-11-10 from https://tag2grow.org/wp-content/uploads/2021/09/UVI-Aquaponics.pdf
 3. University of the Virgin Islands, “Aquaponic Systems.” https://www.uvi.edu/research/agricultural-experiment-station/aquaculture/aquaponic-systems/index.html
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. A first NFT loop is built without a solids trap because “lettuce already filters the water.” FAO already said it does not.
+A first NFT loop is built without a solids trap because “lettuce already filters the water.” FAO already said it does not.
 
 ## Also in this section
 
@@ -71,6 +70,7 @@ This is a worked example, not a customer and not a testimonial. A first NFT loop
 - [Small-scale aquaponics](/guides/small-scale-aquaponics) — the water-quality compromise and the stocking cap.
 - [Nutrient film technique](/guides/nutrient-film-technique) — slope, flow, and why the film has to stay a film.
 - [Ebb-and-flow (flood-and-drain) hydroponics](/guides/ebb-and-flow) — a hydroponic fertilizer bench is not FAO’s fish-loop flood-and-drain bed.
+- [Food safety in hydroponics and aquaponics](/guides/soilless-food-safety) — a fish loop has added produce-safety considerations; keep production water off the harvest.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. This page is not a system kit or a live-fish offer. When the question is the parcel rather than the loop, [plan the land on PlantGeo](https://plantgeo.aevani.com).
 

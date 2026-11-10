@@ -22,11 +22,12 @@ The sun does not wait for you to get home.
 
 A plastic structure collects heat faster than most people plan for. Official Intermountain and mid-Atlantic guides already treat ventilation as a daily job, and in a dry climate the cooling water can rival the irrigation water. The structure itself is covered in the [high tunnels and hoop houses](/guides/high-tunnels-hoop-houses) guide. This page is the mechanism: air exchange, shade, and the risk of treating a hoop like a sealed box.
 
-## Hero figures
+Utah State University Extension (April 2010): in a Northern Utah high tunnel, “temperatures have exceeded 120°F on a sunny day in early March when high and low tunnels were not properly ventilated.” High tunnels in that guidance are usually passively heated and cooled; ventilation on sunny days is required to stay below a crop’s heat-injury range.
 
-- **Utah State University Extension (April 2010):** in a Northern Utah high tunnel, “temperatures have exceeded 120°F on a sunny day in early March when high and low tunnels were not properly ventilated.” High tunnels in that guidance are usually passively heated and cooled; ventilation on sunny days is required to stay below a crop’s heat-injury range.
-- **Penn State Extension (updated 13 March 2023):** “Maintaining optimum growing conditions inside the high tunnel without having extreme temperature fluctuations is critical.” Internal temperatures “should be checked several times a day and the roll-up sides adjusted accordingly.” “Most crops in high tunnels can be damaged if air temperatures drop below 45°F.”
-- **Sabeh, Giacomelli, and Kubota (2011), Tucson, Arizona, March–October 2006:** in a single-span polyethylene greenhouse of hydroponic tomatoes, eight-month irrigation water use was 780 L/m² and pad-and-fan cooling used 1,450 L/m² — more water on cooling than on the crop. That is a published semi-arid analog, one house and one season, not a Boise trial and not an Aevani result.
+Penn State Extension (updated 13 March 2023): “Maintaining optimum growing conditions inside the high tunnel without having extreme temperature fluctuations is critical.” Internal temperatures “should be checked several times a day and the roll-up sides adjusted accordingly.” “Most crops in high tunnels can be damaged if air temperatures drop below 45°F.”
+
+Sabeh, Giacomelli, and Kubota (2011), Tucson, Arizona, March–October 2006: in a single-span polyethylene greenhouse of hydroponic tomatoes, eight-month irrigation water use was 780 L/m² and pad-and-fan cooling used 1,450 L/m² — more water on cooling than on the crop. That is a published semi-arid analog, one house and one season, not a Boise trial and not an Aevani result.
+
 
 ## Daily operation
 
@@ -58,7 +59,6 @@ Equating “unheated” with “cannot overheat” is the first. Checking the te
 
 ## Sources
 
-Every stat on this page is cited.
 
 1. Black, Brent, and Dan Drost. “Temperature Management in High Tunnels.” Utah State University Extension, Horticulture/HighTunnels/2010-04, April 2010. https://extension.usu.edu/smallfarms/files/Greenhouses_Temp.Mgmt.pdf
 2. Ford, Thomas; Lynn Kime; Jayson K. Harper; and Stephen Bogash. “High Tunnel Production.” Penn State Extension. Updated 13 March 2023. https://extension.psu.edu/high-tunnel-production
@@ -66,15 +66,18 @@ Every stat on this page is cited.
 4. University of Arizona Controlled Environment Agriculture Center, Chapter 10, “Fertigation Systems and Nutrient Solutions.” https://ceac.arizona.edu/sites/default/files/Ch10.pdf
 5. ATTRA, National Center for Appropriate Technology, “Season Extension Techniques for Market Gardeners.” Updated February 2026. https://www.ncat.org/wp-content/uploads/2026/03/season-extension-techniques-for-market-gardeners.pdf
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. A weekday forecast that looked mild, sides left down, a March sun, and a 120°F lesson. The crop did not need a better fan brochure. It needed the sides moved before noon.
+A weekday forecast that looked mild, sides left down, a March sun, and a 120°F lesson. The crop did not need a better fan brochure. It needed the sides moved before noon.
 
 ## Also in this section
 
-- [High tunnels and hoop houses](/guides/high-tunnels-hoop-houses) — what the structure is, including the NRCS Practice 325 definition from the opened 2015 Overview.
+- [High tunnels and hoop houses](/guides/high-tunnels-hoop-houses) — what the structure is, including the NRCS high-tunnel practice definition from the opened 2015 Overview.
 - [Season extension with row covers, low tunnels, and cold frames](/guides/season-extension-covers-frames) — the smaller covers, and why stacking them can overheat.
 - [Hydroponics in the Intermountain West](/guides/hydroponics-intermountain) — Boise normals, hardiness zones, and the full cooling-water discussion.
+- [Winterizing high tunnels, irrigation, and containers](/guides/winterizing-growing-systems) — the same March heat, plus a 45°F damage line and an irrigation blow-out.
+- [Daily light integral for indoor and greenhouse greens](/guides/indoor-lighting-dli) — mid-winter light as a measured daily total, not only as a thermostat job.
+- [Pollinating tomatoes in greenhouses and high tunnels](/guides/greenhouse-pollination) — temperature bands that can abort flowers even when they are being jostled.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set.
 

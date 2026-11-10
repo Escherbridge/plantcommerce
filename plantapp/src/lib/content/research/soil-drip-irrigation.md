@@ -48,16 +48,15 @@ Sprinkling a narrow box and watering the path is the first (USU). Guessing at mo
 
 ## Sources
 
-Every stat on this page is cited.
 
 1. Heflebower, Rick; Katie Wagner; JayDee Gunnell; and JoDeane Condrat. “Raised Bed Gardening.” Utah State University Extension, February 2012. Peer-reviewed fact sheet. https://extension.usu.edu/yardandgarden/research/raised-bed-gardening
 2. Penn State Extension. “High Tunnel Production.” Updated 13 March 2023. https://extension.psu.edu/high-tunnel-production
 3. University of Minnesota Extension. “Soil health and nutrient management in high tunnels.” Reviewed 2026. https://extension.umn.edu/agriculture/specialty-crops/soil-health-and-nutrient-management-in-high-tunnels
 4. Schaible, Candace; Kelly Kopp; and Jennie Hoover. “Irrigation System Maintenance.” Utah State University Extension, July 2021. https://extension.usu.edu/yardandgarden/research/irrigation-system-maintenance/
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. A perfectly dry-looking plastic bed, plants wilting, never a soil-moisture check, then a long sprinkler shower over the aisle. Official pages already preferred drip and a tensiometer.
+A perfectly dry-looking plastic bed, plants wilting, never a soil-moisture check, then a long sprinkler shower over the aisle. Official pages already preferred drip and a tensiometer.
 
 ## Also in this section
 

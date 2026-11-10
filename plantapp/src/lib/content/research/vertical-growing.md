@@ -20,12 +20,12 @@ lastReviewed: 2026-11-10
 
 Gravity is not a lighting plan. Official pages already traded plant counts against light. A vertical or stacked layout can raise the number of sites in a footprint, and the gain is sometimes lost to uneven light and space. If the lower plants are shaded or dry, the “extra” yield is a photo, not a harvest. This page is a uniformity warning, not a DIY tower manual. The official record opened here is principle-level only: two publications, no spacing chart, no flow recipe, and no yield figure.
 
-## Hero figures, labeled by source
+Florida's hydroponic systems guide, originally published in January 2010, in its section on vertical systems, says “Vertical hydroponic systems produce crops in upright or vertical rows, a method that can significantly increase plant populations. The most common vertical systems include stacked pots…, stacked and sloped PVC pipes, and hanging vertical bags. The potential for increased yield in vertical systems is sometimes offset by the non-uniformity of product due to competition for light and space.” “The vertical systems are popular for producing strawberries, leafy greens, edible flowers and fresh-cut” crops. This page describes those system types and does not name a commercial stacked-pot product, including any brand that appears in a photograph caption in that section. No spacing, flow rate, or yield figure appears in the opened section, and none is invented here.
 
-- **UF/IFAS HS405 (original January 2010), section “Vertical Systems”:** “Vertical hydroponic systems produce crops in upright or vertical rows, a method that can significantly increase plant populations. The most common vertical systems include stacked pots…, stacked and sloped PVC pipes, and hanging vertical bags. The potential for increased yield in vertical systems is sometimes offset by the non-uniformity of product due to competition for light and space.” “The vertical systems are popular for producing strawberries, leafy greens, edible flowers and fresh-cut” crops. This page describes those system types and does not name a commercial stacked-pot product, including any brand that appears in a photograph caption in that section. No spacing, flow rate, or yield figure appears in the opened section, and none is invented here.
-- **Oregon State University Extension EM 9457 (May 2025, Nelson, Langellotto, and Nackley)** on vertical NFT: vertical arrangements “can significantly increase crop density” but “adding more vertical levels will increase shading,” which “may require using low-light crops or providing supplemental lighting.” Horizontal channels are the easier layout in that hint sheet. Pump failure still wilts an NFT crop immediately, vertical or not; that risk is already in the [nutrient film technique](/guides/nutrient-film-technique) guide.
+Oregon State's May 2025 NFT guide, by Nelson, Langellotto, and Nackley, on vertical NFT: vertical arrangements “can significantly increase crop density” but “adding more vertical levels will increase shading,” which “may require using low-light crops or providing supplemental lighting.” Horizontal channels are the easier layout in that hint sheet. Pump failure still wilts an NFT crop immediately, vertical or not; that risk is already in the [nutrient film technique](/guides/nutrient-film-technique) guide.
 
 Irrigation has to reach the top and the bottom as well as the light. Official pages opened for this brief do not give a home flow recipe, so this page does not invent one. The uniformity problem includes water as well as light, as a principle, without a made-up schedule. Indoor lighting and daily light integral belong in a later lighting guide and are not invented as numbers here.
+
 
 ## What this page will not do
 
@@ -45,14 +45,14 @@ Naming or implying a commercial tower brand is the first. Counting plant sites a
 
 ## Sources
 
-Every stat on this page is cited. The official record is thin, and the page is written that way on purpose.
+The official record is thin, and the page is written that way on purpose.
 
 1. Tyson, Hochmuth, and Cantliffe. “Hydroponic Vegetable Production in Florida.” UF/IFAS HS405, section “Vertical Systems.” Original January 2010. https://ask.ifas.ufl.edu/publication/HS405/pdf
 2. Nelson II, Mykl; Gail Langellotto; and Lloyd Nackley. “Hydro hints: Nutrient film technique.” Oregon State University Extension EM 9457, May 2025. https://extension.oregonstate.edu/catalog/pub/em-9457-hydro-hints-nutrient-film-technique
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. A tall stacked column of greens, lush at the top, pale and sparse at the bottom, the same nutrient tank. UF already named non-uniformity.
+A tall stacked column of greens, lush at the top, pale and sparse at the bottom, the same nutrient tank. UF already named non-uniformity.
 
 ## Also in this section
 
@@ -60,6 +60,7 @@ This is a worked example, not a customer and not a testimonial. A tall stacked c
 - [Nutrient film technique: slope, flow, and channel length](/guides/nutrient-film-technique) — why a stopped pump fails immediately, and why Oregon State treats horizontal channels as easier.
 - [Greenhouse and high-tunnel ventilation and heat](/guides/greenhouse-ventilation-heat) — air and heat around a structure that may also be asked to light a tall crop.
 - [Choosing crops for a hydroponic system](/guides/hydroponic-crop-choice) — short-rooted leafy crops in films, fruiting crops in drip-fed media.
+- [Daily light integral for indoor and greenhouse greens](/guides/indoor-lighting-dli) — a day of PAR, if the lower plants are in shade.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. Catalogue listings, where they appear, are a preview and not for sale yet. When the question is the parcel rather than the stack, [plan the land on PlantGeo](https://plantgeo.aevani.com).
 

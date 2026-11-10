@@ -20,14 +20,14 @@ lastReviewed: 2026-11-10
 
 A container crop fails in predictable, official ways: a pot with no drainage, garden soil in a bucket, a tomato in a pot that is too small, and a summer watering habit that does not keep up. Official advice is almost boring, and it would have saved most failed patio tomatoes: holes in the bottom, a soilless mix, a large enough pot, and water that comes out the holes on a hot day. This page is about those land-grant sizes and media rules, not about a decorative planter.
 
-## Hero figures
+Penn State Extension (updated 30 March 2026) and Ohio State's 2000 container-gardening fact sheet do not print identical diameters. Both are official, and this page prints both rather than inventing a compromise number. The gallon column and the diameter column in the Ohio sheet should also not be mashed into one rule.
 
-Penn State Extension (updated 30 March 2026) and Ohio State University Extension (HYG-1647-2000) do not print identical diameters. Both are official, and this page prints both rather than inventing a compromise number. The gallon column and the diameter column in the Ohio sheet should also not be mashed into one rule.
+Penn State (2026): “A single tomato plant will need at least a 20-inch-wide pot, while peppers and eggplants can thrive in a 14-inch pot. Smaller pots are good for herbs and greens. For healthy root growth, all pots should be at least as tall as they are wide.”
 
-- **Penn State (2026):** “A single tomato plant will need at least a 20-inch-wide pot, while peppers and eggplants can thrive in a 14-inch pot. Smaller pots are good for herbs and greens. For healthy root growth, all pots should be at least as tall as they are wide.”
-- **Ohio State (2000):** “Tomatoes produce best in containers of at least 20" or 22" diameter, peppers grow best in 16" diameter.” The same sheet also states volumes: peppers, chard, and dwarf tomatoes, a soil volume of 1–2 gallons per plant; full-sized tomato plants and cucumbers, 4–5 gallons per plant. A capacity table includes: 8" pot, 1½ gallons; 10" pot, 2½ gallons; 12" pot, 3½ gallons; 14" pot, 4½ gallons; 16" pot, 5½ gallons; 20" pot, 6½ gallons. Lettuce is listed as an 8"-wide, 6–8" deep example.
+Ohio State (2000): “Tomatoes produce best in containers of at least 20" or 22" diameter, peppers grow best in 16" diameter.” The same sheet also states volumes: peppers, chard, and dwarf tomatoes, a soil volume of 1–2 gallons per plant; full-sized tomato plants and cucumbers, 4–5 gallons per plant. A capacity table includes: 8" pot, 1½ gallons; 10" pot, 2½ gallons; 12" pot, 3½ gallons; 14" pot, 4½ gallons; 16" pot, 5½ gallons; 20" pot, 6½ gallons. Lettuce is listed as an 8"-wide, 6–8" deep example.
 
 University of Maryland Extension’s “Types of Containers for Growing Vegetables” is a supporting land-grant page on container types. This guide does not add sizes from that page beyond what Penn State and Ohio already printed clearly.
+
 
 ## Drainage, media, and water
 
@@ -55,15 +55,14 @@ No drainage holes, or a saucer that holds the pot in standing water, is the firs
 
 ## Sources
 
-Every stat on this page is cited.
 
 1. Kinley, Erin. “Container Vegetable Gardening – Four Keys to Success.” Penn State Extension. Updated 30 March 2026. https://extension.psu.edu/container-vegetable-gardening-four-keys-to-success
 2. Ohio State University Extension, “Container Vegetable Gardening,” HYG-1647-2000. https://lucas.osu.edu/sites/lucas/files/imce/LocalFood/1647.pdf
 3. University of Maryland Extension, “Types of Containers for Growing Vegetables.” https://www.extension.umd.edu/resource/types-containers-growing-vegetables — used as a third official voice on container types; no extra sizes were taken from this page.
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. A full-size tomato sits in a 10-inch decorative pot of yard soil, watered lightly once a day in July. The pot has no real drainage, the mix is heavy, and the plant was asked to live in less root room than either official table describes.
+A full-size tomato sits in a 10-inch decorative pot of yard soil, watered lightly once a day in July. The pot has no real drainage, the mix is heavy, and the plant was asked to live in less root room than either official table describes.
 
 ## Also in this section
 
@@ -71,6 +70,8 @@ This is a worked example, not a customer and not a testimonial. A full-size toma
 - [Understanding soil health](/guides/understanding-soil-health) — what a test is for, which is a different question from what goes in a pot.
 - [High tunnels and hoop houses](/guides/high-tunnels-hoop-houses) — if the next step is a structure rather than another pot.
 - [No-dig beds and sheet mulching](/guides/no-dig-sheet-mulch) — if you have ground but do not want to dig, official layering steps already exist.
+- [Winterizing high tunnels, irrigation, and containers](/guides/winterizing-growing-systems) — porous clay comes inside; many non-porous pots can stay out.
+- [Integrated pest management in outdoor beds and containers](/guides/outdoor-bed-ipm) — walk the pot, and do not import a greenhouse spray habit.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set.
 

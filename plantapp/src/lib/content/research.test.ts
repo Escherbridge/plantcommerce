@@ -203,6 +203,8 @@ describe('research guides', () => {
 		expect(text).toContain('https://plantgeo.aevani.com');
 		expect(text).not.toContain('/blog/nothing-for-sale-yet');
 		expect(text).not.toContain('An illustrative scenario');
+		expect(text).not.toContain('Hero figures');
+		expect(text).not.toContain('Every stat on this page is cited');
 		expect(text).not.toContain('not written yet');
 		const indexLinks = new Map(indexGuideLinks().map((item) => [item.href, item.name]));
 		for (const href of publishedGuideHrefs) {
@@ -232,9 +234,8 @@ describe('research guides', () => {
 				'92.7°F',
 				'0.21-inch July',
 				'−5 to 0°F',
-				'An illustrative scenario',
-				'Sources',
-				'Every stat on this page is cited.'
+				'A situation like this',
+				'Sources'
 			],
 			'small-scale-aquaponics': [
 				'pH 6–7',
@@ -243,7 +244,7 @@ describe('research guides', () => {
 				'40–50 grams',
 				'50–80 grams',
 				'32 percent protein',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'temperate-silvopasture': [
@@ -252,43 +253,43 @@ describe('research guides', () => {
 				'54.8 days',
 				'0.21 inches',
 				'11.51 inches',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'hydroponic-ec-ph-nutrients': [
-				'Check EC first, then pH',
+				'Check EC first, get it in range, then check pH',
 				'pH between 5 and 6',
 				'5.8 to 6.2',
 				'1.15–1.25 mS/cm',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'choosing-hydroponic-system': [
 				'less than 2 gallons',
 				'6–8 ppm',
 				'at least 4 ppm',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
-			'raised-beds': ['3 to 4 feet', '6 to 12 inches', 'An illustrative scenario', 'Sources'],
+			'raised-beds': ['3 to 4 feet', '6 to 12 inches', 'A situation like this', 'Sources'],
 			'high-tunnels-hoop-houses': [
-				'Conservation Practice 325',
+				'High Tunnel System (325)',
 				'120°F',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'hydroponic-troubleshooting-root-rot': [
 				'at least 4 ppm',
 				'6–8 ppm',
 				'65–75°F',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
-			'deep-water-culture': ['6–8 ppm', 'at least 4 ppm', 'An illustrative scenario', 'Sources'],
+			'deep-water-culture': ['6–8 ppm', 'at least 4 ppm', 'A situation like this', 'Sources'],
 			'kratky-method': [
 				'less than 2 gallons',
 				'Electricity and pumps are not needed',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'container-gardening': [
@@ -296,46 +297,45 @@ describe('research guides', () => {
 				'20" or 22"',
 				'1½ gallons',
 				'do not use straight garden soil',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'greenhouse-ventilation-heat': [
 				'120°F',
 				'780 L/m²',
 				'1,450 L/m²',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'season-extension-covers-frames': [
 				'floating row covers',
 				'45°F',
 				'120°F',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'aquaponic-biofilter-cycling': [
 				'25–40 days',
 				'1–2 mg/litre',
 				'between 3 and 5 mg/L',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'greenhouse-ipm': [
-				'Hero practices',
 				'different from growing the same crop in the open field',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'nutrient-film-technique': [
 				'minimum 2% slope',
 				'1–2 litres/min',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'aquaponic-system-types': [
 				'most popular design for small-scale aquaponics',
 				'width of about 1 m',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'aquaponic-fish-species': [
@@ -343,7 +343,7 @@ describe('research guides', () => {
 				'below 17 °C',
 				'22–32 °C',
 				'10–18 °C',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'source-water-testing': [
@@ -352,101 +352,100 @@ describe('research guides', () => {
 				'year 3 or 4',
 				'In Kentucky, source water is typically alkaline',
 				'most Florida irrigation water',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'hydroponic-crop-choice': [
 				'1.2–1.8',
 				'2.0–4.0',
 				'1,000 microsiemens per centimeter',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'hydroponic-nutrient-disorders': [
 				'Mobile versus immobile',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'drip-dutch-bucket': [
 				'1.5 to 3.5',
 				'1.0 EC units',
 				'does not name a commercial tower or bucket brand',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'ebb-and-flow': [
 				'15 min',
 				'every 12 hours',
 				'15-on/45-off',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'vertical-growing': [
 				'sometimes offset by the non-uniformity',
 				'does not name a commercial stacked-pot product',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'soilless-seed-starting': [
 				'1,200 µS/cm above source water',
 				'1.0 mS/cm',
 				'Two official lettuce programs, side by side',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'hydroponic-media': [
 				'at least twice the amount of water',
 				'8.34',
 				'coco-versus-rockwool',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'no-dig-sheet-mulch': [
 				'https://sfyl.ifas.ufl.edu/lawn-and-garden/no-dig-garden-beds/',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'temperate-food-forest': [
-				'1 February 2022',
-				'AG-831',
+				'1 February 2022 (AG-831)',
 				'apple tree guild',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
-			'permaculture-guilds': ['1 February 2022', 'AG-831', 'An illustrative scenario', 'Sources'],
+			'permaculture-guilds': ['1 February 2022 (AG-831)', 'A situation like this', 'Sources'],
 			hugelkultur: [
 				'There are no peer-reviewed, scientific studies',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'indoor-lighting-dli': [
 				'12–17',
 				'about 17',
 				'not averaged',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
 			'greenhouse-pollination': [
 				'over pollination',
 				'Gasoline-powered air blowers should not be used',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
-			'winterizing-growing-systems': ['45°F', 'An illustrative scenario', 'Sources'],
+			'winterizing-growing-systems': ['45°F', 'A situation like this', 'Sources'],
 			'soilless-food-safety': [
 				'Produce Safety Rule',
 				'covered farm',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
-			'soil-drip-irrigation': ['Minnesota', 'An illustrative scenario', 'Sources'],
+			'soil-drip-irrigation': ['Minnesota', 'A situation like this', 'Sources'],
 			'frost-dates-hardiness': [
 				'average annual extreme minimum',
-				'An illustrative scenario',
+				'A situation like this',
 				'Sources'
 			],
-			'rainwater-irrigation-quality': ['gallons', 'bleach', 'An illustrative scenario', 'Sources'],
-			'outdoor-bed-ipm': ['sticky', 'An illustrative scenario', 'Sources']
+			'rainwater-irrigation-quality': ['gallons', 'bleach', 'A situation like this', 'Sources'],
+			'outdoor-bed-ipm': ['sticky', 'A situation like this', 'Sources']
 		};
 
 		const builtHrefs = new Set<string>([...publishedGuideHrefs, ...relatedNoteHrefs]);
@@ -504,6 +503,10 @@ describe('research guides', () => {
 			expect(guide.breadcrumb).not.toBe('Guides');
 			const text = guidePlainText(guide);
 			for (const figure of expected[guide.slug]) expect(text, figure).toContain(figure);
+			expect(text).not.toContain('An illustrative scenario');
+			expect(text).not.toContain('Hero figures');
+			expect(text).not.toContain('Hero practices');
+			expect(text).not.toContain('Every stat on this page is cited');
 			expect(text).toContain('flat 8%');
 			expect(text.toLowerCase()).toContain('payout timing');
 			expect(text).toContain('https://plantgeo.aevani.com');

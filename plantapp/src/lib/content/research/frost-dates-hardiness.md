@@ -48,7 +48,6 @@ Using a hardiness zone as a last-frost date is the first. Treating the zone as t
 
 ## Sources
 
-Every stat on this page is cited.
 
 1. USDA Agricultural Research Service. 2023 Plant Hardiness Zone Map. https://planthardiness.ars.usda.gov/
 2. USDA Agricultural Research Service. “How to Use the Maps.” https://planthardiness.ars.usda.gov/pages/how-to-use-the-maps
@@ -56,9 +55,9 @@ Every stat on this page is cited.
 4. Utah State University Extension. “Utah Vegetable Planting Date Calculator,” using *Suggested Vegetable Planting Dates for Utah* (Olsen, revised 2025). https://extension.usu.edu/yardandgarden/utah-planting-date-calculator
 5. Boise-area half-zones and NOAA normals, already sourced on [Hydroponics in the Intermountain West](/guides/hydroponics-intermountain).
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. A “zone 7” tomato planted in April because the map felt warmer, then a late frost. USDA already said the map is not a frost calendar.
+A “zone 7” tomato planted in April because the map felt warmer, then a late frost. USDA already said the map is not a frost calendar.
 
 ## Also in this section
 

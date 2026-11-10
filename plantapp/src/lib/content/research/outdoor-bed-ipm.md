@@ -46,14 +46,13 @@ Importing the greenhouse pest list into an open bed is the first. Calendar spray
 
 ## Sources
 
-Every stat on this page is cited.
 
 1. Diffenderfer, Diane. “Steps to Controlling Insect Pests in the Garden.” Penn State Extension, updated 30 April 2024. https://extension.psu.edu/steps-to-controlling-insect-pests-in-the-garden
 2. UF/IFAS Gardening Solutions. “Integrated Pest Management (IPM).” Page opened 2026-11-10; a last-modified date was not obvious in the extracted footer. https://gardeningsolutions.ifas.ufl.edu/care/pests-and-diseases/pests/integrated-pest-management/
 
-## An illustrative scenario
+## A situation like this
 
-This is a worked example, not a customer and not a testimonial. A Saturday spray “just in case,” beneficials gone, then worse aphids, never a walk the evening before. Official pages already preferred scouting and hand-picking first.
+A Saturday spray “just in case,” beneficials gone, then worse aphids, never a walk the evening before. Official pages already preferred scouting and hand-picking first.
 
 ## Also in this section
 
