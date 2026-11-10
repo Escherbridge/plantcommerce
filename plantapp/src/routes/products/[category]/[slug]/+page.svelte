@@ -342,19 +342,19 @@
 
 					<!-- Trust tiles -->
 					<div class="trust">
-						<div class="trust__tile">
+						<a class="trust__tile" href="/shipping">
 							<span class="trust__label">Free shipping</span>
 							<span class="trust__sub">On qualifying orders</span>
-						</div>
-						<div class="trust__tile">
+						</a>
+						<a class="trust__tile" href="/returns">
 							<span class="trust__label">30-day returns</span>
 							<span class="trust__sub">No-fuss guarantee</span>
-						</div>
+						</a>
 						{#if p.warranty}
-							<div class="trust__tile">
+							<a class="trust__tile" href="/warranty">
 								<span class="trust__label">Warranty</span>
 								<span class="trust__sub">{p.warranty}</span>
-							</div>
+							</a>
 						{/if}
 					</div>
 				</div>
@@ -824,6 +824,8 @@
 		background: rgba(255, 255, 255, 0.6);
 		border: 1px solid rgba(255, 255, 255, 0.9);
 		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+		color: inherit;
+		text-decoration: none;
 	}
 	.trust__label {
 		font-family: var(--font-display);
