@@ -14,6 +14,20 @@ describe('cornerstone essays', () => {
 			expect(html).toContain('href="https://plantgeo.aevani.com/"');
 			expect(html).not.toContain('nofollow');
 			expect(cornerstoneEssayBySlug(essay.slug)?.title).toBe(essay.title);
+			expect(essay.sources.some((source) => source.href === 'https://plantgeo.aevani.com')).toBe(
+				true
+			);
 		}
+
+		const catalogue = cornerstoneEssayBySlug('nothing-for-sale-yet');
+		expect(catalogue?.body).toContain(
+			'does not publish customer counts, product counts, impact metrics, certifications, awards, partner relationships, team biographies, or company-history milestones as verified facts'
+		);
+		expect(catalogue?.sources.map((source) => source.href)).toContain('https://aevani.com/terms');
+
+		const fee = cornerstoneEssayBySlug('a-flat-eight-percent');
+		expect(fee?.sources.map((source) => source.href)).toContain(
+			'https://aevani.com/affiliate/join'
+		);
 	});
 });
