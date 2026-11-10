@@ -243,10 +243,6 @@
 							<span class="buy__compare">{fmtPrice(p.comparePrice)}</span>
 						{/if}
 					</div>
-					{#if p.shippingNote}
-						<p class="buy__shipping">{p.shippingNote}</p>
-					{/if}
-
 					<!-- Key features checklist -->
 					{#if p.keyFeatures.length > 0}
 						<ul class="buy__features">
@@ -348,26 +344,6 @@
 								{/if}
 							</span>
 						</label>
-					{/if}
-
-					<!-- Trust tiles describe a purchase. Hide them while the listing is not for sale. -->
-					{#if !p.comingSoon}
-						<div class="trust">
-							<a class="trust__tile" href="/shipping">
-								<span class="trust__label">Free shipping</span>
-								<span class="trust__sub">On qualifying orders</span>
-							</a>
-							<a class="trust__tile" href="/returns">
-								<span class="trust__label">30-day returns</span>
-								<span class="trust__sub">No-fuss guarantee</span>
-							</a>
-							{#if p.warranty}
-								<a class="trust__tile" href="/warranty">
-									<span class="trust__label">Warranty</span>
-									<span class="trust__sub">{p.warranty}</span>
-								</a>
-							{/if}
-						</div>
 					{/if}
 				</div>
 			</div>
@@ -652,12 +628,6 @@
 		line-height: 1.5;
 		color: #3d5346;
 	}
-	.buy__shipping {
-		margin: -6px 0 0;
-		font-family: var(--font-body);
-		font-size: 13.5px;
-		color: #5a7263;
-	}
 
 	.buy__features {
 		list-style: none;
@@ -824,38 +794,6 @@
 	}
 	.bundle__blurb {
 		font-size: 13px;
-		color: #5a7263;
-	}
-
-	/* Trust tiles */
-	.trust {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 12px;
-		margin-top: 4px;
-	}
-	.trust__tile {
-		display: flex;
-		flex-direction: column;
-		gap: 3px;
-		padding: 14px 16px;
-		border-radius: 16px;
-		background: rgba(255, 255, 255, 0.6);
-		border: 1px solid rgba(255, 255, 255, 0.9);
-		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
-		color: inherit;
-		text-decoration: none;
-	}
-	.trust__label {
-		font-family: var(--font-display);
-		font-size: 14px;
-		font-weight: 600;
-		color: #1c3527;
-	}
-	.trust__sub {
-		font-family: var(--font-body);
-		font-size: 12px;
-		line-height: 1.35;
 		color: #5a7263;
 	}
 
@@ -1231,9 +1169,6 @@
 			grid-template-columns: repeat(2, 1fr);
 		}
 		.inbox__list {
-			grid-template-columns: 1fr;
-		}
-		.trust {
 			grid-template-columns: 1fr;
 		}
 		.related-grid {
