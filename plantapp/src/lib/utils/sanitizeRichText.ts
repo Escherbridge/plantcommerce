@@ -38,12 +38,35 @@ const urlNamedEntities: Record<string, string> = {
 };
 
 function escapeHtml(value: string): string {
-	return value
-		.replaceAll('&', '&amp;')
-		.replaceAll('<', '&lt;')
-		.replaceAll('>', '&gt;')
-		.replaceAll('"', '&quot;')
-		.replaceAll("'", '&#39;');
+	return value.replace(/[&<>"']/g, (char) => {
+		switch (char) {
+			case '&':
+				return '&amp;';
+			case '<':
+				return '&lt;';
+			case '>':
+				return '&gt;';
+			case '"':
+				return '&quot;';
+			default:
+				return '&#39;';
+		}
+	});
+}
+
+/** A character reference that is already encoded. Leave it so "&amp;" stays an ampersand. */
+const encodedEntity = /&(?:#x[0-9a-fA-F]+|#\d+|[a-zA-Z][a-zA-Z0-9]+);/g;
+
+function escapeText(value: string): string {
+	let escaped = '';
+	let last = 0;
+	for (const match of value.matchAll(encodedEntity)) {
+		const index = match.index ?? 0;
+		escaped += escapeHtml(value.slice(last, index));
+		escaped += match[0];
+		last = index + match[0].length;
+	}
+	return escaped + escapeHtml(value.slice(last));
 }
 
 function decodeUrlEntities(value: string): string {
@@ -156,14 +179,14 @@ export function sanitizeRichText(content: string | null | undefined): string {
 			break;
 		}
 
-		sanitized += escapeHtml(content.slice(textStart, start));
+		sanitized += escapeText(content.slice(textStart, start));
 		const token = content.slice(start, end + 1);
 		sanitized += sanitizeTag(token, openTags) ?? escapeHtml(token);
 		textStart = end + 1;
 		start = end;
 	}
 
-	sanitized += escapeHtml(content.slice(textStart));
+	sanitized += escapeText(content.slice(textStart));
 	return `${sanitized}${openTags
 		.reverse()
 		.map((tag) => `</${tag}>`)

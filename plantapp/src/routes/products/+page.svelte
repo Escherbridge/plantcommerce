@@ -4,11 +4,12 @@
 	import { ProductCard } from '$lib/components/cards';
 	import { replaceState } from '$app/navigation';
 	import { page } from '$app/state';
+	import { catalogChipMatches } from './catalog';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 
-	// Chip id -> label. Chip -> product system mapping lives in chipMatches().
+	// Chip id -> label. Chip -> product system mapping lives in catalogChipMatches().
 	const CHIPS = [
 		{ id: 'all', label: 'All products' },
 		{ id: 'hydroponics', label: 'Hydroponics' },
@@ -28,16 +29,9 @@
 	let selected = $state(data.selectedCategory ?? 'all');
 	const searchQuery = $derived((data.searchQuery ?? '').trim());
 
-	/** True when a product's system belongs to the given chip. */
-	function chipMatches(chipId: string, system: string): boolean {
-		if (chipId === 'all') return true;
-		if (chipId === 'seeds-supplies') return system === 'plants-seeds' || system === 'garden-tools';
-		return system === chipId;
-	}
-
 	const filtered = $derived(
 		data.products.filter((p) => {
-			if (!chipMatches(selected, p.system)) return false;
+			if (!catalogChipMatches(selected, p.system)) return false;
 			if (searchQuery) {
 				const hay = `${p.name} ${p.shortDescription ?? ''} ${p.categoryName}`.toLowerCase();
 				if (!hay.includes(searchQuery.toLowerCase())) return false;

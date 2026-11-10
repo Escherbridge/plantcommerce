@@ -2,6 +2,18 @@ import { describe, expect, it } from 'vitest';
 import { sanitizeRichText } from './sanitizeRichText';
 
 describe('sanitizeRichText', () => {
+	it('does not double-escape entities that are already encoded', () => {
+		const result = sanitizeRichText(
+			'<p>Start with the <a href="/learn">silvopasture &amp; agroforestry guide</a>.</p>'
+		);
+
+		expect(result).toBe(
+			'<p>Start with the <a href="/learn" rel="noopener noreferrer">silvopasture &amp; agroforestry guide</a>.</p>'
+		);
+		expect(result).not.toContain('&amp;amp;');
+		expect(sanitizeRichText('<p>5 & 6</p>')).toBe('<p>5 &amp; 6</p>');
+	});
+
 	it('keeps the documented semantic markup and safe links', () => {
 		expect(
 			sanitizeRichText(

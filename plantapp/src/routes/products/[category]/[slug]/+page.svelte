@@ -4,6 +4,7 @@
 	import { ProductGallery, ProductCard } from '$lib/components/cards';
 	import { StatTile, SectionHeader, Badge, Button, GlassCard } from '$lib/components/ui';
 	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
+	import { productCategoryHref } from '../../catalog';
 	import { cart } from '$lib/stores/cart';
 	import type { PageData } from './$types';
 
@@ -16,6 +17,8 @@
 	let addBundle = $state(false);
 
 	const productUrl = $derived(`/products/${data.categorySlug}/${p.slug}`);
+	const categoryHref = $derived(productCategoryHref(data.categorySlug));
+	const categoryName = $derived(p.category?.name || data.categorySlug);
 
 	// ---- Currency-aware price formatting (currency from the model; default USD → $). ----
 	const currencyCode = $derived((p.currency || 'USD').toUpperCase());
@@ -88,8 +91,8 @@
 							{
 								'@type': 'ListItem',
 								position: 2,
-								name: p.category?.name || 'Products',
-								item: `https://aevani.com/products/${data.categorySlug}`
+								name: categoryName,
+								item: `https://aevani.com${categoryHref ?? '/products'}`
 							},
 							{
 								'@type': 'ListItem',
@@ -165,7 +168,11 @@
 		<nav class="crumbs" aria-label="Breadcrumb">
 			<a href="/">Home</a>
 			<span class="crumbs__sep" aria-hidden="true">/</span>
-			<a href="/products/{data.categorySlug}">{p.category?.name || data.categorySlug}</a>
+			{#if categoryHref}
+				<a href={categoryHref}>{categoryName}</a>
+			{:else}
+				<span>{categoryName}</span>
+			{/if}
 			<span class="crumbs__sep" aria-hidden="true">/</span>
 			<span class="crumbs__current" aria-current="page">{p.name}</span>
 		</nav>
