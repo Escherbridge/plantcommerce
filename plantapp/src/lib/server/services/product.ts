@@ -204,6 +204,19 @@ export interface CategoryParams {
 	sortOrder?: number;
 }
 
+/**
+ * Public catalogue rows must not carry placeholder shipping or warranty claims.
+ * The columns stay in the database; list responses simply omit them.
+ */
+export function omitPublicListingClaims<T extends { warranty?: unknown; shippingNote?: unknown }>(
+	product: T
+): Omit<T, 'warranty' | 'shippingNote'> {
+	const rest = { ...product };
+	delete rest.warranty;
+	delete rest.shippingNote;
+	return rest;
+}
+
 export class ProductService {
 	/**
 	 * Create new product
@@ -746,7 +759,9 @@ export class ProductService {
 	 */
 	static async getProducts(filter: ProductFilter): Promise<
 		Array<{
-			product: table.Product & { images?: Array<{ url: string; altText: string | null }> };
+			product: Omit<table.Product, 'warranty' | 'shippingNote'> & {
+				images?: Array<{ url: string; altText: string | null }>;
+			};
 			category: {
 				id: number;
 				name: string;
@@ -818,7 +833,7 @@ export class ProductService {
 			const url = publicProductImageUrl(file, product.id);
 			return {
 				product: {
-					...product,
+					...omitPublicListingClaims(product),
 					images: url
 						? [
 								{
