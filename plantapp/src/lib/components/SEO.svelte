@@ -2,10 +2,13 @@
 	// Use $props() instead of export let in runes mode
 	import { publicSite, publicSiteUrl } from '$lib/config/site';
 
+	const DEFAULT_SHARE_IMAGE = '/og-image.png';
+
 	const {
 		title = publicSite.defaultTitle,
 		description = publicSite.description,
 		image = null,
+		useDefaultImage = true,
 		url = '',
 		type = 'website',
 		publishedTime = null,
@@ -16,6 +19,8 @@
 		title?: string;
 		description?: string;
 		image?: string | null;
+		/** When false, omit the sitewide share image so a page can set its own. */
+		useDefaultImage?: boolean;
 		url?: string;
 		type?: string;
 		publishedTime?: string | null;
@@ -34,9 +39,13 @@
 	const absoluteUrl = $derived(url ? (url.startsWith('http') ? url : publicSiteUrl(url)) : baseUrl);
 
 	const imagePath = $derived(image ? (image.startsWith('/') ? image : `/${image}`) : null);
-	const absoluteImage = $derived(
+	const customImage = $derived(
 		image ? (image.startsWith('http') ? image : publicSiteUrl(imagePath!)) : null
 	);
+	const absoluteImage = $derived(
+		customImage ?? (useDefaultImage ? publicSiteUrl(DEFAULT_SHARE_IMAGE) : null)
+	);
+	const usingDefaultImage = $derived(!customImage && absoluteImage !== null);
 </script>
 
 <!-- Primary Meta Tags -->
@@ -51,6 +60,10 @@
 <meta property="og:description" content={safeDescription} />
 {#if absoluteImage}
 	<meta property="og:image" content={absoluteImage} />
+	{#if usingDefaultImage}
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+	{/if}
 {/if}
 
 <!-- Twitter -->
