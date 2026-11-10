@@ -100,12 +100,12 @@ const routeMetadata: Record<string, { title: string; description: string }> = {
 	'/learn': {
 		title: 'Learn — Aevani',
 		description:
-			'Free growing guides and notes. No account required. The shop behind them is still being seeded.'
+			'Short guides and notes on soil, companion planting, hydroponics, aquaponics, and silvopasture. Free, no account. This is not a complete library, and it does not sell you a kit at the end.'
 	},
 	'/blog': {
 		title: 'Field notes — Aevani',
 		description:
-			'Dated notes from Escherbridge. The catalogue is a preview. Nothing in it is for sale yet.'
+			'Dated writing from Escherbridge on growing, selling, and the flat 8% seller fee. The catalogue is still a preview, and the checkout remains off.'
 	},
 	'/news': {
 		title: 'News — Aevani',

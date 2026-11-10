@@ -11,6 +11,15 @@
 	const authorName = 'Escherbridge';
 	const related = $derived(relatedEssays(page.slug));
 	const description = $derived(page.metaDescription || page.excerpt || page.title);
+	const citations = $derived(
+		data.post.sources.map((source) => ({
+			'@type': 'CreativeWork',
+			name: source.label,
+			url: source.href,
+			...(source.datePublished ? { datePublished: source.datePublished } : {}),
+			...(source.alsoHref ? { sameAs: source.alsoHref } : {})
+		}))
+	);
 
 	const publishedIso = $derived.by(() => {
 		if (!page.publishedAt) return undefined;
@@ -44,6 +53,7 @@
 		headline: page.title,
 		description,
 		datePublished: publishedIso,
+		...(citations.length > 0 ? { citation: citations } : {}),
 		author: { '@type': 'Organization', name: 'Escherbridge' },
 		publisher: { '@type': 'Organization', name: 'Escherbridge, LLC' },
 		mainEntityOfPage: publicSiteUrl(`/blog/${page.slug}`)
@@ -107,6 +117,10 @@
 					{#each data.post.sources as source}
 						<li>
 							<a class="link" href={source.href}>{source.label}</a>
+							{#if source.alsoHref}
+								<span>{source.alsoLead ?? ' · '}</span>
+								<a class="link" href={source.alsoHref}>{source.alsoHref}</a>
+							{/if}
 						</li>
 					{/each}
 				</ul>

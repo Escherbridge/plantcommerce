@@ -1,4 +1,5 @@
 import type { PageLoad } from './$types';
+import { essayRedirectTarget } from '$lib/content/essays';
 import { createCallerClient } from '$lib/trpc/client';
 
 export const load: PageLoad = async (event) => {
@@ -20,7 +21,7 @@ export const load: PageLoad = async (event) => {
 	return {
 		q,
 		guides: guides ?? [],
-		posts: posts ?? [],
+		posts: (posts ?? []).filter((post) => !essayRedirectTarget(post.slug)),
 		products: products ?? [],
 		courses: courseList?.courses ?? []
 	};

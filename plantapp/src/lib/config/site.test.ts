@@ -46,6 +46,7 @@ describe('public site origin', () => {
 		expect(publicRouteMetadata('/press').title).not.toBe(publicSite.defaultTitle);
 		expect(layoutOwnsDocumentMeta('/faq')).toBe(true);
 		expect(layoutOwnsDocumentMeta('/blog/nothing-for-sale-yet')).toBe(false);
+		expect(layoutOwnsDocumentMeta('/blog/cooling-can-use-more-water-than-the-crop')).toBe(false);
 		expect(layoutOwnsDocumentMeta('/guides/understanding-soil-health')).toBe(false);
 		expect(layoutOwnsDocumentMeta('/courses/hydroponics-field-guide')).toBe(false);
 		expect(layoutOwnsDocumentMeta('/products/hydroponics/net-pots')).toBe(false);
