@@ -1,17 +1,16 @@
 <script lang="ts">
+	import SEO from '$lib/components/SEO.svelte';
 	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { publicSiteUrl } from '$lib/config/site';
+	import { relatedEssays } from '$lib/content/writing';
 	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 	const page = $derived(data.post.page);
-	const author = $derived(data.post.author);
-
-	const authorName = $derived.by(() => {
-		const name = [author?.firstName, author?.lastName].filter(Boolean).join(' ');
-		return name || author?.username || '';
-	});
+	const authorName = 'Escherbridge';
+	const related = $derived(relatedEssays(page.slug));
+	const description = $derived(page.metaDescription || page.excerpt || page.title);
 
 	const publishedIso = $derived.by(() => {
 		if (!page.publishedAt) return undefined;
@@ -30,21 +29,41 @@
 	});
 </script>
 
-<svelte:head>
-	<title>{page.metaTitle || page.title} | Aevani</title>
-	<meta name="description" content={page.metaDescription || page.excerpt || page.title} />
-	<StructuredData
-		type="article"
-		data={{
-			headline: page.title,
-			description: page.metaDescription || page.excerpt || undefined,
-			datePublished: publishedIso,
-			author: authorName ? { '@type': 'Person', name: authorName } : undefined,
-			mainEntityOfPage: publicSiteUrl(`/blog/${page.slug}`),
-			keywords: tags.length > 0 ? tags.join(', ') : undefined
-		}}
-	/>
-</svelte:head>
+<SEO
+	title={`${page.title} — Aevani`}
+	{description}
+	url={publicSiteUrl(`/blog/${page.slug}`)}
+	type="article"
+	publishedTime={publishedIso}
+	author={authorName}
+	{tags}
+/>
+<StructuredData
+	type="article"
+	data={{
+		headline: page.title,
+		description,
+		datePublished: publishedIso,
+		author: { '@type': 'Organization', name: 'Escherbridge' },
+		publisher: { '@type': 'Organization', name: 'Escherbridge, LLC' },
+		mainEntityOfPage: publicSiteUrl(`/blog/${page.slug}`)
+	}}
+/>
+<StructuredData
+	type="breadcrumb"
+	data={{
+		itemListElement: [
+			{ '@type': 'ListItem', position: 1, name: 'Home', item: publicSiteUrl('/') },
+			{ '@type': 'ListItem', position: 2, name: 'Field notes', item: publicSiteUrl('/blog') },
+			{
+				'@type': 'ListItem',
+				position: 3,
+				name: page.title,
+				item: publicSiteUrl(`/blog/${page.slug}`)
+			}
+		]
+	}}
+/>
 
 <main class="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
 	<nav class="mb-8 text-sm" aria-label="Breadcrumb">
@@ -93,5 +112,22 @@
 				</ul>
 			</section>
 		{/if}
+		{#if related.length > 0}
+			<section class="mt-12">
+				<h2 class="font-mono text-xs font-bold tracking-[0.18em] uppercase">Related</h2>
+				<ul class="mt-4 space-y-2">
+					{#each related as essay}
+						<li>
+							<a class="link link-primary" href="/blog/{essay.slug}">{essay.title}</a>
+						</li>
+					{/each}
+				</ul>
+			</section>
+		{/if}
+		<p class="mt-12 text-sm">
+			<a class="link link-primary" href="/feed.xml">RSS</a>
+			·
+			<a class="link link-primary" href="/contact">Contact</a>
+		</p>
 	</article>
 </main>

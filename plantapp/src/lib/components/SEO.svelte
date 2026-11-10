@@ -14,7 +14,8 @@
 		publishedTime = null,
 		modifiedTime = null,
 		author = null,
-		tags = []
+		tags = [],
+		identity = true
 	} = $props<{
 		title?: string;
 		description?: string;
@@ -27,6 +28,8 @@
 		modifiedTime?: string | null;
 		author?: string | null;
 		tags?: string[];
+		/** When false, the page supplies its own title and description. */
+		identity?: boolean;
 	}>();
 
 	// Use $derived for runes mode
@@ -49,15 +52,21 @@
 </script>
 
 <!-- Primary Meta Tags -->
-<title>{safeTitle}</title>
-<meta name="title" content={safeTitle} />
-<meta name="description" content={safeDescription} />
+{#if identity}
+	<title>{safeTitle}</title>
+	<meta name="title" content={safeTitle} />
+	<meta name="description" content={safeDescription} />
+{/if}
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content={type} />
+{#if identity}
+	<meta property="og:type" content={type} />
+{/if}
 <meta property="og:url" content={absoluteUrl} />
-<meta property="og:title" content={safeTitle} />
-<meta property="og:description" content={safeDescription} />
+{#if identity}
+	<meta property="og:title" content={safeTitle} />
+	<meta property="og:description" content={safeDescription} />
+{/if}
 {#if absoluteImage}
 	<meta property="og:image" content={absoluteImage} />
 	{#if usingDefaultImage}
@@ -69,26 +78,28 @@
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={absoluteUrl} />
-<meta property="twitter:title" content={safeTitle} />
-<meta property="twitter:description" content={safeDescription} />
+{#if identity}
+	<meta property="twitter:title" content={safeTitle} />
+	<meta property="twitter:description" content={safeDescription} />
+{/if}
 {#if absoluteImage}
 	<meta property="twitter:image" content={absoluteImage} />
 {/if}
 
 <!-- Article-specific tags -->
-{#if type === 'article' && publishedTime}
+{#if identity && type === 'article' && publishedTime}
 	<meta property="article:published_time" content={publishedTime} />
 {/if}
 
-{#if type === 'article' && modifiedTime}
+{#if identity && type === 'article' && modifiedTime}
 	<meta property="article:modified_time" content={modifiedTime} />
 {/if}
 
-{#if type === 'article' && author}
+{#if identity && type === 'article' && author}
 	<meta property="article:author" content={author} />
 {/if}
 
-{#if type === 'article' && tags.length > 0}
+{#if identity && type === 'article' && tags.length > 0}
 	{#each tags as tag}
 		<meta property="article:tag" content={tag} />
 	{/each}

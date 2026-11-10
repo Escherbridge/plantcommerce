@@ -3,26 +3,13 @@
 	import { Container } from '$lib/components/layout';
 	import { ProductGallery, ProductCard } from '$lib/components/cards';
 	import { StatTile, SectionHeader, Badge, Button, GlassCard } from '$lib/components/ui';
-	import { onMount } from 'svelte';
 	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
-	import { formatRelativeTime, formatAbsoluteDate } from '$lib/utils/relativeTime';
 	import { cart } from '$lib/stores/cart';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 
 	const p = $derived(data.product);
-
-	// Review dates render a deterministic absolute date during SSR + hydration
-	// (identical on server and client), then upgrade to relative time after mount
-	// so the two never disagree. Prevents `hydration_html_changed`.
-	let mounted = $state(false);
-	onMount(() => {
-		mounted = true;
-	});
-	function reviewDate(value: Date | string): string {
-		return mounted ? formatRelativeTime(value) : formatAbsoluteDate(value);
-	}
 
 	let quantity = $state(1);
 	let adding = $state(false);
@@ -133,8 +120,6 @@
 	const bundlePrice = $derived(p.bundleOffer ? parseFloat(p.bundleOffer.price) || 0 : 0);
 	const runningTotal = $derived(fmtPrice(unitPrice * quantity + (addBundle ? bundlePrice : 0)));
 
-	const rating = $derived(p.ratingAverage ? parseFloat(p.ratingAverage) : 0);
-
 	async function addToCart() {
 		if (adding || p.comingSoon || !p.inStock) return;
 		adding = true;
@@ -152,25 +137,6 @@
 		quantity = Math.min(Math.max(1, p.stockQuantity || 99), quantity + 1);
 	}
 </script>
-
-{#snippet starIcon()}
-	<svg class="star" viewBox="0 0 24 24" aria-hidden="true">
-		<path
-			d="M12 2.5l2.9 5.88 6.49.94-4.7 4.58 1.11 6.46L12 17.3l-5.8 3.06 1.11-6.46-4.7-4.58 6.49-.94L12 2.5z"
-		/>
-	</svg>
-{/snippet}
-
-{#snippet starRating(value: number, size: number)}
-	<span class="stars" style="--star-size:{size}px" aria-label="{value.toFixed(1)} out of 5">
-		<span class="stars__track">
-			{#each [0, 1, 2, 3, 4] as _i (_i)}{@render starIcon()}{/each}
-		</span>
-		<span class="stars__fill" style="width:{Math.max(0, Math.min(100, (value / 5) * 100))}%">
-			{#each [0, 1, 2, 3, 4] as _i (_i)}{@render starIcon()}{/each}
-		</span>
-	</span>
-{/snippet}
 
 <svelte:head>
 	<title>{p.name} - Aevani</title>
@@ -474,54 +440,6 @@
 				<!-- Only @html on the page — always routed through sanitizeRichText. -->
 				<div class="longread__body prose">
 					{@html longReadHtml}
-				</div>
-			</section>
-		{/if}
-
-		<!-- 11. Reviews -->
-		{#if p.reviews.length > 0}
-			<section class="block">
-				<SectionHeader eyebrow="Reviews" title="What growers say" />
-				<div class="reviews__summary">
-					<span class="reviews__avg">{rating.toFixed(1)}</span>
-					{@render starRating(rating, 22)}
-					<span class="reviews__count">
-						{p.reviewCount || p.reviews.length}
-						{(p.reviewCount || p.reviews.length) === 1 ? 'review' : 'reviews'}
-					</span>
-				</div>
-
-				<div class="reviews__list">
-					{#each p.reviews as review (review.id)}
-						<GlassCard class="review">
-							<div class="review__head">
-								<div class="review__who">
-									<span class="review__author">{review.authorName}</span>
-									{#if review.isVerifiedPurchase}
-										<span class="review__verified">
-											<svg viewBox="0 0 24 24" aria-hidden="true"
-												><path
-													d="M5 13l4 4L19 7"
-													fill="none"
-													stroke="currentColor"
-													stroke-width="2.5"
-													stroke-linecap="round"
-													stroke-linejoin="round"
-												/></svg
-											>
-											Verified purchase
-										</span>
-									{/if}
-								</div>
-								<span class="review__date">{reviewDate(review.createdAt)}</span>
-							</div>
-							{@render starRating(review.rating, 15)}
-							{#if review.title}
-								<h3 class="review__title">{review.title}</h3>
-							{/if}
-							<p class="review__body">{review.body}</p>
-						</GlassCard>
-					{/each}
 				</div>
 			</section>
 		{/if}
@@ -1028,118 +946,6 @@
 		font-style: italic;
 	}
 
-	/* Reviews */
-	.reviews__summary {
-		margin-top: 24px;
-		display: flex;
-		align-items: center;
-		gap: 14px;
-		flex-wrap: wrap;
-	}
-	.reviews__avg {
-		font-family: var(--font-display);
-		font-size: 40px;
-		font-weight: 700;
-		letter-spacing: -0.02em;
-		color: #1c3527;
-		line-height: 1;
-	}
-	.reviews__count {
-		font-family: var(--font-body);
-		font-size: 14px;
-		color: #5a7263;
-	}
-	.reviews__list {
-		margin-top: 24px;
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 18px;
-	}
-	:global(.review) {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-	}
-	.review__head {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 12px;
-	}
-	.review__who {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		flex-wrap: wrap;
-	}
-	.review__author {
-		font-family: var(--font-display);
-		font-size: 16px;
-		font-weight: 600;
-		color: #1c3527;
-	}
-	.review__verified {
-		display: inline-flex;
-		align-items: center;
-		gap: 4px;
-		font-family: var(--font-body);
-		font-size: 11.5px;
-		font-weight: 600;
-		color: #2e6b4f;
-	}
-	.review__verified svg {
-		width: 13px;
-		height: 13px;
-	}
-	.review__date {
-		font-family: var(--font-body);
-		font-size: 12.5px;
-		color: #7c9585;
-		white-space: nowrap;
-	}
-	.review__title {
-		margin: 2px 0 0;
-		font-family: var(--font-display);
-		font-size: 16px;
-		font-weight: 600;
-		color: #1c3527;
-	}
-	.review__body {
-		margin: 0;
-		font-family: var(--font-body);
-		font-size: 14.5px;
-		line-height: 1.6;
-		color: #4a5f52;
-		text-wrap: pretty;
-	}
-
-	/* Star rating (custom SVG, fractional fill) */
-	.stars {
-		position: relative;
-		display: inline-flex;
-		line-height: 0;
-	}
-	.stars__track,
-	.stars__fill {
-		display: inline-flex;
-		white-space: nowrap;
-	}
-	.stars__fill {
-		position: absolute;
-		inset: 0;
-		overflow: hidden;
-	}
-	.stars :global(.star) {
-		width: var(--star-size, 18px);
-		height: var(--star-size, 18px);
-	}
-	.stars__track :global(.star) {
-		fill: rgba(46, 107, 79, 0.18);
-	}
-	.stars__fill :global(.star) {
-		fill: #2e6b4f;
-	}
-
 	/* ---- Responsive ---- */
 	@media (min-width: 993px) {
 		.pdp-hero__buy {
@@ -1155,9 +961,6 @@
 		}
 		.related-grid {
 			grid-template-columns: repeat(2, 1fr);
-		}
-		.reviews__list {
-			grid-template-columns: 1fr;
 		}
 	}
 

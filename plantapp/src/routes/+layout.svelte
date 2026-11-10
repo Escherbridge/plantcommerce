@@ -12,6 +12,7 @@
 	import {
 		escherbridgeProjects,
 		isPublicIndexablePath,
+		layoutOwnsDocumentMeta,
 		publicRouteMetadata,
 		publicSiteUrl
 	} from '$lib/config/site';
@@ -21,6 +22,7 @@
 	const currentUrl = $derived($page.url.pathname);
 	const absoluteUrl = $derived(publicSiteUrl(currentUrl));
 	const routeMeta = $derived(publicRouteMetadata(currentUrl));
+	const layoutOwnsMeta = $derived(layoutOwnsDocumentMeta(currentUrl));
 	// Product detail passes its own share image into <SEO>.
 	const pageSetsShareImage = $derived(/^\/products\/[^/]+\/[^/]+\/?$/.test(currentUrl));
 	const affiliateHoldPath = $derived(
@@ -134,6 +136,7 @@
 			children: [
 				{ label: 'Guides', href: '/guides' },
 				{ label: 'Blog', href: '/blog' },
+				{ label: 'News', href: '/news' },
 				{ label: 'FAQs', href: '/faq' },
 				{ label: 'Resources', href: '/resources' }
 			]
@@ -164,6 +167,7 @@
 		learn: [
 			{ label: 'Guides', href: '/guides' },
 			{ label: 'Field notes', href: '/blog' },
+			{ label: 'News', href: '/news' },
 			{ label: 'FAQs', href: '/faq' },
 			{ label: 'Resources', href: '/resources' }
 		],
@@ -193,6 +197,14 @@
 		description={routeMeta.description}
 		url={absoluteUrl}
 		useDefaultImage={!pageSetsShareImage}
+		identity={layoutOwnsMeta}
+		type="website"
+	/>
+	<link
+		rel="alternate"
+		type="application/rss+xml"
+		title="Aevani field notes"
+		href={publicSiteUrl('/feed.xml')}
 	/>
 	<meta name="robots" content={robotsDirective} />
 </svelte:head>
@@ -322,47 +334,6 @@
 						<p class="footer-tagline">
 							A marketplace for growing tools, and a free Learn hub, operated by Escherbridge, LLC.
 						</p>
-
-						<div class="social-row">
-							<a href="https://instagram.com/aevani" class="social-link" aria-label="Instagram">
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.75"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-									<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-									<line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-								</svg>
-							</a>
-							<a href="https://twitter.com/aevani" class="social-link" aria-label="X">
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.75"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<path d="M4 4l16 16M4 20 20 4" />
-								</svg>
-							</a>
-							<a href="https://facebook.com/aevani" class="social-link" aria-label="Facebook">
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.75"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								>
-									<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-								</svg>
-							</a>
-						</div>
 					</div>
 
 					<!-- Link columns — mobile accordion via details/summary -->
@@ -561,48 +532,6 @@
 					>.
 				</p>
 			</div>
-
-			<!-- Social -->
-			<div class="drawer-social">
-				<a href="https://facebook.com/aevani" class="drawer-social-link" aria-label="Facebook">
-					<svg
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.75"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-					</svg>
-				</a>
-				<a href="https://twitter.com/aevani" class="drawer-social-link" aria-label="Twitter / X">
-					<svg
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.75"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M4 4l16 16M4 20 20 4" />
-					</svg>
-				</a>
-				<a href="https://instagram.com/aevani" class="drawer-social-link" aria-label="Instagram">
-					<svg
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.75"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-						<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-						<line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-					</svg>
-				</a>
-			</div>
 		</div>
 	</div>
 </div>
@@ -787,39 +716,6 @@
 		color: #7c9585;
 		line-height: 1.6;
 		max-width: 20rem;
-	}
-
-	/* Social pills */
-	.social-row {
-		display: flex;
-		gap: 0.65rem;
-	}
-
-	.social-link {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 2.4rem;
-		height: 2.4rem;
-		border-radius: 999px;
-		color: #a8e6c8;
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		transition:
-			background-color 0.2s,
-			color 0.2s,
-			border-color 0.2s;
-	}
-
-	.social-link:hover {
-		color: #14261b;
-		background: #a8e6c8;
-		border-color: #a8e6c8;
-	}
-
-	.social-link svg {
-		width: 1.05rem;
-		height: 1.05rem;
 	}
 
 	/* Footer link columns */
@@ -1256,39 +1152,6 @@
 		color: #a8e6c8;
 		text-decoration: underline;
 		text-underline-offset: 0.2em;
-	}
-
-	/* Drawer social */
-	.drawer-social {
-		display: flex;
-		gap: 1rem;
-	}
-
-	.drawer-social-link {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 2.75rem;
-		height: 2.75rem;
-		border-radius: 999px;
-		color: #a8e6c8;
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		transition:
-			color 0.2s,
-			background-color 0.2s,
-			border-color 0.2s;
-	}
-
-	.drawer-social-link:hover {
-		color: #14261b;
-		background: #a8e6c8;
-		border-color: #a8e6c8;
-	}
-
-	.drawer-social-link svg {
-		width: 1.125rem;
-		height: 1.125rem;
 	}
 
 	/* ===== USER BOTTOM BAR ===== */
