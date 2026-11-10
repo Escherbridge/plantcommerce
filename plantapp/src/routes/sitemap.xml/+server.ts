@@ -1,6 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { demoProducts } from '$lib/server/db/catalogDemo';
-import { writingSitemapPaths } from '$lib/content/writing';
+import { publishedGuideSectors, writingSitemapPaths } from '$lib/content/writing';
 import { SITE_URL, publicIndexablePaths } from '$lib/config/site';
 
 /** Published CMS slugs from the editorial seed. FAQ entries stay on /faq. */
@@ -50,9 +50,14 @@ ${routes
 function publishedContentPaths(): string[] {
 	return [
 		...publishedEditorialPaths,
+		...publishedGuideSectors.map((guide) => `/guides/${guide.slug}`),
 		...writingSitemapPaths,
 		...demoProducts.map((product) => `/products/${product.system}/${product.slug}`)
 	];
+}
+
+export function _publishedContentPaths(): string[] {
+	return publishedContentPaths();
 }
 
 export const GET: RequestHandler = () => {

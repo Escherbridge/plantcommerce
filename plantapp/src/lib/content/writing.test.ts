@@ -12,7 +12,7 @@ describe('writing module', () => {
 		expect(xml).not.toContain('Aevani Admin');
 	});
 
-	it('names research sectors without linking unwritten pages', () => {
+	it('names research sectors without linking the unpublished taxonomy', () => {
 		expect(guideSectors.map((sector) => sector.name)).toEqual([
 			'Hydroponics',
 			'Aquaponics',
@@ -23,6 +23,18 @@ describe('writing module', () => {
 		for (const sector of guideSectors) {
 			expect(sector).not.toHaveProperty('href');
 		}
-		expect(publishedGuideSectors).toEqual([]);
+		expect(publishedGuideSectors.map((guide) => guide.slug)).toEqual([
+			'hydroponics-intermountain',
+			'small-scale-aquaponics',
+			'temperate-silvopasture'
+		]);
+	});
+
+	it('lists the three guides in the field-notes feed', () => {
+		const xml = renderFieldNotesFeed('https://aevani.com');
+		expect(xml).toContain('https://aevani.com/guides/hydroponics-intermountain');
+		expect(xml).toContain('https://aevani.com/guides/small-scale-aquaponics');
+		expect(xml).toContain('https://aevani.com/guides/temperate-silvopasture');
+		expect(xml).toContain('Escherbridge');
 	});
 });

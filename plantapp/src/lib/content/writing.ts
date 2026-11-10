@@ -1,5 +1,9 @@
 import { cornerstoneEssays, type CornerstoneEssay } from './essays';
+import { publishedGuideSectors } from './research';
 import { SITE_URL } from '$lib/config/site';
+
+export { publishedGuideSectors };
+export type { GuideDocument as GuideSectorPage } from './research';
 
 /** Fixed topics that the published notes actually use. Not an open tag cloud. */
 export const fieldNoteTopics = [
@@ -10,8 +14,8 @@ export const fieldNoteTopics = [
 ] as const;
 
 /**
- * Research sectors from the house taxonomy. No child page is published until
- * a sourced guide exists, so these stay unlinked.
+ * House taxonomy. These names stay unlinked. Published children live on
+ * `publishedGuideSectors` and are not cards for the unpublished sectors.
  */
 export const guideSectors = [
 	{ name: 'Hydroponics' },
@@ -20,25 +24,6 @@ export const guideSectors = [
 	{ name: 'Agroforestry' },
 	{ name: 'Intermountain / high-desert climate' }
 ] as const;
-
-/** A sourced research child. None are published until the figures are real. */
-export type GuideSectorPage = {
-	slug: string;
-	name: string;
-	title: string;
-	description: string;
-	standfirst: string;
-	reviewedAt: string;
-	stats: { figure: string; label: string; source: string }[];
-	challenges: { title: string; body: string; metric: string }[];
-	applications: { title: string; body: string }[];
-	sources: { organization: string; year: string; title: string; href: string }[];
-	illustrative: { heading: string; body: string };
-	siblings: { name: string; href: string }[];
-};
-
-/** Empty on purpose. Do not add a sector until its sources are opened. */
-export const publishedGuideSectors: readonly GuideSectorPage[] = [];
 
 /** Existing notes. They are not sector cards. */
 export const relatedGuideNotes = [
@@ -60,11 +45,10 @@ export function relatedEssays(slug: string): CornerstoneEssay[] {
 
 export function renderFieldNotesFeed(origin = SITE_URL): string {
 	const site = origin.replace(/\/+$/, '');
-	const items = cornerstoneEssays
-		.map((essay) => {
-			const link = `${site}/blog/${essay.slug}`;
-			const pub = new Date(essay.publishedAt).toUTCString();
-			return `
+	const notes = cornerstoneEssays.map((essay) => {
+		const link = `${site}/blog/${essay.slug}`;
+		const pub = new Date(essay.publishedAt).toUTCString();
+		return `
 		<item>
 			<title>${xmlEscape(essay.title)}</title>
 			<link>${xmlEscape(link)}</link>
@@ -73,8 +57,21 @@ export function renderFieldNotesFeed(origin = SITE_URL): string {
 			<description>${xmlEscape(essay.excerpt)}</description>
 			<author>contact@escherbridge.com (Escherbridge)</author>
 		</item>`;
-		})
-		.join('');
+	});
+	const guides = publishedGuideSectors.map((guide) => {
+		const link = guide.canonical;
+		const pub = new Date(`${guide.publishedAt}T00:00:00.000Z`).toUTCString();
+		return `
+		<item>
+			<title>${xmlEscape(guide.title)}</title>
+			<link>${xmlEscape(link)}</link>
+			<guid>${xmlEscape(link)}</guid>
+			<pubDate>${xmlEscape(pub)}</pubDate>
+			<description>${xmlEscape(guide.description)}</description>
+			<author>contact@escherbridge.com (Escherbridge)</author>
+		</item>`;
+	});
+	const items = [...notes, ...guides].join('');
 
 	return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">

@@ -112,9 +112,9 @@ const routeMetadata: Record<string, { title: string; description: string }> = {
 		description: 'Public announcements only. There is nothing to announce yet.'
 	},
 	'/guides': {
-		title: 'Guides — Aevani',
+		title: 'Guides | Aevani',
 		description:
-			'Research on growing systems and climate. Sector pages are not written yet. Existing notes stay linked as writing, not as products.'
+			'Intermountain growing-system guides: hydroponics, aquaponics, and silvopasture, cited from official sources. The catalogue is a preview and not for sale.'
 	},
 	'/faq': {
 		title: 'FAQ — Aevani',

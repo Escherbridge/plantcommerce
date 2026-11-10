@@ -8,3 +8,6 @@ bun.lockb
 # Miscellaneous
 /static/
 /drizzle/
+
+# Reviewed research drafts. Line breaks are part of the parser input.
+/src/lib/content/research/*.md
