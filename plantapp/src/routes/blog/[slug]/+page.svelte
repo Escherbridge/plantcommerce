@@ -81,5 +81,17 @@
 		<div class="prose prose-lg mt-10 max-w-none whitespace-pre-wrap">
 			{@html sanitizeRichText(page.content)}
 		</div>
+		{#if data.post.sources.length > 0}
+			<section class="mt-12">
+				<h2 class="font-mono text-xs font-bold tracking-[0.18em] uppercase">Sources</h2>
+				<ul class="mt-4 list-disc space-y-2 pl-5">
+					{#each data.post.sources as source}
+						<li>
+							<a class="link" href={source.href}>{source.label}</a>
+						</li>
+					{/each}
+				</ul>
+			</section>
+		{/if}
 	</article>
 </main>
