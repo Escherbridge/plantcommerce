@@ -137,6 +137,7 @@ describe('public crawler discovery', () => {
 		expect(published).toContain(
 			'<loc>https://aevani.com/guides/getting-started-companion-planting</loc>'
 		);
+		expect(published).not.toContain('aquaponics-stocking-notes');
 	});
 
 	it('keeps private, administrative, API, and capability paths out of crawling', async () => {

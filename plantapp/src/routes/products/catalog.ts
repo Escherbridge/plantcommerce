@@ -138,3 +138,46 @@ export function normalizeCatalogProduct(
 		href: `/products/${system}/${p.slug}`
 	};
 }
+
+/**
+ * Category crumb targets that exist. Kits and supplies have no `/products/{slug}`
+ * page; their catalogue filters are the pages that list them.
+ */
+const productCategoryHrefs: Record<string, string> = {
+	hydroponics: '/products/hydroponics',
+	'hydroponic-systems': '/products/hydroponics',
+	'nutrients-media': '/products/hydroponics',
+	'soil-testing': '/products/hydroponics',
+	aquaponics: '/products/aquaponics',
+	'aquaponic-systems': '/products/aquaponics',
+	'fish-supplies': '/products/aquaponics',
+	silvopasture: '/products/silvopasture',
+	'silvopasture-supplies': '/products/silvopasture',
+	agroforestry: '/products/agroforestry',
+	'agroforestry-supplies': '/products/agroforestry',
+	kits: '/products?category=kits-collections',
+	'kits-collections': '/products?category=kits-collections',
+	'starter-kits': '/products?category=kits-collections',
+	composting: '/products?category=kits-collections',
+	supplies: '/products?category=seeds-supplies',
+	'seeds-supplies': '/products?category=seeds-supplies',
+	'heirloom-seeds': '/products?category=seeds-supplies',
+	'seeds-plants': '/products?category=seeds-supplies',
+	'hand-tools': '/products?category=seeds-supplies',
+	'plants-seeds': '/products?category=seeds-supplies',
+	'garden-tools': '/products?category=seeds-supplies'
+};
+
+export function productCategoryHref(categorySlug: string): string | null {
+	return productCategoryHrefs[categorySlug] ?? null;
+}
+
+/** Chip id -> product system. Kits and supplies use the parent category slug. */
+export function catalogChipMatches(chipId: string, system: string): boolean {
+	if (chipId === 'all') return true;
+	if (chipId === 'kits-collections') return system === 'kits' || system === 'kits-collections';
+	if (chipId === 'seeds-supplies') {
+		return system === 'supplies' || system === 'plants-seeds' || system === 'garden-tools';
+	}
+	return system === chipId;
+}

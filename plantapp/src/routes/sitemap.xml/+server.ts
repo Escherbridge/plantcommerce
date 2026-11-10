@@ -52,7 +52,10 @@ function publishedContentPaths(): string[] {
 		...publishedEditorialPaths,
 		...publishedGuideSectors.map((guide) => `/guides/${guide.slug}`),
 		...writingSitemapPaths,
-		...demoProducts.map((product) => `/products/${product.system}/${product.slug}`)
+		...demoProducts
+			// Placeholder row. The product route has no published page for this slug.
+			.filter((product) => product.slug !== 'aquaponics-stocking-notes')
+			.map((product) => `/products/${product.system}/${product.slug}`)
 	];
 }
 

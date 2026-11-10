@@ -3,7 +3,7 @@
 	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { publicSiteUrl } from '$lib/config/site';
 	import { relatedEssays } from '$lib/content/writing';
-	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
+	import { renderMarkdownBody } from '$lib/utils/renderMarkdown';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -107,8 +107,9 @@
 				{/if}
 			</p>
 		{/if}
-		<div class="prose prose-lg mt-10 max-w-none whitespace-pre-wrap">
-			{@html sanitizeRichText(page.content)}
+		<div class="prose prose-lg mt-10 max-w-none">
+			<!-- Legacy CMS markdown is rendered, then sanitized. -->
+			{@html renderMarkdownBody(page.content)}
 		</div>
 		{#if data.post.sources.length > 0}
 			<section class="mt-12">

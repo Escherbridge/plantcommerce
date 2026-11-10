@@ -4,7 +4,7 @@
 	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { publicSiteUrl } from '$lib/config/site';
 	import { articleBreadcrumbData, articleStructuredData } from '$lib/content/research';
-	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
+	import { renderMarkdownBody } from '$lib/utils/renderMarkdown';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -71,7 +71,8 @@
 				{page.excerpt ?? 'A practical growing guide from the Aevani editorial catalogue.'}
 			</p>
 			<div class="prose prose-lg mt-10 max-w-none">
-				{@html sanitizeRichText(page.content)}
+				<!-- Legacy CMS markdown is rendered, then sanitized. Structured guides use GuideSector. -->
+				{@html renderMarkdownBody(page.content)}
 			</div>
 		</article>
 	</main>
