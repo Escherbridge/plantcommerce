@@ -332,7 +332,7 @@ const contentPages: ContentDef[] = [
 		status: 'published',
 		excerpt:
 			'Aquaponics merges fish farming and hydroponics into a closed-loop system where waste becomes food.',
-		content: `# Introduction to Aquaponics\n\nAquaponics is nature's recycling system scaled for food production. Fish produce ammonia-rich waste. Beneficial bacteria convert ammonia to nitrites, then nitrates. Plants absorb nitrates as fertilizer, cleaning the water that returns to the fish. It's a complete nitrogen cycle in your backyard.\n\n## Why Aquaponics?\n\n- **No synthetic fertilizers** - Fish provide all plant nutrients\n- **No soil-borne disease** - Growing media is inert\n- **Two crops, one system** - Harvest both fish and vegetables\n- **90% less water than soil gardening** - Water recirculates continuously\n\n## System Components\n\n1. **Fish tank** - Home for your fish (tilapia are the gold standard)\n2. **Grow bed** - Where plants grow in clay pebbles or similar media\n3. **Plumbing** - Pipes, pump, and bell siphon to move water\n4. **Biofilter** - Where bacteria colonize (often the grow bed itself)\n5. **Aeration** - Air pump to keep fish healthy and bacteria active\n\n## Starting Small\n\nBegin with a countertop system to learn the nitrogen cycle before scaling up.`,
+		content: `# Introduction to Aquaponics\n\nAquaponics is nature's recycling system scaled for food production. Fish produce ammonia-rich waste. Beneficial bacteria convert ammonia to nitrites, then nitrates. Plants absorb nitrates as fertilizer, cleaning the water that returns to the fish. It's a complete nitrogen cycle in your backyard.\n\n## Why Aquaponics?\n\n- **No synthetic fertilizers** - Fish provide all plant nutrients\n- **No soil-borne disease** - Growing media is inert\n- **Two crops, one system** - Harvest both fish and vegetables\n- **90% less water than soil gardening** - Water recirculates continuously\n\n## System Components\n\n1. **Fish tank** - Home for your fish (a hardy food fish is a common starting point)\n2. **Grow bed** - Where plants grow in clay pebbles or similar media\n3. **Plumbing** - Pipes, pump, and bell siphon to move water\n4. **Biofilter** - Where bacteria colonize (often the grow bed itself)\n5. **Aeration** - Air pump to keep fish healthy and bacteria active\n\n## Starting Small\n\nBegin with a countertop system to learn the nitrogen cycle before scaling up.`,
 		tags: ['aquaponics', 'fish', 'nitrogen-cycle', 'sustainable', 'tutorial'],
 		imageFile: 'ToolProduct-HydroPonic.png',
 		metaTitle: 'Introduction to Aquaponics | Fish-Powered Growing',
@@ -367,17 +367,17 @@ const contentPages: ContentDef[] = [
 			'Learn the right watering frequency for seedlings using the finger test method and best practices.'
 	},
 	{
-		title: 'Do you ship live plants and fish?',
-		slug: 'faq-shipping-live-products',
+		title: 'Can I buy something today?',
+		slug: 'faq-can-i-buy-something-today',
 		type: 'faq',
 		status: 'published',
 		excerpt:
-			'Yes! We ship live plants and tilapia fingerlings with special packaging to ensure they arrive healthy.',
-		content: `# Do You Ship Live Plants and Fish?\n\nYes, we ship both live plants and live tilapia fingerlings throughout the continental United States.\n\n## Live Plants\n\n- Shipped Monday-Wednesday to avoid weekend delays\n- Packed in moisture-retaining wrap with ventilation\n- Insulated boxes for temperature-sensitive species\n- Arrival guarantee: if plants arrive damaged, we replace them free\n\n## Live Fish (Tilapia Fingerlings)\n\n- Shipped overnight (Monday-Wednesday only)\n- Double-bagged in oxygenated water inside insulated coolers\n- Heat or cold packs added based on forecast temperatures\n- Acclimation guide included in every shipment\n- DOA (Dead on Arrival) guarantee: photograph within 2 hours of delivery for free replacement\n\n## Restrictions\n\n- Live fish cannot ship to Hawaii, Alaska, or P.O. boxes\n- Some states restrict tilapia species — check your local regulations\n- Live plants ship USPS Priority; fish ship FedEx Overnight`,
-		tags: ['faq', 'shipping', 'live-plants', 'fish', 'policy'],
-		metaTitle: 'Live Plant & Fish Shipping Policy | FAQ',
+			'No. The catalogue is a preview. Checkout is off. If you grow or make something that belongs here, apply to sell.',
+		content: `# Can I Buy Something Today?\n\nNo. The catalogue is a preview. Checkout is off.\n\nShipping, returns, and warranties are not offered site-wide. When a real seller lists a product, the terms on that listing are the terms that apply, and they are confirmed at checkout.\n\nIf you grow or make something that belongs here, apply to sell.`,
+		tags: ['faq', 'catalogue', 'preview'],
+		metaTitle: 'Can I buy something today? | FAQ',
 		metaDescription:
-			'We ship live plants and tilapia fingerlings with arrival guarantees. Learn about our shipping methods and policies.'
+			'No. The Aevani catalogue is a preview and checkout is off. Seller terms are confirmed at checkout.'
 	},
 	{
 		title: 'From Monoculture to Polyculture: Why Diversity Matters',
@@ -714,13 +714,12 @@ async function seed() {
 	// --- 6. Affiliate tiers, affiliates & links ---
 	console.log('[7/13] Inserting affiliate tiers, affiliates, and links...');
 
-	// Confirmed commission model — tiered on lifetime attributed sales, plus a flat
-	// platform fee. Sprout 2% ($0–$5k) · Grower 3.5% ($5k–$25k) · Steward 5% ($25k+).
-	const AFFILIATE_PLATFORM_FEE_BPS = 200; // flat 2% platform fee on attributed sales
+	// Historical fixture rows for the affiliate ledger. Public pages do not quote these rates.
+	const AFFILIATE_PLATFORM_FEE_BPS = 200;
 	const affiliateTierDefs = [
-		{ code: 'sprout', version: 1, commissionRateBps: 200 }, // 2%   · $0–$5,000 lifetime attributed sales
-		{ code: 'grower', version: 1, commissionRateBps: 350 }, // 3.5% · $5,000–$25,000
-		{ code: 'steward', version: 1, commissionRateBps: 500 } // 5%   · $25,000+
+		{ code: 'sprout', version: 1, commissionRateBps: 200 },
+		{ code: 'grower', version: 1, commissionRateBps: 350 },
+		{ code: 'steward', version: 1, commissionRateBps: 500 }
 	];
 	for (const t of affiliateTierDefs) {
 		await db.insert(schema.affiliateTier).values({
@@ -739,8 +738,8 @@ async function seed() {
 			userId: USER_IDS.marcus,
 			code: 'MARCUS10',
 			tier: { code: 'steward', version: 1, bps: 500 },
-			commissionRate: '0.0500', // Steward — 5%
-			totalEarnings: '1312.50', // ≈ 5% of ~$26,250 lifetime attributed sales
+			commissionRate: '0.0500',
+			totalEarnings: '1312.50',
 			totalClicks: 3420,
 			totalConversions: 87
 		},
@@ -748,8 +747,8 @@ async function seed() {
 			userId: USER_IDS.jordan,
 			code: 'JORDANGROW',
 			tier: { code: 'grower', version: 1, bps: 350 },
-			commissionRate: '0.0350', // Grower — 3.5%
-			totalEarnings: '735.00', // ≈ 3.5% of ~$21,000 lifetime attributed sales
+			commissionRate: '0.0350',
+			totalEarnings: '735.00',
 			totalClicks: 1856,
 			totalConversions: 42
 		}
@@ -817,7 +816,7 @@ async function seed() {
 	// Immutable, append-only accounting sourced from immutable checkout drafts:
 	// accrues 'pending' when an attributed order is paid, clears via 'approved' on
 	// fulfilment, reaches 'payable'/'paid' with a payout, and 'reversed' on refund.
-	// Amounts reflect each affiliate's tier rate (Steward 5% / Grower 3.5%).
+	// Amounts are historical fixture totals. Public pages do not quote them.
 	console.log('[7b/13] Inserting affiliate commission ledger demo data...');
 
 	const hex64 = (material: string): string =>

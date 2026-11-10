@@ -23,85 +23,79 @@ This Affiliate Agreement (the "**Agreement**") governs your participation in the
 
 1.4. "**Sale Subtotal**" means the price of the products in an Attributed Order **before** shipping, handling, and taxes, and **after** any discounts applied at checkout. Commission is calculated on the Sale Subtotal.
 
-1.5. "**Lifetime Attributed Sales**" means the cumulative Sale Subtotal of your Attributed Orders that have not been reversed, used to determine your commission tier under Section 3.
+1.5. "**Lifetime Attributed Sales**" means the cumulative Sale Subtotal of your Attributed Orders that have not been reversed. No commission tier is published, so this figure does not set a rate.
 
-1.6. "**Commission**" means the amount you earn on an Attributed Order under Section 3.
+1.6. "**Commission**" means a referral share, if one is later published. None is published in this Agreement.
 
-1.7. "**Accrued Commission**" means Commission recorded when an Attributed Order is paid, but not yet cleared for payout.
+1.7. "**Accrued Commission**" means Commission recorded when an Attributed Order is paid, but not yet cleared.
 
 1.8. "**Cleared Commission**" means Accrued Commission that has become payable because the corresponding order has been fulfilled, as described in Section 5.
 
-1.9. "**Cookie Window**" means the sixty (60) day last-click attribution window described in Section 4.
+1.9. "**Cookie Window**" means an attribution window only if one is later published. This Agreement does not set one.
 
 1.10. "**Vendor**" means a seller offering products through the Platform Service under the separate Vendor Agreement.
 
 ---
 
-## 2. Enrollment (Self-Serve, Auto-Approval)
+## 2. Enrollment
 
-2.1. **Self-serve signup.** Enrollment in the Program is self-serve. You apply by completing the online signup and accepting this Agreement.
+2.1. **Not open.** The Program is not open. Applications are not being accepted, and accepting this draft does not create an account.
 
-2.2. **Auto-approval.** Upon your acceptance of this Agreement, your enrollment is **automatically approved** and your account is activated, without the need for separate manual review. The Platform may nonetheless decline, suspend, or terminate an account at any time under Section 8, including for suspected fraud, ineligibility, or breach.
+2.2. **No automatic approval.** There is no self-serve or automatic approval while the Program is closed.
 
-2.3. **Eligibility.** You must be at least the age of majority in your jurisdiction and able to form a binding contract. You must provide accurate registration and payment information and keep it current.
+2.3. **Eligibility.** If the Program later opens, you must be at least the age of majority in your jurisdiction and able to form a binding contract.
 
-2.4. **One account.** You may maintain only one affiliate account unless the Platform authorizes additional accounts in writing. Duplicate or fraudulent accounts may be closed and associated Commissions forfeited.
-
----
-
-## 3. Commission Structure (Tiered, Up to 5%)
-
-3.1. **Tiered commission ladder.** Commission is calculated on the **Sale Subtotal** of each Attributed Order, at the rate corresponding to your tier. Your tier is determined by your **Lifetime Attributed Sales** as follows:
-
-| Tier | Lifetime Attributed Sales | Commission Rate (of Sale Subtotal) |
-| --- | --- | --- |
-| **Sprout** | $0 – $5,000 | **2%** |
-| **Grower** | $5,000 – $25,000 | **3.5%** |
-| **Steward** | $25,000+ | **5%** |
-
-3.2. **Tier boundaries.** Where a threshold amount appears at the top of one tier and the bottom of the next (e.g., $5,000 and $25,000), the higher tier applies once your Lifetime Attributed Sales **reach** that threshold. Example: at exactly $5,000 in Lifetime Attributed Sales you are in the **Grower** tier; at exactly $25,000 you are in the **Steward** tier.
-
-3.3. **Maximum rate.** The maximum Commission rate under the Program is **five percent (5%)** of the Sale Subtotal (the Steward tier).
-
-3.4. **When your tier updates.** Tier is evaluated based on Lifetime Attributed Sales at the time an Attributed Order is placed. The Platform may recompute Lifetime Attributed Sales to exclude reversed orders (refunds, chargebacks), which can affect your tier going forward.
-
-3.5. **No stacking.** Only one Commission rate applies to any single Attributed Order. Commissions are not paid on shipping, handling, taxes, or amounts that are refunded or reversed.
-
-3.6. **Worked example.** On a Steward-tier Attributed Order with a Sale Subtotal of **$200.00**, the Commission is **5% × $200.00 = $10.00**, subject to clearing and reversal rules in Section 5.
+2.4. **One account.** If the Program later opens, you may maintain only one affiliate account unless the Platform authorizes additional accounts in writing.
 
 ---
 
-## 4. Attribution (Last-Click, 60-Day Cookie)
+## 3. Commission
 
-4.1. **Last-click attribution.** An order is attributed to the affiliate whose Affiliate Link was **most recently** clicked by the Customer before the purchase, within the Cookie Window. Where multiple affiliates' links were clicked, the **last** click before purchase wins.
+3.1. **No rate is set.** The referral share has not been set. This Agreement does not quote a rate, a tier, or a worked example.
 
-4.2. **60-day cookie window.** Attribution requires that the qualifying click occurred within **sixty (60) days** before the order is placed. A tracking cookie or equivalent identifier is set when a Customer clicks your Affiliate Link and is valid for sixty (60) days.
+3.2. **From the Platform's margin.** If a share is later published, Aevani would pay it from its own margin, only on completed retail sales, and never for recruiting.
 
-4.3. **Tracking limitations.** Attribution depends on the Customer's browser, device, and settings. If a Customer blocks or clears cookies, uses a different device, or a technical failure prevents tracking, an order may not be attributed to you. The Platform's tracking records are the authoritative basis for attribution.
+3.3. **Direct sellers.** Direct sellers are the core of the marketplace and apply separately. This Agreement does not set their fee.
 
-4.4. **No guarantee of attribution.** The Platform does not guarantee that any click will result in an Attributed Order or that tracking will function in all cases.
+3.4. **No stacking.** Nothing in this draft authorizes more than one referral share on a single order.
+
+3.5. **Not a sub-affiliate.** Participants would not be sub-affiliates on Amazon, Etsy, or eBay links.
+
+3.6. **Quote nothing early.** Do not publish a rate until the Platform publishes one.
 
 ---
 
-## 5. Payment Terms
+## 4. Attribution
 
-5.1. **Accrual on paid order.** Commission **accrues** when an Attributed Order is **paid** by the Customer. Accrual records that a Commission is potentially owed but does not make it payable.
+4.1. **No window is set.** This Agreement does not set a cookie window or a last-click period.
 
-5.2. **Clearing on fulfillment.** Accrued Commission becomes **Cleared Commission** (payable) only when the corresponding order is **fulfilled** — that is, shipped or delivered (or, for digital or course products, made available/access granted). Until an order is fulfilled, the related Commission remains accrued and unpayable.
+4.2. **No tracking promise.** The Platform does not currently issue affiliate links under this draft.
 
-5.3. **Reversal on refund or chargeback.** If an Attributed Order is refunded, reversed, or charged back — in whole or in part — the related Commission is **reversed** correspondingly. Reversals apply to accrued and cleared amounts alike, and may be deducted from your current or future balance. Reversed sales are also removed from your Lifetime Attributed Sales.
+4.3. **Tracking limitations.** If tracking is later offered, it will depend on the Customer's browser, device, and settings.
 
-5.4. **Minimum payout threshold.** Payouts are made only when your Cleared Commission balance equals or exceeds the minimum payout threshold of **`[MIN PAYOUT = $50]`**. If your balance is below the threshold at a payout run, it carries over to the next period.
+4.4. **No guarantee of attribution.** The Platform does not guarantee that any click will result in an Attributed Order.
 
-5.5. **Monthly payout of cleared balance.** The Platform pays out your **Cleared Commission** balance on a **monthly** cycle, provided the minimum payout threshold is met and your account is in good standing. Payouts are made to your designated payout method. Timing may vary with payment-provider processing and any required tax or identity verification.
+---
 
-5.6. **Payment method and information.** You are responsible for providing and maintaining accurate payout details. The Platform is not liable for payments delayed or misdirected because of inaccurate information you provided.
+## 5. Payment
 
-5.7. **Taxes.** You are solely responsible for all taxes on your Commissions. Where required, you will provide tax documentation (e.g., a W-9 or equivalent), and the Platform may withhold or report as required by law.
+5.1. **No payment right yet.** While the Program is closed, this Agreement creates no payment right.
 
-5.8. **Currency and fees.** Commissions are calculated and paid in the Platform's designated currency. Payment-provider or currency-conversion fees may apply and may be deducted from payouts.
+5.2. **Share not set.** A referral share, if later published, would be owed only on a completed retail sale and only from the Platform's margin.
 
-5.9. **Statements.** Your dashboard shows accrued, cleared, reversed, and paid amounts. You should retain your own records for tax purposes.
+5.3. **Reversal.** If a share is later owed and the order is refunded or charged back, the related amount is reversed.
+
+5.4. **No minimum is set.** This Agreement does not set a minimum balance.
+
+5.5. **No schedule is set.** This Agreement does not set when money moves.
+
+5.6. **Payment method and information.** You are responsible for providing accurate details if the Platform later requests them.
+
+5.7. **Taxes.** You are solely responsible for taxes on any amount you are later paid. Where required, you will provide tax documentation, and the Platform may withhold or report as required by law.
+
+5.8. **Currency.** Any later amount would be calculated in the Platform's designated currency.
+
+5.9. **Statements.** Keep your own records.
 
 ---
 
@@ -118,7 +112,7 @@ This Affiliate Agreement (the "**Agreement**") governs your participation in the
 - (g) **Prohibited placement.** Promote through content that is unlawful, infringing, hateful, adult, or otherwise inconsistent with the `[PLATFORM BRAND]` brand.
 - (h) **Interference.** Interfere with tracking, manipulate attribution, or circumvent the Platform's systems or this Agreement.
 
-6.2. **Consequences.** Violations may result in reversal or forfeiture of Commissions, suspension, and termination, and do not limit any other remedy available to the Platform.
+  6.2. **Consequences.** Violations may result in reversal or forfeiture of Commissions, suspension, and termination, and do not limit any other remedy available to the Platform.
 
 ---
 
@@ -160,7 +154,7 @@ This Affiliate Agreement (the "**Agreement**") governs your participation in the
 
 10.2. **Termination for convenience.** Either party may terminate at any time, for any reason, on notice (which may be electronic).
 
-10.3. **Effect of termination — good standing.** On termination without cause, your **Cleared Commission** balance that meets the minimum payout threshold will be paid on the next regular monthly payout, subject to reversal rules. Accrued but uncleared Commission is paid only if and when the underlying orders are fulfilled and not reversed.
+10.3. **Effect of termination.** Termination does not create a payment right that Section 5 does not already give. Reversal rules still apply to any amount later owed.
 
 10.4. **Forfeiture on breach.** If the Platform terminates for your breach of this Agreement (including any Prohibited Conduct under Section 6) or for fraud, you **forfeit all unpaid Commissions**, whether accrued or cleared, and the Platform may reverse related amounts and pursue other remedies.
 
@@ -186,7 +180,7 @@ This Affiliate Agreement (the "**Agreement**") governs your participation in the
 
 12.2. **Venue.** The parties consent to the exclusive jurisdiction and venue of the state and federal courts located in the `[JURISDICTION] = State of Delaware, USA`.
 
-12.3. **Changes.** The Platform may update this Agreement, including the commission tiers and terms, on reasonable advance notice. Your continued participation after the effective date of an update constitutes acceptance.
+12.3. **Changes.** The Platform may update this Agreement on reasonable advance notice. Your continued participation after the effective date of an update constitutes acceptance. A rate is not in force until the Platform publishes one.
 
 12.4. **Assignment.** You may not assign this Agreement without the Platform's consent. The Platform may assign it in connection with a merger, acquisition, or sale of assets.
 
@@ -200,4 +194,4 @@ This Affiliate Agreement (the "**Agreement**") governs your participation in the
 
 ---
 
-*End of Affiliate Agreement template. **TEMPLATE — not legal advice; review with counsel before use.***
+\*End of Affiliate Agreement template. **TEMPLATE — not legal advice; review with counsel before use.\***

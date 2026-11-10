@@ -38,14 +38,9 @@ export const affiliateNavigation: NavigationConfig = [
 		title: 'Affiliate Program',
 		items: [
 			{
-				label: 'Program Status',
-				href: '/affiliate/terms',
+				label: 'Not open yet',
+				href: '/affiliate',
 				icon: 'bar-chart'
-			},
-			{
-				label: 'Application',
-				href: '/affiliate/join',
-				icon: 'link'
 			}
 		]
 	}

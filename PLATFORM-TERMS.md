@@ -61,7 +61,7 @@ These Terms of Service ("**Terms**") govern access to and use of the Service by 
 
 5.3. **Pricing and errors.** Prices are set by vendors and shown at checkout. We are not responsible for pricing errors; where an obvious error occurs, the order may be canceled and refunded.
 
-5.4. **Platform economics (2% platform fee).** The Platform retains a **flat platform fee of two percent (2%) of gross sales** processed through the Service, as set out in the Vendor Agreement. This fee is a matter between the Platform and vendors and does not add a separate charge to customers beyond the displayed price. Affiliate commissions (tiered, up to 5%) are likewise administered as described in the Affiliate Agreement.
+5.4. **Seller fee.** Sellers are charged the flat 8% fee stated for sellers, with card processing included and no other fees. The referral program is not open, and this document does not quote a referral share.
 
 5.5. **Taxes.** Applicable taxes are calculated and collected as required by law and shown at checkout where applicable.
 
@@ -87,9 +87,9 @@ These Terms of Service ("**Terms**") govern access to and use of the Service by 
 
 ## 7. Affiliate and Vendor Programs
 
-7.1. **Vendor program.** Vendors sell through the Service under the separate **Vendor Agreement**, which governs the vendor relationship, including the flat 2% platform fee, payouts, and vendor obligations.
+7.1. **Vendor program.** Vendors sell through the Service under the separate **Vendor Agreement**. The seller fee is a flat 8%, with card processing included and no other fees.
 
-7.2. **Affiliate program.** Affiliates participate under the separate **Affiliate Agreement**, which governs enrollment (self-serve, auto-approved on acceptance), the tiered commission structure (up to 5%), last-click 60-day attribution, and payment terms (accrual on paid order, clearing on fulfillment, reversal on refund/chargeback, `[MIN PAYOUT = $50]` minimum, monthly payout).
+7.2. **Affiliate program.** The referral program is not open. The Affiliate Agreement does not set a share, an approval path, or an attribution window. Applications are not being accepted.
 
 7.3. **Precedence.** For participants in those programs, the applicable program agreement governs the specifics of that relationship and is incorporated by reference. These Terms govern general use of the Service.
 
@@ -201,4 +201,4 @@ These Terms of Service ("**Terms**") govern access to and use of the Service by 
 
 ---
 
-*End of Platform Terms of Service template. **TEMPLATE — not legal advice; review with counsel before use.***
+\*End of Platform Terms of Service template. **TEMPLATE — not legal advice; review with counsel before use.\***

@@ -267,7 +267,7 @@ async function seedEnrichment(tx: postgres.TransactionSql) {
 		WITH rules(area_slug, terms) AS (
 			VALUES
 				('hydroponics', ARRAY['hydroponic','hydroponics','aeroponic','nft','dwc','rockwool','clay-pebbles','nutrients']),
-				('aquaponics', ARRAY['aquaponics','fish','tilapia','bell-siphon','water-testing']),
+				('aquaponics', ARRAY['aquaponics','fish','bell-siphon','water-testing']),
 				('seeds-propagation', ARRAY['seed','seeds','seedlings','grafting','propagation','heirloom','wildflower','tree-seeds']),
 				('soil-compost', ARRAY['soil','soil-health','composting','vermicompost','amendments','biochar','mycorrhizae']),
 				('permaculture', ARRAY['permaculture','companion-planting','polyculture','rainwater','beneficial-insects']),

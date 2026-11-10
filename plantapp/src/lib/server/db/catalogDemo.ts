@@ -216,16 +216,17 @@ export const demoCategories: DemoCategory[] = [
 ];
 
 // ---------- shared defaults ----------
-const SEEDS_WARRANTY = 'germination guarantee · 90%+ tested';
-const LIVE_WARRANTY = 'live-arrival guarantee · free replacement';
-const SYSTEM_WARRANTY = '2-yr warranty · parts stocked';
-const TOOL_WARRANTY = 'lifetime warranty · 30-day returns';
-const KIT_WARRANTY = '1-yr warranty · 30-day returns';
+const SELLER_TERMS = 'Set by the seller and confirmed at checkout.';
+const SEEDS_WARRANTY = SELLER_TERMS;
+const LIVE_WARRANTY = SELLER_TERMS;
+const SYSTEM_WARRANTY = SELLER_TERMS;
+const TOOL_WARRANTY = SELLER_TERMS;
+const KIT_WARRANTY = SELLER_TERMS;
 
-const SHIP_STANDARD = 'free shipping over $75 · arrives in 3–5 days';
-const SHIP_FREE = 'free shipping · arrives in 3–5 days';
-const SHIP_BULKY = 'free shipping · arrives in 5–8 days';
-const SHIP_LIVE = 'ships Mon–Wed · overnight for live goods';
+const SHIP_STANDARD = 'Shipping terms are set by the seller and confirmed at checkout.';
+const SHIP_FREE = SHIP_STANDARD;
+const SHIP_BULKY = SHIP_STANDARD;
+const SHIP_LIVE = SHIP_STANDARD;
 
 // ---------- products ----------
 export const demoProducts: DemoProduct[] = [
@@ -319,7 +320,7 @@ export const demoProducts: DemoProduct[] = [
 		],
 		testBedNote:
 			'Honest note: heavy fruiting crops (full-size tomatoes, peppers) get top-heavy above tier five. Keep them low, keep greens high, and the tower stays happy. Everything else exceeded our yield notes.',
-		shippingNote: 'free shipping · arrives in 3–5 days',
+		shippingNote: SHIP_FREE,
 		warranty: SYSTEM_WARRANTY,
 		bundleOffer: {
 			title: "Grower's Bundle",
@@ -1072,14 +1073,14 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'IBC Aquaponics Fish Tank (275 gal) | Aevani Aquaponics',
 		metaDescription:
 			'A properly converted 275-gallon IBC tank with tempered-glass viewing window, aeration manifold, and insulated jacket — the heart of a backyard system.',
-		tags: ['aquaponics', 'fish tank', 'ibc tote', 'backyard system', 'tilapia', 'flagship'],
+		tags: ['aquaponics', 'fish tank', 'ibc tote', 'backyard system', 'food fish', 'flagship'],
 		relatedSlugs: [
 			'commercial-aquaponics-grow-bed',
 			'aquaponics-bell-siphon-kit',
 			'aquaponics-water-testing-kit'
 		],
 		descriptionHtml:
-			'<h2>The heart of a backyard system</h2><p>An IBC tote is the workhorse of serious home aquaponics, and this one is converted properly — not just cleaned out. The interior carries a food-safe coating, the front holds a tempered-glass <strong>viewing window</strong> so you can actually watch your fish and their health, and a four-stone aeration manifold keeps the water alive. The insulated jacket buys you temperature stability that bare totes never have.</p><p>The steel cage carries the load and the pallet base lifts it for gravity-fed drainage down to your grow beds. It supports 50–75 tilapia or a hundred-plus ornamentals, which is enough fish to fertilize a real garden.</p><p>We chose the parts a first-timer regrets skipping: the window that catches a sick fish early, the insulation that flattens a cold snap, the manifold that survives a pump hiccup. It is the tank we would put in our own yard.</p><p>Building your first loop? Start with the <a href="/learn">aquaponics field guide</a>.</p>',
+			'<h2>The heart of a backyard system</h2><p>An IBC tote is the workhorse of serious home aquaponics, and this one is converted properly — not just cleaned out. The interior carries a food-safe coating, the front holds a tempered-glass <strong>viewing window</strong> so you can actually watch your fish and their health, and a four-stone aeration manifold keeps the water alive. The insulated jacket buys you temperature stability that bare totes never have.</p><p>The steel cage carries the load and the pallet base lifts it for gravity-fed drainage down to your grow beds. It supports 50–75 food fish or a hundred-plus ornamentals, which is enough fish to fertilize a real garden.</p><p>We chose the parts a first-timer regrets skipping: the window that catches a sick fish early, the insulation that flattens a cold snap, the manifold that survives a pump hiccup. It is the tank we would put in our own yard.</p><p>Building your first loop? Start with the <a href="/learn">aquaponics field guide</a>.</p>',
 		keyFeatures: [
 			'Properly converted 275-gal IBC with food-safe interior',
 			'12×18 in tempered-glass viewing window',
@@ -1087,7 +1088,7 @@ export const demoProducts: DemoProduct[] = [
 			'Insulated jacket for temperature stability'
 		],
 		stats: [
-			{ value: '275 gal', label: 'volume — supports 50–75 tilapia' },
+			{ value: '275 gal', label: 'volume — supports 50–75 food fish' },
 			{ value: '4', label: 'air stones on a shared manifold' },
 			{ value: '100+', label: 'ornamental fish alternative capacity' },
 			{ value: '10+ yr', label: 'expected service life of the cage and tote' }
@@ -1100,7 +1101,7 @@ export const demoProducts: DemoProduct[] = [
 			{ label: 'Drainage', value: 'Ball-valve drain + solids filter basket' },
 			{ label: 'Insulation', value: 'Removable insulated jacket' },
 			{ label: 'Support', value: 'Steel cage + pallet base' },
-			{ label: 'Stocking', value: '50–75 tilapia or 100+ ornamentals' }
+			{ label: 'Stocking', value: '50–75 food fish or 100+ ornamentals' }
 		],
 		inTheBox: [
 			'Converted 275-gal IBC tank',
@@ -1119,11 +1120,11 @@ export const demoProducts: DemoProduct[] = [
 			},
 			{
 				q: 'How many fish can I really keep?',
-				a: 'Plan for 50–75 tilapia at harvest weight, or up to 1 lb of fish per 5–7 gallons. Understock at first — a new biofilter cannot handle a full load.'
+				a: 'Plan for 50–75 food fish at harvest weight, or up to 1 lb of fish per 5–7 gallons. Understock at first — a new biofilter cannot handle a full load.'
 			},
 			{
 				q: 'Can I keep it outdoors in winter?',
-				a: 'The insulated jacket handles cool nights, but tilapia need water above 60°F. In freezing climates, move the system into a greenhouse or heated space, or switch to a cold-tolerant species.'
+				a: 'The insulated jacket handles cool nights, but food fish need water above 60°F. In freezing climates, move the system into a greenhouse or heated space, or switch to a cold-tolerant species.'
 			},
 			{
 				q: 'Is the interior really food-safe?',
@@ -1152,7 +1153,7 @@ export const demoProducts: DemoProduct[] = [
 				authorName: 'Tom B.',
 				rating: 5,
 				title: 'Backbone of my greenhouse',
-				body: 'Paired it with the grow bed and 50 tilapia. Six months in and the insulation held my water temp through a cold snap that would have crashed a bare tank.',
+				body: 'Paired it with the grow bed and 50 food fish. Six months in and the insulation held my water temp through a cold snap that would have crashed a bare tank.',
 				isVerifiedPurchase: true
 			},
 			{
@@ -1204,7 +1205,7 @@ export const demoProducts: DemoProduct[] = [
 		relatedSlugs: [
 			'ibc-aquaponics-fish-tank',
 			'aquaponics-bell-siphon-kit',
-			'tilapia-fingerlings-starter-pack'
+			'aquaponics-stocking-notes'
 		],
 		descriptionHtml:
 			'<h2>Production-scale growing</h2><p>This is the grow bed built to pair with a 275-gallon IBC tank in a proper 1:1 ratio. A 4×8 ft flood-and-drain bed, twelve inches deep for real root run, on a stainless frame that shrugs off a decade of greenhouse humidity. The food-grade HDPE liner and included bell-siphon assembly turn fish water into a garden.</p><p>It holds 32 cubic feet of media — enough to grow fruiting crops, not just greens.</p><p>Sizing a system? The <a href="/learn">aquaponics field guide</a> covers the tank-to-bed ratio.</p>',
@@ -1284,7 +1285,7 @@ export const demoProducts: DemoProduct[] = [
 		tags: ['aquaponics', 'countertop', 'beginner-friendly', 'classroom', 'herbs', 'gift'],
 		relatedSlugs: [
 			'aquaponics-water-testing-kit',
-			'tilapia-fingerlings-starter-pack',
+			'aquaponics-stocking-notes',
 			'aquaponics-bell-siphon-kit'
 		],
 		descriptionHtml:
@@ -1355,83 +1356,55 @@ export const demoProducts: DemoProduct[] = [
 		]
 	},
 	{
-		slug: 'tilapia-fingerlings-starter-pack',
+		slug: 'aquaponics-stocking-notes',
 		sku: 'AEV-AQP-04',
-		name: 'Tilapia Fingerlings (25)',
+		name: 'Aquaponics stocking notes',
 		system: 'aquaponics',
 		categorySlug: 'fish-supplies',
 		subCategory: 'Fish & supplies',
 		price: '59.99',
-		assetKey: 'tilapia',
-		badges: ['LIVE'],
+		assetKey: 'aquaponicsFish',
+		badges: [],
 		isFeatured: false,
-		shortDescription: 'Live Nile tilapia with overnight shipping and acclimation guide.',
-		metaTitle: 'Tilapia Fingerlings Starter Pack (25) | Aevani Aquaponics',
+		shortDescription: 'A catalogue placeholder. Aevani does not ship live fish.',
+		metaTitle: 'Aquaponics stocking notes | Aevani',
 		metaDescription:
-			'Twenty-five live Nile tilapia fingerlings shipped overnight with an acclimation guide — the fast-growing, forgiving fish for home aquaponics.',
-		tags: ['aquaponics', 'live fish', 'tilapia', 'fingerlings', 'stocking', 'overnight shipping'],
+			'A preview note on stocking an aquaponics tank. Aevani does not ship live fish, and nothing in the catalogue is for sale yet.',
+		tags: ['aquaponics', 'stocking', 'preview', 'not for sale'],
 		relatedSlugs: [
 			'ibc-aquaponics-fish-tank',
 			'aquaponics-water-testing-kit',
 			'commercial-aquaponics-grow-bed'
 		],
 		descriptionHtml:
-			'<h2>The gold-standard aquaponics fish</h2><p>Nile tilapia are hardy, fast-growing, and tolerant of the water swings a new system throws at them — which is exactly why they are the fish almost every aquaponics guide recommends first. This is a live shipment of twenty-five 1–2 inch fingerlings, packed with oxygen and shipped overnight so they arrive strong.</p><p>Feed them well and they reach a 1–1.5 lb harvest in eight to ten months, fertilizing your garden the whole way.</p><p>New to livestock? Read the acclimation steps in the <a href="/learn">aquaponics field guide</a> before they arrive.</p>',
+			'<h2>A note, not a shipment</h2><p>This listing is a silhouette of a future seller note about stocking a tank. Aevani does not ship live fish, and checkout is off. When a real seller lists animals or plants, that seller writes the terms.</p><p>Read the <a href="/learn">aquaponics field guide</a> while the catalogue is still a preview.</p>',
 		keyFeatures: [
-			'25 live Nile tilapia fingerlings (1–2 in)',
-			'Hardy and forgiving of new-system water swings',
-			'Overnight shipping with oxygen packs',
-			'Live-arrival guarantee'
+			'Catalogue preview only',
+			'No live animals are offered',
+			'Checkout is off',
+			'Seller terms would be confirmed at checkout, later'
 		],
 		stats: [
-			{ value: '25', label: 'fingerlings per pack' },
-			{ value: '8–10 mo', label: 'to 1–1.5 lb harvest size' },
-			{ value: '1–2 in', label: 'arrival size' }
+			{ value: '0', label: 'live animals offered' },
+			{ value: 'Preview', label: 'not a listing you can buy' }
 		],
 		specs: [
-			{ label: 'Species', value: 'Nile tilapia (Oreochromis niloticus)' },
-			{ label: 'Count', value: '25 fingerlings' },
-			{ label: 'Size', value: '1–2 in on arrival' },
-			{ label: 'Shipping', value: 'Overnight, Mon–Wed, oxygen-packed' },
-			{ label: 'Includes', value: 'Acclimation + 90-day feeding guide' }
+			{ label: 'Offer', value: 'None. Preview only.' },
+			{ label: 'Live animals', value: 'Not sold by Aevani' },
+			{ label: 'Checkout', value: 'Off' }
 		],
-		inTheBox: [
-			'25 live tilapia fingerlings',
-			'Oxygen-packed insulated box',
-			'Acclimation guide',
-			'90-day feeding schedule',
-			'Water quick-start sheet'
-		],
+		inTheBox: ['Nothing to ship. This page is a placeholder.'],
 		faqs: [
 			{
-				q: 'What if fish arrive dead?',
-				a: 'Photograph any DOA within two hours of delivery and we replace them free. Our live-arrival guarantee covers the whole shipment.'
-			},
-			{
-				q: 'Is tilapia legal in my state?',
-				a: 'Some states restrict tilapia. Check your local regulations before ordering — we cannot ship where they are prohibited.'
+				q: 'Can I buy fish here?',
+				a: 'No. The catalogue is a preview. Aevani does not ship live fish.'
 			}
 		],
 		testBedNote:
 			'Honest note: do not add fingerlings to an uncycled tank. Ammonia from day-one fish in a system without an established biofilter is the most common way beginners lose their first batch — cycle first.',
 		shippingNote: SHIP_LIVE,
 		warranty: LIVE_WARRANTY,
-		reviews: [
-			{
-				authorName: 'Marcus W.',
-				rating: 5,
-				title: 'Arrived lively',
-				body: 'All 25 swam out strong. Acclimation guide was clear. Growing fast on the feeding schedule — no losses.',
-				isVerifiedPurchase: true
-			},
-			{
-				authorName: 'Yuki T.',
-				rating: 4,
-				title: 'Healthy fish, cycle first',
-				body: 'They shipped perfectly. My only regret is adding them a week too early — lost two before my biofilter caught up. My fault, not theirs.',
-				isVerifiedPurchase: true
-			}
-		]
+		reviews: []
 	},
 	{
 		slug: 'aquaponics-water-testing-kit',
@@ -1458,7 +1431,7 @@ export const demoProducts: DemoProduct[] = [
 		],
 		relatedSlugs: [
 			'aquaponics-bell-siphon-kit',
-			'tilapia-fingerlings-starter-pack',
+			'aquaponics-stocking-notes',
 			'ibc-aquaponics-fish-tank'
 		],
 		descriptionHtml:
@@ -2268,14 +2241,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'Medicinal Herb Garden Kit | Aevani Agroforestry',
 		metaDescription:
 			'Six live medicinal herb starters with care cards and a preparation guide. Grow a home apothecary of teas, salves, and remedies.',
-		tags: [
-			'agroforestry',
-			'medicinal herbs',
-			'live plants',
-			'apothecary',
-			'herbalism',
-			'perennial'
-		],
+		tags: ['agroforestry', 'medicinal herbs', 'herbs', 'apothecary', 'herbalism', 'perennial'],
 		relatedSlugs: [
 			'chestnut-tree-seedlings-10-pack',
 			'grafting-propagation-kit',

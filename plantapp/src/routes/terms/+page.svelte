@@ -55,12 +55,15 @@
 					Shipping, returns, and warranty
 				</h2>
 				<p class="text-base-content/70">
-					Shipping, returns, warranty, and affiliate terms apply only when they are explicitly
-					stated for the relevant offer. Product pages state free shipping on qualifying orders, and
-					30-day returns with a no-fuss guarantee. Read the
+					Shipping, returns, and warranties apply only when a seller states them and they are
+					confirmed at checkout. Aevani does not currently offer a site-wide shipping promise, a
+					30-day return, or a warranty. Read the
 					<a class="link link-primary" href="/shipping">shipping</a>,
 					<a class="link link-primary" href="/returns">returns</a>, and
-					<a class="link link-primary" href="/warranty">warranty</a> pages for the wording listings use.
+					<a class="link link-primary" href="/warranty">warranty</a> pages. Questions can go to
+					<a class="link link-primary" href="mailto:{publicOperator.email}"
+						>{publicOperator.email}</a
+					>.
 				</p>
 			</section>
 

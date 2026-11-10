@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { Container, Section } from '$lib/components/layout';
+	import { publicOperator } from '$lib/config/site';
 </script>
 
 <svelte:head>
-	<title>Warranty Information | Aevani</title>
+	<title>Warranty | Aevani</title>
 	<meta
 		name="description"
-		content="Understand the current status of warranty information for Aevani product listings."
+		content="Aevani does not currently offer a site-wide warranty. Warranty terms, if any, are set by the seller and confirmed at checkout."
 	/>
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
@@ -16,76 +17,33 @@
 		<div class="mx-auto max-w-4xl space-y-10">
 			<header class="space-y-4">
 				<p class="font-mono text-xs font-semibold tracking-widest text-secondary uppercase">
-					Product information
+					Warranty
 				</p>
-				<h1 class="font-display text-4xl tracking-tight uppercase md:text-5xl">
-					Warranty information
-				</h1>
+				<h1 class="font-display text-4xl tracking-tight md:text-5xl">Warranty</h1>
 				<p class="max-w-3xl text-lg text-base-content/70">
-					Aevani does not currently publish a single site-wide warranty. Coverage, exclusions,
-					duration, and claim steps may vary by product and manufacturer.
+					Nothing is for sale yet, so there is no warranty to claim. When a real seller lists a
+					product, any warranty on that listing is the warranty that applies. Aevani does not
+					currently offer a site-wide warranty.
 				</p>
 			</header>
 
-			<section class="space-y-4">
-				<h2 class="font-display text-2xl tracking-tight uppercase">What listings currently say</h2>
-				<ul class="list-disc space-y-2 pl-5 text-base-content/70">
-					<li>2-yr warranty · parts stocked</li>
-					<li>lifetime warranty · 30-day returns</li>
-					<li>1-yr warranty · 30-day returns</li>
-					<li>germination guarantee · 90%+ tested</li>
-					<li>live-arrival guarantee · free replacement</li>
-				</ul>
-				<p class="text-base-content/70">
-					The homepage states "2-yr warranty". The Vertical Tower Garden System listing states:
-					"Two-year warranty covers defects; after that, replacements are a few dollars each."
-				</p>
-			</section>
-
-			<section class="rounded-2xl border border-warning/30 bg-warning/10 p-6 md:p-8">
-				<h2 class="font-display text-2xl tracking-tight uppercase">
-					What this means before purchase
-				</h2>
+			<section class="rounded-2xl border border-base-200 bg-base-100 p-6 shadow-sm md:p-8">
+				<h2 class="font-display text-2xl tracking-tight">Set per seller</h2>
 				<p class="mt-3 text-base-content/80">
-					Only warranty terms supplied with an individual product listing, order documentation, or
-					manufacturer documentation should be treated as a warranty commitment. This page is
-					informational and is not a warranty agreement.
+					Warranty terms are set by the seller and confirmed at checkout. They are not offered
+					site-wide today.
 				</p>
 			</section>
 
-			<section class="grid gap-6 md:grid-cols-2">
-				<div class="card border border-base-200 bg-base-100 shadow-sm">
-					<div class="card-body">
-						<h2 class="font-display card-title tracking-tight uppercase">
-							Look for product-specific terms
-						</h2>
-						<ul class="list-disc space-y-2 pl-5 text-base-content/70">
-							<li>Who provides the coverage</li>
-							<li>How long coverage lasts</li>
-							<li>What is covered and excluded</li>
-							<li>How to start a claim</li>
-						</ul>
-					</div>
-				</div>
+			<p class="text-base-content/70">
+				Return eligibility and warranty coverage are separate. See the
+				<a class="link link-primary" href="/returns">returns page</a>.
+			</p>
 
-				<div class="card border border-base-200 bg-base-100 shadow-sm">
-					<div class="card-body">
-						<h2 class="font-display card-title tracking-tight uppercase">If no terms are listed</h2>
-						<p class="text-base-content/70">
-							Warranty coverage is not confirmed. Wait for product documentation or written terms
-							before relying on coverage for a purchase decision.
-						</p>
-						<a class="link link-primary" href="/support">Review support guidance</a>
-					</div>
-				</div>
-			</section>
-
-			<p class="text-sm text-base-content/60">
-				Return eligibility and warranty coverage are separate. See the <a
-					class="link link-primary"
-					href="/returns">returns page</a
-				>
-				for the current return information.
+			<p class="text-base-content/70">
+				Questions about a warranty?
+				<a class="link link-primary" href="mailto:{publicOperator.email}">{publicOperator.email}</a>
+				or the <a class="link link-primary" href="/contact">contact page</a>.
 			</p>
 		</div>
 	</Container>

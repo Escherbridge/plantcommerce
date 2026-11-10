@@ -86,7 +86,7 @@
 		];
 		const role = user?.role;
 		if (role === 'affiliate' || role === 'admin') {
-			base.push({ label: 'Affiliate Status', href: '/affiliate/terms' });
+			base.push({ label: 'Affiliate program (not open)', href: '/affiliate' });
 		}
 		if (role === 'admin') {
 			base.push({ label: 'Admin Panel', href: '/admin' });
@@ -179,9 +179,6 @@
 			<!-- Right actions -->
 			<div class="header-actions">
 				<a href="/sell" class="sell-link">Sell</a>
-				<a href="/affiliate" class="affiliates-link" class:active={isActive('/affiliate')}>
-					Affiliates
-				</a>
 
 				<!-- Cart primary pill -->
 				<a href="/cart" class="cart-pill" aria-label="Cart">
@@ -465,29 +462,6 @@
 		gap: 0.75rem;
 		flex-shrink: 0;
 		margin-left: auto;
-	}
-
-	.affiliates-link {
-		font-family: var(--font-body, sans-serif);
-		font-size: 15px;
-		font-weight: 500;
-		color: #5a7263;
-		text-decoration: none;
-		padding: 0.35rem 0.25rem;
-		transition: color 0.2s ease;
-		white-space: nowrap;
-	}
-
-	.affiliates-link:hover,
-	.affiliates-link:focus-visible,
-	.affiliates-link.active {
-		color: #1c3527;
-	}
-
-	@media (max-width: 767px) {
-		.affiliates-link {
-			display: none;
-		}
 	}
 
 	/* ---- Cart primary pill ---- */

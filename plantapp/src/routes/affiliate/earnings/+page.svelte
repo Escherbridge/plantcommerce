@@ -10,22 +10,19 @@
 <div class="platform-content">
 	<div class="platform-header">
 		<h1 class="platform-header__title">Affiliate Earnings</h1>
-		<p class="platform-header__subtitle">How your commission accrues, clears, and gets paid.</p>
+		<p class="platform-header__subtitle">The referral program is not open.</p>
 	</div>
 
 	<div class="platform-card">
 		<div class="platform-card__header">
-			<h2 class="platform-card__title">Earnings &amp; payouts</h2>
+			<h2 class="platform-card__title">No rate is published</h2>
 		</div>
 		<div class="platform-empty">
 			<p class="platform-empty__text">
-				Commission accrues when an attributed order is paid and clears for payout once the order is
-				fulfilled (shipped or delivered). Refunds and chargebacks reverse the associated commission.
-				Cleared balances are paid out monthly once you reach the $50 minimum payout. Your commission
-				rate follows your tier — Sprout 2%, Grower 3.5%, or Steward 5% — based on your lifetime
-				attributed sales.
+				The referral share has not been set. This page does not quote a commission rate. Direct
+				sellers can apply now.
 			</p>
-			<a href="/affiliate/links" class="platform-action-btn">Manage your links</a>
+			<a href="/sell" class="platform-action-btn">Sell on Aevani</a>
 		</div>
 	</div>
 </div>

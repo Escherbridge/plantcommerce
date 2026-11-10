@@ -133,7 +133,7 @@ export const mockProducts: MockProduct[] = [
 		name: 'IBC Aquaponics Fish Tank System',
 		slug: 'ibc-aquaponics-fish-tank',
 		description:
-			'Convert a standard IBC tote into a professional aquaponics fish tank with this complete conversion kit. Includes viewing window, bulkhead fittings, standpipe, and all necessary plumbing. 275-gallon capacity perfect for tilapia, koi, or goldfish. Food-grade materials ensure fish and plant safety.',
+			'Convert a standard IBC tote into a professional aquaponics fish tank with this complete conversion kit. Includes viewing window, bulkhead fittings, standpipe, and all necessary plumbing. 275-gallon capacity suited to hardy food fish, koi, or goldfish. Food-grade materials ensure fish and plant safety.',
 		shortDescription: '275-gallon IBC tote conversion kit for aquaponics fish cultivation',
 		price: '299.99',
 		categoryId: 1,
@@ -188,22 +188,22 @@ export const mockProducts: MockProduct[] = [
 	},
 	{
 		id: 6,
-		name: 'Tilapia Fingerlings Guide',
-		slug: 'tilapia-fingerlings-guide',
+		name: 'Aquaponics stocking notes',
+		slug: 'aquaponics-stocking-notes',
 		description:
-			'Comprehensive illustrated guide to raising tilapia in aquaponics systems. Covers fingerling selection, stocking density, feeding schedules, growth rates, and harvest timing. Beautiful botanical-style illustrations show different growth stages. Essential reading for anyone starting with tilapia aquaponics.',
-		shortDescription: 'Educational guide for raising tilapia in aquaponics systems',
+			'A preview note. Aevani does not ship live fish. Stocking density, feeding, and local rules belong to a future seller, not to a shipment from this catalogue.',
+		shortDescription: 'Preview note. Aevani does not ship live fish.',
 		price: '24.99',
 		categoryId: 1,
 		images: [
 			{
-				url: '/src/lib/images/AI-MockAssets/ToolProduct-AquaponicsTilapiaFingerlings.png',
-				altText: 'Illustrated guide showing tilapia growth stages'
+				url: '/src/lib/images/AI-MockAssets/ToolProduct-AquaponicsFish.png',
+				altText: 'Illustrated aquaponics fish study, not a live shipment'
 			}
 		],
 		inStock: true,
 		stockQuantity: 150,
-		sku: 'AQ-GUIDE-TILAPIA-001'
+		sku: 'AQ-GUIDE-STOCKING-001'
 	},
 
 	// Hydroponic Products
@@ -737,7 +737,7 @@ export const mockProducts: MockProduct[] = [
 		name: 'Medicinal Herb Garden Kit',
 		slug: 'medicinal-herb-kit',
 		description:
-			'Grow your own pharmacy with this collection of medicinal herbs. Includes live plants of lavender, chamomile, mint, echinacea, and lemon balm in biodegradable pots. All certified organic. Comes with herbal remedy guide covering teas, tinctures, and salves. Start your journey into herbalism with these easy-to-grow, powerful plants.',
+			'Grow your own pharmacy with this collection of medicinal herbs. Includes seed packets of lavender, chamomile, mint, echinacea, and lemon balm. All certified organic. Comes with herbal remedy guide covering teas, tinctures, and salves. Start your journey into herbalism with these easy-to-grow, powerful plants.',
 		shortDescription: 'Live medicinal herb plants with herbal remedy guide',
 		price: '54.99',
 		categoryId: 6,

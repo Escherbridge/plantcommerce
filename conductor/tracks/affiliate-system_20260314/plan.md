@@ -1,3 +1,10 @@
+---
+type: plan
+title: Affiliate System
+status: archived
+created: 2026-03-14
+---
+
 # Implementation Plan: Affiliate System
 
 ## Overview
@@ -234,7 +241,7 @@ This plan is organized into 7 phases, progressing from foundational schema chang
 - [ ] Implement: Create `plantapp/src/routes/affiliate/terms/+page.svelte` with static TOS content covering:
   - Program overview and eligibility
   - Commission structure (8%/12%/16% tiers)
-  - Payment terms ($50 minimum, monthly cycle)
+  - Payment terms (not published on the public site)
   - Prohibited activities (spam, misleading claims, trademark misuse)
   - Termination and suspension clauses
   - FTC disclosure requirements

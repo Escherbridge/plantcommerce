@@ -123,14 +123,14 @@
 					<Icon name="dollar-circle" class="affiliate-svg" />
 				</div>
 				<div>
-					<h3 class="affiliate-cta__title">Affiliate Program Status</h3>
+					<h3 class="affiliate-cta__title">Affiliate program</h3>
 					<p class="affiliate-cta__text">
-						Applications may be recorded for manual review, but no commission, link, or payout terms
-						are currently published.
+						The referral program is not open. The share has not been set, and applications are not
+						being accepted. Direct sellers can apply now.
 					</p>
 				</div>
 			</div>
-			<a href="/affiliate/terms" class="cta-btn cta-btn--secondary">Review Status</a>
+			<a href="/affiliate" class="cta-btn cta-btn--secondary">Program status</a>
 		</div>
 	{/if}
 </div>

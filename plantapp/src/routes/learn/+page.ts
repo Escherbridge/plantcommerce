@@ -1,4 +1,5 @@
 import type { PageLoad } from './$types';
+import { isRetiredLiveGoodsFaq } from '$lib/content/retiredClaims';
 import { createCallerClient } from '$lib/trpc/client';
 
 export const load: PageLoad = async (event) => {
@@ -23,7 +24,8 @@ export const load: PageLoad = async (event) => {
 	}
 
 	try {
-		faqs = await trpc.content.getPublishedPages.query({ type: 'faq', limit: 6 });
+		const publishedFaqs = await trpc.content.getPublishedPages.query({ type: 'faq', limit: 6 });
+		faqs = (publishedFaqs || []).filter((faq) => !isRetiredLiveGoodsFaq(faq));
 	} catch (e) {
 		console.error('Error loading faqs:', e);
 	}

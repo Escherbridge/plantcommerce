@@ -73,17 +73,17 @@ This Vendor Agreement (the "**Agreement**") governs your use of the Platform Ser
 
 ## 4. Fees and Payments
 
-4.1. **Platform Fee — flat 2% of Gross Sales.** In consideration for the Platform Service, the Platform retains a **flat platform fee equal to two percent (2%) of Gross Sales** processed through the Platform Service. The 2% Platform Fee is calculated on the Gross Sales of each order and is deducted before your Payout is calculated. For the avoidance of doubt: for every **$100.00** of Gross Sales, the Platform Fee is **$2.00**.
+4.1. **Seller fee — flat 8% of Gross Sales.** In consideration for the Platform Service, the Platform retains a **flat fee equal to eight percent (8%) of Gross Sales**, with card processing included and no listing, monthly, or ad fees. The fee is calculated on the Gross Sales of each order and is deducted before your Payout is calculated. For the avoidance of doubt: for every **$100.00** of Gross Sales, the fee is **$8.00**.
 
-4.2. **How you are paid (net of the Platform Fee).** For each order, your Payout is calculated as follows:
+4.2. **How you are paid (net of the seller fee).** For each order, your Payout is calculated as follows:
 
-> **Payout = Gross Sales − Platform Fee (2% of Gross Sales) − Payment Processor fees − applicable Affiliate commissions − refunds, reversals, and chargebacks − any other amounts properly deducted under this Agreement.**
+> **Payout = Gross Sales − seller fee (8% of Gross Sales) − refunds, reversals, and chargebacks − any other amounts properly deducted under this Agreement.**
 
-You are paid the net amount. The Platform Fee is separate from, and in addition to, any fees charged by the Payment Processor for payment handling.
+You are paid the net amount. Card processing is included in the seller fee. No referral share is deducted, because that program is not open and its share has not been set.
 
-4.3. **Affiliate commissions.** Where an order is attributed to an Affiliate under the Affiliate Agreement, the applicable Affiliate commission (tiered, up to 5% of the sale subtotal) is funded from the order proceeds and deducted in calculating your Payout, unless you and the Platform agree in writing to a different funding arrangement. The Platform administers Affiliate accrual, clearing, and payment on your behalf as described in the Affiliate Agreement.
+4.3. **Referral program.** The referral program is not open. This Agreement does not deduct a referral share and does not quote one.
 
-4.4. **Payout timing and method.** Payouts are remitted to your designated account through the Payment Processor on the Platform's standard payout schedule, subject to Payment Processor availability, holds, and reserves. Funds may be held pending clearance, fraud review, or reserve requirements as permitted by the Payment Processor and applicable law.
+4.4. **Method.** Funds move through the Payment Processor to the account you designate, subject to that processor's holds and reserves and to applicable law.
 
 4.5. **Refunds, reversals, and chargebacks.** If a Customer receives a refund, or if a payment is reversed or charged back, the corresponding Gross Sales are reduced and any Platform Fee, Affiliate commission, and Payout amounts are adjusted accordingly. You are responsible for the full amount of refunds, reversals, and chargebacks on your Vendor Products, including associated Payment Processor fees, and the Platform may offset these amounts against current or future Payouts or invoice you for any shortfall.
 
@@ -91,7 +91,7 @@ You are paid the net amount. The Platform Fee is separate from, and in addition 
 
 4.7. **Records and statements.** The Platform will make available reporting of your sales, fees, deductions, and Payouts through your dashboard. You should retain your own records for tax and accounting purposes.
 
-4.8. **No fee changes without notice.** The Platform will not change the 2% Platform Fee applicable to you without providing advance notice as required under Section 10 and the Platform Terms.
+4.8. **No fee changes without notice.** The Platform will not change the flat 8% seller fee applicable to you without providing advance notice as required under Section 10 and the Platform Terms.
 
 ---
 
@@ -203,4 +203,4 @@ You are paid the net amount. The Platform Fee is separate from, and in addition 
 
 ---
 
-*End of Vendor Agreement template. **TEMPLATE — not legal advice; review with counsel before use.***
+\*End of Vendor Agreement template. **TEMPLATE — not legal advice; review with counsel before use.\***

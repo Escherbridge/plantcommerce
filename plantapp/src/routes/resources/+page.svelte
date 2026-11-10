@@ -20,8 +20,7 @@
 		<div class="mb-8">
 			<h1 class="font-display mb-4 text-4xl tracking-tight uppercase">Resources</h1>
 			<p class="text-lg text-base-content/70">
-				Access our comprehensive library of educational materials, tools, and community resources
-				for sustainable agriculture.
+				No downloadable resources yet. The Learn hub is the reading room that exists today.
 			</p>
 		</div>
 
@@ -89,7 +88,9 @@
 			{:else}
 				<div class="py-12 text-center">
 					<p class="text-xl text-base-content/70">
-						No resources available. Check back soon for new materials!
+						This shelf is empty for now. Read the <a class="link link-primary" href="/learn"
+							>Learn hub</a
+						> instead.
 					</p>
 				</div>
 			{/if}

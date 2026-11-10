@@ -15,9 +15,8 @@
 	<div class="platform-card">
 		<div class="platform-empty">
 			<p class="platform-empty__text">
-				Payout details and notification preferences are coming soon. In the meantime, payouts are
-				issued monthly from your cleared balance once you reach the $50 minimum. For account or
-				payout questions, contact support.
+				The referral program is not open, so there is no rate to configure here. Direct sellers can
+				apply now. Other account questions can go to support.
 			</p>
 			<a href="/affiliate/earnings" class="platform-action-btn">View earnings</a>
 		</div>
