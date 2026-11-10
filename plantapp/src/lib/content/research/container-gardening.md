@@ -70,6 +70,7 @@ This is a worked example, not a customer and not a testimonial. A full-size toma
 - [Raised beds: width, depth, and soil](/guides/raised-beds) — if you have ground, the useful decisions are still width, depth, fill, and water.
 - [Understanding soil health](/guides/understanding-soil-health) — what a test is for, which is a different question from what goes in a pot.
 - [High tunnels and hoop houses](/guides/high-tunnels-hoop-houses) — if the next step is a structure rather than another pot.
+- [No-dig beds and sheet mulching](/guides/no-dig-sheet-mulch) — if you have ground but do not want to dig, official layering steps already exist.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set.
 

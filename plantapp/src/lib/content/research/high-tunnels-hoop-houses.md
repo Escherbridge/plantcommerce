@@ -80,6 +80,7 @@ This is a worked example, not a customer and not a testimonial. A first March we
 - [Raised beds: width, depth, and soil](/guides/raised-beds) — reach, depth, and fill, including the difference between a garden box and an NRCS 12-inch practice limit.
 - [Hydroponics in the Intermountain West](/guides/hydroponics-intermountain) — climate and cooling water, if the structure is being asked to hold a closed loop.
 - [Temperate silvopasture](/guides/temperate-silvopasture) — a different season-extension idea, trees and forage rather than a hoop.
+- [Testing source water for hydroponics and high tunnels](/guides/source-water-testing) — tunnels do not get rain leaching; official pages start with pH, EC, and alkalinity.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is where to site the structure on a parcel, [plan the land on PlantGeo](https://plantgeo.aevani.com) first.
 

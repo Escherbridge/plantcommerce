@@ -71,6 +71,8 @@ This is a worked example, not a customer and not a testimonial. A tomato is plan
 - [Choosing a first hydroponic system](/guides/choosing-hydroponic-system) — why the crop-water cap matters at the moment you pick a method.
 - [Hydroponic nutrients, EC, and pH](/guides/hydroponic-ec-ph-nutrients) — the meters still apply, even without a pump.
 - [Hydroponics in the Intermountain West](/guides/hydroponics-intermountain) — heat around a tank that has no active cooling.
+- [Choosing crops for a hydroponic system](/guides/hydroponic-crop-choice) — the published gallon cap, applied to the crop decision.
+- [Starting seeds and transplants for soilless systems](/guides/soilless-seed-starting) — the 1–3 week net-pot nursery before the tank.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the jar, [plan the land on PlantGeo](https://plantgeo.aevani.com).
 

@@ -74,6 +74,8 @@ This is a worked example, not a customer and not a testimonial. A six-foot-wide 
 - [High tunnels and hoop houses](/guides/high-tunnels-hoop-houses) — a hoop of plastic is a management job, and for NRCS Practice 325, raised beds in the tunnel are limited to 12 inches.
 - [Understanding soil health](/guides/understanding-soil-health) — what a soil test is for, before you argue with the fill.
 - [Temperate silvopasture](/guides/temperate-silvopasture) — a different scale of perennial system, if the question is the whole parcel rather than a box.
+- [No-dig beds and sheet mulching](/guides/no-dig-sheet-mulch) — the unframed sibling: a light-blocking sheet and organic layers, planted after they decompose, or sooner with finished compost on top.
+- [Temperate food forests: layers, guilds, and how to start](/guides/temperate-food-forest) — a layered planting, if the question is a yard rather than a box.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel, including a difficult native soil or a foothills slope, [plan the land on PlantGeo](https://plantgeo.aevani.com) first. The [Ada County sample plan](https://plantgeo.aevani.com/plan/sample-ada-county) is a demonstration on live map data, not a client.
 

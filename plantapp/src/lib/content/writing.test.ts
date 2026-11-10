@@ -73,7 +73,17 @@ describe('writing module', () => {
 			'greenhouse-ipm',
 			'aquaponic-biofilter-cycling',
 			'aquaponic-system-types',
-			'aquaponic-fish-species'
+			'aquaponic-fish-species',
+			'source-water-testing',
+			'hydroponic-crop-choice',
+			'hydroponic-nutrient-disorders',
+			'drip-dutch-bucket',
+			'ebb-and-flow',
+			'vertical-growing',
+			'soilless-seed-starting',
+			'hydroponic-media',
+			'no-dig-sheet-mulch',
+			'temperate-food-forest'
 		]);
 	});
 

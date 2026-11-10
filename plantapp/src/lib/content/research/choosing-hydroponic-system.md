@@ -81,6 +81,11 @@ This is a worked example, not a customer and not a testimonial. Someone builds a
 - [Kratky (non-circulating) hydroponics](/guides/kratky-method) — no pump, and a published crop-water cap.
 - [Hydroponics in the Intermountain West](/guides/hydroponics-intermountain) — the climate a closed loop still has to live in.
 - [Small-scale aquaponics](/guides/small-scale-aquaponics) — a different system family, with fish in the loop.
+- [Drip and Dutch-bucket hydroponics](/guides/drip-dutch-bucket) — the official home for long-season fruiting crops, with a leachate rule.
+- [Ebb-and-flow (flood-and-drain) hydroponics](/guides/ebb-and-flow) — a media bench; the only complete official timer opened is a lettuce seedling schedule.
+- [Choosing crops for a hydroponic system](/guides/hydroponic-crop-choice) — official crop-to-system pairing, and OSU’s EC and pH table.
+- [Vertical hydroponic growing: density and light](/guides/vertical-growing) — density can rise, and so can shading; not a tower recipe.
+- [Soilless hydroponic media: perlite, rockwool, and coir](/guides/hydroponic-media) — what the roots sit in when the layout needs a medium.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the reservoir, [plan the land on PlantGeo](https://plantgeo.aevani.com).
 

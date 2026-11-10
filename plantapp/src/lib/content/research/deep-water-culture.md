@@ -76,6 +76,7 @@ This is a worked example, not a customer and not a testimonial. A sunny windowsi
 - [Kratky (non-circulating) hydroponics](/guides/kratky-method) — the published no-pump method, with a crop-water cap.
 - [Troubleshooting hydroponic root rot, algae, and pH drift](/guides/hydroponic-troubleshooting-root-rot) — the checklist once roots are already brown.
 - [Hydroponic nutrients, EC, and pH](/guides/hydroponic-ec-ph-nutrients) — set EC first, then pH.
+- [Choosing crops for a hydroponic system](/guides/hydroponic-crop-choice) — official pairing of leafy crops with rafts, and fruiting crops with media.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the reservoir, [plan the land on PlantGeo](https://plantgeo.aevani.com).
 

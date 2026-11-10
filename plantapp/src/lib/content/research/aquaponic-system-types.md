@@ -70,6 +70,7 @@ This is a worked example, not a customer and not a testimonial. A first NFT loop
 - [Choosing aquaponic fish by species and temperature](/guides/aquaponic-fish-species) — official temperature windows, not a default tropical stocking.
 - [Small-scale aquaponics](/guides/small-scale-aquaponics) — the water-quality compromise and the stocking cap.
 - [Nutrient film technique](/guides/nutrient-film-technique) — slope, flow, and why the film has to stay a film.
+- [Ebb-and-flow (flood-and-drain) hydroponics](/guides/ebb-and-flow) — a hydroponic fertilizer bench is not FAO’s fish-loop flood-and-drain bed.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. This page is not a system kit or a live-fish offer. When the question is the parcel rather than the loop, [plan the land on PlantGeo](https://plantgeo.aevani.com).
 

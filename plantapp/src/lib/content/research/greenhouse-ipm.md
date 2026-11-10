@@ -72,6 +72,7 @@ This is a worked example, not a customer and not a testimonial. A tray of “fin
 - [High tunnels and hoop houses](/guides/high-tunnels-hoop-houses) — the structure, and why air movement is already part of the job.
 - [Greenhouse and high-tunnel ventilation and heat](/guides/greenhouse-ventilation-heat) — powdery mildew and leaf mold are harder when the sides stay down.
 - [Troubleshooting hydroponic root rot, algae, and pH drift](/guides/hydroponic-troubleshooting-root-rot) — water-culture root disease, including Pythium.
+- [Starting seeds and transplants for soilless systems](/guides/soilless-seed-starting) — inspect the tray before it enters the house.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is where to site a tunnel, [plan the land on PlantGeo](https://plantgeo.aevani.com).
 

@@ -17,6 +17,16 @@ import ipmSource from './research/greenhouse-ipm.md?raw';
 import cyclingSource from './research/aquaponic-biofilter-cycling.md?raw';
 import systemTypesSource from './research/aquaponic-system-types.md?raw';
 import fishSpeciesSource from './research/aquaponic-fish-species.md?raw';
+import sourceWaterSource from './research/source-water-testing.md?raw';
+import cropChoiceSource from './research/hydroponic-crop-choice.md?raw';
+import disordersSource from './research/hydroponic-nutrient-disorders.md?raw';
+import dripSource from './research/drip-dutch-bucket.md?raw';
+import ebbSource from './research/ebb-and-flow.md?raw';
+import verticalSource from './research/vertical-growing.md?raw';
+import seedStartingSource from './research/soilless-seed-starting.md?raw';
+import mediaSource from './research/hydroponic-media.md?raw';
+import noDigSource from './research/no-dig-sheet-mulch.md?raw';
+import foodForestSource from './research/temperate-food-forest.md?raw';
 import { publicSiteUrl } from '$lib/config/site';
 
 /**
@@ -36,7 +46,8 @@ export type GuideBlock =
 	| { kind: 'h2'; text: string }
 	| { kind: 'p'; inlines: GuideInline[]; standfirst?: boolean }
 	| { kind: 'ul'; items: GuideInline[][] }
-	| { kind: 'ol'; items: GuideInline[][] };
+	| { kind: 'ol'; items: GuideInline[][] }
+	| { kind: 'table'; headers: GuideInline[][]; rows: GuideInline[][][] };
 
 export type GuideSource = {
 	name: string;
@@ -171,6 +182,29 @@ function parseBlocks(body: string): GuideBlock[] {
 			index += 1;
 			continue;
 		}
+		if (line.trimStart().startsWith('|')) {
+			const rawRows: string[][] = [];
+			while (index < lines.length && lines[index].trimStart().startsWith('|')) {
+				const cells = lines[index]
+					.trim()
+					.replace(/^\|/, '')
+					.replace(/\|$/, '')
+					.split('|')
+					.map((cell) => cell.trim());
+				const separator = cells.every((cell) => /^:?-{3,}:?$/.test(cell));
+				if (!separator) rawRows.push(cells);
+				index += 1;
+			}
+			const [headers = [], ...rows] = rawRows;
+			if (headers.length) {
+				blocks.push({
+					kind: 'table',
+					headers: headers.map((cell) => parseInlines(cell)),
+					rows: rows.map((row) => row.map((cell) => parseInlines(cell)))
+				});
+			}
+			continue;
+		}
 		if (line.startsWith('- ')) {
 			const items: GuideInline[][] = [];
 			while (index < lines.length && lines[index].startsWith('- ')) {
@@ -303,7 +337,17 @@ const documents = [
 	ipmSource,
 	cyclingSource,
 	systemTypesSource,
-	fishSpeciesSource
+	fishSpeciesSource,
+	sourceWaterSource,
+	cropChoiceSource,
+	disordersSource,
+	dripSource,
+	ebbSource,
+	verticalSource,
+	seedStartingSource,
+	mediaSource,
+	noDigSource,
+	foodForestSource
 ].map(parseGuide);
 
 export const guidesIndex = documents[0];
@@ -318,6 +362,10 @@ export function guideHrefs(doc: GuideDocument): string[] {
 		if (block.kind === 'p') visit(block.inlines);
 		if (block.kind === 'ul' || block.kind === 'ol') {
 			for (const item of block.items) visit(item);
+		}
+		if (block.kind === 'table') {
+			for (const cell of block.headers) visit(cell);
+			for (const row of block.rows) for (const cell of row) visit(cell);
 		}
 	}
 	return hrefs;
@@ -336,7 +384,10 @@ export function guidePlainText(doc: GuideDocument): string {
 		if (block.kind === 'eyebrow' || block.kind === 'h1' || block.kind === 'h2')
 			parts.push(block.text);
 		else if (block.kind === 'p') visit(block.inlines);
-		else for (const item of block.items) visit(item);
+		else if (block.kind === 'table') {
+			for (const cell of block.headers) visit(cell);
+			for (const row of block.rows) for (const cell of row) visit(cell);
+		} else for (const item of block.items) visit(item);
 	}
 	return parts.join('\n');
 }

@@ -94,6 +94,9 @@ This is a worked example, not a customer and not a testimonial. A first reservoi
 - [Hydroponics in the Intermountain West](/guides/hydroponics-intermountain) — heat, winter nights, salts, and cooling water, not a nutrient recipe.
 
 Related notes: [Understanding soil health](/guides/understanding-soil-health), [Getting started with companion planting](/guides/getting-started-companion-planting).
+- [Testing source water for hydroponics and high tunnels](/guides/source-water-testing) — pH, EC, and alkalinity in the water you start with.
+- [Choosing crops for a hydroponic system](/guides/hydroponic-crop-choice) — official crop rows, not a blended house average.
+- [Hydroponic nutrient disorders: check pH and EC first](/guides/hydroponic-nutrient-disorders) — deficiency patterns come after the meter.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the reservoir, [plan the land on PlantGeo](https://plantgeo.aevani.com).
 

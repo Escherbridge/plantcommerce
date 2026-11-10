@@ -109,7 +109,17 @@ describe('public crawler discovery', () => {
 			'greenhouse-ipm',
 			'nutrient-film-technique',
 			'aquaponic-system-types',
-			'aquaponic-fish-species'
+			'aquaponic-fish-species',
+			'drip-dutch-bucket',
+			'ebb-and-flow',
+			'hydroponic-crop-choice',
+			'no-dig-sheet-mulch',
+			'source-water-testing',
+			'vertical-growing',
+			'soilless-seed-starting',
+			'hydroponic-nutrient-disorders',
+			'hydroponic-media',
+			'temperate-food-forest'
 		]) {
 			expect(published).toContain(`<loc>https://aevani.com/guides/${slug}</loc>`);
 		}

@@ -50,23 +50,46 @@ const draftFiles = {
 		import.meta.url
 	),
 	'aquaponic-system-types': new URL('./research/aquaponic-system-types.md', import.meta.url),
-	'aquaponic-fish-species': new URL('./research/aquaponic-fish-species.md', import.meta.url)
+	'aquaponic-fish-species': new URL('./research/aquaponic-fish-species.md', import.meta.url),
+	'source-water-testing': new URL('./research/source-water-testing.md', import.meta.url),
+	'hydroponic-crop-choice': new URL('./research/hydroponic-crop-choice.md', import.meta.url),
+	'hydroponic-nutrient-disorders': new URL(
+		'./research/hydroponic-nutrient-disorders.md',
+		import.meta.url
+	),
+	'drip-dutch-bucket': new URL('./research/drip-dutch-bucket.md', import.meta.url),
+	'ebb-and-flow': new URL('./research/ebb-and-flow.md', import.meta.url),
+	'vertical-growing': new URL('./research/vertical-growing.md', import.meta.url),
+	'soilless-seed-starting': new URL('./research/soilless-seed-starting.md', import.meta.url),
+	'hydroponic-media': new URL('./research/hydroponic-media.md', import.meta.url),
+	'no-dig-sheet-mulch': new URL('./research/no-dig-sheet-mulch.md', import.meta.url),
+	'temperate-food-forest': new URL('./research/temperate-food-forest.md', import.meta.url)
 } as const;
 
 const publishedGuideHrefs = [
 	'/guides/hydroponics-intermountain',
 	'/guides/hydroponic-ec-ph-nutrients',
+	'/guides/source-water-testing',
 	'/guides/choosing-hydroponic-system',
+	'/guides/hydroponic-crop-choice',
+	'/guides/hydroponic-nutrient-disorders',
 	'/guides/hydroponic-troubleshooting-root-rot',
 	'/guides/deep-water-culture',
 	'/guides/kratky-method',
 	'/guides/nutrient-film-technique',
+	'/guides/drip-dutch-bucket',
+	'/guides/ebb-and-flow',
+	'/guides/vertical-growing',
+	'/guides/soilless-seed-starting',
+	'/guides/hydroponic-media',
 	'/guides/raised-beds',
+	'/guides/no-dig-sheet-mulch',
 	'/guides/container-gardening',
 	'/guides/high-tunnels-hoop-houses',
 	'/guides/greenhouse-ventilation-heat',
 	'/guides/season-extension-covers-frames',
 	'/guides/greenhouse-ipm',
+	'/guides/temperate-food-forest',
 	'/guides/small-scale-aquaponics',
 	'/guides/aquaponic-biofilter-cycling',
 	'/guides/aquaponic-system-types',
@@ -155,19 +178,14 @@ describe('research guides', () => {
 		expect(text).not.toContain('/blog/nothing-for-sale-yet');
 		expect(text).not.toContain('An illustrative scenario');
 		expect(text).not.toContain('not written yet');
-		for (const slug of [
-			'source-water-testing',
-			'hydroponic-crop-choice',
-			'hydroponic-nutrient-disorders',
-			'drip-dutch-bucket',
-			'ebb-and-flow',
-			'vertical-growing',
-			'soilless-seed-starting',
-			'hydroponic-media',
-			'no-dig-sheet-mulch',
-			'temperate-food-forest'
-		]) {
-			expect(text, slug).not.toContain(`/guides/${slug}`);
+		const indexLinks = new Map(indexGuideLinks().map((item) => [item.href, item.name]));
+		for (const href of publishedGuideHrefs) {
+			const slug = href.slice('/guides/'.length);
+			const guide = bySlug.get(slug);
+			expect(guide, slug).toBeTruthy();
+			expect(text, slug).toContain(href);
+			expect(indexLinks.get(href), slug).toBeTruthy();
+			if (!legacySlugs.has(slug)) expect(indexLinks.get(href)).toBe(guide!.title);
 		}
 
 		const collection = guidesCollectionData();
@@ -301,6 +319,73 @@ describe('research guides', () => {
 				'10–18 °C',
 				'An illustrative scenario',
 				'Sources'
+			],
+			'source-water-testing': [
+				'1,000 microsiemens per centimeter',
+				'does not follow a typographical slip',
+				'year 3 or 4',
+				'In Kentucky, source water is typically alkaline',
+				'most Florida irrigation water',
+				'An illustrative scenario',
+				'Sources'
+			],
+			'hydroponic-crop-choice': [
+				'1.2–1.8',
+				'2.0–4.0',
+				'1,000 microsiemens per centimeter',
+				'An illustrative scenario',
+				'Sources'
+			],
+			'hydroponic-nutrient-disorders': [
+				'Mobile versus immobile',
+				'An illustrative scenario',
+				'Sources'
+			],
+			'drip-dutch-bucket': [
+				'1.5 to 3.5',
+				'1.0 EC units',
+				'does not name a commercial tower or bucket brand',
+				'An illustrative scenario',
+				'Sources'
+			],
+			'ebb-and-flow': [
+				'15 min',
+				'every 12 hours',
+				'15-on/45-off',
+				'An illustrative scenario',
+				'Sources'
+			],
+			'vertical-growing': [
+				'sometimes offset by the non-uniformity',
+				'does not name a commercial stacked-pot product',
+				'An illustrative scenario',
+				'Sources'
+			],
+			'soilless-seed-starting': [
+				'1,200 µS/cm above source water',
+				'1.0 mS/cm',
+				'Two official lettuce programs, side by side',
+				'An illustrative scenario',
+				'Sources'
+			],
+			'hydroponic-media': [
+				'at least twice the amount of water',
+				'8.34',
+				'coco-versus-rockwool',
+				'An illustrative scenario',
+				'Sources'
+			],
+			'no-dig-sheet-mulch': [
+				'https://sfyl.ifas.ufl.edu/lawn-and-garden/no-dig-garden-beds/',
+				'An illustrative scenario',
+				'Sources'
+			],
+			'temperate-food-forest': [
+				'1 February 2022',
+				'AG-831',
+				'apple tree guild',
+				'An illustrative scenario',
+				'Sources'
 			]
 		};
 
@@ -323,7 +408,17 @@ describe('research guides', () => {
 			'greenhouse-ipm',
 			'aquaponic-biofilter-cycling',
 			'aquaponic-system-types',
-			'aquaponic-fish-species'
+			'aquaponic-fish-species',
+			'source-water-testing',
+			'hydroponic-crop-choice',
+			'hydroponic-nutrient-disorders',
+			'drip-dutch-bucket',
+			'ebb-and-flow',
+			'vertical-growing',
+			'soilless-seed-starting',
+			'hydroponic-media',
+			'no-dig-sheet-mulch',
+			'temperate-food-forest'
 		]);
 		expect(new Set(publishedGuideSectors.map((guide) => guide.seoTitle)).size).toBe(
 			publishedGuideSectors.length

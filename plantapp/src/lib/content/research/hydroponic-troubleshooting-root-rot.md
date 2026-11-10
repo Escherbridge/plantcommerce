@@ -96,6 +96,9 @@ This is a worked example, not a customer and not a testimonial. A warm indoor bu
 - [Choosing a first hydroponic system](/guides/choosing-hydroponic-system) — NFT, DWC, Kratky, ebb and flow, and drip fail in different ways.
 - [Deep water culture](/guides/deep-water-culture) — air stones, dissolved-oxygen floors, and why a warm bucket fails.
 - [Hydroponics in the Intermountain West](/guides/hydroponics-intermountain) — heat and source water around the loop.
+- [Ebb-and-flow (flood-and-drain) hydroponics](/guides/ebb-and-flow) — a bench that has to drain, or the roots stay wet.
+- [Starting seeds and transplants for soilless systems](/guides/soilless-seed-starting) — a dirty plug is how a pathogen enters the loop.
+- [Hydroponic nutrient disorders: check pH and EC first](/guides/hydroponic-nutrient-disorders) — when the leaves look deficient, and the meter still comes first.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the reservoir, [plan the land on PlantGeo](https://plantgeo.aevani.com).
 

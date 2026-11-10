@@ -68,6 +68,10 @@ This is a worked example, not a customer and not a testimonial. A long, almost-f
 - [Deep water culture](/guides/deep-water-culture) — the aerated alternative, with official dissolved-oxygen floors.
 - [Troubleshooting hydroponic root rot, algae, and pH drift](/guides/hydroponic-troubleshooting-root-rot) — what to do when the film was a puddle and the roots are already brown.
 - [Aquaponic system types](/guides/aquaponic-system-types) — FAO’s aquaponic NFT layout, including the dedicated filter those pipes still need.
+- [Drip and Dutch-bucket hydroponics](/guides/drip-dutch-bucket) — the media layout fruiting crops often move into.
+- [Choosing crops for a hydroponic system](/guides/hydroponic-crop-choice) — why official hints pair lettuce with a film, and tomatoes with a bag.
+- [Vertical hydroponic growing: density and light](/guides/vertical-growing) — Oregon State’s shading cost for standing channels on end.
+- [Starting seeds and transplants for soilless systems](/guides/soilless-seed-starting) — rockwool or foam cubes, and covering the channel.
 
 The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the channel, [plan the land on PlantGeo](https://plantgeo.aevani.com).
 
