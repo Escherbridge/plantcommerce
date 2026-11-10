@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Container, Section } from '$lib/components/layout';
-	import { publicOperator } from '$lib/config/site';
+	import { publicOperator, publicOperatorLine } from '$lib/config/site';
 </script>
 
 <svelte:head>
@@ -39,7 +39,7 @@
 						<strong>Phone:</strong>
 						<a class="link link-primary" href={publicOperator.phoneHref}>{publicOperator.phone}</a>
 					</li>
-					<li><strong>Mail:</strong> {publicOperator.address}</li>
+					<li><strong>Operator:</strong> {publicOperatorLine}</li>
 				</ul>
 			</section>
 
