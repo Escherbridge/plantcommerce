@@ -49,7 +49,7 @@
 	<title>Learn — Aevani</title>
 	<meta
 		name="description"
-		content="Free growing guides and notes. No account required. The shop behind them is still being seeded."
+		content="Short guides and notes on soil, companion planting, hydroponics, aquaponics, and silvopasture. Free, no account. This is not a complete library, and it does not sell you a kit at the end."
 	/>
 </svelte:head>
 
@@ -58,7 +58,7 @@
 	<Container>
 		<div class="space-y-6 text-center">
 			<span class="text-editorial font-mono tracking-widest text-secondary">LEARN</span>
-			<h1 class="text-display font-display tracking-tight">Read while the beds are still empty.</h1>
+			<h1 class="text-display font-display tracking-tight">Guides and notes</h1>
 			<p class="mx-auto max-w-3xl text-xl leading-relaxed font-light text-primary-content/70">
 				Short guides and notes on soil, companion planting, hydroponics, aquaponics, and
 				silvopasture. Free, no account. This is not a complete library, and it does not sell you a

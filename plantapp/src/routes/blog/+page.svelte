@@ -13,12 +13,10 @@
 <Section>
 	<Container>
 		<div class="mx-auto max-w-3xl">
-			<p class="font-mono text-xs font-semibold tracking-widest text-secondary uppercase">
-				Field notes
-			</p>
-			<h1 class="font-display mt-3 text-4xl tracking-tight">Notes while the shop is empty.</h1>
+			<h1 class="font-display text-4xl tracking-tight">Field notes</h1>
 			<p class="mt-4 text-lg text-base-content/70">
-				Dated writing from Escherbridge. Not a product blog. The catalogue is a preview.
+				Dated writing from Escherbridge on growing, selling, and the fee. The catalogue is still a
+				preview, and checkout is off.
 			</p>
 			<p class="mt-4 text-sm">
 				<a class="link link-primary" href="/feed.xml">RSS</a>

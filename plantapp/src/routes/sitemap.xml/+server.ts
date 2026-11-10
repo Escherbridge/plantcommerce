@@ -11,7 +11,7 @@ const publishedEditorialPaths = [
 	'/blog/introduction-to-aquaponics',
 	'/blog/what-is-silvopasture',
 	'/blog/monoculture-to-polyculture',
-	'/blog/nothing-for-sale-yet',
+	'/blog/cooling-can-use-more-water-than-the-crop',
 	'/blog/a-flat-eight-percent'
 ] as const;
 

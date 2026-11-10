@@ -7,10 +7,11 @@ export type { GuideDocument as GuideSectorPage } from './research';
 
 /** Fixed topics that the published notes actually use. Not an open tag cloud. */
 export const fieldNoteTopics = [
-	'marketplace honesty',
-	'seller onboarding',
 	'seller fees',
-	'marketplace'
+	'marketplace',
+	'hydroponics',
+	'water',
+	'Intermountain West'
 ] as const;
 
 /**
@@ -78,7 +79,7 @@ export function renderFieldNotesFeed(origin = SITE_URL): string {
 	<channel>
 		<title>Aevani field notes</title>
 		<link>${xmlEscape(`${site}/blog`)}</link>
-		<description>Dated notes from Escherbridge. The catalogue is a preview. Nothing in it is for sale yet.</description>
+		<description>Dated writing from Escherbridge on growing, selling, and the flat 8% seller fee. The catalogue is still a preview, and the checkout remains off.</description>
 		${items}
 	</channel>
 </rss>

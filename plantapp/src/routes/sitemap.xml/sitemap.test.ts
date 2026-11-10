@@ -50,6 +50,9 @@ describe('public crawler discovery', () => {
 		expect(source).not.toContain('url.origin');
 		expect(source).not.toContain('PUBLIC_BASE_URL');
 		expect(source).not.toContain('RAILWAY_PUBLIC_DOMAIN');
+		expect(source).toContain('/blog/cooling-can-use-more-water-than-the-crop');
+		expect(source).toContain('/blog/a-flat-eight-percent');
+		expect(source).not.toContain('nothing-for-sale-yet');
 
 		for (const indexableRoute of [
 			'/contact',
