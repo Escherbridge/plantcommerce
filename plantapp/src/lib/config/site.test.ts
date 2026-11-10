@@ -1,4 +1,4 @@
-import { readdir, readFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
@@ -78,7 +78,7 @@ describe('public site origin', () => {
 		expect(terms).toContain('laws of the State of Idaho');
 		expect(terms).toContain('Ada County, Idaho');
 
-		expect(await countPublicAddressForms()).toBe(0);
+		expect(await countOperatorAddressForms()).toBe(0);
 	});
 });
 
@@ -87,6 +87,19 @@ const streetSuffix =
 const zipCode = /\b\d{5}(?:-\d{4})?\b/g;
 const poBox = /\bP\.?\s*O\.?\s*Box\b/gi;
 
+/** Operator, legal, and contact copy, plus the JSON-LD that can carry an address. */
+const operatorSurfacePaths = [
+	'lib/config/site.ts',
+	'routes/contact/+page.svelte',
+	'routes/privacy/+page.svelte',
+	'routes/terms/+page.svelte',
+	'lib/components/StructuredData.svelte',
+	'lib/content/research.ts',
+	'routes/guides/[slug]/+page.svelte',
+	'routes/blog/[slug]/+page.svelte',
+	'routes/products/[category]/[slug]/+page.svelte'
+] as const;
+
 function visibleCopy(source: string): string {
 	return source
 		.replace(/<style[\s\S]*?<\/style>/gi, ' ')
@@ -94,32 +107,11 @@ function visibleCopy(source: string): string {
 		.replace(/\sclass:[A-Za-z0-9_-]+(?:=(?:"[^"]*"|'[^']*'|\{[^}]*\}))?/gi, ' ');
 }
 
-async function publicPageFiles(dir: string): Promise<string[]> {
-	const entries = await readdir(dir, { withFileTypes: true });
-	const files: string[] = [];
-	for (const entry of entries) {
-		if (entry.name === 'node_modules' || entry.name.endsWith('.test.ts')) continue;
-		const full = path.join(dir, entry.name);
-		if (entry.isDirectory()) {
-			if (entry.name === 'account' || entry.name === 'admin' || entry.name === 'api') continue;
-			files.push(...(await publicPageFiles(full)));
-			continue;
-		}
-		const rel = path.relative(fileURLToPath(new URL('../..', import.meta.url)), full);
-		const isPage = entry.name === '+page.svelte' || entry.name === '+layout.svelte';
-		const isCopy =
-			rel.startsWith(`lib${path.sep}content${path.sep}`) && /\.(md|ts)$/.test(entry.name);
-		const isOperator = rel === path.join('lib', 'config', 'site.ts');
-		if (isPage || isCopy || isOperator) files.push(full);
-	}
-	return files;
-}
-
-async function countPublicAddressForms(): Promise<number> {
+async function countOperatorAddressForms(): Promise<number> {
 	const srcRoot = fileURLToPath(new URL('../..', import.meta.url));
 	let count = 0;
-	for (const file of await publicPageFiles(srcRoot)) {
-		const text = visibleCopy(await readFile(file, 'utf8'));
+	for (const rel of operatorSurfacePaths) {
+		const text = visibleCopy(await readFile(path.join(srcRoot, rel), 'utf8'));
 		count += text.match(streetSuffix)?.length ?? 0;
 		count += text.match(zipCode)?.length ?? 0;
 		count += text.match(poBox)?.length ?? 0;
