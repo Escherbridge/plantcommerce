@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { ProductService } from './product';
+import { omitPublicListingClaims, ProductService } from './product';
 import { FileService } from './file';
 import { db } from '$lib/server/db';
 
@@ -18,6 +18,21 @@ vi.mock('./file', () => ({
 		generatePublicUrl: vi.fn().mockReturnValue('http://example.com/image.jpg')
 	}
 }));
+
+describe('omitPublicListingClaims', () => {
+	it('drops placeholder shipping and warranty strings from catalogue rows', () => {
+		const row = omitPublicListingClaims({
+			id: 1,
+			name: 'Tower',
+			warranty: '2-yr warranty · parts stocked',
+			shippingNote: 'free shipping over $75 · arrives in 3–5 days'
+		});
+
+		expect(row).toEqual({ id: 1, name: 'Tower' });
+		expect(JSON.stringify(row)).not.toMatch(/free shipping/i);
+		expect(JSON.stringify(row)).not.toMatch(/2-yr warranty/i);
+	});
+});
 
 describe('ProductService', () => {
 	beforeEach(() => {
