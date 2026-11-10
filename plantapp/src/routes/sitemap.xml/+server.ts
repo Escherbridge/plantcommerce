@@ -1,19 +1,42 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { publicIndexablePaths, publicSiteUrl } from '$lib/config/site';
+import { demoProducts } from '$lib/server/db/catalogDemo';
+import { lmsCourseDefs } from '$lib/server/db/lmsDemo';
+import { SITE_URL, publicIndexablePaths } from '$lib/config/site';
+
+/** Published CMS slugs from the editorial seed. FAQ entries stay on /faq. */
+const publishedEditorialPaths = [
+	'/guides/getting-started-companion-planting',
+	'/guides/understanding-soil-health',
+	'/blog/hydroponics-for-beginners',
+	'/blog/introduction-to-aquaponics',
+	'/blog/what-is-silvopasture',
+	'/blog/monoculture-to-polyculture'
+] as const;
 
 export const _publicSitemapRoutes = publicIndexablePaths;
 
-export function _renderPublicSitemap(baseUrl: string): string {
+function xmlEscape(value: string): string {
+	return value
+		.replaceAll('&', '&amp;')
+		.replaceAll('<', '&lt;')
+		.replaceAll('>', '&gt;')
+		.replaceAll('"', '&quot;');
+}
+
+export function _renderPublicSitemap(
+	baseUrl: string,
+	routes: readonly string[] = _publicSitemapRoutes
+): string {
 	const origin = baseUrl.replace(/\/+$/, '');
 
 	return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${_publicSitemapRoutes
+${routes
 	.map((route) => {
 		const fullUrl = route === '/' ? `${origin}/` : `${origin}${route}`;
 		return `
 	<url>
-		<loc>${fullUrl}</loc>
+		<loc>${xmlEscape(fullUrl)}</loc>
 		<changefreq>weekly</changefreq>
 		<priority>${route === '/' ? '1.0' : '0.6'}</priority>
 	</url>`;
@@ -22,9 +45,17 @@ ${_publicSitemapRoutes
 </urlset>`;
 }
 
-export const GET: RequestHandler = async ({ url }) => {
-	const baseUrl = publicSiteUrl('/', url.origin).replace(/\/+$/, '');
-	const xml = _renderPublicSitemap(baseUrl);
+function publishedContentPaths(): string[] {
+	return [
+		...publishedEditorialPaths,
+		...lmsCourseDefs.map((course) => `/courses/${course.slug}`),
+		...demoProducts.map((product) => `/products/${product.system}/${product.slug}`)
+	];
+}
+
+export const GET: RequestHandler = () => {
+	const routes = [...new Set([..._publicSitemapRoutes, ...publishedContentPaths()])];
+	const xml = _renderPublicSitemap(SITE_URL, routes);
 
 	return new Response(xml, {
 		headers: {

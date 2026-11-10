@@ -6,9 +6,7 @@ test('9. affiliate terms, join, and authorized dashboard routes render', async (
 	// `/affiliate` now funnels straight to the join flow.
 	await page.goto('/affiliate');
 	await expect(page).toHaveURL(/\/affiliate\/join$/);
-	await expect(
-		page.getByRole('heading', { level: 1, name: 'Grow With Aevani' })
-	).toBeVisible();
+	await expect(page.getByRole('heading', { level: 1, name: 'Grow With Aevani' })).toBeVisible();
 	await expect(page.locator('body')).toContainText(/application|apply|program/i);
 
 	// Terms still render (with the real tier + cookie details) when visited directly.

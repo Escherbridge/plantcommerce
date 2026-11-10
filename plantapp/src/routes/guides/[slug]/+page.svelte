@@ -7,8 +7,11 @@
 </script>
 
 <svelte:head>
-	<title>{page.title} | Aevani Guides</title>
-	<meta name="description" content={page.excerpt ?? 'Aevani growing guide'} />
+	<title>{page.metaTitle || `${page.title} | Aevani Guides`}</title>
+	<meta
+		name="description"
+		content={page.metaDescription || page.excerpt || 'Aevani growing guide'}
+	/>
 </svelte:head>
 
 <main class="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 lg:px-8">

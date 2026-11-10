@@ -335,7 +335,10 @@ async function releaseDraftReservationsInTransaction(
 }
 
 /** Sum of prior attributed order subtotals (USD) for tier resolution, excluding cancelled/refunded. */
-async function getAffiliateLifetimeAttributedSalesUsd(tx: any, affiliateId: number): Promise<number> {
+async function getAffiliateLifetimeAttributedSalesUsd(
+	tx: any,
+	affiliateId: number
+): Promise<number> {
 	const [row] = await tx
 		.select({ total: sql<string>`COALESCE(SUM(${table.order.subtotalAmount}), 0)` })
 		.from(table.order)
@@ -376,7 +379,10 @@ async function getActiveAffiliateAttribution(tx: any, affiliateLinkId: number | 
 	}
 
 	// Freeze the affiliate's current tier rate (from lifetime attributed sales) into the draft.
-	const lifetimeSalesUsd = await getAffiliateLifetimeAttributedSalesUsd(tx, attribution.affiliateId);
+	const lifetimeSalesUsd = await getAffiliateLifetimeAttributedSalesUsd(
+		tx,
+		attribution.affiliateId
+	);
 	const tier = resolveAffiliateTier(lifetimeSalesUsd);
 
 	return {

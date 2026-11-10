@@ -395,7 +395,6 @@ const contentPages: ContentDef[] = [
 	}
 ];
 
-
 // ================================================================
 // SEED EXECUTION
 // ================================================================
@@ -687,7 +686,11 @@ async function seed() {
 	];
 	for (const f of contentImageFiles) {
 		if (!contentFileIdMap.has(f)) {
-			const rec = makeFileRecord({ filename: f, entityType: 'content', uploadedBy: USER_IDS.admin });
+			const rec = makeFileRecord({
+				filename: f,
+				entityType: 'content',
+				uploadedBy: USER_IDS.admin
+			});
 			contentFileIdMap.set(f, rec.id);
 			contentFileRecords.push(rec);
 		}
@@ -904,9 +907,7 @@ async function seed() {
 
 	for (const spec of commissionSpecs) {
 		const affiliateId = affiliateIdMap.get(spec.affiliateUserId);
-		const attributionLink = affiliateId
-			? attributionLinkByAffiliate.get(affiliateId)
-			: undefined;
+		const attributionLink = affiliateId ? attributionLinkByAffiliate.get(affiliateId) : undefined;
 		const buyer = users.find((u) => u.id === spec.buyerUserId);
 		if (!affiliateId || !attributionLink || !buyer) continue;
 
@@ -1125,7 +1126,13 @@ async function seed() {
 
 	// --- 7. Orders ---
 	console.log('[8/13] Inserting orders...');
-	const customerIds = [USER_IDS.sarah, USER_IDS.elena, USER_IDS.aisha, USER_IDS.tom, USER_IDS.priya];
+	const customerIds = [
+		USER_IDS.sarah,
+		USER_IDS.elena,
+		USER_IDS.aisha,
+		USER_IDS.tom,
+		USER_IDS.priya
+	];
 	const statuses: (
 		| 'pending'
 		| 'confirmed'
@@ -1327,7 +1334,11 @@ async function seed() {
 	const wishlistData = [
 		{
 			userId: USER_IDS.elena,
-			slugs: ['vertical-tower-garden-system', 'aeroponic-misting-system', 'mushroom-cultivation-kit']
+			slugs: [
+				'vertical-tower-garden-system',
+				'aeroponic-misting-system',
+				'mushroom-cultivation-kit'
+			]
 		},
 		{
 			userId: USER_IDS.aisha,
@@ -1335,7 +1346,11 @@ async function seed() {
 		},
 		{
 			userId: USER_IDS.tom,
-			slugs: ['silvopasture-seed-mix', 'portable-electric-netting-164-ft', 'ibc-aquaponics-fish-tank']
+			slugs: [
+				'silvopasture-seed-mix',
+				'portable-electric-netting-164-ft',
+				'ibc-aquaponics-fish-tank'
+			]
 		}
 	];
 

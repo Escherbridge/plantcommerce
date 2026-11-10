@@ -15,8 +15,6 @@ test('8. customer orders and wishlist render in the authenticated account', asyn
 
 	await page.goto('/account/wishlist');
 	await expect(page).toHaveURL(/\/account\/wishlist/);
-	await expect(
-		page.getByRole('heading', { level: 1, name: 'Wishlist unavailable' })
-	).toBeVisible();
+	await expect(page.getByRole('heading', { level: 1, name: 'Wishlist unavailable' })).toBeVisible();
 	await expect(page.locator('body')).toContainText(/Saved product details.*unavailable/i);
 });

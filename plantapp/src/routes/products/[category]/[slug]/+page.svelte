@@ -268,7 +268,11 @@
 					<!-- Qty + add to cart -->
 					<div class="buy__actions">
 						<div class="qty" role="group" aria-label="Quantity">
-							<button type="button" class="qty__btn" onclick={decQty} disabled={!p.inStock}
+							<button
+								type="button"
+								class="qty__btn"
+								onclick={decQty}
+								disabled={!p.inStock}
 								aria-label="Decrease quantity">−</button
 							>
 							<input
@@ -280,7 +284,11 @@
 								disabled={!p.inStock}
 								aria-label="Quantity"
 							/>
-							<button type="button" class="qty__btn" onclick={incQty} disabled={!p.inStock}
+							<button
+								type="button"
+								class="qty__btn"
+								onclick={incQty}
+								disabled={!p.inStock}
 								aria-label="Increase quantity">+</button
 							>
 						</div>
@@ -472,11 +480,11 @@
 
 		<!-- 10. The long read -->
 		{#if hasLongRead}
-			<section class="block longread">
+			<section class="longread block">
 				<span class="longread__eyebrow">The long read</span>
 				<h2 class="longread__title">Why we grow it this way</h2>
 				<!-- Only @html on the page — always routed through sanitizeRichText. -->
-				<div class="prose longread__body">
+				<div class="longread__body prose">
 					{@html longReadHtml}
 				</div>
 			</section>

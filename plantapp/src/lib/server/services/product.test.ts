@@ -119,9 +119,14 @@ describe('ProductService', () => {
 			const imagesJoinMock = vi.fn().mockReturnValue({ where: imagesWhereMock });
 			const imagesFromMock = vi.fn().mockReturnValue({ leftJoin: imagesJoinMock });
 
+			const reviewsOrderBy = vi.fn().mockResolvedValue([]);
+			const reviewsWhere = vi.fn().mockReturnValue({ orderBy: reviewsOrderBy });
+			const reviewsFrom = vi.fn().mockReturnValue({ where: reviewsWhere });
+
 			(db.select as any)
 				.mockReturnValueOnce({ from: fromMock }) // Product
-				.mockReturnValueOnce({ from: imagesFromMock }); // Images
+				.mockReturnValueOnce({ from: imagesFromMock }) // Images
+				.mockReturnValueOnce({ from: reviewsFrom }); // Reviews
 
 			const product = await ProductService.getProductById(1);
 
@@ -168,9 +173,14 @@ describe('ProductService', () => {
 			const imagesJoin = vi.fn().mockReturnValue({ where: imagesWhere });
 			const imagesFrom = vi.fn().mockReturnValue({ leftJoin: imagesJoin });
 
+			const reviewsOrderBy = vi.fn().mockResolvedValue([]);
+			const reviewsWhere = vi.fn().mockReturnValue({ orderBy: reviewsOrderBy });
+			const reviewsFrom = vi.fn().mockReturnValue({ where: reviewsWhere });
+
 			(db.select as any)
 				.mockReturnValueOnce({ from: productFrom })
-				.mockReturnValueOnce({ from: imagesFrom });
+				.mockReturnValueOnce({ from: imagesFrom })
+				.mockReturnValueOnce({ from: reviewsFrom });
 
 			const product = await ProductService.getProductById(1);
 

@@ -33,10 +33,7 @@ test('2. shop renders the seeded catalogue, featured tiles, filtering, and categ
 	expect(filteredCount).toBeGreaterThan(0);
 	expect(filteredCount).toBeLessThan(cardCount);
 	for (let index = 0; index < filteredCount; index += 1) {
-		await expect(filteredCards.nth(index)).toHaveAttribute(
-			'href',
-			/^\/products\/hydroponics\//
-		);
+		await expect(filteredCards.nth(index)).toHaveAttribute('href', /^\/products\/hydroponics\//);
 	}
 
 	await page.goto('/products/hydroponics');

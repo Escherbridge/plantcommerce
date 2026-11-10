@@ -42,7 +42,9 @@
 	);
 
 	const classes = $derived(
-		['aev-badge', `aev-badge--${resolved}`, `aev-badge--${size}`, className].filter(Boolean).join(' ')
+		['aev-badge', `aev-badge--${resolved}`, `aev-badge--${size}`, className]
+			.filter(Boolean)
+			.join(' ')
 	);
 </script>
 

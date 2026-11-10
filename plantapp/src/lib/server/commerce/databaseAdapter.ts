@@ -39,21 +39,21 @@ type DatabaseProductSource = Pick<ProductWithImages, 'id' | 'slug' | 'name' | 's
 			| 'isFeatured'
 		>
 	> & {
-	category?: DatabaseCategorySource;
-	images?: Array<{ url?: string; altText: string | null; isMock?: boolean }>;
-	catalogDataClass?: 'verified' | 'research' | 'mock_test';
-	catalogDisclosure?: string | null;
-	catalogCategories?: Array<{ id: number; name: string; slug: string }>;
-	catalogTags?: Array<{ slug: string; name: string }>;
-	manufacturers?: Array<{
-		name: string;
-		status: 'unverified' | 'verified' | 'retired';
-		websiteUrl: string | null;
-	}>;
-	contentAreas?: Array<{ slug: string; name: string }>;
-	facets?: CommerceFacet[];
-	guides?: CommerceGuide[];
-};
+		category?: DatabaseCategorySource;
+		images?: Array<{ url?: string; altText: string | null; isMock?: boolean }>;
+		catalogDataClass?: 'verified' | 'research' | 'mock_test';
+		catalogDisclosure?: string | null;
+		catalogCategories?: Array<{ id: number; name: string; slug: string }>;
+		catalogTags?: Array<{ slug: string; name: string }>;
+		manufacturers?: Array<{
+			name: string;
+			status: 'unverified' | 'verified' | 'retired';
+			websiteUrl: string | null;
+		}>;
+		contentAreas?: Array<{ slug: string; name: string }>;
+		facets?: CommerceFacet[];
+		guides?: CommerceGuide[];
+	};
 
 type DatabaseProductRow =
 	| DatabaseProductSource

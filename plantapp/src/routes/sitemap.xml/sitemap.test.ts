@@ -4,38 +4,55 @@ import { isPublicIndexablePath } from '$lib/config/site';
 import { _publicSitemapRoutes, _renderPublicSitemap } from './+server';
 
 describe('public crawler discovery', () => {
-	it('publishes only truthful, indexable public routes at the canonical origin', () => {
-		const xml = _renderPublicSitemap('https://www.aevani.example/');
+	it('publishes public learn, catalog, and support routes at the apex', async () => {
+		const source = await readFile(new URL('./+server.ts', import.meta.url), 'utf8');
+		const xml = _renderPublicSitemap('https://aevani.com');
 
-		expect(_publicSitemapRoutes).toEqual(['/', '/size-guide', '/support']);
-		expect(xml).toContain('<loc>https://www.aevani.example/</loc>');
-		expect(xml).toContain('<loc>https://www.aevani.example/size-guide</loc>');
-		expect(xml).toContain('<loc>https://www.aevani.example/support</loc>');
-
-		for (const excludedRoute of [
-			'/blog',
-			'/cart',
-			'/checkout',
-			'/faq',
+		expect(_publicSitemapRoutes).toEqual([
+			'/',
+			'/learn',
+			'/courses',
 			'/guides',
-			'/login',
+			'/blog',
+			'/faq',
 			'/products',
-			'/register',
-			'/resources',
-			'/reset-password',
-			'/verify-email'
-		]) {
-			expect(xml).not.toContain(`<loc>https://www.aevani.example${excludedRoute}</loc>`);
+			'/products/hydroponics',
+			'/products/aquaponics',
+			'/products/silvopasture',
+			'/products/agroforestry',
+			'/size-guide',
+			'/support'
+		]);
+		expect(xml).toContain('<loc>https://aevani.com/</loc>');
+		expect(xml).toContain('<loc>https://aevani.com/learn</loc>');
+		expect(xml).toContain('<loc>https://aevani.com/courses</loc>');
+		expect(xml).toContain('<loc>https://aevani.com/guides</loc>');
+		expect(xml).toContain('<loc>https://aevani.com/products</loc>');
+		expect(xml).not.toContain('railway.app');
+		expect(xml).not.toContain('url.origin');
+		expect(source).not.toContain('url.origin');
+		expect(source).not.toContain('PUBLIC_BASE_URL');
+		expect(source).not.toContain('RAILWAY_PUBLIC_DOMAIN');
+
+		for (const excludedRoute of ['/cart', '/checkout', '/login', '/register', '/search']) {
+			expect(xml).not.toContain(`<loc>https://aevani.com${excludedRoute}</loc>`);
 			expect(isPublicIndexablePath(excludedRoute)).toBe(false);
 		}
 
-		expect(isPublicIndexablePath('/')).toBe(true);
-		expect(isPublicIndexablePath('/size-guide/')).toBe(true);
-		expect(isPublicIndexablePath('/support')).toBe(true);
+		const withContent = _renderPublicSitemap('https://aevani.com', [
+			..._publicSitemapRoutes,
+			'/guides/understanding-soil-health',
+			'/blog/hydroponics-for-beginners',
+			'/products/hydroponics/tower'
+		]);
+		expect(withContent).toContain('<loc>https://aevani.com/guides/understanding-soil-health</loc>');
+		expect(withContent).toContain('<loc>https://aevani.com/blog/hydroponics-for-beginners</loc>');
+		expect(withContent).toContain('<loc>https://aevani.com/products/hydroponics/tower</loc>');
 	});
 
 	it('keeps private, administrative, API, and capability paths out of crawling', async () => {
-		const robots = await readFile(new URL('../../../static/robots.txt', import.meta.url), 'utf8');
+		const { renderRobotsTxt } = await import('$lib/config/site');
+		const robots = renderRobotsTxt();
 
 		for (const path of [
 			'/account',
@@ -53,6 +70,7 @@ describe('public crawler discovery', () => {
 
 		expect(robots).not.toContain('Disallow: /products');
 		expect(robots).not.toContain('Disallow: /cart');
-		expect(robots).toContain('Sitemap: https://aevani-web-production.up.railway.app/sitemap.xml');
+		expect(robots).toContain('Sitemap: https://aevani.com/sitemap.xml');
+		expect(robots).not.toContain('railway.app');
 	});
 });

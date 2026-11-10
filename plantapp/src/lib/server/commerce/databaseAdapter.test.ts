@@ -4,6 +4,8 @@ import { databaseCommerceAdapter } from './databaseAdapter';
 import { ProductService } from '$lib/server/services/product';
 import { CartService } from '$lib/server/services/cart';
 
+vi.mock('$lib/server/db', () => ({ db: {} }));
+
 vi.mock('$lib/server/services/product', () => ({
 	ProductService: {
 		getCategories: vi.fn(),
@@ -80,10 +82,9 @@ describe('database commerce adapter', () => {
 		expect(mapped.images).toEqual([
 			{
 				url: '/api/files/serve?path=AI-MockAssets%2Fpump.png',
-				altText: 'Mock pump',
-				isMock: true
+				altText: 'Mock pump'
 			},
-			{ url: '/media/pump.webp', altText: 'Circulation pump', isMock: false }
+			{ url: '/media/pump.webp', altText: 'Circulation pump' }
 		]);
 	});
 

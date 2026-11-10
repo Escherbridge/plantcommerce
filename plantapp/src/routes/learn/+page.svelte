@@ -55,6 +55,24 @@
 				Everything you need to know about sustainable agriculture, hydroponics, aquaponics, and
 				regenerative farming
 			</p>
+			<form
+				action="/search"
+				method="get"
+				class="mx-auto flex w-full max-w-xl flex-col gap-3 sm:flex-row"
+			>
+				<label class="sr-only" for="learn-search">Search guides, notes, and products</label>
+				<input
+					id="learn-search"
+					name="q"
+					type="search"
+					placeholder="Search guides, notes, and products"
+					class="input w-full rounded-2xl bg-primary-content text-base-content"
+				/>
+				<button type="submit" class="btn rounded-2xl btn-secondary">Search</button>
+			</form>
+			<p>
+				<a href="/search" class="link text-sm text-primary-content/80">Search the library</a>
+			</p>
 		</div>
 	</Container>
 </section>
