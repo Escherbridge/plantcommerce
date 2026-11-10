@@ -3,38 +3,41 @@
 </script>
 
 <svelte:head>
-	<title>Privacy notice status | Aevani</title>
-	<meta name="robots" content="noindex, nofollow" />
+	<title>Privacy | Aevani</title>
+	<meta
+		name="description"
+		content="How Aevani handles information submitted for account and security features, and session storage."
+	/>
 </svelte:head>
 
 <Section>
 	<Container>
-		<div class="mx-auto prose max-w-4xl py-10">
-			<h1>Privacy notice status</h1>
-			<p>
-				Aevani is reviewing its data-flow and vendor inventory before publishing a complete public
-				privacy notice. This interim page replaces prior template language that did not reflect
-				verified integrations or practices.
-			</p>
+		<div class="mx-auto max-w-4xl space-y-10">
+			<header class="space-y-4">
+				<p class="font-mono text-xs font-semibold tracking-widest text-secondary uppercase">
+					Privacy
+				</p>
+				<h1 class="font-display text-4xl tracking-tight uppercase md:text-5xl">Privacy</h1>
+			</header>
 
-			<h2>Current boundary</h2>
-			<p>
-				Account and security features necessarily process information submitted to use those
-				features. Aevani does not currently publish verified statements about payment, shipping,
-				advertising, analytics, marketing, affiliate, international-transfer, retention, or
-				third-party-provider practices.
-			</p>
+			<section class="space-y-3">
+				<h2 class="font-display text-2xl tracking-tight uppercase">Account and security</h2>
+				<p class="text-base-content/70">
+					Account and security features necessarily process information submitted to use those
+					features.
+				</p>
+			</section>
 
-			<h2>Before relying on a privacy statement</h2>
-			<p>
-				Do not rely on the previous template claims about named vendors, contact channels, rights
-				processes, or policy dates. A reviewed disclosure will identify the relevant data
-				categories, purposes, retention, vendors, and contact process before public publication.
-			</p>
+			<section class="space-y-3">
+				<h2 class="font-display text-2xl tracking-tight uppercase">Sessions</h2>
+				<p class="text-base-content/70">
+					Browser storage and cookies may be required for authenticated sessions and security
+					features. See the <a class="link link-primary" href="/cookies">cookie notice</a>.
+				</p>
+			</section>
 
-			<p>
-				See the <a href="/cookies">cookie notice status</a> or <a href="/support">support</a> for current
-				site guidance.
+			<p class="text-base-content/70">
+				Questions about privacy? <a class="link link-primary" href="/contact">Contact us</a>.
 			</p>
 		</div>
 	</Container>

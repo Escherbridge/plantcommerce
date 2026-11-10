@@ -3,37 +3,38 @@
 </script>
 
 <svelte:head>
-	<title>Cookie notice status | Aevani</title>
-	<meta name="robots" content="noindex, nofollow" />
+	<title>Cookies | Aevani</title>
+	<meta
+		name="description"
+		content="Aevani uses browser storage and cookies for authenticated sessions and security features."
+	/>
 </svelte:head>
 
 <Section>
 	<Container>
-		<div class="mx-auto prose max-w-4xl py-10">
-			<h1>Cookie notice status</h1>
-			<p>
-				Aevani has not published a verified cookie and tracking inventory. This interim notice
-				replaces prior template statements about analytics, advertising, payment, social, video, and
-				affiliate-tracking vendors.
+		<div class="mx-auto max-w-4xl space-y-10">
+			<header class="space-y-4">
+				<p class="font-mono text-xs font-semibold tracking-widest text-secondary uppercase">
+					Cookies
+				</p>
+				<h1 class="font-display text-4xl tracking-tight uppercase md:text-5xl">Cookies</h1>
+			</header>
+
+			<section class="space-y-3">
+				<h2 class="font-display text-2xl tracking-tight uppercase">Sessions and security</h2>
+				<p class="text-base-content/70">
+					Browser storage and cookies may be required for authenticated sessions and security
+					features.
+				</p>
+			</section>
+
+			<p class="text-base-content/70">
+				See the <a class="link link-primary" href="/privacy">privacy notice</a> for the related account
+				and security statement.
 			</p>
 
-			<h2>Current boundary</h2>
-			<p>
-				Browser storage and cookies may be required for authenticated sessions and security
-				features. Aevani does not currently publish optional analytics, advertising, preference,
-				payment, or affiliate cookie categories, durations, consent controls, or third-party vendor
-				claims.
-			</p>
-
-			<h2>Next publication</h2>
-			<p>
-				A reviewed notice will describe the actual cookies or similar technologies in use, their
-				purpose, duration, provider, and applicable controls before optional tracking is represented
-				as available.
-			</p>
-
-			<p>
-				See the <a href="/privacy">privacy notice status</a> for the related data-practice review.
+			<p class="text-base-content/70">
+				Questions about cookies? <a class="link link-primary" href="/contact">Contact us</a>.
 			</p>
 		</div>
 	</Container>

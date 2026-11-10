@@ -27,6 +27,21 @@
 				</p>
 			</header>
 
+			<section class="space-y-4">
+				<h2 class="font-display text-2xl tracking-tight uppercase">What listings currently say</h2>
+				<ul class="list-disc space-y-2 pl-5 text-base-content/70">
+					<li>2-yr warranty · parts stocked</li>
+					<li>lifetime warranty · 30-day returns</li>
+					<li>1-yr warranty · 30-day returns</li>
+					<li>germination guarantee · 90%+ tested</li>
+					<li>live-arrival guarantee · free replacement</li>
+				</ul>
+				<p class="text-base-content/70">
+					The homepage states "2-yr warranty". The Vertical Tower Garden System listing states:
+					"Two-year warranty covers defects; after that, replacements are a few dollars each."
+				</p>
+			</section>
+
 			<section class="rounded-2xl border border-warning/30 bg-warning/10 p-6 md:p-8">
 				<h2 class="font-display text-2xl tracking-tight uppercase">
 					What this means before purchase
