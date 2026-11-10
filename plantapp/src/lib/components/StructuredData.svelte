@@ -1,6 +1,6 @@
 <script lang="ts">
 	const { type = 'website', data = {} } = $props<{
-		type?: 'product' | 'website' | 'article' | 'breadcrumb' | 'organization';
+		type?: 'product' | 'website' | 'article' | 'breadcrumb' | 'organization' | 'collection';
 		data?: Record<string, unknown>;
 	}>();
 
@@ -28,7 +28,8 @@
 			website: 'WebSite',
 			article: 'Article',
 			breadcrumb: 'BreadcrumbList',
-			organization: 'Organization'
+			organization: 'Organization',
+			collection: 'CollectionPage'
 		};
 		return map[t] || map.website;
 	}

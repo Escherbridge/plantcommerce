@@ -16,6 +16,7 @@ describe('public crawler discovery', () => {
 			'/courses',
 			'/guides',
 			'/blog',
+			'/news',
 			'/faq',
 			'/products',
 			'/products/hydroponics',

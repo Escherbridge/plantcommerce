@@ -15,6 +15,7 @@ export const publicIndexablePaths = [
 	'/courses',
 	'/guides',
 	'/blog',
+	'/news',
 	'/faq',
 	'/products',
 	'/products/hydroponics',
@@ -95,8 +96,135 @@ const routeMetadata: Record<string, { title: string; description: string }> = {
 		title: 'About Aevani',
 		description:
 			'Aevani is a marketplace for growing tools and a free Learn hub, operated by Escherbridge, LLC. The catalogue is a preview. Checkout is off.'
+	},
+	'/learn': {
+		title: 'Learn — Aevani',
+		description:
+			'Free growing guides and notes. No account required. The shop behind them is still being seeded.'
+	},
+	'/blog': {
+		title: 'Field notes — Aevani',
+		description:
+			'Dated notes from Escherbridge. The catalogue is a preview. Nothing in it is for sale yet.'
+	},
+	'/news': {
+		title: 'News — Aevani',
+		description: 'Public announcements only. There is nothing to announce yet.'
+	},
+	'/guides': {
+		title: 'Guides — Aevani',
+		description:
+			'Research on growing systems and climate. Sector pages are not written yet. Existing notes stay linked as writing, not as products.'
+	},
+	'/faq': {
+		title: 'FAQ — Aevani',
+		description:
+			'Short answers. Nothing is for sale yet, so buying, shipping, and returns do not have a site-wide promise.'
+	},
+	'/courses': {
+		title: 'Courses — Aevani',
+		description: 'Course pages are thin notes, not a catalogue. Nothing here is for sale.'
+	},
+	'/products': {
+		title: 'Catalogue preview — Aevani',
+		description: 'The catalogue is a preview. Nothing in it is for sale yet.'
+	},
+	'/products/hydroponics': {
+		title: 'Hydroponics preview — Aevani',
+		description: 'A preview of the hydroponics shelf. Nothing in it is for sale yet.'
+	},
+	'/products/aquaponics': {
+		title: 'Aquaponics preview — Aevani',
+		description: 'A preview of the aquaponics shelf. Nothing in it is for sale yet.'
+	},
+	'/products/silvopasture': {
+		title: 'Silvopasture preview — Aevani',
+		description: 'A preview of the silvopasture shelf. Nothing in it is for sale yet.'
+	},
+	'/products/agroforestry': {
+		title: 'Agroforestry preview — Aevani',
+		description: 'A preview of the agroforestry shelf. Nothing in it is for sale yet.'
+	},
+	'/contact': {
+		title: 'Contact — Aevani',
+		description: 'Aevani is operated by Escherbridge, LLC. Write or call. Nothing is for sale yet.'
+	},
+	'/support': {
+		title: 'Support — Aevani',
+		description: 'Help for the site. There are no orders, because nothing is for sale yet.'
+	},
+	'/privacy': {
+		title: 'Privacy — Aevani',
+		description: 'How Escherbridge, LLC handles information on Aevani.'
+	},
+	'/terms': {
+		title: 'Terms — Aevani',
+		description: 'Terms for using Aevani, operated by Escherbridge, LLC.'
+	},
+	'/shipping': {
+		title: 'Shipping — Aevani',
+		description: 'Nothing is for sale yet, so there is nothing to ship.'
+	},
+	'/returns': {
+		title: 'Returns — Aevani',
+		description: 'Nothing is for sale yet, so there is nothing to return.'
+	},
+	'/cookies': {
+		title: 'Cookies — Aevani',
+		description: 'How Aevani uses cookies.'
+	},
+	'/accessibility': {
+		title: 'Accessibility — Aevani',
+		description: 'Accessibility notes for Aevani, operated by Escherbridge, LLC.'
+	},
+	'/size-guide': {
+		title: 'Size guide — Aevani',
+		description: 'No size chart is published. Nothing is for sale yet.'
+	},
+	'/warranty': {
+		title: 'Warranty — Aevani',
+		description: 'Nothing is for sale yet, so there is no warranty to claim.'
+	},
+	'/help': {
+		title: 'Help — Aevani',
+		description: 'A searchable help center is not published yet.'
+	},
+	'/press': {
+		title: 'Press — Aevani',
+		description: 'No press materials are published. This page is not a newsroom.'
+	},
+	'/resources': {
+		title: 'Resources — Aevani',
+		description:
+			'No downloadable resources yet. The Learn hub is the reading room that exists today.'
+	},
+	'/sustainability': {
+		title: 'Sustainability — Aevani',
+		description: 'No quantified environmental claims are published.'
+	},
+	'/affiliate': {
+		title: 'Affiliate referrals — Aevani',
+		description:
+			'The referral program is not open. The referral share has not been set, and applications are not being accepted.'
+	},
+	'/affiliate/join': {
+		title: 'Affiliate referrals — Aevani',
+		description:
+			'The referral program is not open. The referral share has not been set, and applications are not being accepted.'
+	},
+	'/affiliate/terms': {
+		title: 'Affiliate referrals — Aevani',
+		description:
+			'The referral program is not open. The referral share has not been set, and applications are not being accepted.'
 	}
 };
+
+export function layoutOwnsDocumentMeta(pathname: string): boolean {
+	const path = pathname === '/' ? pathname : pathname.replace(/\/+$/, '') || '/';
+	if (/^\/(blog|guides|news|courses)\/[^/]+$/.test(path)) return false;
+	if (/^\/products\/[^/]+\/[^/]+$/.test(path)) return false;
+	return true;
+}
 
 /** Sister sites for the footer. Aevani itself is omitted. Follow links, no nofollow. */
 export const escherbridgeProjects = [

@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import {
 	SITE_URL,
 	isPublicIndexablePath,
+	layoutOwnsDocumentMeta,
+	publicRouteMetadata,
 	publicSite,
 	publicSiteUrl,
 	renderRobotsTxt
@@ -36,6 +38,17 @@ describe('public site origin', () => {
 		expect(isPublicIndexablePath('/search')).toBe(false);
 		expect(isPublicIndexablePath('/cart')).toBe(false);
 		expect(isPublicIndexablePath('/api/admin/seller-applications')).toBe(false);
+	});
+
+	it('gives leftover public pages their own title and lets posts own theirs', () => {
+		expect(publicRouteMetadata('/faq').title).toBe('FAQ — Aevani');
+		expect(publicRouteMetadata('/warranty').title).not.toBe(publicSite.defaultTitle);
+		expect(publicRouteMetadata('/press').title).not.toBe(publicSite.defaultTitle);
+		expect(layoutOwnsDocumentMeta('/faq')).toBe(true);
+		expect(layoutOwnsDocumentMeta('/blog/nothing-for-sale-yet')).toBe(false);
+		expect(layoutOwnsDocumentMeta('/guides/understanding-soil-health')).toBe(false);
+		expect(layoutOwnsDocumentMeta('/courses/hydroponics-field-guide')).toBe(false);
+		expect(layoutOwnsDocumentMeta('/products/hydroponics/net-pots')).toBe(false);
 	});
 
 	it('points robots at the apex sitemap', () => {
