@@ -1,15 +1,14 @@
 <script lang="ts">
 	import StructuredData from '$lib/components/StructuredData.svelte';
-	import { ProductCard, SystemCard } from '$lib/components/cards';
+	import { SystemCard } from '$lib/components/cards';
 	import { SectionHeader, GlassCard, Button } from '$lib/components/ui';
 	import { assetManifest } from '$lib/data/assetManifest';
-	import { publicSite, publicSiteUrl } from '$lib/config/site';
-	import type { PageData } from './$types';
-
-	let { data }: { data: PageData } = $props();
-
-	// Featured field kit + real catalogue count from the server load.
-	const featuredProducts = $derived(data.featuredProducts ?? []);
+	import {
+		escherbridgeProjects,
+		publicRouteMetadata,
+		publicSite,
+		publicSiteUrl
+	} from '$lib/config/site';
 
 	// Growing systems — four ways to grow, each linking to its catalogue slug.
 	const systems = [
@@ -58,44 +57,22 @@
 		},
 		{
 			title: 'Nothing for sale yet',
-			body: 'Product pages stay up so you can see the shape of the catalogue. Add to cart and checkout are turned off.'
+			body: 'Product pages stay up so you can see the shape of the catalogue. Checkout is off. Prices on those pages are fixtures, not offers.'
 		},
 		{
 			title: 'Honest by default',
 			body: "We won't publish harvest counts, warranties, or impact numbers we can't stand behind."
 		}
 	];
-
-	/** Build the product detail href from a normalized featured product. */
-	function productHref(p: any): string {
-		const cat = p.categorySlug || p.category?.slug || 'all';
-		return `/products/${cat}/${p.slug}`;
-	}
-
-	/** First real product image, falling back to the hero asset (never a placeholder). */
-	function productImage(p: any): string {
-		return p.images?.[0]?.url || assetManifest.heroMain;
-	}
-
-	/** Optional badge from the product's first tag (rendered uppercase by ProductCard). */
-	function productBadge(p: any): string | undefined {
-		return Array.isArray(p.tags) && p.tags.length > 0 ? String(p.tags[0]) : undefined;
-	}
 </script>
 
 <svelte:head>
-	<title>{publicSite.name} | Onboarding growers and makers</title>
-	<meta
-		name="description"
-		content="We're onboarding our first growers and makers. Browse the Learn hub, and apply to sell what you grow or make."
-	/>
-
 	<StructuredData
 		type="website"
 		data={{
 			name: publicSite.name,
 			url: publicSite.origin,
-			description: publicSite.description
+			description: publicRouteMetadata('/').description
 		}}
 	/>
 
@@ -104,7 +81,8 @@
 		data={{
 			name: publicSite.name,
 			url: publicSite.origin,
-			logo: publicSiteUrl(assetManifest.heroMain)
+			logo: publicSiteUrl(assetManifest.heroMain),
+			sameAs: escherbridgeProjects.map((site) => site.href)
 		}}
 	/>
 </svelte:head>
@@ -121,13 +99,14 @@
 			<h1 class="hero__title">Grow something that outlasts the season.</h1>
 
 			<p class="hero__lead">
-				The catalogue is a preview — nothing in it is for sale yet. If you grow or make something
-				worth sharing, apply to sell on Aevani. The Learn hub stays open while we onboard.
+				The catalogue is a preview. Nothing in it is for sale yet. If you grow or make hydroponic,
+				aquaponic, silvopasture, or agroforestry tools, apply to sell. The Learn hub stays open
+				while we onboard the first growers and makers.
 			</p>
 
 			<div class="hero__ctas">
 				<Button href="/sell" variant="primary" size="lg">Sell on Aevani</Button>
-				<Button href="/learn" variant="secondary" size="lg">Explore the Learn hub</Button>
+				<Button href="/learn" variant="secondary" size="lg">Read the Learn hub</Button>
 			</div>
 		</div>
 
@@ -155,10 +134,16 @@
 	<section id="systems" class="section container">
 		<SectionHeader
 			eyebrow="Four ways to grow"
-			title="Pick a system. We'll walk the rest of the way with you."
-			actionLabel="Browse everything"
+			title="Four ways to grow. The kits come later."
+			actionLabel="See the catalogue preview"
 			actionHref="/products"
 		/>
+		<p class="systems-intro">
+			These are the categories we will sell in, once real makers are on the platform. They are not
+			products, and they are not a promise that a kit will appear next week.
+			<a href="https://plantgeo.aevani.com">Plan a site on PlantGeo</a>. Items picked for a plan are
+			not for sale yet.
+		</p>
 		<div class="systems-grid">
 			{#each systems as system}
 				<SystemCard
@@ -178,7 +163,7 @@
 			<div class="why">
 				<div class="why__intro">
 					<span class="why__eyebrow">Why Aevani</span>
-					<h2 class="why__title">A place for people who grow and make.</h2>
+					<h2 class="why__title">A marketplace that admits it is empty.</h2>
 				</div>
 				<div class="why__grid">
 					{#each values as value}
@@ -192,43 +177,30 @@
 		</GlassCard>
 	</section>
 
-	<!-- 4. Featured products -->
-	{#if featuredProducts.length > 0}
-		<section class="section container">
-			<SectionHeader
-				eyebrow="Catalogue preview"
-				title="Placeholder listings, not for sale yet"
-				actionLabel="Full catalogue"
-				actionHref="/products"
-			/>
-			<div class="featured-grid">
-				{#each featuredProducts as product}
-					<ProductCard
-						href={productHref(product)}
-						image={productImage(product)}
-						imageAlt={product.images?.[0]?.altText || product.name}
-						title={product.name}
-						category={product.category?.name ?? 'Aevani'}
-						description={product.shortDescription}
-						price={product.price}
-						compareAt={product.comparePrice ?? undefined}
-						badge={productBadge(product)}
-					/>
-				{/each}
-			</div>
-		</section>
-	{/if}
+	<section class="section container">
+		<div class="silhouette">
+			<p class="silhouette__eyebrow">Catalogue preview</p>
+			<h2 class="silhouette__title">The catalogue is a silhouette.</h2>
+			<p class="silhouette__body">
+				You can walk the category list to see what Aevani is for. You cannot buy anything from it.
+				Real listings will come from accepted sellers, and they will say who is actually selling
+				them.
+			</p>
+			<a class="silhouette__link" href="/products">See the catalogue preview</a>
+		</div>
+	</section>
 
 	<!-- 5. Learn + Affiliate split -->
 	<section class="section container">
 		<div class="split">
 			<a class="learn-card" href="/learn">
 				<span class="learn-card__eyebrow">Learn hub</span>
-				<h2 class="learn-card__title">Guides written by people with dirt on their keyboards.</h2>
+				<h2 class="learn-card__title">Guides you can read while the shop is still taking shape.</h2>
 				<p class="learn-card__body">
-					Growing guides, notes, and courses — free to read, no account required.
+					Short growing notes, free, with no account. We publish what we can stand behind, and we
+					leave a hole where we don't have a guide yet.
 				</p>
-				<span class="learn-card__link">Explore the guides &rarr;</span>
+				<span class="learn-card__link">Open the Learn hub</span>
 			</a>
 
 			<div id="affiliate" class="affiliate-card">
@@ -395,11 +367,65 @@
 	}
 
 	/* ---------- Systems ---------- */
+	.systems-intro {
+		max-width: 68ch;
+		margin: 18px 0 0;
+		font-family: var(--font-body);
+		font-size: 16px;
+		line-height: 1.5;
+		color: #3d5246;
+	}
+
+	.systems-intro a {
+		font-weight: 600;
+		color: #1e4a36;
+	}
+
 	.systems-grid {
-		margin-top: 40px;
+		margin-top: 28px;
 		display: grid;
 		grid-template-columns: repeat(4, 1fr);
 		gap: 22px;
+	}
+
+	.silhouette {
+		max-width: 68ch;
+		padding: clamp(28px, 4vw, 48px);
+		border: 1px solid #e3dbc9;
+		background: #ede7da;
+	}
+
+	.silhouette__eyebrow {
+		font-family: var(--font-body);
+		font-size: 13px;
+		font-weight: 600;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: #2e6b4f;
+	}
+
+	.silhouette__title {
+		margin: 12px 0 0;
+		font-family: var(--font-display);
+		font-size: clamp(28px, 3vw, 40px);
+		font-weight: 600;
+		letter-spacing: -0.03em;
+		line-height: 1.1;
+		color: #22362a;
+	}
+
+	.silhouette__body {
+		margin: 16px 0 0;
+		font-size: 16px;
+		line-height: 1.5;
+		color: #22362a;
+	}
+
+	.silhouette__link {
+		display: inline-block;
+		margin-top: 20px;
+		font-weight: 600;
+		color: #1e4a36;
 	}
 
 	/* ---------- Why Aevani ---------- */
@@ -453,14 +479,6 @@
 		line-height: 1.55;
 		color: #4a5f52;
 		text-wrap: pretty;
-	}
-
-	/* ---------- Featured ---------- */
-	.featured-grid {
-		margin-top: 40px;
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 24px;
 	}
 
 	/* ---------- Learn + Affiliate split ---------- */
@@ -616,10 +634,6 @@
 			grid-template-columns: 1fr;
 			gap: 28px;
 		}
-
-		.featured-grid {
-			grid-template-columns: 1fr 1fr;
-		}
 	}
 
 	@media (max-width: 640px) {
@@ -638,10 +652,6 @@
 		.why__grid {
 			grid-template-columns: 1fr;
 			gap: 24px;
-		}
-
-		.featured-grid {
-			grid-template-columns: 1fr;
 		}
 
 		.split {

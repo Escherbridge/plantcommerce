@@ -2,30 +2,35 @@
 	import { Container, Section } from '$lib/components/layout';
 </script>
 
-<svelte:head>
-	<title>About Aevani</title>
-	<meta name="robots" content="noindex, nofollow" />
-</svelte:head>
-
 <Section>
 	<Container>
 		<div class="mx-auto max-w-4xl space-y-10 py-10">
 			<header class="space-y-4">
 				<p class="font-mono text-xs font-semibold tracking-widest text-secondary uppercase">
-					About Aevani
+					About
 				</p>
-				<h1 class="font-display text-4xl tracking-tight uppercase md:text-5xl">
-					Building verified growing resources
-				</h1>
-				<p class="max-w-3xl text-lg text-base-content/70">
-					Aevani is developing a commerce and education experience for sustainable growing. Public
-					catalog, supplier, fulfillment, impact, partnership, and organization claims are being
-					verified before publication.
-				</p>
+				<h1 class="font-display text-4xl tracking-tight md:text-5xl">Evidence before claims.</h1>
+				<div class="max-w-3xl space-y-4 text-lg text-base-content/70">
+					<p>
+						Aevani is a marketplace for growing tools and a free Learn hub, operated by
+						Escherbridge, LLC in Boise, Idaho. We are onboarding the first growers and makers who
+						will actually sell here. The catalogue you can browse today is a preview. Checkout is
+						off. We do not publish product counts, harvest numbers, warranties, impact metrics,
+						certifications, awards, or partner lists as facts, because we do not have them to stand
+						behind.
+					</p>
+					<p>
+						What is true today: applications to sell are open, at a flat 8% fee with card processing
+						included and no other fees. The Learn hub is free to read without an account.
+						<a href="https://plantgeo.aevani.com">PlantGeo, a related map for planning a site</a>
+						does not sell the tools. A later referral program from that map is not open, and its share
+						has not been set. Items picked for a plan are not for sale yet.
+					</p>
+				</div>
 			</header>
 
-			<section class="rounded-2xl border border-warning/30 bg-warning/10 p-6 md:p-8">
-				<h2 class="font-display text-2xl tracking-tight uppercase">Evidence before claims</h2>
+			<section class="rounded-2xl border border-base-300 bg-base-200 p-6 md:p-8">
+				<h2 class="font-display text-2xl tracking-tight">Evidence before claims</h2>
 				<p class="mt-3 text-base-content/80">
 					Aevani does not currently publish customer counts, product counts, impact metrics,
 					certifications, awards, partner relationships, team biographies, or company-history
@@ -34,12 +39,13 @@
 			</section>
 
 			<div class="flex flex-wrap gap-3">
-				<a href="/learn" class="font-display btn tracking-wider uppercase btn-primary"
-					>Explore learning</a
+				<a href="/sell" class="font-display btn tracking-wider uppercase btn-primary"
+					>Sell on Aevani</a
 				>
-				<a href="/support" class="font-display btn tracking-wider uppercase btn-outline"
-					>Contact support</a
+				<a href="/learn" class="font-display btn tracking-wider uppercase btn-outline"
+					>Open the Learn hub</a
 				>
+				<a href="/contact" class="font-display btn tracking-wider uppercase btn-outline">Contact</a>
 			</div>
 		</div>
 	</Container>

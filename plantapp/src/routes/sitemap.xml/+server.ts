@@ -10,7 +10,9 @@ const publishedEditorialPaths = [
 	'/blog/hydroponics-for-beginners',
 	'/blog/introduction-to-aquaponics',
 	'/blog/what-is-silvopasture',
-	'/blog/monoculture-to-polyculture'
+	'/blog/monoculture-to-polyculture',
+	'/blog/nothing-for-sale-yet',
+	'/blog/a-flat-eight-percent'
 ] as const;
 
 export const _publicSitemapRoutes = publicIndexablePaths;

@@ -78,9 +78,8 @@
 		<span class="eyebrow">The catalogue</span>
 		<h1 class="cat-title">Every tool here earned its place.</h1>
 		<p class="cat-lead">
-			We only sell what we've grown with. Every system, kit, seed, and hand tool below was
-			field-tested on our own beds before it made the cut — no drop-shipped filler, no listings we
-			couldn't stand behind.
+			The catalogue is a preview. Nothing in it is for sale yet. Prices on these pages are fixtures,
+			not offers.
 		</p>
 	</header>
 

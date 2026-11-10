@@ -72,7 +72,7 @@
 	// Primary navigation (Aevani IA)
 	const mainNavigation = [
 		{ label: 'Sell on Aevani', href: '/sell', primary: true },
-		{ label: 'Shop', href: '/products' },
+		{ label: 'Catalogue', href: '/products' },
 		{ label: 'Learn', href: '/learn' },
 		{ label: 'Growing systems', href: '/products' },
 		{ label: 'About', href: '/about' }

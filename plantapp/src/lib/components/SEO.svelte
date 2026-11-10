@@ -32,7 +32,7 @@
 	// Use $derived for runes mode
 	const safeTitle = $derived(title.length > 60 ? title.substring(0, 57) + '...' : title);
 	const safeDescription = $derived(
-		description.length > 160 ? description.substring(0, 157) + '...' : description
+		description.length > 220 ? description.substring(0, 217) + '...' : description
 	);
 
 	const baseUrl = publicSite.origin;
