@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Container, Section } from '$lib/components/layout';
-	import { publicOperator } from '$lib/config/site';
+	import { publicOperator, publicOperatorLine } from '$lib/config/site';
 </script>
 
 <svelte:head>
@@ -24,12 +24,11 @@
 			<section class="space-y-3">
 				<h2 class="font-display text-2xl tracking-tight uppercase">Operator and requests</h2>
 				<p class="text-base-content/70">
-					The Aevani site is operated by {publicOperator.legalName}. Privacy questions and requests
-					can be sent to
+					The Aevani site is operated by {publicOperator.legalName}. {publicOperatorLine}. Privacy
+					questions and requests can be sent to
 					<a class="link link-primary" href="mailto:{publicOperator.email}"
 						>{publicOperator.email}</a
-					>
-					or mailed to {publicOperator.address}.
+					>.
 				</p>
 			</section>
 

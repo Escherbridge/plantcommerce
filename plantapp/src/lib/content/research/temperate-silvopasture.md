@@ -24,7 +24,7 @@ USDA already has a word for this, and a warning. Silvopasture is trees, forage, 
 
 - **Trees can cut the direct cold effect by 50 percent or more and reduce wind velocity by as much as 70 percent** (USDA National Agroforestry Center, *Working Trees for Silvopasture*, First Edition 2008). Those percentages are brochure figures about cold and wind, not a heat-stress percentage, and not a forage-yield guarantee. They were not measured in Idaho in that brochure.
 - **54.8 days** per year with a maximum of 90°F or more at Boise Air Terminal (NOAA, 1991–2020 normals) — which is why shade is not a slogan here.
-- **Zone 7a** at ZIP 83702 and **zone 6b** at ZIP 83716, 2023 USDA Plant Hardiness Zone Map, so species choice is local.
+- **Zone 7a** in central Boise and **zone 6b** in a foothills area, 2023 USDA Plant Hardiness Zone Map, so species choice is local.
 
 ## The bill for a split system
 
@@ -32,7 +32,7 @@ USDA already has a word for this, and a warning. Silvopasture is trees, forage, 
 
 **Shade is a moving target.** Agroforestry Note 8 (revised June 2025) restates the definition: trees and shrubs intentionally integrated with forages and livestock on the same unit of land. Establishment is commonly “add trees to pastures or remove trees from forests and establish or manage existing forages.” Shade reduces solar radiation and livestock heat stress; winter tree shelter “can offer thermal protection for livestock during winter by reducing wind and precipitation that reaches sheltering animals.” The same note warns that as trees mature and cast more shade, “forage yields may decrease,” which may require thinning, pruning, or a more shade-tolerant forage. This page will not quote an unsourced “30–50% less heat stress” line. The 2008 50 percent / 70 percent figures are about cold and wind, and they stay in that sentence.
 
-**Dry summers still count.** Boise Air Terminal’s 1991–2020 normals show 11.51 inches of annual precipitation and a nearly dry July (0.21 inches). This is not a southeastern pine-pasture photograph. Tree and forage species still have to match the 2023 half-zone and the dry season, not a generic “temperate” catalog. Central Boise (83702) is zone 7a, 0 to 5°F average annual extreme minimum; 83716 is zone 6b, −5 to 0°F. USDA cautions that zones are 30-year averages, not records, and that other factors include wind, soil, and moisture.
+**Dry summers still count.** Boise Air Terminal’s 1991–2020 normals show 11.51 inches of annual precipitation and a nearly dry July (0.21 inches). This is not a southeastern pine-pasture photograph. Tree and forage species still have to match the 2023 half-zone and the dry season, not a generic “temperate” catalog. Central Boise is zone 7a, 0 to 5°F average annual extreme minimum; a foothills area is zone 6b, −5 to 0°F. USDA cautions that zones are 30-year averages, not records, and that other factors include wind, soil, and moisture.
 
 ## A shared record, applied here
 
@@ -65,7 +65,7 @@ A USDA Agroforestry Strategic Framework PDF URL tried in the research pass retur
 
 ## An illustrative scenario
 
-This is a worked example, not a client. A five-acre foothills parcel in zone 6b (ZIP 83716) adds a shade paddock for summer days that officially reach 90°F more than fifty times a year, then discovers forage thinning ten years later — the exact problem Note 8 describes. Shade helped the animals. Too much shade eventually taxed the forage. Someone has to thin.
+This is a worked example, not a client. A five-acre foothills parcel in zone 6b adds a shade paddock for summer days that officially reach 90°F more than fifty times a year, then discovers forage thinning ten years later — the exact problem Note 8 describes. Shade helped the animals. Too much shade eventually taxed the forage. Someone has to thin.
 
 ## Also in this section
 

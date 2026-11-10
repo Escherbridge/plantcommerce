@@ -40,8 +40,11 @@ export const publicOperator = {
 	email: 'contact@escherbridge.com',
 	phone: '(509) 578-4603',
 	phoneHref: 'tel:+15095784603',
-	address: '1140 S Colorado Ln, Boise, ID'
+	location: 'Boise, Idaho'
 } as const;
+
+/** City and public email, with no street or postal code. */
+export const publicOperatorLine = `${publicOperator.location}, ${publicOperator.email}` as const;
 
 const publicIndexablePrefixes = ['/guides/', '/blog/', '/courses/', '/products/'] as const;
 

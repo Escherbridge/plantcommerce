@@ -61,8 +61,8 @@ describe('cornerstone essays', () => {
 		expect(cooling?.body).toContain('4.3 L/m²/day');
 		expect(cooling?.body).toContain('7.2 L/m²/day');
 		expect(cooling?.body).toContain('11 L/m²/day');
-		expect(cooling?.body).toContain('83702 (central Boise) is zone 7a');
-		expect(cooling?.body).toContain('83716 is zone 6b');
+		expect(cooling?.body).toContain('central Boise is zone 7a');
+		expect(cooling?.body).toContain('a foothills area is zone 6b');
 		expect(cooling?.metaDescription).toHaveLength(157);
 		expect(cooling?.sources.map((source) => source.href)).toEqual([
 			'https://experts.arizona.edu/en/publications/water-use-in-a-greenhouse-in-a-semi-arid-climate/',

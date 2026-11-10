@@ -24,7 +24,7 @@ The Treasure Valley is not a humid greenhouse catalog photo. Winter, in the offi
 
 - **11.51 inches** annual mean precipitation at Boise Air Terminal (NOAA, 1991–2020 normals).
 - **54.8 days** per year with a maximum of 90°F or more, same station and normals.
-- **Zone 7a** at ZIP 83702 (0 to 5°F average annual extreme minimum) and **zone 6b** at ZIP 83716 (−5 to 0°F), 2023 USDA Plant Hardiness Zone Map.
+- **Zone 7a** in central Boise (0 to 5°F average annual extreme minimum) and **zone 6b** in a foothills area (−5 to 0°F), 2023 USDA Plant Hardiness Zone Map.
 
 ## The bill for a split system
 
@@ -34,7 +34,7 @@ A closed loop is often sold as if the climate had been edited out, but it has no
 
 **Water, including the cooling water.** The joke writes itself once, and then it should stop: a “water-saving” system whose cooling pad can drink more than the plants. In a Tucson, Arizona, single-span polyethylene greenhouse of hydroponic tomatoes (March–October 2006), Sabeh, Giacomelli, and Kubota measured eight-month irrigation water use of 780 L/m² and pad-and-fan cooling of 1,450 L/m² — more water on cooling than on the crop. Irrigation rose from 4.3 L/m²/day at establishment to 7.2 L/m²/day at maturity; pad-and-fan peaked at 11 L/m²/day in the hottest, driest conditions. Water-use efficiency was 30 kg yield per m³ for irrigation alone, 16 for cooling, and 11 when both were combined. That paper is a published semi-arid analog, not a Boise field trial and not an Aevani result. University of Arizona CEAC teaching notes give a working example for greenhouse hydroponic tomatoes of about 4 liters per plant per day, or 10 liters/m²/day at 2.5 plants/m², and state that if evaporative cooling is used, especially in deserts, water needs may double. The chapter presents the 4 L/plant/day line as an example, not a universal rule. This page will not claim that a closed system uses “90% less water than soil.”
 
-**Winter nights and salt.** The 2023 USDA Plant Hardiness Zone Map uses 30-year averages of the lowest annual winter temperatures. ZIP 83702 is zone 7a; ZIP 83716 is zone 6b. USDA is explicit that a designation is the average annual extreme minimum, not the coldest it has ever been or will be, and is a general guide for perennials, not a guarantee. Source water quality — pH, EC / salt levels, contaminants — is listed by CEAC as a constraint before any nutrient recipe. This page does not invent a Treasure Valley TDS number; a current official local well-chemistry figure was not verified for this guide.
+**Winter nights and salt.** The 2023 USDA Plant Hardiness Zone Map uses 30-year averages of the lowest annual winter temperatures. Central Boise is zone 7a; a foothills area is zone 6b. USDA is explicit that a designation is the average annual extreme minimum, not the coldest it has ever been or will be, and is a general guide for perennials, not a guarantee. Source water quality — pH, EC / salt levels, contaminants — is listed by CEAC as a constraint before any nutrient recipe. This page does not invent a Treasure Valley TDS number; a current official local well-chemistry figure was not verified for this guide.
 
 ## A shared record, applied here
 
@@ -44,7 +44,7 @@ These are practices, not SKUs, and nothing in the Aevani catalogue is for sale.
 
 **Vent and shade as if March can already overheat a tunnel.** That is what the USU Extension record says happened when ventilation was not done. A sunny Intermountain day is not a gentle warmup just because the calendar still says early spring.
 
-**Test source water, and look up the parcel’s 2023 half-zone.** Measure pH and EC before writing a recipe. Check the ZIP, including the 6b pockets in the foothills (83716). The map is a 30-year average of extreme minima, not a forecast of the next cold night.
+**Test source water, and look up the parcel’s 2023 half-zone.** Measure pH and EC before writing a recipe. Check the local half-zone, including the 6b pockets in the foothills. The map is a 30-year average of extreme minima, not a forecast of the next cold night.
 
 ## What Aevani is, and is not, on this page
 
@@ -69,7 +69,7 @@ A current University of Idaho Extension bulletin could not be retrieved for this
 
 ## An illustrative scenario
 
-This is a worked example, not a customer and not a testimonial. A backyard grower in Boise ZIP 83702, zone 7a, with the official 11.51-inch annual normals, runs a small indoor or greenhouse loop through July’s 92.7°F mean daily maximum and a dry 0.21-inch July. The electric bill and the makeup water for cooling show up before any harvest number is worth quoting. The constraint was never a missing SKU.
+This is a worked example, not a customer and not a testimonial. A backyard grower in central Boise, zone 7a, with the official 11.51-inch annual normals, runs a small indoor or greenhouse loop through July’s 92.7°F mean daily maximum and a dry 0.21-inch July. The electric bill and the makeup water for cooling show up before any harvest number is worth quoting. The constraint was never a missing SKU.
 
 ## Also in this section
 
