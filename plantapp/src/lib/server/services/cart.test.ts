@@ -64,14 +64,14 @@ describe('CartService', () => {
 	});
 
 	describe('addItem', () => {
-		it('subtracts reserved inventory before accepting a quantity', async () => {
+		it('rejects a quantity above on-hand stock', async () => {
 			const limitMock = vi.fn().mockResolvedValue([
 				{
 					id: 101,
 					price: '10.00',
 					trackInventory: true,
-					stockQuantity: 10,
-					reservedQuantity: 9,
+					stockQuantity: 1,
+					reservedQuantity: 0,
 					isActive: true
 				}
 			]);

@@ -1,3 +1,4 @@
+import { building } from '$app/environment';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schema';
@@ -5,8 +6,11 @@ import * as lmsSchema from './lms-schema';
 import * as lmsRelations from './lms-relations';
 import { env } from '$env/dynamic/private';
 
-if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
+const databaseUrl = env.DATABASE_URL;
+if (!databaseUrl && !building) {
+	throw new Error('DATABASE_URL is not set');
+}
 
-const client = postgres(env.DATABASE_URL);
+const client = postgres(databaseUrl ?? 'postgres://127.0.0.1:5432/aevani_build');
 
 export const db = drizzle(client, { schema: { ...schema, ...lmsSchema, ...lmsRelations } });

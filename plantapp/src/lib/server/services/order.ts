@@ -275,7 +275,12 @@ export class OrderService {
 			// cancellation reverses it. No-ops when the affiliate ledger is disabled.
 			const causationReference = `order:${orderId}:status:${status}`;
 			if (status === 'shipped' || status === 'delivered') {
-				await AffiliateCommissionService.clearCommissionsForOrder(tx, orderId, causationReference, now);
+				await AffiliateCommissionService.clearCommissionsForOrder(
+					tx,
+					orderId,
+					causationReference,
+					now
+				);
 			} else if (status === 'refunded' || status === 'cancelled') {
 				await AffiliateCommissionService.reverseCommissionsForOrder(
 					tx,

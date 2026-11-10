@@ -111,9 +111,9 @@
 			<section class="space-y-4">
 				<h2 class="font-display text-2xl tracking-tight uppercase">5. Onboarding</h2>
 				<p class="text-base-content/70">
-					Onboarding is self-serve. Your affiliate account is auto-approved and active the moment you
-					accept these terms — there is no manual review queue. You may begin creating and sharing
-					tracked links immediately.
+					Onboarding is self-serve. Your affiliate account is auto-approved and active the moment
+					you accept these terms — there is no manual review queue. You may begin creating and
+					sharing tracked links immediately.
 				</p>
 			</section>
 

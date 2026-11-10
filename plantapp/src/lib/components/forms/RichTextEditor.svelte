@@ -59,8 +59,7 @@
 
 			quill = new Quill(editorContainer, {
 				theme: 'snow',
-				placeholder:
-					config.richTextConfig?.placeholder || config.placeholder || 'Start writing...',
+				placeholder: config.richTextConfig?.placeholder || config.placeholder || 'Start writing...',
 				modules: { toolbar: toolbarOptions }
 			});
 

@@ -148,9 +148,7 @@ async function main() {
 			}
 			const productCategoryId = productCategoryIdBySlug.get(c.productCategorySlug);
 			if (productCategoryId) {
-				await tx
-					.insert(lms.lmsCourseProduct)
-					.values({ id: uuid(), courseId, productCategoryId });
+				await tx.insert(lms.lmsCourseProduct).values({ id: uuid(), courseId, productCategoryId });
 			}
 
 			for (let m = 0; m < c.modules.length; m++) {

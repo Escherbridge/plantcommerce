@@ -123,8 +123,8 @@
 		{#if !isEmpty}
 			<p class="cart-lead">
 				{totalItems}
-				{totalItems === 1 ? 'item' : 'items'} ready when you are. Review the details below, then head to
-				checkout.
+				{totalItems === 1 ? 'item' : 'items'} ready when you are. Review the details below, then head
+				to checkout.
 			</p>
 		{/if}
 	</header>
@@ -134,8 +134,8 @@
 			<div class="empty-card">
 				<h2 class="empty-title">Your cart is empty</h2>
 				<p class="empty-lead">
-					Nothing here yet. Browse the catalogue — every tool was field-tested on our own beds before
-					it earned its place.
+					Nothing here yet. Browse the catalogue — every tool was field-tested on our own beds
+					before it earned its place.
 				</p>
 				<a href="/products" class="btn-primary">Explore the catalogue</a>
 			</div>
@@ -176,12 +176,7 @@
 									</button>
 								</div>
 
-								<button
-									type="button"
-									class="remove"
-									onclick={() => remove(line)}
-									disabled={busy}
-								>
+								<button type="button" class="remove" onclick={() => remove(line)} disabled={busy}>
 									Remove
 								</button>
 							</div>
@@ -216,7 +211,7 @@
 
 					<button
 						type="button"
-						class="btn-primary checkout"
+						class="checkout btn-primary"
 						onclick={proceedToCheckout}
 						disabled={busy || checkoutState === 'loading'}
 					>

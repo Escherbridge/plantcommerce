@@ -2,7 +2,9 @@ import { test, expect, expectImagesLoaded } from './fixtures';
 
 const productPath = '/products/hydroponics/vertical-tower-garden-system';
 
-test('3. product detail renders commerce data, rich content, FAQ, and reviews', async ({ page }) => {
+test('3. product detail renders commerce data, rich content, FAQ, and reviews', async ({
+	page
+}) => {
 	await page.goto(productPath);
 
 	await expect(
@@ -51,5 +53,4 @@ test('3. product detail renders commerce data, rich content, FAQ, and reviews', 
 	const rawText = await longRead.innerText();
 	expect(rawText).not.toContain('<p>');
 	expect(rawText).not.toContain('&lt;');
-
 });

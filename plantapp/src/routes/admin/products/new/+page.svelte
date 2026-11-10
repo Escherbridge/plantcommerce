@@ -48,7 +48,12 @@
 			label: 'Stock Quantity',
 			validation: { min: 0 }
 		},
-		{ id: 'shortDescription', name: 'shortDescription', type: 'textarea', label: 'Short Description' },
+		{
+			id: 'shortDescription',
+			name: 'shortDescription',
+			type: 'textarea',
+			label: 'Short Description'
+		},
 		{
 			id: 'descriptionHtml',
 			name: 'descriptionHtml',
@@ -56,8 +61,18 @@
 			label: 'Long Description',
 			placeholder: 'Write the full product story…'
 		},
-		{ id: 'keyFeatures', name: 'keyFeatures', type: 'textarea', label: 'Key Features (one per line)' },
-		{ id: 'inTheBox', name: 'inTheBox', type: 'textarea', label: "What's in the Box (one per line)" },
+		{
+			id: 'keyFeatures',
+			name: 'keyFeatures',
+			type: 'textarea',
+			label: 'Key Features (one per line)'
+		},
+		{
+			id: 'inTheBox',
+			name: 'inTheBox',
+			type: 'textarea',
+			label: "What's in the Box (one per line)"
+		},
 		{ id: 'badges', name: 'badges', type: 'text', label: 'Badges (comma-separated)' },
 		{ id: 'stats', name: 'stats', type: 'textarea', label: 'Stats — JSON' },
 		{ id: 'specs', name: 'specs', type: 'textarea', label: 'Specs — JSON' },
@@ -109,10 +124,20 @@
 
 	// ── Payload helpers (shared shape with the edit page) ──
 	function toLines(v: unknown): string[] {
-		return typeof v === 'string' ? v.split('\n').map((s) => s.trim()).filter(Boolean) : [];
+		return typeof v === 'string'
+			? v
+					.split('\n')
+					.map((s) => s.trim())
+					.filter(Boolean)
+			: [];
 	}
 	function toCommaList(v: unknown): string[] {
-		return typeof v === 'string' ? v.split(',').map((s) => s.trim()).filter(Boolean) : [];
+		return typeof v === 'string'
+			? v
+					.split(',')
+					.map((s) => s.trim())
+					.filter(Boolean)
+			: [];
 	}
 	function optText(v: unknown): string | undefined {
 		const s = typeof v === 'string' ? v.trim() : '';
@@ -164,7 +189,8 @@
 			comparePrice: d.comparePrice ? normPrice(d.comparePrice, 'Compare-at price') : undefined,
 			currency: optText(d.currency),
 			categoryId,
-			stockQuantity: d.stockQuantity != null && d.stockQuantity !== '' ? Number(d.stockQuantity) : 0,
+			stockQuantity:
+				d.stockQuantity != null && d.stockQuantity !== '' ? Number(d.stockQuantity) : 0,
 			shortDescription: optText(d.shortDescription),
 			descriptionHtml: optText(d.descriptionHtml),
 			keyFeatures: toLines(d.keyFeatures),

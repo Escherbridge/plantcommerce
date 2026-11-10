@@ -25,9 +25,7 @@ test('7. admin creates an active product with Quill heading and bold formatting'
 		.fill('A browser-created test product for end-to-end QA.');
 	await page.locator('textarea[name="keyFeatures"]').fill('Tool-free setup\nQA verified');
 	await page.locator('textarea[name="inTheBox"]').fill('Grow tray\nQuick-start guide');
-	await page
-		.locator('textarea[name="stats"]')
-		.fill('[{"value":"12","label":"Plant sites"}]');
+	await page.locator('textarea[name="stats"]').fill('[{"value":"12","label":"Plant sites"}]');
 	await page
 		.locator('textarea[name="specs"]')
 		.fill('[{"label":"Material","value":"Recycled polymer"}]');

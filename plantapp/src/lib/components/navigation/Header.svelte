@@ -172,17 +172,19 @@
 
 			<!-- Right actions -->
 			<div class="header-actions">
-				<a
-					href="/affiliate"
-					class="affiliates-link"
-					class:active={isActive('/affiliate')}
-				>
+				<a href="/affiliate" class="affiliates-link" class:active={isActive('/affiliate')}>
 					Affiliates
 				</a>
 
 				<!-- Cart primary pill -->
 				<a href="/cart" class="cart-pill" aria-label="Cart">
-					<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+					<svg
+						class="icon"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+					>
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -213,7 +215,13 @@
 							}
 						}}
 					>
-						<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+						<svg
+							class="icon"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
+						>
 							<path
 								stroke-linecap="round"
 								stroke-linejoin="round"

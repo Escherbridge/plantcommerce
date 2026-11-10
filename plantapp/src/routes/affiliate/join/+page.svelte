@@ -635,9 +635,9 @@
 				<section class="terms-section">
 					<h3 class="terms-heading">4. Prohibited Conduct</h3>
 					<p>
-						No self-referrals, spam, misleading claims, trademark bidding, cookie stuffing, coupon or
-						incentive fraud, or undisclosed paid promotion. Violations may reverse commissions and
-						end your participation. Full terms are in the
+						No self-referrals, spam, misleading claims, trademark bidding, cookie stuffing, coupon
+						or incentive fraud, or undisclosed paid promotion. Violations may reverse commissions
+						and end your participation. Full terms are in the
 						<a href="/affiliate/terms" class="terms-link">affiliate program terms</a>.
 					</p>
 				</section>

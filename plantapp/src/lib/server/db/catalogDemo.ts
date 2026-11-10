@@ -193,7 +193,8 @@ export const demoCategories: DemoCategory[] = [
 	{
 		name: 'Seeds & Supplies',
 		slug: 'supplies',
-		description: 'Heirloom seed collections, pollinator mixes, seed-saving gear, and hand-forged tools.',
+		description:
+			'Heirloom seed collections, pollinator mixes, seed-saving gear, and hand-forged tools.',
 		children: [
 			{
 				name: 'Heirloom Seeds',
@@ -909,14 +910,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'Rockwool Cubes & Growing Media Sampler | Aevani',
 		metaDescription:
 			'50 rockwool starter cubes plus coco coir, perlite, and clay pebble samples with a usage guide. Find the growing medium that fits your crops.',
-		tags: [
-			'hydroponics',
-			'growing media',
-			'rockwool',
-			'seed starting',
-			'coco coir',
-			'sampler'
-		],
+		tags: ['hydroponics', 'growing media', 'rockwool', 'seed starting', 'coco coir', 'sampler'],
 		relatedSlugs: [
 			'net-pots-clay-pebbles-bundle',
 			'hydroponic-nutrients-trio',
@@ -995,14 +989,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'Digital pH & EC Meter Set | Aevani Hydroponics',
 		metaDescription:
 			'Precision pH and EC/TDS meters with automatic temperature compensation, calibration solutions, and waterproof cases. Stop guessing your reservoir.',
-		tags: [
-			'hydroponics',
-			'soil testing',
-			'ph meter',
-			'ec meter',
-			'water quality',
-			'measurement'
-		],
+		tags: ['hydroponics', 'soil testing', 'ph meter', 'ec meter', 'water quality', 'measurement'],
 		relatedSlugs: [
 			'hydroponic-nutrients-trio',
 			'deep-water-culture-bucket-system',
@@ -1085,14 +1072,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'IBC Aquaponics Fish Tank (275 gal) | Aevani Aquaponics',
 		metaDescription:
 			'A properly converted 275-gallon IBC tank with tempered-glass viewing window, aeration manifold, and insulated jacket — the heart of a backyard system.',
-		tags: [
-			'aquaponics',
-			'fish tank',
-			'ibc tote',
-			'backyard system',
-			'tilapia',
-			'flagship'
-		],
+		tags: ['aquaponics', 'fish tank', 'ibc tote', 'backyard system', 'tilapia', 'flagship'],
 		relatedSlugs: [
 			'commercial-aquaponics-grow-bed',
 			'aquaponics-bell-siphon-kit',
@@ -1301,14 +1281,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'Countertop Aquaponics Starter System | Aevani',
 		metaDescription:
 			'A self-contained 3-gallon fish-and-herb loop with LED light for the kitchen. Watch the nitrogen cycle work — a friendly first step into aquaponics.',
-		tags: [
-			'aquaponics',
-			'countertop',
-			'beginner-friendly',
-			'classroom',
-			'herbs',
-			'gift'
-		],
+		tags: ['aquaponics', 'countertop', 'beginner-friendly', 'classroom', 'herbs', 'gift'],
 		relatedSlugs: [
 			'aquaponics-water-testing-kit',
 			'tilapia-fingerlings-starter-pack',
@@ -1396,14 +1369,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'Tilapia Fingerlings Starter Pack (25) | Aevani Aquaponics',
 		metaDescription:
 			'Twenty-five live Nile tilapia fingerlings shipped overnight with an acclimation guide — the fast-growing, forgiving fish for home aquaponics.',
-		tags: [
-			'aquaponics',
-			'live fish',
-			'tilapia',
-			'fingerlings',
-			'stocking',
-			'overnight shipping'
-		],
+		tags: ['aquaponics', 'live fish', 'tilapia', 'fingerlings', 'stocking', 'overnight shipping'],
 		relatedSlugs: [
 			'ibc-aquaponics-fish-tank',
 			'aquaponics-water-testing-kit',
@@ -1574,14 +1540,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'Aquaponics Bell Siphon Kit | Aevani Aquaponics',
 		metaDescription:
 			'A clear PVC bell siphon adjustable for 8–14 in grow beds, automating flood-and-drain cycles with no timer — the quiet workhorse of a media bed.',
-		tags: [
-			'aquaponics',
-			'bell siphon',
-			'flood and drain',
-			'grow bed',
-			'plumbing',
-			'diy'
-		],
+		tags: ['aquaponics', 'bell siphon', 'flood and drain', 'grow bed', 'plumbing', 'diy'],
 		relatedSlugs: [
 			'commercial-aquaponics-grow-bed',
 			'ibc-aquaponics-fish-tank',
@@ -1662,14 +1621,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'Silvopasture Seed Mix | Aevani Silvopasture',
 		metaDescription:
 			'A shade-tolerant blend of grasses and legumes bred for under-canopy pasture. Feeds livestock and builds soil beneath your trees.',
-		tags: [
-			'silvopasture',
-			'forage seed',
-			'shade-tolerant',
-			'pasture',
-			'livestock',
-			'regenerative'
-		],
+		tags: ['silvopasture', 'forage seed', 'shade-tolerant', 'pasture', 'livestock', 'regenerative'],
 		relatedSlugs: [
 			'forage-chicory-plants-50-plugs',
 			'tree-shelters-protectors-25-pack',
@@ -1689,17 +1641,16 @@ export const demoProducts: DemoProduct[] = [
 			{ value: '5', label: 'complementary species in the blend' }
 		],
 		specs: [
-			{ label: 'Species', value: 'Orchardgrass, timothy, white clover, birdsfoot trefoil, chicory' },
+			{
+				label: 'Species',
+				value: 'Orchardgrass, timothy, white clover, birdsfoot trefoil, chicory'
+			},
 			{ label: 'Seeding rate', value: '25 lbs / acre' },
 			{ label: 'Zones', value: 'USDA 4–8' },
 			{ label: 'Tolerance', value: 'Shade and rotational grazing' },
 			{ label: 'Packaging', value: 'Resealable kraft bag + establishment guide' }
 		],
-		inTheBox: [
-			'Silvopasture seed blend',
-			'Establishment guide',
-			'Resealable kraft bag'
-		],
+		inTheBox: ['Silvopasture seed blend', 'Establishment guide', 'Resealable kraft bag'],
 		faqs: [
 			{
 				q: 'How much shade can it take?',
@@ -1833,14 +1784,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'Shaded Livestock Water Trough (100 gal) | Aevani',
 		metaDescription:
 			'A 100-gallon galvanized trough with auto-fill float valve and shade cover to keep water cool. Reliable stock water for rotational silvopasture.',
-		tags: [
-			'silvopasture',
-			'water trough',
-			'livestock',
-			'auto-fill',
-			'grazing',
-			'durable'
-		],
+		tags: ['silvopasture', 'water trough', 'livestock', 'auto-fill', 'grazing', 'durable'],
 		relatedSlugs: [
 			'portable-electric-netting-164-ft',
 			'silvopasture-seed-mix',
@@ -1952,12 +1896,7 @@ export const demoProducts: DemoProduct[] = [
 			{ label: 'Stakes', value: '25 hardwood + 50 zip ties' },
 			{ label: 'Lifespan', value: 'Biodegrades in 5–7 years' }
 		],
-		inTheBox: [
-			'25 tree shelters',
-			'25 hardwood stakes',
-			'50 zip ties',
-			'Installation guide'
-		],
+		inTheBox: ['25 tree shelters', '25 hardwood stakes', '50 zip ties', 'Installation guide'],
 		faqs: [
 			{
 				q: 'Do I remove them later?',
@@ -2037,11 +1976,7 @@ export const demoProducts: DemoProduct[] = [
 			{ label: 'Use', value: 'New beds or interplant into pasture' },
 			{ label: 'Persistence', value: '5+ years' }
 		],
-		inTheBox: [
-			'Flat of 50 chicory plugs',
-			'Planting guide',
-			'Spacing template'
-		],
+		inTheBox: ['Flat of 50 chicory plugs', 'Planting guide', 'Spacing template'],
 		faqs: [
 			{
 				q: 'How soon can I graze it?',
@@ -2090,14 +2025,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'Chestnut Tree Seedlings (10 pack) | Aevani Agroforestry',
 		metaDescription:
 			'Ten blight-resistant Dunstan chestnut seedlings, 2–3 ft tall, for a productive nut crop. A cornerstone tree for agroforestry and food forests.',
-		tags: [
-			'agroforestry',
-			'tree seedlings',
-			'chestnut',
-			'nut crop',
-			'food forest',
-			'perennial'
-		],
+		tags: ['agroforestry', 'tree seedlings', 'chestnut', 'nut crop', 'food forest', 'perennial'],
 		relatedSlugs: [
 			'nitrogen-fixing-tree-seeds-collection',
 			'grafting-propagation-kit',
@@ -2260,14 +2188,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'Grafting & Propagation Kit | Aevani Agroforestry',
 		metaDescription:
 			'Professional grafting tools with an illustrated how-to for propagating fruit and nut trees. Multiply your best trees for free.',
-		tags: [
-			'agroforestry',
-			'grafting',
-			'propagation',
-			'fruit trees',
-			'tools',
-			'orcharding'
-		],
+		tags: ['agroforestry', 'grafting', 'propagation', 'fruit trees', 'tools', 'orcharding'],
 		relatedSlugs: [
 			'chestnut-tree-seedlings-10-pack',
 			'nitrogen-fixing-tree-seeds-collection',
@@ -2374,7 +2295,10 @@ export const demoProducts: DemoProduct[] = [
 			{ value: '0', label: 'plastic pots — all compostable coir' }
 		],
 		specs: [
-			{ label: 'Herbs', value: 'Lavender, chamomile, echinacea, peppermint, lemon balm, calendula' },
+			{
+				label: 'Herbs',
+				value: 'Lavender, chamomile, echinacea, peppermint, lemon balm, calendula'
+			},
 			{ label: 'Form', value: 'Live starters in coir pots' },
 			{ label: 'Care', value: 'Per-herb care cards' },
 			{ label: 'Guide', value: '30+ preparation field guide' }
@@ -2802,14 +2726,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'Soil Building Amendment Kit | Aevani Starter Kits',
 		metaDescription:
 			'Biochar, worm castings, rock dust, kelp, neem, and mycorrhizae in one kit to rebuild living soil. Feed the biology, not just the plant.',
-		tags: [
-			'starter kit',
-			'soil health',
-			'amendments',
-			'biochar',
-			'mycorrhizae',
-			'regenerative'
-		],
+		tags: ['starter kit', 'soil health', 'amendments', 'biochar', 'mycorrhizae', 'regenerative'],
 		relatedSlugs: [
 			'worm-composting-vermicompost-kit',
 			'composting-starter-kit',
@@ -3071,11 +2988,7 @@ export const demoProducts: DemoProduct[] = [
 			'natural pest control',
 			'biodiversity'
 		],
-		relatedSlugs: [
-			'herb-spiral-garden-kit',
-			'permaculture-starter-kit',
-			'season-extension-kit'
-		],
+		relatedSlugs: ['herb-spiral-garden-kit', 'permaculture-starter-kit', 'season-extension-kit'],
 		descriptionHtml:
 			'<h2>Let the good bugs do the pest control</h2><p>A garden with the right insects mostly defends itself. This kit builds habitat for the allies: a mason bee house for 60+ tubes, a ladybug and lacewing shelter, a ceramic butterfly puddling dish, and five packets of insect-attracting flowers. An illustrated guide helps you tell the 30 common garden insects that help from the ones that hurt.</p><p>Fewer sprays, more pollinators, a garden that balances itself.</p>',
 		keyFeatures: [
@@ -3149,14 +3062,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'Worm Composting Vermicompost Kit | Aevani Composting',
 		metaDescription:
 			'A 3-tray stackable worm farm with spigot and bedding to turn kitchen scraps into rich vermicompost and worm-tea fertilizer indoors.',
-		tags: [
-			'composting',
-			'vermicompost',
-			'worm farm',
-			'kitchen scraps',
-			'soil health',
-			'indoor'
-		],
+		tags: ['composting', 'vermicompost', 'worm farm', 'kitchen scraps', 'soil health', 'indoor'],
 		relatedSlugs: [
 			'composting-starter-kit',
 			'soil-building-amendment-kit',
@@ -3322,14 +3228,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'Heirloom Seed Vault (40 varieties) | Aevani Seeds',
 		metaDescription:
 			'Forty open-pollinated heirloom vegetable varieties in a moisture-proof vault with a planting guide. A resilient seed library for any grower.',
-		tags: [
-			'seeds',
-			'heirloom',
-			'open-pollinated',
-			'seed vault',
-			'food security',
-			'non-gmo'
-		],
+		tags: ['seeds', 'heirloom', 'open-pollinated', 'seed vault', 'food security', 'non-gmo'],
 		relatedSlugs: [
 			'artisan-seed-packet-collection',
 			'heirloom-tomato-collection',
@@ -3407,14 +3306,7 @@ export const demoProducts: DemoProduct[] = [
 		metaTitle: 'Artisan Seed Packet Collection | Aevani Seeds',
 		metaDescription:
 			'Twenty heirloom varieties in beautifully illustrated packets inside a vintage storage box. A giftable collection for the heritage gardener.',
-		tags: [
-			'seeds',
-			'heirloom',
-			'seed collection',
-			'gift',
-			'illustrated packets',
-			'non-gmo'
-		],
+		tags: ['seeds', 'heirloom', 'seed collection', 'gift', 'illustrated packets', 'non-gmo'],
 		relatedSlugs: [
 			'heirloom-seed-vault',
 			'heirloom-tomato-collection',
@@ -3439,11 +3331,7 @@ export const demoProducts: DemoProduct[] = [
 			{ label: 'Packaging', value: 'Botanical-illustration packets' },
 			{ label: 'Box', value: 'Vintage wooden storage box with dividers' }
 		],
-		inTheBox: [
-			'20 heirloom seed packets',
-			'Wooden storage box',
-			'Dividers + blank labels'
-		],
+		inTheBox: ['20 heirloom seed packets', 'Wooden storage box', 'Dividers + blank labels'],
 		faqs: [
 			{
 				q: 'Are these good varieties or just pretty packets?',
@@ -3519,7 +3407,10 @@ export const demoProducts: DemoProduct[] = [
 			{ value: '150+', label: 'seeds total across the collection' }
 		],
 		specs: [
-			{ label: 'Varieties', value: 'Brandywine, Cherokee Purple, Green Zebra, San Marzano, Yellow Pear, Black Krim' },
+			{
+				label: 'Varieties',
+				value: 'Brandywine, Cherokee Purple, Green Zebra, San Marzano, Yellow Pear, Black Krim'
+			},
 			{ label: 'Seeds', value: '25+ per packet' },
 			{ label: 'Type', value: 'Open-pollinated, non-GMO' },
 			{ label: 'Days to maturity', value: '65–85 depending on variety' },
@@ -3636,11 +3527,7 @@ export const demoProducts: DemoProduct[] = [
 			{ label: 'Bloom', value: 'Spring through fall (seasonal chart)' },
 			{ label: 'Type', value: 'Native, non-GMO' }
 		],
-		inTheBox: [
-			'18-species wildflower seed mix',
-			'Seasonal bloom chart',
-			'Sowing instructions'
-		],
+		inTheBox: ['18-species wildflower seed mix', 'Seasonal bloom chart', 'Sowing instructions'],
 		faqs: [
 			{
 				q: 'When and how do I sow it?',
@@ -3807,11 +3694,7 @@ export const demoProducts: DemoProduct[] = [
 			{ label: 'Extras', value: 'Leather hanging loop' },
 			{ label: 'Finish', value: 'Hand-forged, hammer-marked' }
 		],
-		inTheBox: [
-			'Hand-forged trowel',
-			'Leather hanging loop',
-			'Care card'
-		],
+		inTheBox: ['Hand-forged trowel', 'Leather hanging loop', 'Care card'],
 		faqs: [
 			{
 				q: 'Does high-carbon steel rust?',

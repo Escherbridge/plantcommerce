@@ -4,9 +4,7 @@ test('10. learning center and LMS course catalogue expose seeded course content'
 	page
 }) => {
 	await page.goto('/learn');
-	await expect(
-		page.getByRole('heading', { level: 1, name: /Learning Center/i })
-	).toBeVisible();
+	await expect(page.getByRole('heading', { level: 1, name: /Learning Center/i })).toBeVisible();
 	await expect(page.getByRole('heading', { name: /Featured Guides/i })).toBeVisible();
 	await expect(page.locator('body')).toContainText(/Guides|Courses|Resources|FAQ/i);
 
