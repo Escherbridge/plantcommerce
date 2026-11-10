@@ -22,9 +22,23 @@ describe('public crawler discovery', () => {
 			'/products/silvopasture',
 			'/products/agroforestry',
 			'/size-guide',
-			'/support'
+			'/support',
+			'/contact',
+			'/privacy',
+			'/terms',
+			'/shipping',
+			'/returns',
+			'/cookies',
+			'/accessibility'
 		]);
 		expect(xml).toContain('<loc>https://aevani.com/</loc>');
+		expect(xml).toContain('<loc>https://aevani.com/contact</loc>');
+		expect(xml).toContain('<loc>https://aevani.com/privacy</loc>');
+		expect(xml).toContain('<loc>https://aevani.com/terms</loc>');
+		expect(xml).toContain('<loc>https://aevani.com/shipping</loc>');
+		expect(xml).toContain('<loc>https://aevani.com/returns</loc>');
+		expect(xml).toContain('<loc>https://aevani.com/cookies</loc>');
+		expect(xml).toContain('<loc>https://aevani.com/accessibility</loc>');
 		expect(xml).toContain('<loc>https://aevani.com/learn</loc>');
 		expect(xml).toContain('<loc>https://aevani.com/courses</loc>');
 		expect(xml).toContain('<loc>https://aevani.com/guides</loc>');
@@ -35,7 +49,27 @@ describe('public crawler discovery', () => {
 		expect(source).not.toContain('PUBLIC_BASE_URL');
 		expect(source).not.toContain('RAILWAY_PUBLIC_DOMAIN');
 
-		for (const excludedRoute of ['/cart', '/checkout', '/login', '/register', '/search']) {
+		for (const indexableRoute of [
+			'/contact',
+			'/privacy',
+			'/terms',
+			'/shipping',
+			'/returns',
+			'/cookies',
+			'/accessibility'
+		]) {
+			expect(isPublicIndexablePath(indexableRoute)).toBe(true);
+		}
+
+		for (const excludedRoute of [
+			'/cart',
+			'/checkout',
+			'/login',
+			'/register',
+			'/search',
+			'/warranty',
+			'/help'
+		]) {
 			expect(xml).not.toContain(`<loc>https://aevani.com${excludedRoute}</loc>`);
 			expect(isPublicIndexablePath(excludedRoute)).toBe(false);
 		}
@@ -71,6 +105,17 @@ describe('public crawler discovery', () => {
 
 		expect(robots).not.toContain('Disallow: /products');
 		expect(robots).not.toContain('Disallow: /cart');
+		for (const path of [
+			'/contact',
+			'/privacy',
+			'/terms',
+			'/shipping',
+			'/returns',
+			'/cookies',
+			'/accessibility'
+		]) {
+			expect(robots).not.toContain(`Disallow: ${path}`);
+		}
 		expect(robots).toContain('Sitemap: https://aevani.com/sitemap.xml');
 		expect(robots).not.toContain('railway.app');
 	});

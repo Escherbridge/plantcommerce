@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Container, Section } from '$lib/components/layout';
+	import { publicOperator } from '$lib/config/site';
 </script>
 
 <svelte:head>
@@ -23,6 +24,22 @@
 					<a class="link link-primary" href="/privacy">Privacy Policy</a>.
 				</p>
 			</header>
+
+			<section class="space-y-3">
+				<h2 class="font-display text-2xl tracking-tight uppercase">Operator</h2>
+				<p class="text-base-content/70">
+					The Aevani site is operated by {publicOperator.legalName}. Questions about these terms can
+					be sent to
+					<a class="link link-primary" href="mailto:{publicOperator.email}"
+						>{publicOperator.email}</a
+					>
+					or mailed to {publicOperator.address}.
+				</p>
+				<p class="text-base-content/70">
+					These terms are governed by the laws of the State of Idaho, and any dispute will be
+					resolved in the state or federal courts located in Ada County, Idaho.
+				</p>
+			</section>
 
 			<section class="space-y-3">
 				<h2 class="font-display text-2xl tracking-tight uppercase">Orders</h2>

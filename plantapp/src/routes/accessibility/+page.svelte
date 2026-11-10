@@ -1,6 +1,15 @@
 <script lang="ts">
 	import { Container, Section } from '$lib/components/layout';
+	import { publicOperator } from '$lib/config/site';
 </script>
+
+<svelte:head>
+	<title>Accessibility | Aevani</title>
+	<meta
+		name="description"
+		content="Send accessibility feedback for Aevani to contact@escherbridge.com."
+	/>
+</svelte:head>
 
 <Section>
 	<Container>
@@ -139,10 +148,21 @@
 				accessibility barriers:
 			</p>
 
-			<p>
-				Questions about accessibility?
-				<a class="link link-primary" href="/contact">Contact us</a>.
-			</p>
+			<div class="not-prose card my-6 bg-base-100 shadow-xl">
+				<div class="card-body">
+					<h3 class="card-title">Report an Accessibility Issue</h3>
+					<p>
+						<strong>Email:</strong>
+						<a class="link link-primary" href="mailto:{publicOperator.email}"
+							>{publicOperator.email}</a
+						>
+					</p>
+					<p>
+						Questions about accessibility?
+						<a class="link link-primary" href="/contact">Contact us</a>.
+					</p>
+				</div>
+			</div>
 
 			<h2>Technical Specifications</h2>
 			<p>Accessibility of Aevani relies on the following technologies:</p>

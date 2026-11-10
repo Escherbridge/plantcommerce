@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Container, Section } from '$lib/components/layout';
+	import { publicOperator } from '$lib/config/site';
 
 	const topics = [
 		{
@@ -39,7 +40,7 @@
 	<title>Contact | Aevani</title>
 	<meta
 		name="description"
-		content="Contact Aevani about products, orders, shipping, and returns."
+		content="Email, phone, and mailing address for Aevani, plus help for products, orders, shipping, and returns."
 	/>
 </svelte:head>
 
@@ -52,10 +53,27 @@
 				</p>
 				<h1 class="font-display text-4xl tracking-tight uppercase md:text-5xl">Contact</h1>
 				<p class="max-w-3xl text-lg text-base-content/70">
-					Questions about a product, an order, shipping, or returns? Start with the page that
-					matches the question.
+					Aevani's contact is {publicOperator.contactName}. Questions about a product, an order,
+					shipping, or returns can also start with the page that matches the question.
 				</p>
 			</header>
+
+			<section class="rounded-2xl border border-base-200 bg-base-100 p-6 shadow-sm md:p-8">
+				<h2 class="font-display text-2xl tracking-tight uppercase">Aevani contact</h2>
+				<ul class="mt-4 space-y-2 text-base-content/80">
+					<li>
+						<strong>Email:</strong>
+						<a class="link link-primary" href="mailto:{publicOperator.email}"
+							>{publicOperator.email}</a
+						>
+					</li>
+					<li>
+						<strong>Phone:</strong>
+						<a class="link link-primary" href={publicOperator.phoneHref}>{publicOperator.phone}</a>
+					</li>
+					<li><strong>Mail:</strong> {publicOperator.address}</li>
+				</ul>
+			</section>
 
 			<div class="grid gap-6 md:grid-cols-2">
 				{#each topics as topic}

@@ -21,8 +21,25 @@ export const publicIndexablePaths = [
 	'/products/silvopasture',
 	'/products/agroforestry',
 	'/size-guide',
-	'/support'
+	'/support',
+	'/contact',
+	'/privacy',
+	'/terms',
+	'/shipping',
+	'/returns',
+	'/cookies',
+	'/accessibility'
 ] as const;
+
+/** Public operator and contact details approved for customer-facing pages. */
+export const publicOperator = {
+	legalName: 'Escherbridge, LLC',
+	contactName: 'Ahmed Zaher',
+	email: 'contact@escherbridge.com',
+	phone: '(509) 578-4603',
+	phoneHref: 'tel:+15095784603',
+	address: '1140 S Colorado Ln, Boise, ID'
+} as const;
 
 const publicIndexablePrefixes = ['/guides/', '/blog/', '/courses/', '/products/'] as const;
 
