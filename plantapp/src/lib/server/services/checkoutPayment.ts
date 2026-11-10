@@ -6,6 +6,7 @@ import type Stripe from 'stripe';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { assertPublicCatalogAvailable } from '../catalogTruth/publicCatalog';
+import { assertProductsPurchasable } from '../commerce/purchasable';
 import {
 	CheckoutDraftService,
 	hashGuestCheckoutSubject,
@@ -194,6 +195,7 @@ export class CheckoutPaymentService {
 			}
 			return await this.createOrReuseSession(buyer, false);
 		}
+		await assertProductsPurchasable(prepared.items.map((item) => item.productId));
 		if (prepared.attempt.status === 'checkout_created') {
 			return await this.resolveExistingSession(prepared.draft, prepared.attempt);
 		}

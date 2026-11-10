@@ -3,6 +3,7 @@ import { encodeBase64url } from '@oslojs/encoding';
 import { and, asc, desc, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
+import { comingSoonPurchaseError, productIsPurchasable } from '../commerce/purchasable';
 import { AffiliateCommissionService } from './affiliateCommission';
 import { AFFILIATE_TIER_VERSION, resolveAffiliateTier } from './affiliateTiers';
 
@@ -554,6 +555,9 @@ export class CheckoutDraftService {
 			const items: DraftItemSnapshot[] = products.map((product) => {
 				if (!product.isActive) {
 					throw new Error(`${product.name} is no longer available`);
+				}
+				if (!productIsPurchasable(product)) {
+					throw new Error(comingSoonPurchaseError(product.name));
 				}
 
 				const quantity = quantitiesByProduct.get(product.id);

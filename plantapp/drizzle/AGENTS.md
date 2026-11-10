@@ -155,3 +155,16 @@ or manufacturer truth.
 Bundled `AI-MockAssets` remain `mock_test` with unverified rights and must be
 disclosed as illustrative mock media. Do not infer a manufacturer from a
 product name, merchant, provider, or supplier.
+
+## `0010_product_coming_soon.sql`
+
+This additive file adds nullable `product.coming_soon`. It is not journaled and
+must not be applied with `db:migrate` or `db:push`. `NULL` and `true` mean the
+row is a placeholder and cannot be purchased. Only an explicit `false` is
+sellable. The file does not update or delete product rows.
+
+`ensureAdditiveMigrations()` applies it once per server process, inside a
+transaction, before the first request is handled. Railway starts the app with
+`npm run start` (`node build/index.js`) and does not run Drizzle's migrator, so
+this startup apply is how the column reaches the deployed database. The SQL is
+`ADD COLUMN IF NOT EXISTS` and is safe to run again.

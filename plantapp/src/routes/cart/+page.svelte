@@ -38,6 +38,7 @@
 		image: string;
 		imageAlt: string;
 		lineSubtotal: number;
+		comingSoon: boolean;
 	};
 
 	const lines = $derived<CartLine[]>(
@@ -57,10 +58,12 @@
 				href: slug ? `/products/${categorySlug ?? 'catalog'}/${slug}` : '/products',
 				image,
 				imageAlt: product?.images?.[0]?.altText ?? name,
-				lineSubtotal: unitPrice * item.quantity
+				lineSubtotal: unitPrice * item.quantity,
+				comingSoon: product?.comingSoon !== false
 			};
 		})
 	);
+	const purchaseBlocked = $derived(lines.some((line) => line.comingSoon));
 
 	function increment(line: CartLine) {
 		cart.updateItemQuantity(line.id, line.quantity + 1);
@@ -76,6 +79,7 @@
 	}
 
 	async function proceedToCheckout() {
+		if (purchaseBlocked) return;
 		checkoutState = 'loading';
 		checkoutMessage = '';
 		try {
@@ -134,8 +138,7 @@
 			<div class="empty-card">
 				<h2 class="empty-title">Your cart is empty</h2>
 				<p class="empty-lead">
-					Nothing here yet. Browse the catalogue — every tool was field-tested on our own beds
-					before it earned its place.
+					Nothing here yet. The catalogue is a preview while we onboard growers and makers.
 				</p>
 				<a href="/products" class="btn-primary">Explore the catalogue</a>
 			</div>
@@ -169,7 +172,7 @@
 										type="button"
 										class="step"
 										onclick={() => increment(line)}
-										disabled={busy}
+										disabled={busy || line.comingSoon}
 										aria-label="Increase quantity"
 									>
 										+
@@ -213,12 +216,20 @@
 						type="button"
 						class="checkout btn-primary"
 						onclick={proceedToCheckout}
-						disabled={busy || checkoutState === 'loading'}
+						disabled={busy || purchaseBlocked || checkoutState === 'loading'}
 					>
-						{checkoutState === 'loading' ? 'Starting checkout…' : 'Proceed to checkout'}
+						{purchaseBlocked
+							? 'Coming soon'
+							: checkoutState === 'loading'
+								? 'Starting checkout…'
+								: 'Proceed to checkout'}
 					</button>
 
-					{#if checkoutState === 'unavailable'}
+					{#if purchaseBlocked}
+						<p class="checkout-note checkout-note--warn" role="status">
+							These products are coming soon and are not available for purchase.
+						</p>
+					{:else if checkoutState === 'unavailable'}
 						<p class="checkout-note checkout-note--warn" role="status">
 							{checkoutMessage}
 						</p>

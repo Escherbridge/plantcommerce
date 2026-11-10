@@ -217,6 +217,9 @@ export const product = pgTable(
 			.references(() => productCategory.id),
 		isActive: boolean('is_active').notNull().default(true),
 		isFeatured: boolean('is_featured').notNull().default(false),
+		// NULL and true are coming soon (not purchasable). false is explicitly sellable.
+		// Existing rows stay NULL so placeholder products are gated without rewriting them.
+		comingSoon: boolean('coming_soon'),
 		tags: text('tags'), // JSON array of tags
 		metaTitle: text('meta_title'),
 		metaDescription: text('meta_description'),

@@ -11,6 +11,6 @@ if (!databaseUrl && !building) {
 	throw new Error('DATABASE_URL is not set');
 }
 
-const client = postgres(databaseUrl ?? 'postgres://127.0.0.1:5432/aevani_build');
+export const sqlClient = postgres(databaseUrl ?? 'postgres://127.0.0.1:5432/aevani_build');
 
-export const db = drizzle(client, { schema: { ...schema, ...lmsSchema, ...lmsRelations } });
+export const db = drizzle(sqlClient, { schema: { ...schema, ...lmsSchema, ...lmsRelations } });

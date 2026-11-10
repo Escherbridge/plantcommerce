@@ -100,6 +100,7 @@ function normalizeProduct(row: any) {
 		sku: (p.sku ?? null) as string | null,
 		stockQuantity: (p.stockQuantity ?? 0) as number,
 		inStock: (p.stockQuantity ?? 0) > 0,
+		comingSoon: p.comingSoon !== false,
 		isFeatured: !!p.isFeatured,
 		tags,
 		// Rich product-detail fields (design-spec §5).

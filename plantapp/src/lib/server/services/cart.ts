@@ -7,6 +7,7 @@ import {
 	type ResolvedAffiliateAttribution
 } from '../affiliateAttribution';
 import { assertPublicCatalogAvailable } from '../catalogTruth/publicCatalog';
+import { comingSoonPurchaseError, productIsPurchasable } from '../commerce/purchasable';
 
 export interface CartItem {
 	id: number;
@@ -21,6 +22,7 @@ export interface CartItem {
 		price: string;
 		stockQuantity: number;
 		trackInventory: boolean;
+		comingSoon?: boolean | null;
 		shortDescription?: string | null;
 		/** Direct category slug used to build the product-detail URL segment. */
 		categorySlug?: string | null;
@@ -186,6 +188,7 @@ export class CartService {
 					price: item.product.price,
 					stockQuantity: item.product.stockQuantity,
 					trackInventory: item.product.trackInventory,
+					comingSoon: item.product.comingSoon,
 					categorySlug: item.category?.slug ?? null,
 					images: imageUrl
 						? [
@@ -242,6 +245,10 @@ export class CartService {
 		}
 
 		const product = productResult[0];
+
+		if (!productIsPurchasable(product)) {
+			throw new Error(comingSoonPurchaseError(product.name));
+		}
 
 		if (product.trackInventory && product.stockQuantity < quantity) {
 			throw new Error('Insufficient stock');
@@ -349,6 +356,10 @@ export class CartService {
 			// Remove item
 			await db.delete(table.cartItem).where(eq(table.cartItem.id, cartItemId));
 		} else {
+			if (!productIsPurchasable(product)) {
+				throw new Error(comingSoonPurchaseError(product.name));
+			}
+
 			// Check stock
 			if (product.trackInventory && product.stockQuantity < quantity) {
 				throw new Error('Insufficient stock');
