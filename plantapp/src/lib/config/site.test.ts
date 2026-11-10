@@ -34,6 +34,7 @@ describe('public site origin', () => {
 		expect(isPublicIndexablePath('/products/mock-detail')).toBe(false);
 		expect(isPublicIndexablePath('/search')).toBe(false);
 		expect(isPublicIndexablePath('/cart')).toBe(false);
+		expect(isPublicIndexablePath('/api/admin/seller-applications')).toBe(false);
 	});
 
 	it('points robots at the apex sitemap', () => {
