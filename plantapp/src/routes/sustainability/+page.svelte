@@ -3,7 +3,6 @@
 </script>
 
 <svelte:head>
-	<title>Sustainability evidence | Aevani</title>
 	<meta name="robots" content="noindex,nofollow" />
 </svelte:head>
 

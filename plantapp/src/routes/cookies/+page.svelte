@@ -2,14 +2,6 @@
 	import { Container, Section } from '$lib/components/layout';
 </script>
 
-<svelte:head>
-	<title>Cookies | Aevani</title>
-	<meta
-		name="description"
-		content="Aevani uses browser storage and cookies for authenticated sessions and security features."
-	/>
-</svelte:head>
-
 <Section>
 	<Container>
 		<div class="mx-auto max-w-4xl space-y-10">

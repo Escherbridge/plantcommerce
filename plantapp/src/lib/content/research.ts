@@ -469,6 +469,7 @@ export function articleStructuredData(guide: GuideDocument) {
 	return {
 		headline: guide.title,
 		description: guide.description,
+		image: publicSiteUrl('/og-image.png'),
 		datePublished: guide.publishedAt,
 		dateModified: guide.reviewedAt,
 		author: { '@type': 'Organization', name: guide.author },

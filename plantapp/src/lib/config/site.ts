@@ -228,10 +228,34 @@ const routeMetadata: Record<string, { title: string; description: string }> = {
 	}
 };
 
+/** These routes print their own `<title>`. The layout must not add a second one. */
+const pageOwnedDocumentTitles = new Set([
+	'/account/wishlist',
+	'/affiliate/dashboard',
+	'/affiliate/earnings',
+	'/affiliate/links',
+	'/affiliate/materials',
+	'/affiliate/payouts',
+	'/affiliate/settings',
+	'/cart',
+	'/checkout',
+	'/checkout/success',
+	'/forgot-password',
+	'/learn/certificates',
+	'/learn/my-courses',
+	'/login',
+	'/register',
+	'/resend-verification',
+	'/reset-password',
+	'/search'
+]);
+
 export function layoutOwnsDocumentMeta(pathname: string): boolean {
 	const path = pathname === '/' ? pathname : pathname.replace(/\/+$/, '') || '/';
 	if (/^\/(blog|guides|news|courses)\/[^/]+$/.test(path)) return false;
 	if (/^\/products\/[^/]+\/[^/]+$/.test(path)) return false;
+	if (path.startsWith('/certificates/verify/')) return false;
+	if (pageOwnedDocumentTitles.has(path)) return false;
 	return true;
 }
 
@@ -248,10 +272,47 @@ export function publicRouteMetadata(pathname: string): { title: string; descript
 	const path = pathname === '/' ? pathname : pathname.replace(/\/+$/, '') || '/';
 	return (
 		routeMetadata[path] ?? {
-			title: publicSite.defaultTitle,
+			title: 'Aevani',
 			description: publicSite.description
 		}
 	);
+}
+
+/** Visible crumb label. Home is named by the caller. */
+export function documentCrumbLabel(pathname: string): string {
+	return publicRouteMetadata(pathname).title.replace(/\s+(?:—|\|)\s+Aevani$/, '');
+}
+
+const shareImagePath = '/og-image.png';
+
+export const publicShareImage = {
+	path: shareImagePath,
+	url: `${SITE_URL}${shareImagePath}`,
+	width: 1200,
+	height: 630,
+	alt: 'Aevani'
+} as const;
+
+/** Module indexes whose child URLs are known without a database read. */
+export function moduleIndexList(pathname: string): { name: string; path: string }[] | null {
+	const path = pathname === '/' ? pathname : pathname.replace(/\/+$/, '') || '/';
+	if (path === '/products') {
+		return [
+			{ name: 'Hydroponics', path: '/products/hydroponics' },
+			{ name: 'Aquaponics', path: '/products/aquaponics' },
+			{ name: 'Silvopasture', path: '/products/silvopasture' },
+			{ name: 'Agroforestry', path: '/products/agroforestry' }
+		];
+	}
+	if (path === '/learn') {
+		return [
+			{ name: 'Guides', path: '/guides' },
+			{ name: 'Field notes', path: '/blog' },
+			{ name: 'News', path: '/news' },
+			{ name: 'FAQ', path: '/faq' }
+		];
+	}
+	return null;
 }
 
 export function publicSiteUrl(pathname = '/'): string {
@@ -269,6 +330,7 @@ export function isPublicIndexablePath(pathname: string): boolean {
 export function renderRobotsTxt(): string {
 	return [
 		'User-agent: *',
+		'Allow: /',
 		...robotDisallowPaths.map((path) => `Disallow: ${path}`),
 		'',
 		`Sitemap: ${SITE_URL}/sitemap.xml`,

@@ -29,11 +29,6 @@
 	}
 </script>
 
-<svelte:head>
-	<title>{TITLE} — Aevani</title>
-	<meta name="description" content={LEAD} />
-</svelte:head>
-
 <main class="catalogue">
 	<header class="cat-head">
 		<span class="eyebrow">Growing systems</span>

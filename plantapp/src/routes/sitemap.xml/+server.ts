@@ -4,6 +4,21 @@ import { cornerstoneEssays } from '$lib/content/essays';
 import { publishedGuideSectors, writingSitemapPaths } from '$lib/content/writing';
 import { SITE_URL, publicIndexablePaths } from '$lib/config/site';
 
+/** YYYY-MM-DD when the content records a real date. No guessed dates. */
+function datedPath(path: string, iso: string | undefined): [string, string] | null {
+	const day = iso?.slice(0, 10);
+	return day && /^\d{4}-\d{2}-\d{2}$/.test(day) ? [path, day] : null;
+}
+
+const lastmodByPath = new Map<string, string>(
+	[
+		...cornerstoneEssays.map((essay) => datedPath(`/blog/${essay.slug}`, essay.publishedAt)),
+		...publishedGuideSectors.map((guide) =>
+			datedPath(`/guides/${guide.slug}`, guide.reviewedAt || guide.publishedAt)
+		)
+	].filter((entry): entry is [string, string] => entry !== null)
+);
+
 /** Published CMS slugs from the editorial seed. FAQ entries stay on /faq. */
 const publishedEditorialPaths = [
 	'/guides/getting-started-companion-planting',
@@ -36,9 +51,10 @@ export function _renderPublicSitemap(
 ${routes
 	.map((route) => {
 		const fullUrl = route === '/' ? `${origin}/` : `${origin}${route}`;
+		const lastmod = lastmodByPath.get(route);
 		return `
 	<url>
-		<loc>${xmlEscape(fullUrl)}</loc>
+		<loc>${xmlEscape(fullUrl)}</loc>${lastmod ? `\n\t\t<lastmod>${lastmod}</lastmod>` : ''}
 		<changefreq>weekly</changefreq>
 		<priority>${route === '/' ? '1.0' : '0.6'}</priority>
 	</url>`;

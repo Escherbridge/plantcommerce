@@ -59,14 +59,6 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Shop the catalogue — Aevani</title>
-	<meta
-		name="description"
-		content="Every tool here earned its place. Field-tested hydroponics, aquaponics, silvopasture, agroforestry systems, starter kits, seeds and supplies — only what we've grown with."
-	/>
-</svelte:head>
-
 <main class="catalogue">
 	<header class="cat-head">
 		<span class="eyebrow">The catalogue</span>

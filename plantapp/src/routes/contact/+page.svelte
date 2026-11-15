@@ -3,14 +3,6 @@
 	import { publicOperator, publicOperatorLine } from '$lib/config/site';
 </script>
 
-<svelte:head>
-	<title>Contact Aevani</title>
-	<meta
-		name="description"
-		content="Aevani is operated by Escherbridge, LLC. Write or call about selling, a guide, or a question the site does not answer."
-	/>
-</svelte:head>
-
 <Section>
 	<Container>
 		<div class="mx-auto max-w-4xl space-y-10">

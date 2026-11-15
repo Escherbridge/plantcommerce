@@ -9,22 +9,47 @@
 	import { browser } from '$app/environment';
 	import { cart } from '$lib/stores/cart';
 	import SEO from '$lib/components/SEO.svelte';
+	import StructuredData from '$lib/components/StructuredData.svelte';
 	import {
+		documentCrumbLabel,
 		escherbridgeProjects,
 		isPublicIndexablePath,
 		layoutOwnsDocumentMeta,
+		moduleIndexList,
+		publicOperator,
 		publicRouteMetadata,
+		publicShareImage,
+		publicSite,
 		publicSiteUrl
 	} from '$lib/config/site';
 	import { tick } from 'svelte';
 
 	const currentYear = new Date().getFullYear();
 	const currentUrl = $derived($page.url.pathname);
+	const pageStatus = $derived($page.status);
 	const absoluteUrl = $derived(publicSiteUrl(currentUrl));
 	const routeMeta = $derived(publicRouteMetadata(currentUrl));
-	const layoutOwnsMeta = $derived(layoutOwnsDocumentMeta(currentUrl));
-	// Product detail passes its own share image into <SEO>.
-	const pageSetsShareImage = $derived(/^\/products\/[^/]+\/[^/]+\/?$/.test(currentUrl));
+	const layoutOwnsMeta = $derived(layoutOwnsDocumentMeta(currentUrl) && pageStatus < 400);
+	const indexable = $derived(isPublicIndexablePath(currentUrl) && pageStatus < 400);
+	const organizationId = `${publicSite.origin}/#organization`;
+	const moduleChildren = $derived(indexable ? moduleIndexList(currentUrl) : null);
+	const layoutBreadcrumb = $derived.by(() => {
+		if (!layoutOwnsMeta || !indexable || currentUrl === '/') return null;
+		if (currentUrl === '/blog' || currentUrl === '/guides' || currentUrl === '/news') return null;
+		const parts = currentUrl.split('/').filter(Boolean);
+		const items = [{ '@type': 'ListItem', position: 1, name: 'Home', item: publicSiteUrl('/') }];
+		let acc = '';
+		for (const part of parts) {
+			acc += `/${part}`;
+			items.push({
+				'@type': 'ListItem',
+				position: items.length + 1,
+				name: documentCrumbLabel(acc),
+				item: publicSiteUrl(acc)
+			});
+		}
+		return items;
+	});
 	const affiliateHoldPath = $derived(
 		currentUrl === '/affiliate' ||
 			currentUrl === '/affiliate/join' ||
@@ -192,22 +217,73 @@
 </script>
 
 <svelte:head>
-	<SEO
-		title={routeMeta.title}
-		description={routeMeta.description}
-		url={absoluteUrl}
-		useDefaultImage={!pageSetsShareImage}
-		identity={layoutOwnsMeta}
-		type="website"
-	/>
-	<link
-		rel="alternate"
-		type="application/rss+xml"
-		title="Aevani field notes"
-		href={publicSiteUrl('/feed.xml')}
-	/>
+	{#if layoutOwnsMeta}
+		<SEO
+			title={routeMeta.title}
+			description={routeMeta.description}
+			url={absoluteUrl}
+			author="Escherbridge"
+			type="website"
+		/>
+	{/if}
+	{#if indexable}
+		<link
+			rel="alternate"
+			type="application/rss+xml"
+			title="Aevani field notes"
+			href={publicSiteUrl('/feed.xml')}
+		/>
+	{/if}
 	<meta name="robots" content={robotsDirective} />
 </svelte:head>
+
+{#if indexable}
+	<StructuredData
+		type="organization"
+		data={{
+			'@id': organizationId,
+			name: publicSite.name,
+			legalName: publicOperator.legalName,
+			url: publicSite.origin,
+			logo: publicShareImage.url,
+			email: publicOperator.email,
+			sameAs: escherbridgeProjects.map((site) => site.href)
+		}}
+	/>
+	<StructuredData
+		type="website"
+		data={{
+			'@id': `${publicSite.origin}/#website`,
+			name: publicSite.name,
+			url: publicSite.origin,
+			inLanguage: 'en-US',
+			description: publicRouteMetadata('/').description,
+			publisher: { '@id': organizationId }
+		}}
+	/>
+	{#if layoutBreadcrumb}
+		<StructuredData type="breadcrumb" data={{ itemListElement: layoutBreadcrumb }} />
+	{/if}
+	{#if moduleChildren}
+		<StructuredData
+			type="collection"
+			data={{
+				name: routeMeta.title,
+				url: absoluteUrl,
+				description: routeMeta.description,
+				mainEntity: {
+					'@type': 'ItemList',
+					itemListElement: moduleChildren.map((child, index) => ({
+						'@type': 'ListItem',
+						position: index + 1,
+						name: child.name,
+						url: publicSiteUrl(child.path)
+					}))
+				}
+			}}
+		/>
+	{/if}
+{/if}
 
 <svelte:window onkeydown={handleDrawerKeydown} />
 

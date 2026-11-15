@@ -36,14 +36,6 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Course Catalog | Aevani</title>
-	<meta
-		name="description"
-		content="Browse our full catalog of courses on sustainable agriculture, hydroponics, aquaponics, and regenerative farming."
-	/>
-</svelte:head>
-
 <!-- Hero -->
 <section class="w-full bg-primary py-24 text-primary-content lg:py-32">
 	<Container>

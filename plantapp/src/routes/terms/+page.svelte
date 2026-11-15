@@ -3,14 +3,6 @@
 	import { publicOperator, publicOperatorLine } from '$lib/config/site';
 </script>
 
-<svelte:head>
-	<title>Terms of Service | Aevani</title>
-	<meta
-		name="description"
-		content="Terms for using Aevani, including orders, stated shipping and return promises, and accounts."
-	/>
-</svelte:head>
-
 <Section>
 	<Container>
 		<div class="mx-auto max-w-4xl space-y-10">

@@ -1,14 +1,7 @@
 <script lang="ts">
-	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { SystemCard } from '$lib/components/cards';
 	import { SectionHeader, GlassCard, Button } from '$lib/components/ui';
 	import { assetManifest } from '$lib/data/assetManifest';
-	import {
-		escherbridgeProjects,
-		publicRouteMetadata,
-		publicSite,
-		publicSiteUrl
-	} from '$lib/config/site';
 
 	// Growing systems — four ways to grow, each linking to its catalogue slug.
 	const systems = [
@@ -65,27 +58,6 @@
 		}
 	];
 </script>
-
-<svelte:head>
-	<StructuredData
-		type="website"
-		data={{
-			name: publicSite.name,
-			url: publicSite.origin,
-			description: publicRouteMetadata('/').description
-		}}
-	/>
-
-	<StructuredData
-		type="organization"
-		data={{
-			name: publicSite.name,
-			url: publicSite.origin,
-			logo: publicSiteUrl(assetManifest.heroMain),
-			sameAs: escherbridgeProjects.map((site) => site.href)
-		}}
-	/>
-</svelte:head>
 
 <div class="home">
 	<!-- 1. Hero -->

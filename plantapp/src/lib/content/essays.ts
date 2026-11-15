@@ -11,6 +11,8 @@ export interface CornerstoneEssay {
 	slug: string;
 	title: string;
 	excerpt: string;
+	/** Document title when the visible h1 would be clipped in a results snippet. */
+	seoTitle?: string;
 	/** Document description when it differs from the visible summary. */
 	metaDescription?: string;
 	publishedAt: string;
@@ -23,6 +25,7 @@ export const cornerstoneEssays: readonly CornerstoneEssay[] = [
 	{
 		slug: 'cooling-can-use-more-water-than-the-crop',
 		title: 'In a dry climate, cooling can use more water than the plants',
+		seoTitle: 'Cooling can use more water than the crop — Aevani',
 		excerpt:
 			'If you size a greenhouse water tank strictly for what tomatoes drink, August heat will empty it early. In a Tucson trial, evaporative cooling took nearly twice as much water as irrigation.',
 		metaDescription:
@@ -401,6 +404,7 @@ export function cornerstoneEssayRecord(essay: CornerstoneEssay) {
 			content: cornerstoneEssayHtml(essay.body),
 			type: 'blog_post' as const,
 			metaTitle: essay.title,
+			documentTitle: essay.seoTitle ?? `${essay.title} — Aevani`,
 			metaDescription: essay.metaDescription ?? essay.excerpt,
 			publishedAt: essay.publishedAt,
 			tags: JSON.stringify(essay.tags)

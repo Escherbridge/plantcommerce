@@ -5,6 +5,7 @@
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 	import { Icon } from '$lib/components/icons';
+	import SEO from '$lib/components/SEO.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -81,8 +82,13 @@
 </script>
 
 <svelte:head>
-	<title>{course.metaTitle || course.title} | Aevani</title>
-	<meta name="description" content={course.metaDescription || course.description || ''} />
+	<SEO
+		title="{course.metaTitle || course.title} | Aevani"
+		description={course.metaDescription || course.description || ''}
+		url={`/courses/${course.slug}`}
+		type="website"
+		author="Escherbridge"
+	/>
 </svelte:head>
 
 <!-- Hero -->

@@ -3,14 +3,6 @@
 	import { publicOperator } from '$lib/config/site';
 </script>
 
-<svelte:head>
-	<title>Accessibility | Aevani</title>
-	<meta
-		name="description"
-		content="Send accessibility feedback for Aevani to contact@escherbridge.com."
-	/>
-</svelte:head>
-
 <Section>
 	<Container>
 		<div class="mx-auto prose max-w-4xl">

@@ -1,8 +1,8 @@
 <script lang="ts">
 	// Use $props() instead of export let in runes mode
-	import { publicSite, publicSiteUrl } from '$lib/config/site';
+	import { publicShareImage, publicSite, publicSiteUrl } from '$lib/config/site';
 
-	const DEFAULT_SHARE_IMAGE = '/og-image.png';
+	const DEFAULT_SHARE_IMAGE = publicShareImage.path;
 
 	const {
 		title = publicSite.defaultTitle,
@@ -14,6 +14,7 @@
 		publishedTime = null,
 		modifiedTime = null,
 		author = null,
+		imageAlt = null,
 		tags = [],
 		identity = true
 	} = $props<{
@@ -27,8 +28,9 @@
 		publishedTime?: string | null;
 		modifiedTime?: string | null;
 		author?: string | null;
+		imageAlt?: string | null;
 		tags?: string[];
-		/** When false, the page supplies its own title and description. */
+		/** When false, the page supplies the whole document head. */
 		identity?: boolean;
 	}>();
 
@@ -49,61 +51,54 @@
 		customImage ?? (useDefaultImage ? publicSiteUrl(DEFAULT_SHARE_IMAGE) : null)
 	);
 	const usingDefaultImage = $derived(!customImage && absoluteImage !== null);
+	const shareAlt = $derived(imageAlt || (usingDefaultImage ? publicShareImage.alt : safeTitle));
 </script>
 
-<!-- Primary Meta Tags -->
 {#if identity}
 	<title>{safeTitle}</title>
 	<meta name="title" content={safeTitle} />
 	<meta name="description" content={safeDescription} />
-{/if}
+	<meta name="author" content={author || 'Escherbridge'} />
 
-<!-- Open Graph / Facebook -->
-{#if identity}
 	<meta property="og:type" content={type} />
-{/if}
-<meta property="og:url" content={absoluteUrl} />
-{#if identity}
+	<meta property="og:url" content={absoluteUrl} />
 	<meta property="og:title" content={safeTitle} />
 	<meta property="og:description" content={safeDescription} />
-{/if}
-{#if absoluteImage}
-	<meta property="og:image" content={absoluteImage} />
-	{#if usingDefaultImage}
-		<meta property="og:image:width" content="1200" />
-		<meta property="og:image:height" content="630" />
+	{#if absoluteImage}
+		<meta property="og:image" content={absoluteImage} />
+		<meta property="og:image:alt" content={shareAlt} />
+		{#if usingDefaultImage}
+			<meta property="og:image:width" content={String(publicShareImage.width)} />
+			<meta property="og:image:height" content={String(publicShareImage.height)} />
+		{/if}
 	{/if}
-{/if}
 
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={absoluteUrl} />
-{#if identity}
+	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="twitter:url" content={absoluteUrl} />
 	<meta property="twitter:title" content={safeTitle} />
 	<meta property="twitter:description" content={safeDescription} />
-{/if}
-{#if absoluteImage}
-	<meta property="twitter:image" content={absoluteImage} />
-{/if}
+	{#if absoluteImage}
+		<meta property="twitter:image" content={absoluteImage} />
+		<meta name="twitter:image:alt" content={shareAlt} />
+	{/if}
 
-<!-- Article-specific tags -->
-{#if identity && type === 'article' && publishedTime}
-	<meta property="article:published_time" content={publishedTime} />
-{/if}
+	{#if type === 'article' && publishedTime}
+		<meta property="article:published_time" content={publishedTime} />
+	{/if}
 
-{#if identity && type === 'article' && modifiedTime}
-	<meta property="article:modified_time" content={modifiedTime} />
-{/if}
+	{#if type === 'article' && modifiedTime}
+		<meta property="article:modified_time" content={modifiedTime} />
+	{/if}
 
-{#if identity && type === 'article' && author}
-	<meta property="article:author" content={author} />
-{/if}
+	{#if type === 'article'}
+		<meta property="article:author" content={author || 'Escherbridge'} />
+	{/if}
 
-{#if identity && type === 'article' && tags.length > 0}
-	{#each tags as tag}
-		<meta property="article:tag" content={tag} />
-	{/each}
-{/if}
+	{#if type === 'article' && tags.length > 0}
+		{#each tags as tag}
+			<meta property="article:tag" content={tag} />
+		{/each}
+	{/if}
 
-<!-- Canonical URL -->
-<link rel="canonical" href={absoluteUrl} />
+	<link rel="canonical" href={absoluteUrl} />
+{/if}
