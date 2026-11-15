@@ -38,7 +38,7 @@ University of Minnesota Extension keeps a current high-tunnel soil-health and nu
 
 ## Operating the season
 
-Penn State treats the structure as more management, not less. “Maintaining optimum growing conditions inside the high tunnel without having extreme temperature fluctuations is critical.” Many growers add automated vents, fans, heaters, and roll-up sides. Typical crops listed: tomatoes, peppers, cucumbers, strawberries, greens, herbs, and cut flowers. Primary disease challenges named are powdery mildew (many crops) and leaf mold (tomatoes), “much more readily managed when vegetation is managed to provide for greater air movement.” Primary arthropod pests named: spider mites, aphids, and thrips. That is a pest list, not a pesticide program, and a later greenhouse IPM guide is queued for the fuller treatment.
+Penn State treats the structure as more management, not less. “Maintaining optimum growing conditions inside the high tunnel without having extreme temperature fluctuations is critical.” Many growers add automated vents, fans, heaters, and roll-up sides. Typical crops listed: tomatoes, peppers, cucumbers, strawberries, greens, herbs, and cut flowers. Primary disease challenges named are powdery mildew (many crops) and leaf mold (tomatoes), “much more readily managed when vegetation is managed to provide for greater air movement.” Primary arthropod pests named: spider mites, aphids, and thrips. That is a pest list, not a pesticide program; read our [greenhouse and high-tunnel IPM guide](/guides/greenhouse-ipm) for scouting intervals and sanitation protocols.
 
 Production, in Penn State’s wording, “is produced more efficiently on raised beds with plastic mulch and drip irrigation.” An example bed geometry in that publication: a modified mulch layer makes a three- to four-inch-high bed, eighteen inches wide, on forty-four-inch centers, so a seventeen-foot-wide tunnel can hold four beds and a twenty-one-foot-wide tunnel five. Wait two to three days after laying plastic mulch before transplanting, so the mulch can raise soil temperature. For very early crops, be ready to remove row covers or low tunnels to allow pollination; the publication notes that many growers use purchased bumblebee colonies. [Raised beds](/guides/raised-beds) covers width, depth, and fill for a framed bed generally; the 12-inch NRCS limit applies only when you are trying to qualify the tunnel as the NRCS high-tunnel practice.
 
@@ -52,7 +52,7 @@ Treating a high tunnel as a set-it-and-forget-it greenhouse is the first one. Pe
 
 **High tunnel versus greenhouse?** A high tunnel is typically an unheated or minimally heated, plastic-covered, passively vented structure for season extension. A greenhouse usually implies more climate control. Official pages draw the line by management intensity.
 
-**Is there a USDA high tunnel grant?** the NRCS high-tunnel conservation practice is a real practice standard. Eligibility, payment, and deadlines are local and current. Ask your local NRCS office.
+**Is there a USDA high tunnel grant?** The NRCS high-tunnel conservation practice is a real practice standard. Eligibility, payment, and deadlines are local and current. Ask your local NRCS office.
 
 **Can I do hydroponics in a high tunnel?** The NRCS 325 Overview says the practice does not apply to crops not grown in the natural soil profile. You can build other structures; do not assume they qualify as the NRCS high-tunnel practice.
 

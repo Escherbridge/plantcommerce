@@ -524,7 +524,7 @@ describe('research guides', () => {
 				/primusneo|payout timing|when you get paid|when a seller is paid|etsy|growtsy|the-fee-that-didnt-move|nothing is for sale|not for sale|no kits for sale/i
 			);
 			expect(text).not.toMatch(
-				/returned 404|research pass|brief behind|not retrieved|what this page will not|this page will not|this page also will not|what aevani is, and is not|bill for a split system|a shared record, applied here|a later [a-z-]+ (?:guide|note|page)|kentucky purdue|uky purdue|,,|:,/i
+				/returned 404|research pass|brief behind|not retrieved|what this page will not|this page will not|this page also will not|what aevani is, and is not|bill for a split system|a shared record, applied here|a later [a-z\s-]+?(?:guide|note|page)|\bis queued\b|\bthe the\b|kentucky purdue|uky purdue|,,|:,/i
 			);
 			expect(text.toLowerCase()).not.toContain('tower garden');
 			if (legacySlugs.has(guide.slug)) {

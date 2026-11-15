@@ -48,7 +48,7 @@ Cornell also notes that for sufficiently small systems, an air pump and aquarium
 
 **Ask whether the plugs or the last crop’s gear were clean.** UKY’s first management line is not to introduce diseased plugs. Replanting into unsanitized channels or rafts is how the last crop’s problem becomes the next crop’s starting condition.
 
-**In NFT, ask whether the “film” has become a puddle.** That question shows up in real beginner threads, see our [nutrient film technique guide](/guides/nutrient-film-technique) for channel grade and flow minimums. A standing channel is not the thin film UKY says supplies the oxygen.
+**In NFT, ask whether the “film” has become a puddle.** That question shows up in real beginner threads; see our [nutrient film technique guide](/guides/nutrient-film-technique) for channel grade and flow minimums. A standing channel is not the thin film UKY says supplies the oxygen.
 
 ## Algae and light
 
