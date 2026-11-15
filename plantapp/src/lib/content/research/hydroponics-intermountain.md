@@ -24,7 +24,7 @@ Running a closed indoor or hoop-house grow in the Treasure Valley is nothing lik
 
 Zone 7a, at ZIP 83702 (0 to 5°F average annual extreme minimum) and **zone 6b** at ZIP 83716 (−5 to 0°F), 2023 USDA Plant Hardiness Zone Map.
 
-## The bill for a split system
+## Three constraints every dry-climate setup hits
 
 A closed loop is often sold as if the climate had been edited out, but it has not. Three constraints sit on the same bench, and each one has a public number.
 
@@ -34,7 +34,7 @@ A closed loop is often sold as if the climate had been edited out, but it has no
 
 **Winter nights and salt.** The 2023 USDA Plant Hardiness Zone Map uses 30-year averages of the lowest annual winter temperatures. ZIP 83702 is zone 7a; ZIP 83716 is zone 6b. USDA is explicit that a designation is the average annual extreme minimum, not the coldest it has ever been or will be, and is a general guide for perennials, not a guarantee. Source water quality — pH, EC / salt levels, contaminants — is listed by CEAC as a constraint before any nutrient recipe.
 
-## A shared record, applied here
+## Four habits before you buy or plant
 
 **Size the water budget for cooling, not only for the reservoir.** If a pad-and-fan or other evaporative system is in the design, treat makeup water as a first-class line, in the spirit of the Tucson measurements and the CEAC desert-cooling note. A reservoir sized only for the plants is a reservoir sized for half the problem.
 
@@ -42,7 +42,7 @@ A closed loop is often sold as if the climate had been edited out, but it has no
 
 **Test source water, and look up the parcel’s 2023 half-zone.** Measure pH and EC before writing a recipe. Check the ZIP, including the 6b pockets in the foothills (83716). The map is a 30-year average of extreme minima, not a forecast of the next cold night.
 
-## What Aevani is, and is not, on this page
+## What to pick next
 
 Sizing a dry-climate system well starts with your local water quality, seasonal heat load, and power backup rather than marketing claims.
 

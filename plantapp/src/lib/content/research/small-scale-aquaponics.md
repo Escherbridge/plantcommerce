@@ -24,11 +24,11 @@ The water-quality targets below come directly from the FAO aquaponics manual, pa
 
 pH 6–7 — FAO’s recommended aquaponic compromise (the water-quality table in FAO's 2014 aquaponics manual).
 
-Ammonia close to zero,, or at most 0.25–1.0 mg/L, in a fully functioning unit with adequate biofiltration (the same manual).
+Ammonia close to zero, or at most 0.25–1.0 mg/L, in a fully functioning unit with adequate biofiltration (the same manual).
 
 Stocking cap of 20 kg of fish per 1,000 litres, for the small-scale units described in the paper. Those units hold about 1,000 litres and “should contain 10–20 kg of fish.”
 
-## The bill for a split system
+## Balancing fish, bacteria, and plants
 
 **Chasing one organism’s optimum.** FAO's species table gives general tolerance ranges: warm-water fish 22–32°C, pH 6–8.5, ammonia <3 mg/L, nitrite <1 mg/L, dissolved oxygen 4–6 mg/L; cold-water fish 10–18°C, ammonia <1 mg/L, nitrite <0.1 mg/L, dissolved oxygen 6–8 mg/L; plants 16–30°C, pH 5.5–7.5, ammonia <30 mg/L; nitrifying bacteria 14–34°C, pH 6–8.5, dissolved oxygen 4–8 mg/L. The overlap is real, and it is not identical. FAO's water-quality table sets the recommended compromise: water temperature 18–30°C, pH 6–7, ammonia <1 mg/L, nitrite <1 mg/L, nitrate 5–150 mg/L, and dissolved oxygen >5 mg/L. That is an explicit compromise among fish, plants, and bacteria, not the optimum for any one of them. Plants prefer a lower pH than many fish. Cold-water fish have a tighter nitrite limit (<0.1 mg/L) than the aquaponic compromise. A design that optimises for one column will quietly injure the other two.
 
@@ -38,15 +38,15 @@ Stocking cap of 20 kg of fish per 1,000 litres, for the small-scale units descri
 
 If the loop sits in a tunnel or greenhouse, the outdoor climate still counts. Boise Air Terminal’s 1991–2020 normals include 11.51 inches of annual precipitation and a July mean daily maximum of 92.7°F (NOAA). USU Extension recorded more than 120°F on a sunny early-March day in a Northern Utah high tunnel without ventilation. Source-water pH and EC remain a constraint before any recipe (University of Arizona CEAC, a later chapter of FAO's aquaponics manual).
 
-## A shared record, applied here
+## Daily numbers that keep the tank steady
 
-**Test against the water-quality table, on a schedule.** pH, ammonia, nitrite, nitrate, and, if you can, dissolved oxygen. The compromise is a range you measure, not a vibe you remember.
+**Test against the water-quality table on a schedule.** Track pH, ammonia, nitrite, nitrate, and, if you can, dissolved oxygen. The compromise is a range you measure, not a vibe you remember.
 
 **Size the plant area from the feed-rate ratio, not from a wish for more lettuce.** FAO’s recommended daily fish feed rates are 40–50 grams of feed per square metre of plant growing area per day for leafy greens, and 50–80 grams per square metre per day for fruiting vegetables, assuming an industry-standard fish feed of 32 percent protein in the later feed-rate-ratio discussion. A worked example in the same paper: to produce 25 heads of lettuce per week, a system should have 10–20 kg of fish, fed 200 grams of feed per day, and a growing area of 4 m², with lettuce taking 4 weeks from transplant in that example. Treat FAO’s calculation as a clean sizing baseline when balancing fish count against grow-bed square footage.
 
 **Keep biomass in the 10–20 kg per 1,000 L band described for small-scale units, and plan for a power cut.** The one-hour warning is for high density when aeration stops. New operators are told not to exceed the cap.
 
-## What Aevani is, and is not, on this page
+## What to pick next
 
 Always match fish selection to your climate and indoor or winter water temperatures—warm-water species drop sharply once unheated outdoor tanks chill down.
 

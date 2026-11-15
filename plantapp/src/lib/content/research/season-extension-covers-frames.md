@@ -46,7 +46,7 @@ Buying a fabric and never planning a vent or a removal time is the first. Stacki
 
 ## What to do with the usual questions
 
-**What is a cold frame for, including in zone 7?** A cold frame is one of the official smaller tools in ATTRA’s set. Hardiness zone matters for what you try to overwinter, not as a promise that a frame erases the zone. Use the USDA map and a later frost-date guide;
+**What is a cold frame for, including in zone 7?** A cold frame is one of the official smaller tools in ATTRA’s set. Hardiness zone matters for what you try to overwinter, not as a promise that a frame erases the zone. Check the USDA hardiness map alongside local spring and fall planting dates in our [frost dates and hardiness zones guide](/guides/frost-dates-hardiness).
 
 **What about floating row covers and hoops?** These are the low-tunnel and floating-cover tools ATTRA lists. They still need to be vented or removed on sunny days and at bloom.
 

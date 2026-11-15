@@ -34,7 +34,7 @@ Recommended build depth and decomposition wait vary with moisture and local warm
 
 Mow and leave the trimmings (UF). Four to six layers of newspaper or cardboard, overlapped at least 8 inches (OSU). Plain brown cardboard, no tape or staples, soaked, and not too thick (OSU). Then compost or manure 2–3 inches, and alternating nitrogen and carbon (UF; OSU: the first layer after cardboard is nitrogen-heavy). Height and wait, labeled above. If you plant before the layers have finished, UF’s allowance is finished compost or garden soil on top; the layers underneath are still decomposing.
 
-Do not turn the finished surface. UF’s weed-control benefit depends on leaving it unturned. A later food-forest guide, if written, can pick up sheet mulch as site prep. This page stays with the bed.
+Do not turn the finished surface. UF’s weed-control benefit depends on leaving it unturned. If you are planning fruit trees and understory perennials above sheet-mulched beds, continue to our [temperate food forest guide](/guides/temperate-food-forest).
 
 ## Common mistakes
 
@@ -50,7 +50,7 @@ Shiny, taped, or overly thick cardboard is the first (OSU). Gaps at the overlaps
 
 ## Sources
 
-1. UF/IFAS Gardening Solutions. “No-Dig Garden Beds.” Last modified 7 August 2025. Live URL as of 2026-11-10: https://sfyl.ifas.ufl.edu/lawn-and-garden/no-dig-garden-beds/ (the earlier gardeningsolutions.ifas.ufl.edu path returned 404).
+1. UF/IFAS Gardening Solutions. “No-Dig Garden Beds.” Last modified 7 August 2025. Live URL as of 2026-11-10: https://sfyl.ifas.ufl.edu/lawn-and-garden/no-dig-garden-beds/.
 2. Rauter, Shannon, and Len Sherp. “Sheet mulching and lasagna composting with cardboard.” Oregon State University Extension EM 9559, revised July 2025. Peer-reviewed, Gray level. https://extension.oregonstate.edu/catalog/pub/em-9559-sheet-mulching-lasagna-composting-cardboard
 
 ## A situation like this

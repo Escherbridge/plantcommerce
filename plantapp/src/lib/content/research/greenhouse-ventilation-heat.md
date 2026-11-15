@@ -40,7 +40,7 @@ There is no single cubic-feet-per-minute ventilation number in the pages reviewe
 
 ## Cooling water, without repeating the climate page
 
-If you install pad-and-fan cooling in a dry climate, budget water for it. In the Tucson hydroponic tomato house, cooling used more water than irrigation. University of Arizona CEAC teaching notes also state that if evaporative cooling is used, especially in deserts, water needs may double. Quote the study, then stop. The fuller cooling-water discussion, along with Boise normals and hardiness zones, lives on [hydroponics in the Intermountain West](/guides/hydroponics-intermountain). This page will not reuse unsourced “90% less water” language on a topic that is partly about cooling water. If 2023 hardiness-map updates come up, that climate page and USDA’s own caution are the place for them.
+If you install pad-and-fan cooling in a dry climate, budget water for it. In the Tucson hydroponic tomato house, cooling used more water than irrigation. University of Arizona CEAC teaching notes also state that if evaporative cooling is used, especially in deserts, water needs may double. The fuller cooling-water discussion, along with Boise normals and hardiness zones, lives on [hydroponics in the Intermountain West](/guides/hydroponics-intermountain). Generic “90% less water” claims leave out summer cooling demand—size storage tanks for local evaporation alongside USDA 2023 hardiness baselines.
 
 When the question is where to site the structure, [plan the land on PlantGeo](https://plantgeo.aevani.com) first.
 

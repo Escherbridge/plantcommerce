@@ -34,7 +34,7 @@ A pump fills the bench. The medium and the roots stand in solution for a set int
 
 The contrast with other soilless layouts is already in Kentucky’s grouping. [Nutrient film technique](/guides/nutrient-film-technique) is a continuous thin film and, in the usual official picture, no medium. [Deep water culture](/guides/deep-water-culture) keeps roots in a deep, aerated solution. [Drip and Dutch-bucket hydroponics](/guides/drip-dutch-bucket) also deliver solution into a medium, but through emitters rather than a flooding bench. [Choosing a first hydroponic system](/guides/choosing-hydroponic-system) is the comparison menu.
 
-The Cornell numbers above stop at the nursery bench. Temperature, light, and EC for that same Days 0–6 lettuce recipe belong in a later seed-starting guide and are not reprinted here.
+The Cornell numbers above stop at the nursery bench. Temperature, light, and EC for that same Days 0–6 lettuce recipe are covered step by step in our [soilless seed starting guide](/guides/soilless-seed-starting).
 
 ## Common mistakes
 

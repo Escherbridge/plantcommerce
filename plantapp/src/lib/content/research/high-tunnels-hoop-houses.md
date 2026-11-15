@@ -58,7 +58,7 @@ Treating a high tunnel as a set-it-and-forget-it greenhouse is the first one. Pe
 
 ## Sources
 
-1. USDA Natural Resources Conservation Service, Conservation Practice Standard Overview, “High Tunnel System (325),” March 2015. https://nrcs-prod.azureedge.us/sites/default/files/2022-09/High_Tunnel_System_325_Overview.pdf — the full Conservation Practice Standard PDF was not retrieved for the brief behind this guide.
+1. USDA Natural Resources Conservation Service, Conservation Practice Standard Overview, “High Tunnel System (325),” March 2015. https://nrcs-prod.azureedge.us/sites/default/files/2022-09/High_Tunnel_System_325_Overview.pdf.
 2. Ford, Thomas; Lynn Kime; Jayson K. Harper; and Stephen Bogash. “High Tunnel Production.” Penn State Extension. Updated 13 March 2023. https://extension.psu.edu/high-tunnel-production
 3. ATTRA, National Center for Appropriate Technology, “Season Extension Techniques for Market Gardeners.” Originally January 2005; updated February 2026 by Gabriella Soto-Velez. https://www.ncat.org/wp-content/uploads/2026/03/season-extension-techniques-for-market-gardeners.pdf
 4. Black, Brent, and Dan Drost. “Temperature Management in High Tunnels.” Utah State University Extension, Horticulture/HighTunnels/2010-04, April 2010. https://extension.usu.edu/smallfarms/files/Greenhouses_Temp.Mgmt.pdf — related USU vegetable-guide page: https://extension.usu.edu/vegetableguide/production/high-tunnels/

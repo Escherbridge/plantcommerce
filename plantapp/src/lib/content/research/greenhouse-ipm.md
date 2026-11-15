@@ -26,9 +26,8 @@ Penn State Extension, “High Tunnel Production” (updated 13 March 2023): pest
 
 Penn State scouting article, “High Tunnel Vegetable Crops: Designing a Scouting Plan,” updated 25 October 2017: scouting is “the cornerstone for successful integrated pest management (IPM).” Suggested starting frequency: “scout each tunnel once a week,” then adapt. Sticky cards: start with “1 sticky card per 100 feet of row” and adapt; yellow cards are attractive to most insects, blue to thrips. “Important not [to] rely only on sticky cards,” because aphids may not show there. Plant inspections: “scout 1 plant in each 20 feet long section of row, which equals 5 plants in a 100 feet long row, for spring and summer crops including tomato, pepper, eggplant, and cucumber.” For leafy greens: “2 plants in each 20 feet long section… or 10 in a 100 feet long row.” Scout every cultivar.
 
-University of Kentucky Cooperative Extension Purdue's greenhouse and high-tunnel guide (revised October 2018): inspect new plants coming into structures; maintain a 2-week plant-free period prior to each new crop cycle; thoroughly sanitize stakes and trellis materials between crops; eliminate weeds in and around structures (a “20-foot perimeter” is stated); use yellow sticky cards and check them regularly; record scouting observations.
+University of Kentucky Cooperative Extension's greenhouse and high-tunnel IPM guide (ID-235, revised October 2018): inspect new plants coming into structures; maintain a 2-week plant-free period prior to each new crop cycle; thoroughly sanitize stakes and trellis materials between crops; eliminate weeds in and around structures (a “20-foot perimeter” is stated); use yellow sticky cards and check them regularly; record scouting observations.
 
-A historic ATTRA greenhouse-IPM publication URL returned 404 in the research pass and is not cited here.
 
 ## The usual suspects, and what to do first
 
@@ -40,7 +39,7 @@ University of Kentucky's 2025 lettuce systems guide already supplies lettuce dis
 
 ## Pesticides last, and legal
 
-UKY Purdue's greenhouse and high-tunnel guide: “only apply pesticides as necessary”; “apply only those pesticides labeled both for the crop and for greenhouse use”; rotate modes of action; close and remove bumblebee colonies before using pollinator-toxic insecticides, storing bees in a shady location for a day before returning them. Biological control: “consider using” it for recurring pests; it “will not completely eliminate the pest(s)”; “correct identification of pest species is required.” Send readers to the current label and to UKY’s photographic guide. No product names or rates are printed here, and UKY’s Kentucky scouting photos are not treated as an Idaho spray program.
+University of Kentucky's greenhouse and high-tunnel IPM guide (ID-235): “only apply pesticides as necessary”; “apply only those pesticides labeled both for the crop and for greenhouse use”; rotate modes of action; close and remove bumblebee colonies before using pollinator-toxic insecticides, storing bees in a shady location for a day before returning them. Biological control: “consider using” it for recurring pests; it “will not completely eliminate the pest(s)”; “correct identification of pest species is required.” Send readers to the current label and to UKY’s photographic guide. No product names or rates are printed here, and UKY’s Kentucky scouting photos are not treated as an Idaho spray program.
 
 ## Common mistakes
 

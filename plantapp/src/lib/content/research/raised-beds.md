@@ -20,11 +20,11 @@ lastReviewed: 2026-11-10
 
 A raised bed helps when it is narrow enough to reach, deep enough to root, filled on purpose, and watered as a bed that dries faster than the ground. The boards are just what hold those decisions in place. Lumber is not a growing method, and a box filled with the same clay you were trying to escape is still a clay garden, just higher. The figures below are land-grant dimensions, not a lumber-yard plan.
 
-**Width:** 3 to 4 feet, and no wider than 4 feet if you need to reach the middle from both sides (Utah State University Extension, February 2012; UF/IFAS Gardening Solutions, UF/IFAS Gardening Solutions).
+**Width:** 3 to 4 feet, and no wider than 4 feet if you need to reach the middle from both sides (Utah State University Extension, February 2012; UF/IFAS Gardening Solutions).
 
 **Depth:** USU says a framed box “should be at least 6 to 12 inches high to accommodate the rooting depth of most vegetables.” Beds shallower than 12 inches should have no bottom, so roots can reach the soil below; till that soil 6 to 12 inches deep before filling. UF gives a wider band: depth “should be between 6 and 24 inches.” If the surface needs to be higher than 24 inches, UF says to elevate the whole bed and add a sturdy bottom with drainage holes.
 
-Walkways:, USU wants aisles wide enough for a wheelbarrow. UF recommends leaving 3 feet between beds for wheelbarrow access, or a walkway of 18 inches or more otherwise. USU’s unframed beds are 8 to 12 inches above the surrounding soil, 3 to 4 feet wide, and typically 4 or more feet long. UF notes that length has “no one-size-fits-all”; eight feet is common.
+**Walkways:** USU wants aisles wide enough for a wheelbarrow. UF recommends leaving 3 feet between beds for wheelbarrow access, or a walkway of 18 inches or more otherwise. USU’s unframed beds are 8 to 12 inches above the surrounding soil, 3 to 4 feet wide, and typically 4 or more feet long. UF notes that length has “no one-size-fits-all”; eight feet is common.
 
 ## Fill the bed on purpose
 

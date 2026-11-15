@@ -65,7 +65,7 @@ In soilless media, Florida's water-and-nutrient guide says leachate EC "should n
 
 ## Common mistakes
 
-Adjusting pH before EC is in range is the first one, because it treats the symptom of an unfinished mix as the whole problem. The second is treating Oklahoma State's lettuce column, Oklahoma State's general solution target, Florida's tomato 5.8–6.2, and Cornell's 5.6–6 as if they were one number. Ignoring alkalinity is the third. Using "the plant looks fine" in place of a calibrated meter is the fourth; official fact sheets assume daily readings. The fifth is flushing media with water for a long stretch after a high leachate EC, instead of the short flush-then-resume sequence Florida describes. This page also will not quote unsourced "90% less water" or "30–50% faster growth" lines.
+Adjusting pH before EC is in range is the first one, because it treats the symptom of an unfinished mix as the whole problem. The second is treating Oklahoma State's lettuce column, Oklahoma State's general solution target, Florida's tomato 5.8–6.2, and Cornell's 5.6–6 as if they were one number. Ignoring alkalinity is the third. Using "the plant looks fine" in place of a calibrated meter is the fourth; official fact sheets assume daily readings. The fifth is flushing media with water for a long stretch after a high leachate EC, instead of the short flush-then-resume sequence Florida describes. Skip generic "90% less water" or "30–50% faster growth" shortcuts and steer the reservoir from daily EC and pH readings.
 
 ## The usual questions
 

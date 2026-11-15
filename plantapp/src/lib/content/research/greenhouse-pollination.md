@@ -34,7 +34,7 @@ SDSU describes the manual and mechanical options. Tapping support strings or wir
 
 Bumble bees, in SDSU’s account, “are active from sunrise to sunset and at low temperatures (as low as 41°F).” “Using bumble bees in small high tunnels can lead to over pollination and injury to the flowers because even the smallest hive has more bees than a small high tunnel can sustain.” Work with the supplier on hive size.
 
-University of Kentucky Purdue's greenhouse and high-tunnel guide (revised October 2018), already used in the [greenhouse IPM](/guides/greenhouse-ipm) guide: close and remove bumblebee colonies before using pollinator-toxic insecticides, storing bees in a shady location for a day before returning them. Only greenhouse-and-crop labeled pesticides.
+University of Kentucky Cooperative Extension's greenhouse and high-tunnel IPM guide (ID-235, revised October 2018), already used in the [greenhouse IPM](/guides/greenhouse-ipm) guide: close and remove bumblebee colonies before using pollinator-toxic insecticides, storing bees in a shady location for a day before returning them. Only greenhouse-and-crop labeled pesticides.
 
 Ventilation and heat around the same structure are on the [ventilation](/guides/greenhouse-ventilation-heat) and [high tunnels](/guides/high-tunnels-hoop-houses) guides. Early covers also appear in the [season-extension](/guides/season-extension-covers-frames) guide; they still have to come off for bloom.
 

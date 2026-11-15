@@ -18,29 +18,29 @@ lastReviewed: 2026-11-10
 
 # Three crops, one fence line, and more management, not less
 
-USDA already has a word for this, and a warning. Silvopasture is trees, forage, and livestock managed as one system, and shade and wind protection are real, documented reasons to do it. It is also more management than a pasture with decorative trees, and this page will not dress it up as a climate ranking or a kit. All shade, windbreak, and winter figures below come directly from USDA and NOAA publications.
+USDA already has a word for this, and a warning. Silvopasture is trees, forage, and livestock managed as one system, and shade and wind protection are real, documented reasons to do it. It is also more management than a pasture with decorative trees, without overpromising automatic gains once tree canopies close. All shade, windbreak, and winter figures below come directly from USDA and NOAA publications.
 
 Trees can cut the direct cold effect by 50 percent or more and reduce wind velocity by as much as 70 percent, (the USDA's 2008 silvopasture brochure). Those percentages are brochure figures about cold and wind, not a heat-stress percentage, and not a forage-yield guarantee. They were not measured in Idaho in that brochure.
 
 54.8 days, per year with a maximum of 90°F or more at Boise Air Terminal (NOAA, 1991–2020 normals) — which is why shade is not a slogan here. Zone 7a, at ZIP 83702 and **zone 6b** at ZIP 83716, 2023 USDA Plant Hardiness Zone Map, so species choice is local.
 
-## The bill for a split system
+## How trees, forage, and livestock interact
 
 **A pasture with leftover trees is not silvopasture.** USDA’s National Agroforestry Center defines the practice as “the deliberate integration of trees and grazing livestock operations on the same land,” intensively managed for both forest products and forage, with short grazing periods in a rotational system. One stated main advantage is “reducing heat stress in livestock, which improves animal performance and well-being.” Not every pasture in an enterprise has to be silvopasture to use the practice. What the definition does require is intention, rotation, and a plan for tree regeneration. Trees that happened to remain after a fence went up are scenery.
 
-**Shade is a moving target.** the Forest Service agroforestry note on Midwestern silvopasture (revised June 2025) restates the definition: trees and shrubs intentionally integrated with forages and livestock on the same unit of land. Establishment is commonly “add trees to pastures or remove trees from forests and establish or manage existing forages.” Shade reduces solar radiation and livestock heat stress; winter tree shelter “can offer thermal protection for livestock during winter by reducing wind and precipitation that reaches sheltering animals.” The same note warns that as trees mature and cast more shade, “forage yields may decrease,” which may require thinning, pruning, or a more shade-tolerant forage. This page will not quote an unsourced “30–50% less heat stress” line. The 2008 50 percent / 70 percent figures are about cold and wind, and they stay in that sentence.
+**Shade is a moving target.** The Forest Service agroforestry note on Midwestern silvopasture (revised June 2025) restates the definition: trees and shrubs intentionally integrated with forages and livestock on the same unit of land. Establishment is commonly “add trees to pastures or remove trees from forests and establish or manage existing forages.” Shade reduces solar radiation and livestock heat stress; winter tree shelter “can offer thermal protection for livestock during winter by reducing wind and precipitation that reaches sheltering animals.” The same note warns that as trees mature and cast more shade, “forage yields may decrease,” which may require thinning, pruning, or a more shade-tolerant forage. Skip generic “30–50% less heat stress” claims; base tree spacing on winter shelter and summer forage persistence. The 2008 50 percent / 70 percent figures are about cold and wind, and they stay in that sentence.
 
 **Dry summers still count.** Boise Air Terminal’s 1991–2020 normals show 11.51 inches of annual precipitation and a nearly dry July (0.21 inches). This is not a southeastern pine-pasture photograph. Tree and forage species still have to match the 2023 half-zone and the dry season, not a generic “temperate” catalog. Central Boise (83702) is zone 7a, 0 to 5°F average annual extreme minimum; 83716 is zone 6b, −5 to 0°F. USDA cautions that zones are 30-year averages, not records, and that other factors include wind, soil, and moisture.
 
-## A shared record, applied here
+## Planning tree rows before fencing goes in
 
-**Start with a written objective, then design tree spacing to that objective.** the Forest Service agroforestry note asks for an objective — heat shade, winter shelter, a tree crop, wildlife — before the rows go in. Spacing that tries to do every job at once will do none of them on purpose.
+**Start with a written objective, then design tree spacing to that objective.** The Forest Service agroforestry note asks for an objective — heat shade, winter shelter, a tree crop, wildlife — before the rows go in. Spacing that tries to do every job at once will do none of them on purpose.
 
 **Use rotational, short grazing periods, and protect trunks and regeneration.** That is the practice page, not an invitation to let the animals prune.
 
 **Choose trees and forages for the 2023 half-zone and the dry season.** The 2008 brochure says shade “lengthens the forage growing season and improves forage quality,” and that silvopastures “provide shade and wind protection which can increase livestock performance.” Expect shade and windbreak benefits to develop steadily over years as tree canopies establish above pasture alleys.
 
-## What Aevani is, and is not, on this page
+## What to pick next
 
 USDA NRCS field offices can confirm local tree-and-forage spacing specs and conservation practice details for your watershed.
 
@@ -57,7 +57,6 @@ Planning tree rows and grazing alleys? Browse [silvopasture forage mixes and tre
 7. NOAA NCEI, U.S. Climate Normals 1991–2020, Boise Air Terminal (USW00024131). https://www.ncei.noaa.gov/access/services/data/v1?dataset=normals-monthly-1991-2020&format=pdf&stations=USW00024131
 8. USDA PHZM, “How to Use the Maps” (zones are 1991–2020 averages, not records; other factors include wind, soil, moisture). https://planthardiness.ars.usda.gov/pages/how-to-use-the-maps
 
-A USDA Agroforestry Strategic Framework PDF URL tried in the research pass returned 404. No framework figure is used here.
 
 ## A situation like this
 

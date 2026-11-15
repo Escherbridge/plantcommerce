@@ -24,11 +24,11 @@ Florida's hydroponic systems guide, originally published in January 2010, in its
 
 Oregon State's May 2025 NFT guide, by Nelson, Langellotto, and Nackley, on vertical NFT: vertical arrangements “can significantly increase crop density” but “adding more vertical levels will increase shading,” which “may require using low-light crops or providing supplemental lighting.” Horizontal channels are the easier layout in that hint sheet. Pump failure still wilts an NFT crop immediately, vertical or not; that risk is already in the [nutrient film technique](/guides/nutrient-film-technique) guide.
 
-Irrigation has to reach the top and the bottom as well as the light. Check both upper and lower emitters directly so top trays never starve bottom plants or puddle below. The uniformity problem includes water as well as light, as a principle, without a made-up schedule. Indoor lighting and daily light integral belong in a later lighting guide and are not invented as numbers here.
+Irrigation has to reach the top and the bottom as well as the light. Check both upper and lower emitters directly so top trays never starve bottom plants or puddle below. The uniformity problem includes water as well as light, as a principle, without a made-up schedule. For indoor bench spacing and winter photoperiod targets, read our [daily light integral guide](/guides/indoor-lighting-dli).
 
-## What this page will not do
+## Measure site geometry before buying vertical racks
 
-It will not print tower dimensions, plants per square foot, a yield multiplier, or a product name. Counting plant sites is not the same as a harvest. A vertical NFT is not just a horizontal NFT stood on end. [Choosing a first hydroponic system](/guides/choosing-hydroponic-system) is still the comparison menu, and [greenhouse ventilation and heat](/guides/greenhouse-ventilation-heat) still matters around a tall, shaded column.
+Check emitter spacing, pump head pressure, and supplemental lighting directly for your bench rather than trusting headline tower plant counts or generic yield multipliers. Counting plant sites is not the same as a harvest. A vertical NFT is not just a horizontal NFT stood on end. [Choosing a first hydroponic system](/guides/choosing-hydroponic-system) is still the comparison menu, and [greenhouse ventilation and heat](/guides/greenhouse-ventilation-heat) still matters around a tall, shaded column.
 
 ## Common mistakes
 

@@ -48,13 +48,13 @@ Cornell also notes that for sufficiently small systems, an air pump and aquarium
 
 **Ask whether the plugs or the last crop’s gear were clean.** UKY’s first management line is not to introduce diseased plugs. Replanting into unsanitized channels or rafts is how the last crop’s problem becomes the next crop’s starting condition.
 
-**In NFT, ask whether the “film” has become a puddle.** That question shows up in real beginner threads, and official NFT detail belongs in a later NFT guide. A standing channel is not the thin film UKY says supplies the oxygen.
+**In NFT, ask whether the “film” has become a puddle.** That question shows up in real beginner threads, see our [nutrient film technique guide](/guides/nutrient-film-technique) for channel grade and flow minimums. A standing channel is not the thin film UKY says supplies the oxygen.
 
 ## Algae and light
 
 Keeping every lid, airline sleeve, and water reservoir completely opaque prevents algae blooms far better than chemical additives. Light on the solution grows algae. Algae are a symptom of an uncovered reservoir or channel, and they compete for oxygen and nutrients. Block the light. If you are deciding whether an air stone is required in a bucket system, UKY already lists an air pump and air stones and a 6–8 ppm target for DWC.
 
-Public grower threads are evidence of the questions, not sources of treatment recipes. A 29 September 2025 r/Hydroponics thread asked, in a first indoor basil system with algae and root rot, how to stop algae coming back, how often to change the water, whether an airstone is required, and whether to cool the water. A 5 July 2023 thread, “First hydro, brown roots,” discussed pH spikes, channel temperature, and NFT water depth. Unverified home remedies from those threads, including peroxide dosing, are not official guidance and are not repeated here as recipes. This page also will not diagnose a stranger’s channel from a photo.
+Public grower threads are evidence of the questions, not sources of treatment recipes. A 29 September 2025 r/Hydroponics thread asked, in a first indoor basil system with algae and root rot, how to stop algae coming back, how often to change the water, whether an airstone is required, and whether to cool the water. A 5 July 2023 thread, “First hydro, brown roots,” discussed pH spikes, channel temperature, and NFT water depth. Unverified home remedies from those threads, including peroxide dosing, are not official guidance and are not repeated here as recipes. When roots turn soft and brown, check reservoir temperature, dissolved oxygen, and channel depth first.
 
 ## What to do with a sick plant
 
@@ -64,7 +64,7 @@ Heat around the structure still matters. [Hydroponics in the Intermountain West]
 
 ## Common mistakes
 
-Treating brown roots as a nutrient deficiency and raising EC is the first. Chasing pH while the water is warm and stagnant is the second. Recirculating from a dirty tank into a clean one is the third. Replanting into the same unsanitized channels or rafts is the fourth. Offering or repeating unofficial peroxide, bleach, or “beneficial in a bottle” recipes that were not opened as official sources is the fifth, and this page will not do it. Taking Cornell’s pond set points or Mattson’s 65–75°F band as a climate-wide promise is the last.
+Treating brown roots as a nutrient deficiency and raising EC is the first. Chasing pH while the water is warm and stagnant is the second. Recirculating from a dirty tank into a clean one is the third. Replanting into the same unsanitized channels or rafts is the fourth. Dosing unverified peroxide, bleach, or miracle-bottle remedies before fixing warm, stagnant water is the fifth. Taking Cornell’s pond set points or Mattson’s 65–75°F band as a climate-wide promise is the last.
 
 ## What to do with the usual questions
 

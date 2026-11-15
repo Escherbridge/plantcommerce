@@ -38,7 +38,7 @@ Florida's hydroponic systems guide, originally published in January 2010, survey
 
 **Drip, including Dutch buckets,** is the media path many Florida fruiting-crop growers use. UF describes a common perlite system: plastic, two-gallon buckets of perlite with a two-inch reservoir at the bottom, fed by drip. In a recirculating water-culture system a root pathogen can spread; in a non-recirculating media system, “root infections remain localized.” That contrast is a design fact, not a promise that drip cannot get sick. Official tomato and pepper work in Florida often uses drip in perlite or rockwool, not a long NFT channel.
 
-Vertical systems exist and are mentioned in Florida's hydroponic systems guide, but light and irrigation uniformity are the constraints, and this page will not recommend a branded tower. A later vertical-growing guide is queued. Do not take a photo example of a stacked-pot product in an extension PDF as a house recommendation.
+Vertical systems exist and are mentioned in Florida's hydroponic systems guide, but light and irrigation uniformity are the constraints, and vertical layouts demand uniform emitters and lower-tier lighting—see our [vertical growing guide](/guides/vertical-growing) before picking any stacked column setup.
 
 ## Match the crop to the system
 

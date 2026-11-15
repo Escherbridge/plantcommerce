@@ -34,7 +34,7 @@ Unheated structures, ventilation, and heat already live in [hydroponics in the I
 
 **Catfish.** “Like tilapia, catfish grow best in warm water and prefer a temperature of 26 °C; but in the case of African catfish growth stops below 20–22 °C.” FAO also notes a high tolerance to low dissolved oxygen and high ammonia relative to other species discussed, which is not a reason to ignore water quality.
 
-**Rainbow trout (*Oncorhynchus mykiss*).** “All trout require colder water than the other species previously mentioned, preferring 10–18 °C with an optimum temperature of 15 °C. Trout are ideal for aquaponics in Nordic or temperate climate regions, especially in winter. Growth rates significantly decrease as temperatures increase above 21 °C; above this temperature trout may not be able to properly utilize DO even if available.” They “require a high protein diet compared with carp and tilapia,” which FAO says “allows for more cultivable areas of leafy vegetables while maintaining a balanced aquaponic unit.” “Overall, trout require better water quality than tilapia or carp, particularly with regard to DO and ammonia,” plus backups for air and water pumps. the species table’s tighter cold-water ammonia and nitrite columns belong in the same breath.
+**Rainbow trout (*Oncorhynchus mykiss*).** “All trout require colder water than the other species previously mentioned, preferring 10–18 °C with an optimum temperature of 15 °C. Trout are ideal for aquaponics in Nordic or temperate climate regions, especially in winter. Growth rates significantly decrease as temperatures increase above 21 °C; above this temperature trout may not be able to properly utilize DO even if available.” They “require a high protein diet compared with carp and tilapia,” which FAO says “allows for more cultivable areas of leafy vegetables while maintaining a balanced aquaponic unit.” “Overall, trout require better water quality than tilapia or carp, particularly with regard to DO and ammonia,” plus backups for air and water pumps. The species table’s tighter cold-water ammonia and nitrite columns belong in the same breath.
 
 **Largemouth bass (*Micropterus salmoides*).** “Growth will only cease at less than 10 °C or more than 36 °C; they will stop feeding at temperatures less than 10 °C. The optimal growth temperatures are in the range of 24–30 °C.” “For a good FCR the optimal DO is above 4 mg/litre.” FAO calls them a possible year-round choice “particularly for those who cannot change species between cold and warm seasons.”
 
@@ -42,7 +42,7 @@ Layout and start-up sit on [aquaponic system types](/guides/aquaponic-system-typ
 
 ## Common mistakes
 
-Choosing tilapia because “everyone uses tilapia,” then discovering 12 °C, is the first. Treating the 18–30 °C compromise as if it included trout is the second. Rewriting stocking density on a species page is the third, and this page will not do it. Releasing leftover fish into a local waterway is the fourth (FAO: never). Ignoring trout’s tighter ammonia, nitrite, and DO needs is the fifth.
+Choosing tilapia because “everyone uses tilapia,” then discovering 12 °C, is the first. Treating the 18–30 °C compromise as if it included trout is the second. Overriding stocking-density limits on a warm-water chart is the third; keep fish biomass within FAO's tank limits. Releasing leftover fish into a local waterway is the fourth (FAO: never). Ignoring trout’s tighter ammonia, nitrite, and DO needs is the fifth.
 
 ## What to do with the usual questions
 

@@ -50,7 +50,7 @@ Using the method for tomatoes or other high-water fruiting crops, outside the le
 
 **Does it need a pump?** No. That is the point of the University of Hawaiʻi Kratky guide, and also the reason for the crop-water and rain limits.
 
-**Can I grow anything in a Kratky jar?** Not according to the inventor. the University of Hawaiʻi Kratky guide: crops that use less than 2 gallons per plant, with a short listed set.
+**Can I grow anything in a Kratky jar?** Not according to the inventor. The University of Hawaiʻi Kratky guide notes: crops that use less than 2 gallons per plant, with a short listed set.
 
 ## Sources
 
