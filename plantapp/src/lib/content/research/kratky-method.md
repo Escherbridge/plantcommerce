@@ -22,10 +22,9 @@ The University of Hawaiʻi method that runs without electricity or pumps works b
 
 the University of Hawaiʻi Kratky guide, published in September 2010, says “The entire crop of lettuce is grown with a single initial application of water and nutrients. Electricity and pumps are not needed.” A figure caption in that guide says: “Electricity, pumps, and wicks are not needed. All of the nutrient solution is applied prior to transplanting.” The method “can be scaled to home-garden use.”
 
-Crop-water cap, same publication:, the method “is intended only for crops that require less than 2 gallons of water per plant for the entire growing season, from transplanting to harvest.” Potential crops listed: leafy, romaine, and semi-head lettuces, cilantro, green onions, kai choy, pak choi, and watercress.
+Crop-water cap (same publication): the method “is intended only for crops that require less than 2 gallons of water per plant for the entire growing season, from transplanting to harvest.” Potential crops listed: leafy, romaine, and semi-head lettuces, cilantro, green onions, kai choy, pak choi, and watercress.
 
-A 2009 *Acta Horticulturae* paper says leaf and semi-head lettuce cultivars in the darkened 4-liter bottle description “are usually harvested at about 6 to 7 weeks after seeding.” Plants in that small-bottle example “typically require less than 4 liters of water for their lifespan” (about 1.06 gallons, inside the later cap in the University of Hawaiʻi Kratky guide). That is a worked example, not a guarantee for every crop.
-
+A 2009 *Acta Horticulturae* paper says leaf and semi-head lettuce cultivars in the darkened 4-liter bottle description “are usually harvested at about 6 to 7 weeks after seeding.” Plants in that small-bottle example “typically require less than 4 liters of water for their lifespan” (about 1.06 gallons, inside the later cap in the University of Hawaiʻi Kratky guide). Larger fruiting vegetables demand far more volume and dissolved oxygen than fast salad crops.
 
 ## How the air gap works
 
@@ -55,7 +54,6 @@ Using the method for tomatoes or other high-water fruiting crops, outside the le
 
 ## Sources
 
-
 1. Kratky, B.A. “A Suspended Net-Pot, Non-Circulating Hydroponic Method for Commercial Production of Leafy, Romaine, and Semi-Head Lettuce.” UH–CTAHR Vegetable Crops VC-1, September 2010. https://www3.ctahr.hawaii.edu/oc/freepubs/pdf/VC-1.pdf
 2. Kratky, B.A. 2009. “Three non-circulating hydroponic methods for growing lettuce.” *Acta Horticulturae* 843:65–72. https://www3.ctahr.hawaii.edu/hawaii/downloads/Three_Non-circulating_Hydroponic_Methods_for_Growing_Lettuce.pdf
 
@@ -74,7 +72,7 @@ A tomato is planted in a jar, the tank is topped up so the air roots stay underw
 - [Choosing crops for a hydroponic system](/guides/hydroponic-crop-choice) — the published gallon cap, applied to the crop decision.
 - [Starting seeds and transplants for soilless systems](/guides/soilless-seed-starting) — the 1–3 week net-pot nursery before the tank.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the jar, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Ready to set up or tune your bench? Browse [hydroponic systems, meters, and pumps](/products/hydroponics), find companion references in the [Learn](/learn) hub, or map structure placement on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to check whether the crop actually fits the two-gallon cap, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

@@ -41,7 +41,7 @@ Older leaves first: nitrogen, potassium, and magnesium. New growth first: calciu
 - **Iron:** “Iron is not mobile in plants and symptoms appear on the new leaves first. Symptoms consist of interveinal chlorosis that may progress to a bleaching and necrosis.”
 - **Magnesium:** “Unlike Ca, Mg is mobile in the plant and deficiencies appear first on the lower leaves,” as “an interveinal chlorosis which can lead to necrosis.”
 
-University of Kentucky's 2025 lettuce systems guide treats lettuce tipburn as a calcium-plus-airflow problem, not only a fertilizer miss. The bulletin links tipburn to calcium movement and air movement, and prints an airflow band of 0.7–2.2 mph (0.3–1.0 m/s) in that lettuce context. A still house can look like a missing element. This page does not invent a fan model or a spray rate.
+University of Kentucky's 2025 lettuce systems guide treats lettuce tipburn as a calcium-plus-airflow problem, not only a fertilizer miss. The bulletin links tipburn to calcium movement and air movement, and prints an airflow band of 0.7–2.2 mph (0.3–1.0 m/s) in that lettuce context. A still house can look like a missing element.
 
 Crop-specific solution ranges still sit in [choosing crops for a hydroponic system](/guides/hydroponic-crop-choice). If the roots are already brown, start with the [troubleshooting](/guides/hydroponic-troubleshooting-root-rot) guide rather than a bottle of one element.
 
@@ -59,7 +59,6 @@ Naming a deficiency from a leaf photo without reading pH and EC is the first. Tr
 
 ## Sources
 
-
 1. Sánchez, Elsa. “Hydroponics Systems and Principles Of Plant Nutrition: Essential Nutrients, Function, Deficiency, and Excess.” Penn State Extension, updated 2 February 2026. https://extension.psu.edu/hydroponics-systems-and-principles-of-plant-nutrition-essential-nutrients-function-deficiency-and-excess
 2. Hochmuth, George. UF/IFAS HS787 / CV265, Florida Greenhouse Vegetable Production Handbook, Vol. 3. Original December 1990; revised June 2025. https://ask.ifas.ufl.edu/publication/CV265/pdf
 3. Sharma et al. University of Kentucky CCD-CP-63, 2025. https://ccd.uky.edu/sites/default/files/2026-02/ccd-cp-63_hydrolettuce-updated_accessible.pdf
@@ -76,7 +75,7 @@ Pale new leaves, pH sitting high, a bottle of “cal-mag” added twice, then wo
 - [Choosing crops for a hydroponic system](/guides/hydroponic-crop-choice) — official crop EC and pH rows, which still assume a test.
 - [Troubleshooting hydroponic root rot, algae, and pH drift](/guides/hydroponic-troubleshooting-root-rot) — when the problem is in the roots, not only in a missing element.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the leaf, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Ready to set up or tune your bench? Browse [hydroponic systems, meters, and pumps](/products/hydroponics), find companion references in the [Learn](/learn) hub, or map structure placement on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to read pH and EC before naming a deficiency, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

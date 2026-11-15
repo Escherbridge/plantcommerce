@@ -50,9 +50,21 @@ describe('public crawler discovery', () => {
 		expect(source).not.toContain('url.origin');
 		expect(source).not.toContain('PUBLIC_BASE_URL');
 		expect(source).not.toContain('RAILWAY_PUBLIC_DOMAIN');
-		expect(source).toContain('/blog/cooling-can-use-more-water-than-the-crop');
-		expect(source).toContain('/blog/a-flat-eight-percent');
+		const contentPaths = _publishedContentPaths();
+		expect(contentPaths).toContain('/blog/cooling-can-use-more-water-than-the-crop');
+		expect(contentPaths).toContain('/blog/a-flat-eight-percent');
+		expect(contentPaths).toContain('/blog/dwc-vs-kratky-vs-nft');
+		expect(contentPaths).toContain('/blog/raised-beds-for-heavy-clay-and-hot-summers');
+		expect(contentPaths).toContain('/blog/pre-spring-grower-checklist');
+		expect(contentPaths).toContain('/blog/cycling-your-first-aquaponics-loop');
+		const fullXml = _renderPublicSitemap('https://aevani.com', [
+			..._publicSitemapRoutes,
+			...contentPaths
+		]);
+		expect(fullXml).toContain('<loc>https://aevani.com/blog/dwc-vs-kratky-vs-nft</loc>');
 		expect(source).not.toContain('nothing-for-sale-yet');
+		expect(fullXml).not.toContain('nothing-for-sale-yet');
+		expect(fullXml).not.toContain('the-fee-that-didnt-move');
 
 		for (const indexableRoute of [
 			'/contact',

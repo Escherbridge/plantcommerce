@@ -20,7 +20,7 @@ lastReviewed: 2026-11-10
 
 No-dig is a layering method, not a lumber-box explainer. The [raised beds](/guides/raised-beds) guide already covers width, depth, and what to put in a frame. Official extension pages describe this sibling as sheet composting: a light-blocking sheet of cardboard or newspaper, then alternating organic layers. They also say it is a cold process. Weed seeds in the upper layers will sprout, and bindweed will not necessarily die. The useful sentence is that a cold pile does not cook weed seeds.
 
-This page is built from two official sources. It does not invent a third calendar or a single house height.
+This page is built from two official sources.
 
 UF/IFAS Gardening Solutions, “No-Dig Garden Beds,” last modified 7 August 2025, treats no-dig as the same family as “sheet composting,” “sheet mulching,” or “lasagna gardening.” The method uses “a layering system of compost materials to smother grass and suppress weeds” and “makes an in-place garden bed once the materials have decomposed.” Benefits named: non-chemical weed control if the surface is not turned; moisture retention and organic matter, “a big bonus for Florida’s sandy soils”; a no-till practice; and a method “appropriate for everyone (including those who may be physically limited or unable to dig traditional garden beds).” Florida sandy-soil praise is Florida’s. It is not an Intermountain soil guarantee.
 
@@ -28,8 +28,7 @@ Building steps in that page: plan a few months before planting; untreated lumber
 
 Oregon State's sheet-mulch fact sheet, revised in July 2025, by Shannon Rauter and Len Sherp (peer reviewed, Gray level). Sheet mulching “uses a layer of cardboard, newspaper, or heavy paper placed on the soil as a barrier to smother existing weeds and seeds in the soil.” Use “plain-brown corrugated” cardboard, “not shiny, glossy, or printed”; “remove any tape or staples”; “the layer of cardboard should not be too thick, because that will slow down its decomposition.” Soak the cardboard before application. “Cardboard creates an interface that limits the flow of water and air into the soil,” especially if thick; “check with your local extension office to determine if this is a recommended composting practice for your region.” Cover with “4 to 6 overlapping layers… overlapping edges by at least 8 inches.” “Remove any pernicious or persistent weeds such as blackberry, bindweed, morning glory or quackgrass. Lasagna composting may not smother these weeds.” Lasagna form: after cardboard, the first layer should be nitrogen-heavy “because cardboard is high in carbon”; alternate nitrogen and carbon to “a height of 18 inches or more,” with “a few handfuls of soil between each layer”; “the top layer should be brown, i.e. carbon.” “Depending on your climate, the new bed should be ready for planting in approximately six months.”
 
-The two pages do not print one official height or one official wait. UF: 18 inches to 3 feet, and “a few months before you want to plant,” or sooner with 2–3 inches of finished compost or soil on top. OSU: 18 inches or more, and about six months, depending on climate. This page prints both and does not invent a fall-start calendar that is not a direct quote from those sources.
-
+Recommended build depth and decomposition wait vary with moisture and local warmth: UF: 18 inches to 3 feet, and “a few months before you want to plant,” or sooner with 2–3 inches of finished compost or soil on top. OSU: 18 inches or more, and about six months, depending on climate. In drier Western yards, keep layers thoroughly moistened if you want cardboard and leaves broken down cleanly before spring.
 
 ## How to build, without flattening the two recipes
 
@@ -51,8 +50,6 @@ Shiny, taped, or overly thick cardboard is the first (OSU). Gaps at the overlaps
 
 ## Sources
 
-The official record opened here is two extension pages.
-
 1. UF/IFAS Gardening Solutions. “No-Dig Garden Beds.” Last modified 7 August 2025. Live URL as of 2026-11-10: https://sfyl.ifas.ufl.edu/lawn-and-garden/no-dig-garden-beds/ (the earlier gardeningsolutions.ifas.ufl.edu path returned 404).
 2. Rauter, Shannon, and Len Sherp. “Sheet mulching and lasagna composting with cardboard.” Oregon State University Extension EM 9559, revised July 2025. Peer-reviewed, Gray level. https://extension.oregonstate.edu/catalog/pub/em-9559-sheet-mulching-lasagna-composting-cardboard
 
@@ -69,7 +66,7 @@ A shiny printed-box stack, planted the same weekend, bindweed through the gaps. 
 - [Hügelkultur: what extension actually says](/guides/hugelkultur) — a woody mound is not the same as a sheet-mulch lasagna, and WSU already limited the evidence.
 - [Permaculture planting guilds](/guides/permaculture-guilds) — a layered planting plan, after the bed exists.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the bed, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Outfitting your beds or drip lines? Browse [starter kits and bed hardware](/products?category=kits-collections) and [seeds and soil supplies](/products?category=seeds-supplies), or lay out your yard on [PlantGeo](https://plantgeo.aevani.com). Explore more seasonal notes in our free [Learn](/learn) hub. If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to use weed-seed-free material, overlap the sheet, and wait as the official pages describe, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

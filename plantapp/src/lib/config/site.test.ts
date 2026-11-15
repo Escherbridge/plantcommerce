@@ -80,6 +80,14 @@ describe('public site origin', () => {
 
 		expect(await countOperatorAddressForms()).toBe(0);
 	});
+
+	it('keeps PrimusNeo, Etsy, and payout-timing disclaimers out of public config metadata', async () => {
+		const source = await readFile(new URL('./site.ts', import.meta.url), 'utf8');
+		expect(source).not.toMatch(
+			/primusneo|payout timing|when you get paid|when a seller is paid|nothing is for sale|etsy|growtsy|the-fee-that-didnt-move/i
+		);
+		expect(publicRouteMetadata('/sell').description).toContain('8%');
+	});
 });
 
 const streetSuffix =

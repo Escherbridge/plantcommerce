@@ -20,9 +20,9 @@
 				</p>
 				<h1 class="font-display text-4xl tracking-tight md:text-5xl">Contact Aevani.</h1>
 				<p class="max-w-3xl text-lg text-base-content/70">
-					Aevani is operated by {publicOperator.legalName}. Write or call if you want to sell, if a
-					guide is wrong, or if you have a question the site does not answer. There are no orders to
-					look up, because nothing is for sale yet.
+					Aevani is operated by {publicOperator.legalName}. Write or call if you want to sell
+					growing supplies on Aevani, spot something to fix in a growing guide, or have a question
+					the site does not answer yet.
 				</p>
 			</header>
 

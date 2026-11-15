@@ -18,14 +18,13 @@ lastReviewed: 2026-11-10
 
 # Vertical hydroponic growing: density and light
 
-Gravity is not a lighting plan. Official pages already traded plant counts against light. A vertical or stacked layout can raise the number of sites in a footprint, and the gain is sometimes lost to uneven light and space. If the lower plants are shaded or dry, the “extra” yield is a photo, not a harvest. This page is a uniformity warning, not a DIY tower manual. The official record opened here is principle-level only: two publications, no spacing chart, no flow recipe, and no yield figure.
+Gravity is not a lighting plan. Official pages already traded plant counts against light. A vertical or stacked layout can raise the number of sites in a footprint, and the gain is sometimes lost to uneven light and space. If the lower plants are shaded or dry, the “extra” yield is a photo, not a harvest. This page is a uniformity warning, not a DIY tower manual. Because stacked plants shade each other rapidly, measure lower-tier light and emitter flow before scaling vertical racks.
 
-Florida's hydroponic systems guide, originally published in January 2010, in its section on vertical systems, says “Vertical hydroponic systems produce crops in upright or vertical rows, a method that can significantly increase plant populations. The most common vertical systems include stacked pots…, stacked and sloped PVC pipes, and hanging vertical bags. The potential for increased yield in vertical systems is sometimes offset by the non-uniformity of product due to competition for light and space.” “The vertical systems are popular for producing strawberries, leafy greens, edible flowers and fresh-cut” crops. This page describes those system types and does not name a commercial stacked-pot product, including any brand that appears in a photograph caption in that section. No spacing, flow rate, or yield figure appears in the opened section, and none is invented here.
+Florida's hydroponic systems guide, originally published in January 2010, in its section on vertical systems, says “Vertical hydroponic systems produce crops in upright or vertical rows, a method that can significantly increase plant populations. The most common vertical systems include stacked pots…, stacked and sloped PVC pipes, and hanging vertical bags. The potential for increased yield in vertical systems is sometimes offset by the non-uniformity of product due to competition for light and space.” “The vertical systems are popular for producing strawberries, leafy greens, edible flowers and fresh-cut” crops. This guide focuses on the layout mechanics and lighting trade-offs rather than naming specific stacked-pot brands—check actual emitter spacing and lower-tier light levels on any vertical system before loading the top shelves.
 
 Oregon State's May 2025 NFT guide, by Nelson, Langellotto, and Nackley, on vertical NFT: vertical arrangements “can significantly increase crop density” but “adding more vertical levels will increase shading,” which “may require using low-light crops or providing supplemental lighting.” Horizontal channels are the easier layout in that hint sheet. Pump failure still wilts an NFT crop immediately, vertical or not; that risk is already in the [nutrient film technique](/guides/nutrient-film-technique) guide.
 
-Irrigation has to reach the top and the bottom as well as the light. Official pages opened for this brief do not give a home flow recipe, so this page does not invent one. The uniformity problem includes water as well as light, as a principle, without a made-up schedule. Indoor lighting and daily light integral belong in a later lighting guide and are not invented as numbers here.
-
+Irrigation has to reach the top and the bottom as well as the light. Check both upper and lower emitters directly so top trays never starve bottom plants or puddle below. The uniformity problem includes water as well as light, as a principle, without a made-up schedule. Indoor lighting and daily light integral belong in a later lighting guide and are not invented as numbers here.
 
 ## What this page will not do
 
@@ -39,7 +38,7 @@ Naming or implying a commercial tower brand is the first. Counting plant sites a
 
 **What is vertical hydroponics, or vertical NFT?** Official answer at the principle level: density can rise, and so can shading and uneven product. Common layouts in UF’s picture are stacked pots, stacked and sloped pipes, and hanging bags, used for strawberries, leafy greens, edible flowers, and fresh-cut crops.
 
-**Will I get more yield?** UF: the potential increase “is sometimes offset by the non-uniformity of product due to competition for light and space.” No percentage is printed. This page does not invent one.
+**Will I get more yield?** UF: the potential increase “is sometimes offset by the non-uniformity of product due to competition for light and space.” No percentage is printed.
 
 **Is vertical NFT a good first system?** Oregon State treats horizontal channels as easier and flags shading as the cost of going vertical.
 
@@ -62,7 +61,7 @@ A tall stacked column of greens, lush at the top, pale and sparse at the bottom,
 - [Choosing crops for a hydroponic system](/guides/hydroponic-crop-choice) — short-rooted leafy crops in films, fruiting crops in drip-fed media.
 - [Daily light integral for indoor and greenhouse greens](/guides/indoor-lighting-dli) — a day of PAR, if the lower plants are in shade.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. Catalogue listings, where they appear, are a preview and not for sale yet. When the question is the parcel rather than the stack, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Ready to set up or tune your bench? Browse [hydroponic systems, meters, and pumps](/products/hydroponics), find companion references in the [Learn](/learn) hub, or map structure placement on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to look at the lower plants, not only the top of the column, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

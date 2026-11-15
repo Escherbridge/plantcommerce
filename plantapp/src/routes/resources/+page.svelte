@@ -20,7 +20,9 @@
 		<div class="mb-8">
 			<h1 class="font-display mb-4 text-4xl tracking-tight uppercase">Resources</h1>
 			<p class="text-lg text-base-content/70">
-				No downloadable resources yet. The Learn hub is the reading room that exists today.
+				Explore practical growing resources here, or jump straight into our free
+				<a class="link link-primary" href="/guides">growing-system guides</a> and
+				<a class="link link-primary" href="/blog">field notes</a> in the Learn hub.
 			</p>
 		</div>
 
@@ -88,9 +90,9 @@
 			{:else}
 				<div class="py-12 text-center">
 					<p class="text-xl text-base-content/70">
-						This shelf is empty for now. Read the <a class="link link-primary" href="/learn"
-							>Learn hub</a
-						> instead.
+						New downloads are being added by category. In the meantime, explore the
+						<a class="link link-primary" href="/guides">growing-system guides</a> and
+						<a class="link link-primary" href="/learn">Learn hub</a>.
 					</p>
 				</div>
 			{/if}

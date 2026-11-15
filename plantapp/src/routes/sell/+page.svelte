@@ -24,17 +24,37 @@
 				</p>
 				<h1 class="font-display text-4xl tracking-tight md:text-5xl">A flat 8%. That's the fee.</h1>
 				<p class="max-w-2xl text-lg text-base-content/80">
-					We're onboarding our first growers and makers. Card processing is included. There are no
-					listing fees, no monthly fees, and no ad fees.
+					Sell seeds, hand tools, and growing systems without paying listing fees, monthly
+					subscriptions, or ad surcharges. Aevani charges one flat 8% commission when an order
+					sells, and card processing is included in that 8%.
 				</p>
 				<p class="max-w-2xl text-lg text-base-content/70">
-					The catalogue is a preview. Nothing in it is for sale yet. If you grow or make hydroponic,
-					aquaponic, silvopasture, or agroforestry tools, or the parts and guides that keep them
-					running, tell us about it. We follow up by email.
+					Whether you run a regional seed house, weld Dutch-bucket frames, build aquaponic filters,
+					or stock orchard and raised-bed hardware, tell us what you grow or make below. We follow
+					up directly by email to get your storefront listed.
 				</p>
-				<p class="max-w-2xl text-base-content/70">
-					<a href="https://plantgeo.aevani.com">Plan a site first on PlantGeo</a>. Items picked for
-					a plan are not for sale yet.
+				<div class="grid grid-cols-2 gap-3 pt-2 sm:grid-cols-4">
+					<div class="rounded-xl border border-base-300 bg-base-200/50 p-3">
+						<p class="font-display text-xl font-bold">8% flat</p>
+						<p class="text-xs text-base-content/70">Commission per sale</p>
+					</div>
+					<div class="rounded-xl border border-base-300 bg-base-200/50 p-3">
+						<p class="font-display text-xl font-bold">Included</p>
+						<p class="text-xs text-base-content/70">Card processing</p>
+					</div>
+					<div class="rounded-xl border border-base-300 bg-base-200/50 p-3">
+						<p class="font-display text-xl font-bold">$0</p>
+						<p class="text-xs text-base-content/70">Listing & monthly fees</p>
+					</div>
+					<div class="rounded-xl border border-base-300 bg-base-200/50 p-3">
+						<p class="font-display text-xl font-bold">$0</p>
+						<p class="text-xs text-base-content/70">Mandatory ad fees</p>
+					</div>
+				</div>
+				<p class="max-w-2xl text-sm text-base-content/70">
+					Curious how buyers sketch layouts first? Explore
+					<a class="link link-primary" href="https://plantgeo.aevani.com">PlantGeo site planning</a>
+					or browse <a class="link link-primary" href="/guides">our growing guides</a>.
 				</p>
 			</header>
 

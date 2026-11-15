@@ -26,18 +26,17 @@ Penn State Extension (updated 13 March 2023): “For crops that are planted very
 
 Utah State University Extension (April 2010): temperatures in a Northern Utah high tunnel “have exceeded 120°F on a sunny day in early March when high and low tunnels were not properly ventilated.” Low tunnels are not harmless just because they are small.
 
-
 ## The toolkit, in official language
 
 Floating row covers, low tunnels, and cold frames are the smaller tools in ATTRA’s set. Shade cloth is discussed there as a summer and heat tool, with published ratings including 30% as a common example, 30–47% in some cases, and up to 63% in extremely hot areas for shade-loving or heat-sensitive plants. Those percentages are ATTRA’s ratings, not a universal crop table. Plastic mulch and drip show up as companions, not as the whole story.
 
-A high tunnel, also called a hoop house in that publication, is the larger infrastructure. You do not need one first; ATTRA lists these tools as a set. The [high tunnels and hoop houses](/guides/high-tunnels-hoop-houses) guide is there when you are ready for the structure, including the NRCS the NRCS high-tunnel practice definition from the opened 2015 Overview. Daily heat and air exchange, including pad-and-fan cooling water, belong on the [ventilation and heat](/guides/greenhouse-ventilation-heat) page. Hardiness zone matters for what you try to overwinter, not as a promise that a frame erases the zone. This page does not invent zone-7 planting dates or an “adds X days to the season” claim; a later frost-dates guide is queued, and [hydroponics in the Intermountain West](/guides/hydroponics-intermountain) already points at the 2023 USDA map. [Raised beds](/guides/raised-beds) is the ground-level sibling if the next decision is a box rather than a cover.
+A high tunnel, also called a hoop house in that publication, is the larger infrastructure. You do not need one first; ATTRA lists these tools as a set. The [high tunnels and hoop houses](/guides/high-tunnels-hoop-houses) guide is there when you are ready for the structure, including the the NRCS high-tunnel practice definition from the opened 2015 Overview. Daily heat and air exchange, including pad-and-fan cooling water, belong on the [ventilation and heat](/guides/greenhouse-ventilation-heat) page. Hardiness zone matters for what you try to overwinter, not as a promise that a frame erases the zone. [Raised beds](/guides/raised-beds) is the ground-level sibling if the next decision is a box rather than a cover.
 
 ## Two sourced failure modes
 
 Overheating is the first. A low cover left closed on a sunny day, especially inside a high tunnel, is the USU 120°F stack. Buying a fabric and never planning a vent or a removal time is how that stack gets built by habit.
 
-Leaving covers on when flowers need pollinators is the second. Penn State is explicit: be ready to remove row covers, thermal blankets, or low tunnels to facilitate pollination. The publication notes that many growers using high tunnels find that purchased bumblebee colonies increase fruit quality and quantity, and that colonies should be ordered weeks ahead. That is Penn State’s observation, not an Aevani product line, and the tomato cost-of-production budgets in the same publication are not reprinted here.
+Leaving covers on when flowers need pollinators is the second. Penn State is explicit: be ready to remove row covers, thermal blankets, or low tunnels to facilitate pollination. The publication notes that many growers using high tunnels find that purchased bumblebee colonies increase fruit quality and quantity, and that colonies should be ordered weeks ahead. Plan ahead if you rely on commercial bumblebee hives for enclosed tunnel fruiting crops.
 
 Stay with agricultural, UV-stabilized coverings. Construction-grade film is a poor substitute; the same class of warning appears in Kratky’s rain-shelter note, which belongs on the [Kratky](/guides/kratky-method) page rather than as a second set of numbers here.
 
@@ -47,14 +46,13 @@ Buying a fabric and never planning a vent or a removal time is the first. Stacki
 
 ## What to do with the usual questions
 
-**What is a cold frame for, including in zone 7?** A cold frame is one of the official smaller tools in ATTRA’s set. Hardiness zone matters for what you try to overwinter, not as a promise that a frame erases the zone. Use the USDA map and a later frost-date guide; this page does not invent zone-7 planting dates.
+**What is a cold frame for, including in zone 7?** A cold frame is one of the official smaller tools in ATTRA’s set. Hardiness zone matters for what you try to overwinter, not as a promise that a frame erases the zone. Use the USDA map and a later frost-date guide;
 
 **What about floating row covers and hoops?** These are the low-tunnel and floating-cover tools ATTRA lists. They still need to be vented or removed on sunny days and at bloom.
 
 **Do I need a high tunnel first?** No. ATTRA lists these tools as a set; a hoop house is the larger, more expensive infrastructure.
 
 ## Sources
-
 
 1. ATTRA, National Center for Appropriate Technology, “Season Extension Techniques for Market Gardeners.” Originally January 2005; updated February 2026 by Gabriella Soto-Velez. https://www.ncat.org/wp-content/uploads/2026/03/season-extension-techniques-for-market-gardeners.pdf — hub: https://www.ncat.org/subtopic/season-extension/
 2. Ford, Thomas; Lynn Kime; Jayson K. Harper; and Stephen Bogash. “High Tunnel Production.” Penn State Extension. Updated 13 March 2023. https://extension.psu.edu/high-tunnel-production
@@ -73,7 +71,7 @@ A low tunnel is left buttoned up inside a hoop on a clear March morning, because
 - [Frost dates, hardiness zones, and planting calendars](/guides/frost-dates-hardiness) — a cover can move a window; a hardiness zone is not a last-frost date.
 - [Integrated pest management in outdoor beds and containers](/guides/outdoor-bed-ipm) — a row cover is also a physical barrier in an outdoor IPM triangle.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is where on a parcel to put a frame or a hoop, [plan the land on PlantGeo](https://plantgeo.aevani.com) first.
+Getting ready for the next season? Browse [season-extension and greenhouse supplies](/products?category=kits-collections) and [seeds and starting supplies](/products?category=seeds-supplies), or map sun arcs on [PlantGeo](https://plantgeo.aevani.com). Explore more seasonal notes in our free [Learn](/learn) hub. If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to decide when the cover comes off, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

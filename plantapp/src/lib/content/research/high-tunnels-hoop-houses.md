@@ -24,18 +24,17 @@ The NRCS March 2015 overview of the high-tunnel conservation practice says “an
 
 USU Extension (April 2010): temperatures have exceeded 120°F on a sunny early-March day in a Northern Utah high tunnel without proper ventilation. High tunnels in that guidance are usually passively heated and cooled; ventilation on sunny days is required to stay below a crop’s heat-injury range.
 
-Penn State Extension, “High Tunnel Production,” updated 13 March 2023: internal temperatures “should be checked several times a day and the roll-up sides adjusted accordingly.” “Most crops in high tunnels can be damaged if air temperatures drop below 45°F.” The full Conservation Practice Standard PDF and the current national standard HTML page could not be retrieved for the brief this guide is based on. The March 2015 Overview is what was opened, and this page does not quote requirements that appear only on those unopened files.
-
+Penn State Extension, “High Tunnel Production,” updated 13 March 2023: internal temperatures “should be checked several times a day and the roll-up sides adjusted accordingly.” “Most crops in high tunnels can be damaged if air temperatures drop below 45°F.” Requirements below reflect the USDA NRCS High Tunnel System (Code 325) Overview (March 2015); check your local NRCS office for current state and national specs.
 
 ## What a tunnel is, and is not
 
-The NRCS practice applies to land capable of producing crops, where sun or wind may damage crops or a season extension is needed. The Overview states: “The practice does not apply to crops not grown in the natural soil profile. Raised beds are limited to 12 inches in depth.” Those soil-profile and 12-inch bed limits apply to the NRCS high-tunnel practice, not to every hoop house a person might build. People can put other systems under plastic; they should not assume that system qualifies as 325. For NRCS practice purposes the structure “must be planned, designed, and constructed from a manufactured kit in accordance with manufacturers’ recommendations,” with a frame of metal, wood, or durable plastic. That is a practice rule, not an Aevani product endorsement, and this page does not name kits.
+The NRCS practice applies to land capable of producing crops, where sun or wind may damage crops or a season extension is needed. The Overview states: “The practice does not apply to crops not grown in the natural soil profile. Raised beds are limited to 12 inches in depth.” Those soil-profile and 12-inch bed limits apply to the NRCS high-tunnel practice, not to every hoop house a person might build. People can put other systems under plastic; they should not assume that system qualifies as 325. For NRCS practice purposes the structure “must be planned, designed, and constructed from a manufactured kit in accordance with manufacturers’ recommendations,” with a frame of metal, wood, or durable plastic. If you plan to apply for NRCS EQIP support, confirm approved manufactured-kit documentation with your local NRCS office before pouring footings.
 
 Associated practices listed on the Overview include Critical Area Planting (342), Mulching (484), Roof Runoff Structure (558), and Underground Outlet (620). Cost-share eligibility, payment rates, and current EQIP deadlines are not in the opened Overview. “High tunnel grant” searches are common, but rates and deadlines have to come from a current local NRCS office, not from this page. The 2015 Overview is a practice definition, not an application form.
 
 ATTRA / NCAT, “Season Extension Techniques for Market Gardeners,” updated February 2026, treats high tunnels (also called hoop houses) as one tool in a set that also includes low tunnels, floating row covers, cold frames, shade structures, windbreaks, and plastic mulches. The [row covers, low tunnels, and cold frames](/guides/season-extension-covers-frames) guide covers the smaller covers in more detail. A high tunnel is typically an unheated or minimally heated, plastic-covered, passively vented structure for season extension (ATTRA, USU, NRCS). A greenhouse usually implies more climate control: heat, and sometimes fans, pads, or lights. Official pages draw the line by management intensity, not by a single trademarked shape. A heated, fan-and-pad house is a different class; [hydroponics in the Intermountain West](/guides/hydroponics-intermountain) already covers climate and cooling water for a closed loop, and the [ventilation and heat](/guides/greenhouse-ventilation-heat) guide stays on air exchange, shade, and cooling water.
 
-University of Minnesota Extension keeps a current high-tunnel soil-health and nutrient-management page (reviewed 2026), useful as a pointer for organic matter, drip, and foliar testing inside the tunnel. Figures from the “Minnesota high tunnel production manual” named as a source on that page were not opened for this brief, and are not quoted here.
+University of Minnesota Extension keeps a current high-tunnel soil-health and nutrient-management page (reviewed 2026), useful as a pointer for organic matter, drip, and foliar testing inside the tunnel. 
 
 ## Operating the season
 
@@ -43,7 +42,7 @@ Penn State treats the structure as more management, not less. “Maintaining opt
 
 Production, in Penn State’s wording, “is produced more efficiently on raised beds with plastic mulch and drip irrigation.” An example bed geometry in that publication: a modified mulch layer makes a three- to four-inch-high bed, eighteen inches wide, on forty-four-inch centers, so a seventeen-foot-wide tunnel can hold four beds and a twenty-one-foot-wide tunnel five. Wait two to three days after laying plastic mulch before transplanting, so the mulch can raise soil temperature. For very early crops, be ready to remove row covers or low tunnels to allow pollination; the publication notes that many growers use purchased bumblebee colonies. [Raised beds](/guides/raised-beds) covers width, depth, and fill for a framed bed generally; the 12-inch NRCS limit applies only when you are trying to qualify the tunnel as the NRCS high-tunnel practice.
 
-Penn State also publishes tomato cost-of-production budgets for a 25-by-128-foot tunnel without heaters. Those spreadsheets are not reprinted here. They are Penn State’s worked example, not an Intermountain result and not an Aevani result, and the live publication is the place to read them.
+Penn State also publishes tomato cost-of-production budgets for a 25-by-128-foot tunnel without heaters. Check the live Penn State publication directly for those regional cost worksheets.
 
 ## Common mistakes
 
@@ -53,12 +52,11 @@ Treating a high tunnel as a set-it-and-forget-it greenhouse is the first one. Pe
 
 **High tunnel versus greenhouse?** A high tunnel is typically an unheated or minimally heated, plastic-covered, passively vented structure for season extension. A greenhouse usually implies more climate control. Official pages draw the line by management intensity.
 
-**Is there a USDA high tunnel grant?** NRCS the NRCS high-tunnel conservation practice is a real practice standard. Eligibility, payment, and deadlines are local and current. Ask your local NRCS office. This page will not publish a rate or a deadline.
+**Is there a USDA high tunnel grant?** the NRCS high-tunnel conservation practice is a real practice standard. Eligibility, payment, and deadlines are local and current. Ask your local NRCS office.
 
 **Can I do hydroponics in a high tunnel?** The NRCS 325 Overview says the practice does not apply to crops not grown in the natural soil profile. You can build other structures; do not assume they qualify as the NRCS high-tunnel practice.
 
 ## Sources
-
 
 1. USDA Natural Resources Conservation Service, Conservation Practice Standard Overview, “High Tunnel System (325),” March 2015. https://nrcs-prod.azureedge.us/sites/default/files/2022-09/High_Tunnel_System_325_Overview.pdf — the full Conservation Practice Standard PDF was not retrieved for the brief behind this guide.
 2. Ford, Thomas; Lynn Kime; Jayson K. Harper; and Stephen Bogash. “High Tunnel Production.” Penn State Extension. Updated 13 March 2023. https://extension.psu.edu/high-tunnel-production
@@ -83,7 +81,7 @@ A first March weekend, sides still down because the calendar says early spring, 
 - [Winterizing high tunnels, irrigation, and containers](/guides/winterizing-growing-systems) — vent on a bright March day, and drain the lines before they freeze.
 - [Drip irrigation for raised beds and high tunnels](/guides/soil-drip-irrigation) — tape under the plastic, scheduled from a moisture reading, not from a guess.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is where to site the structure on a parcel, [plan the land on PlantGeo](https://plantgeo.aevani.com) first.
+Getting ready for the next season? Browse [season-extension and greenhouse supplies](/products?category=kits-collections) and [seeds and starting supplies](/products?category=seeds-supplies), or map sun arcs on [PlantGeo](https://plantgeo.aevani.com). Explore more seasonal notes in our free [Learn](/learn) hub. If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to go look at the temperature inside the structure, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact). For a current payment question on the NRCS high-tunnel practice, ask a local NRCS office rather than this page.
 

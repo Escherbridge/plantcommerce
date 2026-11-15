@@ -135,7 +135,7 @@ const legacySlugs = new Set([
 ]);
 
 function visibleUrls(raw: string): string[] {
-	const body = raw.split('\n---\n', 2)[1] ?? raw;
+	const body = raw.replaceAll('\r\n', '\n').split('\n---\n', 2)[1] ?? raw;
 	const visible = body.split('\n## JSON-LD notes')[0];
 	const urls = new Set<string>();
 	for (const match of visible.matchAll(/\]\(([^)\s]+)\)/g)) urls.add(match[1]);
@@ -184,21 +184,24 @@ describe('research guides', () => {
 			...relatedNoteHrefs
 		]);
 		const text = guidePlainText(guidesIndex);
-		expect(text).toContain('These pages are growing-system guides, not product pages.');
+		expect(text).toContain(
+			'practical numbers: water temperature, root-zone oxygen, pH drift, drainage, and air exchange'
+		);
 		expect(text).toContain('Soilless systems');
 		expect(text).toContain('Soil, beds, and structures');
 		expect(text).toContain('Aquaponics and silvopasture');
 		expect(text).toContain('11.51 inches');
 		expect(text).toContain('54.8 days');
-		expect(text).toContain('zone 7a');
+		expect(text).toContain('Zone 7a');
 		expect(text).toContain('6b');
-		expect(text).toContain('not system cards');
+		expect(text).toContain('/products/hydroponics');
+		expect(text).toContain('/products/aquaponics');
+		expect(text).toContain('/blog/dwc-vs-kratky-vs-nft');
 		expect(text).toContain('/guides/understanding-soil-health');
 		expect(text).toContain('/guides/getting-started-companion-planting');
 		expect(text).toContain('/learn');
 		expect(text).toContain('/sell');
 		expect(text).toContain('flat 8%');
-		expect(text).toContain('Payout timing is not set');
 		expect(text).toContain('/blog/a-flat-eight-percent');
 		expect(text).toContain('https://plantgeo.aevani.com');
 		expect(text).not.toContain('/blog/nothing-for-sale-yet');
@@ -206,6 +209,9 @@ describe('research guides', () => {
 		expect(text).not.toContain('Hero figures');
 		expect(text).not.toContain('Every stat on this page is cited');
 		expect(text).not.toContain('not written yet');
+		expect(text).not.toMatch(
+			/primusneo|payout timing|when you get paid|when a seller is paid|etsy|growtsy|the-fee-that-didnt-move|nothing is for sale|not for sale/i
+		);
 		const indexLinks = new Map(indexGuideLinks().map((item) => [item.href, item.name]));
 		for (const href of publishedGuideHrefs) {
 			const slug = href.slice('/guides/'.length);
@@ -370,7 +376,7 @@ describe('research guides', () => {
 			'drip-dutch-bucket': [
 				'1.5 to 3.5',
 				'1.0 EC units',
-				'does not name a commercial tower or bucket brand',
+				'drip-fed media',
 				'A situation like this',
 				'Sources'
 			],
@@ -383,7 +389,7 @@ describe('research guides', () => {
 			],
 			'vertical-growing': [
 				'sometimes offset by the non-uniformity',
-				'does not name a commercial stacked-pot product',
+				'rather than naming specific stacked-pot brands',
 				'A situation like this',
 				'Sources'
 			],
@@ -508,16 +514,17 @@ describe('research guides', () => {
 			expect(text).not.toContain('Hero practices');
 			expect(text).not.toContain('Every stat on this page is cited');
 			expect(text).toContain('flat 8%');
-			expect(text.toLowerCase()).toContain('payout timing');
 			expect(text).toContain('https://plantgeo.aevani.com');
 			expect(text).toContain('/learn');
 			expect(text).toContain('/sell');
 			expect(text).not.toContain('$');
 			expect(text).not.toContain('Add to cart');
 			expect(text).not.toContain('/blog/nothing-for-sale-yet');
+			expect(text).not.toMatch(
+				/primusneo|payout timing|when you get paid|when a seller is paid|etsy|growtsy|the-fee-that-didnt-move|nothing is for sale|not for sale|no kits for sale/i
+			);
 			expect(text.toLowerCase()).not.toContain('tower garden');
 			if (legacySlugs.has(guide.slug)) {
-				expect(text).toContain('not for sale');
 				expect(text).toContain('https://plantgeo.aevani.com/plan/sample-ada-county');
 			}
 			for (const href of guideHrefs(guide)) {

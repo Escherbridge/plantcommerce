@@ -21,17 +21,17 @@
 				</p>
 				<h1 class="font-display text-4xl tracking-tight md:text-5xl">Warranty</h1>
 				<p class="max-w-3xl text-lg text-base-content/70">
-					Nothing is for sale yet, so there is no warranty to claim. When a real seller lists a
-					product, any warranty on that listing is the warranty that applies. Aevani does not
-					currently offer a site-wide warranty.
+					Manufacturer and maker warranties belong with the hardware they cover—such as air pumps,
+					pH meters, or greenhouse fittings. Any warranty offered is written directly by the seller
+					on that listing and confirmed at checkout.
 				</p>
 			</header>
 
 			<section class="rounded-2xl border border-base-200 bg-base-100 p-6 shadow-sm md:p-8">
 				<h2 class="font-display text-2xl tracking-tight">Set per seller</h2>
 				<p class="mt-3 text-base-content/80">
-					Warranty terms are set by the seller and confirmed at checkout. They are not offered
-					site-wide today.
+					Warranty coverage is set by the seller or maker on each qualifying product listing and
+					confirmed before purchase.
 				</p>
 			</section>
 

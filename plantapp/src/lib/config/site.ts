@@ -86,75 +86,78 @@ export const publicSite = {
 
 const routeMetadata: Record<string, { title: string; description: string }> = {
 	'/': {
-		title: 'Aevani — A marketplace for growing tools, still taking shape',
+		title: 'Aevani — Growing Guides, Systems & Independent Sellers',
 		description:
-			"We're onboarding our first growers and makers. The catalogue is a preview — nothing in it is for sale yet. The Learn hub is open, and applications to sell are open."
+			'Practical growing guides for hydroponics, aquaponics, raised beds, and agroforestry, plus open storefront applications for independent seed and tool sellers at a flat 8% fee.'
 	},
 	'/sell': {
 		title: 'Sell on Aevani — a flat 8%',
 		description:
-			'Apply to sell growing tools and systems on Aevani. The fee is a flat 8%. Card processing is included. There are no listing fees, no monthly fees, and no ad fees.'
+			'Sell seeds, hand tools, and growing systems on Aevani for a flat 8% commission with card processing included and zero listing, monthly, or ad fees.'
 	},
 	'/about': {
 		title: 'About Aevani',
 		description:
-			'Aevani is a marketplace for growing tools and a free Learn hub, operated by Escherbridge, LLC. The catalogue is a preview. Checkout is off.'
+			'Aevani is a growing-tools marketplace and free grower library operated by Escherbridge, LLC in Boise, Idaho.'
 	},
 	'/learn': {
 		title: 'Learn — Aevani',
 		description:
-			'Short guides and notes on soil, companion planting, hydroponics, aquaponics, and silvopasture. Free, no account. This is not a complete library, and it does not sell you a kit at the end.'
+			'Free, practical growing guides and field notes covering soil, raised beds, hydroponics, aquaponics, and agroforestry—no account required.'
 	},
 	'/blog': {
 		title: 'Field notes — Aevani',
 		description:
-			'Dated writing from Escherbridge on growing, selling, and the flat 8% seller fee. The catalogue is still a preview, and the checkout remains off.'
+			'Hands-on field notes, seasonal growing checklists, system trade-offs, and transparent updates on selling growing gear at a flat 8% fee.'
 	},
 	'/news': {
 		title: 'News — Aevani',
-		description: 'Public announcements only. There is nothing to announce yet.'
+		description: 'Updates on new Aevani growing guides, seller onboarding, and site tools.'
 	},
 	'/guides': {
 		title: 'Guides | Aevani',
 		description:
-			'Growing-system guides on hydroponics, raised beds, high tunnels, aquaponics, and silvopasture, cited from official sources. Practical ranges, common mistakes.'
+			'Hands-on growing guides for hydroponics, raised beds, high tunnels, aquaponics, and agroforestry—practical ranges, honest trade-offs, and direct gear links.'
 	},
 	'/faq': {
 		title: 'FAQ — Aevani',
 		description:
-			'Short answers. Nothing is for sale yet, so buying, shipping, and returns do not have a site-wide promise.'
+			'Answers to common questions about Aevani growing guides, seller fees, shipping, and independent storefronts.'
 	},
 	'/courses': {
 		title: 'Courses — Aevani',
-		description: 'Course pages are thin notes, not a catalogue. Nothing here is for sale.'
+		description: 'Structured growing walk-throughs paired with free field guides in the Learn hub.'
 	},
 	'/products': {
-		title: 'Catalogue preview — Aevani',
-		description: 'The catalogue is a preview. Nothing in it is for sale yet.'
+		title: 'Growing Systems & Supplies | Aevani',
+		description:
+			'Explore growing systems, seed-starting gear, drip kits, and specialty categories built for soil, hydro, aquaponic, and agroforestry growers.'
 	},
 	'/products/hydroponics': {
-		title: 'Hydroponics preview — Aevani',
-		description: 'A preview of the hydroponics shelf. Nothing in it is for sale yet.'
+		title: 'Hydroponics Systems & Gear | Aevani',
+		description: 'Deep water culture, Kratky, meters, air pumps, and indoor hydroponic systems.'
 	},
 	'/products/aquaponics': {
-		title: 'Aquaponics preview — Aevani',
-		description: 'A preview of the aquaponics shelf. Nothing in it is for sale yet.'
+		title: 'Aquaponics Systems & Gear | Aevani',
+		description:
+			'Closed-loop fish tanks, biofilter media, pumps, and water-testing gear for backyard aquaponics.'
 	},
 	'/products/silvopasture': {
-		title: 'Silvopasture preview — Aevani',
-		description: 'A preview of the silvopasture shelf. Nothing in it is for sale yet.'
+		title: 'Silvopasture Seeds & Fencing | Aevani',
+		description: 'Shade-tolerant forage mixes, tree tubes, and perennial pasture tools.'
 	},
 	'/products/agroforestry': {
-		title: 'Agroforestry preview — Aevani',
-		description: 'A preview of the agroforestry shelf. Nothing in it is for sale yet.'
+		title: 'Agroforestry Seeds & Nursery Stock | Aevani',
+		description: 'Nitrogen-fixing trees, canopy guilds, mulch mats, and perennial orchard supplies.'
 	},
 	'/contact': {
 		title: 'Contact — Aevani',
-		description: 'Aevani is operated by Escherbridge, LLC. Write or call. Nothing is for sale yet.'
+		description:
+			'Aevani is operated by Escherbridge, LLC in Boise, Idaho. Reach us by email or phone about selling or our growing guides.'
 	},
 	'/support': {
 		title: 'Support — Aevani',
-		description: 'Help for the site. There are no orders, because nothing is for sale yet.'
+		description: 'Help and contact details for Aevani growers and independent sellers.'
 	},
 	'/privacy': {
 		title: 'Privacy — Aevani',
@@ -166,11 +169,13 @@ const routeMetadata: Record<string, { title: string; description: string }> = {
 	},
 	'/shipping': {
 		title: 'Shipping — Aevani',
-		description: 'Nothing is for sale yet, so there is nothing to ship.'
+		description:
+			'Shipping rates and handling windows on Aevani are set directly by each independent seller on the listing.'
 	},
 	'/returns': {
 		title: 'Returns — Aevani',
-		description: 'Nothing is for sale yet, so there is nothing to return.'
+		description:
+			'Return policies on Aevani are set per listing by each independent seed house, nursery, or maker.'
 	},
 	'/cookies': {
 		title: 'Cookies — Aevani',
@@ -182,24 +187,25 @@ const routeMetadata: Record<string, { title: string; description: string }> = {
 	},
 	'/size-guide': {
 		title: 'Size guide — Aevani',
-		description: 'No size chart is published. Nothing is for sale yet.'
+		description:
+			'Sizing and capacity notes for growing containers, beds, and hardware live directly on each seller listing.'
 	},
 	'/warranty': {
 		title: 'Warranty — Aevani',
-		description: 'Nothing is for sale yet, so there is no warranty to claim.'
+		description:
+			'Warranty coverage on equipment is set by each independent maker or seller and shown on the listing.'
 	},
 	'/help': {
 		title: 'Help — Aevani',
-		description: 'A searchable help center is not published yet.'
+		description: 'Support contacts and growing guides for Aevani.'
 	},
 	'/press': {
 		title: 'Press — Aevani',
-		description: 'No press materials are published. This page is not a newsroom.'
+		description: 'Contact Escherbridge, LLC for press or operator questions about Aevani.'
 	},
 	'/resources': {
 		title: 'Resources — Aevani',
-		description:
-			'No downloadable resources yet. The Learn hub is the reading room that exists today.'
+		description: 'Browse Aevani field guides, system references, and the free Learn hub.'
 	},
 	'/sustainability': {
 		title: 'Sustainability — Aevani',
@@ -231,8 +237,6 @@ export function layoutOwnsDocumentMeta(pathname: string): boolean {
 
 /** Sister sites for the footer. Aevani itself is omitted. Follow links, no nofollow. */
 export const escherbridgeProjects = [
-	{ label: 'PrimusNeo, the technology innovation lab', href: 'https://primusneo.com' },
-	{ label: 'NEOS, a workspace for agreements and decisions', href: 'https://neos.primusneo.com' },
 	{ label: 'AZOA, an engine for structured workflows', href: 'https://azoa.ardanova.com' },
 	{ label: 'ArdaNova, a workspace for shared work', href: 'https://ardanova.com' },
 	{ label: 'PlantGeo, a 3D map for planning a site', href: 'https://plantgeo.aevani.com' },

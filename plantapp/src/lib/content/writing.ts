@@ -1,17 +1,19 @@
 import { cornerstoneEssays, type CornerstoneEssay } from './essays';
 import { publishedGuideSectors } from './research';
-import { SITE_URL } from '$lib/config/site';
+import { SITE_URL, publicRouteMetadata } from '$lib/config/site';
 
 export { publishedGuideSectors };
 export type { GuideDocument as GuideSectorPage } from './research';
 
-/** Fixed topics that the published notes actually use. Not an open tag cloud. */
+/** Fixed topics that the published notes cover. */
 export const fieldNoteTopics = [
-	'seller fees',
-	'marketplace',
 	'hydroponics',
+	'raised beds',
+	'aquaponics',
 	'water',
-	'Intermountain West'
+	'seed starting',
+	'buyer guides',
+	'seller fees'
 ] as const;
 
 /**
@@ -79,7 +81,7 @@ export function renderFieldNotesFeed(origin = SITE_URL): string {
 	<channel>
 		<title>Aevani field notes</title>
 		<link>${xmlEscape(`${site}/blog`)}</link>
-		<description>Dated writing from Escherbridge on growing, selling, and the flat 8% seller fee. The catalogue is still a preview, and the checkout remains off.</description>
+		<description>${xmlEscape(publicRouteMetadata('/blog').description)}</description>
 		${items}
 	</channel>
 </rss>

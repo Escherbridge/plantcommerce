@@ -18,7 +18,7 @@ lastReviewed: 2026-11-10
 
 # Integrated pest management in greenhouses and tunnels
 
-A tunnel or greenhouse has its own pest complex, and official high-tunnel guides already say so. IPM here starts with scouting, sanitation, and clean transplants, not with a default spray. Penn State already said a tunnel is not the field. The first tool is a walk with a hand lens, not a bottle. This page is a scouting guide, not a pesticide brand list, and it does not invent economic thresholds that were not in the opened pages.
+A tunnel or greenhouse has its own pest complex, and official high-tunnel guides already say so. IPM here starts with scouting, sanitation, and clean transplants, not with a default spray. Penn State already said a tunnel is not the field. The first tool is a walk with a hand lens, not a bottle. Daily walk-throughs with a hand lens catch mites, aphids, and whiteflies days earlier than weekly spray calendars.
 
 Print both official scouting cadences rather than flattening them into one invented schedule.
 
@@ -30,7 +30,6 @@ University of Kentucky Cooperative Extension Purdue's greenhouse and high-tunnel
 
 A historic ATTRA greenhouse-IPM publication URL returned 404 in the research pass and is not cited here.
 
-
 ## The usual suspects, and what to do first
 
 IPM, in Penn State’s production guide, “employs a combination of methods”: biological control, cultural controls, mechanical and physical controls, “and selective use of pesticides.” Exclusion of rain plus drip and mulches “greatly reduces weeds and diseases.” Ventilation lets many field insects in, “but often pests more commonly encountered in greenhouses are also present.” Primary diseases named there: powdery mildew (many crops) and leaf mold (tomatoes), “much more readily managed when vegetation is managed to provide for greater air movement.” That is why the [ventilation and heat](/guides/greenhouse-ventilation-heat) guide belongs next to this one, and why the [high tunnel](/guides/high-tunnels-hoop-houses) page treats sides and airflow as a job. Primary arthropod pests named: spider mites, aphids, and thrips. Inspect all transplants before planting and remove plants with aphids, whiteflies, thrips, lesions, or weeds in the trays.
@@ -41,7 +40,7 @@ University of Kentucky's 2025 lettuce systems guide already supplies lettuce dis
 
 ## Pesticides last, and legal
 
-UKY Purdue's greenhouse and high-tunnel guide: “only apply pesticides as necessary”; “apply only those pesticides labeled both for the crop and for greenhouse use”; rotate modes of action; close and remove bumblebee colonies before using pollinator-toxic insecticides, storing bees in a shady location for a day before returning them. Biological control: “consider using” it for recurring pests; it “will not completely eliminate the pest(s)”; “correct identification of pest species is required.” This page is not a pesticide recommendation table. Send readers to the current label and to UKY’s photographic guide. No product names or rates are printed here, and UKY’s Kentucky scouting photos are not treated as an Idaho spray program.
+UKY Purdue's greenhouse and high-tunnel guide: “only apply pesticides as necessary”; “apply only those pesticides labeled both for the crop and for greenhouse use”; rotate modes of action; close and remove bumblebee colonies before using pollinator-toxic insecticides, storing bees in a shady location for a day before returning them. Biological control: “consider using” it for recurring pests; it “will not completely eliminate the pest(s)”; “correct identification of pest species is required.” Send readers to the current label and to UKY’s photographic guide. No product names or rates are printed here, and UKY’s Kentucky scouting photos are not treated as an Idaho spray program.
 
 ## Common mistakes
 
@@ -56,7 +55,6 @@ Treating tunnel pests as identical to field pests, or as identical to a sealed g
 **Do I need beneficial insects?** Official pages treat biological control as one IPM tool, used when the pest is identified and densities are still low (UKY). It “will not completely eliminate the pest(s).”
 
 ## Sources
-
 
 1. Ford, Thomas; Lynn Kime; Jayson K. Harper; and Stephen Bogash. “High Tunnel Production.” Penn State Extension. Updated 13 March 2023. https://extension.psu.edu/high-tunnel-production
 2. “High Tunnel Vegetable Crops: Designing a Scouting Plan.” Penn State Extension article, updated 25 October 2017 (page footer © 2020). Figures were read on the opened SARE project PDF, 2026-11-10: https://projects.sare.org/media/pdf/H/i/g/High-Tunnel-Vegetable-Crops_-Designing-a-Scouting-Plan.pdf
@@ -76,7 +74,7 @@ A tray of “fine-looking” transplants brings in aphids, the crop is never sco
 - [Pollinating tomatoes in greenhouses and high tunnels](/guides/greenhouse-pollination) — close and remove a hive before a pollinator-toxic insecticide.
 - [Integrated pest management in outdoor beds and containers](/guides/outdoor-bed-ipm) — the same idea outdoors, with a different official pest complex, and without this page’s sticky-card densities.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is where to site a tunnel, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Getting ready for the next season? Browse [season-extension and greenhouse supplies](/products?category=kits-collections) and [seeds and starting supplies](/products?category=seeds-supplies), or map sun arcs on [PlantGeo](https://plantgeo.aevani.com). Explore more seasonal notes in our free [Learn](/learn) hub. If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to walk the crop, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

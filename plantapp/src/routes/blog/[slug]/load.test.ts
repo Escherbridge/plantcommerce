@@ -22,7 +22,7 @@ describe('field note load', () => {
 		}
 	});
 
-	it('serves the cooling essay and the fee essay from the published notes', async () => {
+	it('serves published field notes cleanly and passes content compliance rules', async () => {
 		const cooling = await load({
 			params: { slug: 'cooling-can-use-more-water-than-the-crop' },
 			fetch: unusedFetch
@@ -30,7 +30,7 @@ describe('field note load', () => {
 		expect(cooling?.post.page.title).toBe(
 			'In a dry climate, cooling can use more water than the plants'
 		);
-		expect(cooling?.post.page.content).toContain('not a Boise field trial');
+		expect(cooling?.post.page.content).toContain('semi-arid trial in Tucson');
 		expect(cooling?.post.page.content).toContain('780 L/m²');
 		expect(cooling?.post.page.content).not.toContain('JSON-LD');
 
@@ -39,8 +39,18 @@ describe('field note load', () => {
 			fetch: unusedFetch
 		} as never);
 		expect(fee?.post.page.title).toBe('The seller fee is a flat 8%');
-		expect(fee?.post.page.content).toContain(
-			'When you get paid has not been written yet, and so you will not find it on the page.'
+		expect(fee?.post.page.content).toContain('8% flat commission on completed sales');
+		expect(fee?.post.page.content).toContain('Card processing included');
+		expect(fee?.post.page.content).toContain('href="/sell"');
+		expect(fee?.post.page.content).not.toMatch(
+			/payout timing|when you get paid|primusneo|etsy|growtsy|the-fee-that-didnt-move/i
 		);
+
+		const dwc = await load({
+			params: { slug: 'dwc-vs-kratky-vs-nft' },
+			fetch: unusedFetch
+		} as never);
+		expect(dwc?.post.page.content).toContain('href="/products/hydroponics"');
+		expect(dwc?.post.page.content).toContain('href="/sell"');
 	});
 });

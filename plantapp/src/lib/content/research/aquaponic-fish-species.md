@@ -18,13 +18,13 @@ lastReviewed: 2026-11-10
 
 # Choosing aquaponic fish by species and temperature
 
-FAO already published the temperature and water-quality windows for the usual aquaponic species. Tilapia is not a winter fish in an unheated Intermountain tank, and a tropical fish is not a personality trait. It is a thermostat. This page stays on species and climate. Stocking density and the compromise table already live in [small-scale aquaponics](/guides/small-scale-aquaponics). This is not a live-fish offer.
+FAO already published the temperature and water-quality windows for the usual aquaponic species. Tilapia is not a winter fish in an unheated Intermountain tank, and a tropical fish is not a personality trait. It is a thermostat. This page stays on species and climate. Stocking density and the compromise table already live in [small-scale aquaponics](/guides/small-scale-aquaponics). 
 
 ## The frame, briefly
 
-FAO the species table (general tolerances) sets a warm-water column and a tighter cold-water column. Warm-water fish: 22–32 °C, pH 6–8.5, ammonia <3 mg/litre, nitrite <1, dissolved oxygen 4–6 mg/litre. Cold-water fish: 10–18 °C, ammonia <1, nitrite <0.1, DO 6–8. The aquaponic compromise already documented in the stocking guide (the water-quality table) is 18–30 °C, pH 6–7, ammonia <1, nitrite <1, nitrate 5–150, DO >5. FAO’s own comment: “The general temperature range is 18–30 °C, and should be managed in regard to the target fish or plant species cultivated… It is important to choose appropriate pairings of fish and plant species that match well with the environmental conditions.” Trout, as the paper later shows, sits outside that general 18–30 °C window. The 20 kg of fish per 1,000 litres of water cap stays on the stocking page; this page does not rewrite that math.
+FAO's species table (general tolerances) sets a warm-water column and a tighter cold-water column. Warm-water fish: 22–32 °C, pH 6–8.5, ammonia <3 mg/litre, nitrite <1, dissolved oxygen 4–6 mg/litre. Cold-water fish: 10–18 °C, ammonia <1, nitrite <0.1, DO 6–8. The aquaponic compromise already documented in the stocking guide (the water-quality table) is 18–30 °C, pH 6–7, ammonia <1, nitrite <1, nitrate 5–150, DO >5. FAO’s own comment: “The general temperature range is 18–30 °C, and should be managed in regard to the target fish or plant species cultivated… It is important to choose appropriate pairings of fish and plant species that match well with the environmental conditions.” Trout, as the paper later shows, sits outside that general 18–30 °C window. Keep tank loads within the 20 kg / 1,000 L cap covered on the stocking guide.
 
-Unheated structures, ventilation, and heat already live in [hydroponics in the Intermountain West](/guides/hydroponics-intermountain). Use that page as climate context, not as a fish-survival table it does not contain. This page does not invent a local tank temperature for a Boise winter. It prints FAO’s thresholds.
+Unheated structures, ventilation, and heat already live in [hydroponics in the Intermountain West](/guides/hydroponics-intermountain). Use that page as climate context, not as a fish-survival table it does not contain. It prints FAO’s thresholds.
 
 ## Species cards, labeled FAO 2014
 
@@ -48,12 +48,11 @@ Choosing tilapia because “everyone uses tilapia,” then discovering 12 °C, i
 
 **What is the best fish for aquaponics? Can you raise trout? What temperature do tilapia need?** FAO’s answer is climate-first: tilapia in reliably warm water, trout in cold water, carp with a wide survival band but growth that still likes 25–30 °C, and a seasonal switch where winters are real.
 
-**Will tilapia survive a Boise winter outdoors?** FAO: they die below 12 °C and stop feeding below 17 °C unless the water is heated. This page does not invent a local tank temperature.
+**Will tilapia survive a Boise winter outdoors?** FAO: they die below 12 °C and stop feeding below 17 °C unless the water is heated.
 
-**Can I keep mixed species in one tank?** FAO describes seasonal switching and some polyculture attempts (for example bass with tilapia). This page does not invent a mixed-tank recipe that the paper does not give.
+**Can I keep mixed species in one tank?** FAO describes seasonal switching and some polyculture attempts (for example bass with tilapia).
 
 ## Sources
-
 
 1. Somerville, C., Cohen, M., Pantanella, E., Stankus, A. & Lovatelli, A. 2014. *Small-scale aquaponic food production.* FAO Fisheries and Aquaculture Technical Paper No. 589. Chapters 3 and 7, including Tables 3.1 and 3.2. https://www.fao.org/4/i4021e/i4021e.pdf
 
@@ -69,7 +68,7 @@ A summer tilapia tank is left unheated into December. FAO already gave 12 °C as
 - [Cycling an aquaponic biofilter](/guides/aquaponic-biofilter-cycling) — finish the cycle before the fish go in.
 - [Aquaponic system types](/guides/aquaponic-system-types) — media beds, NFT, and rafts, once the species can actually live in the water.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. This page does not sell or ship fish. When the question is the parcel rather than the tank, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Building out your system? Browse [aquaponics tanks, siphons, and water-testing gear](/products/aquaponics), check sibling guides in the [Learn](/learn) hub, or plan your lot on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to match a species to the temperatures you can actually keep, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

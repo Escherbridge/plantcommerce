@@ -26,7 +26,6 @@ Cornell's 2013 lettuce handbook says lettuce “will grow satisfactorily at a DO
 
 Neil Mattson’s 2018 leafy-green teaching notes: dissolved oxygen of 7 ppm, crop failure below 3 ppm, and a typical nutrient-solution temperature of 65–75°F to reduce Pythium infection. Those are conference teaching notes, not a trial report.
 
-
 ## How the system is supposed to work
 
 Florida's hydroponic systems guide, originally published in January 2010, describes floating-raft, deep-water systems as Styrofoam rafts with holes, floated on nutrient-rich water, a method that later became popular in Florida for short-cycle crops and “was not even reported in 1991” in that survey. That is the official picture of raft DWC, not a national adoption figure. Short-cycle greens are the published fit.
@@ -39,9 +38,7 @@ For small systems, Cornell says an air pump and aquarium air stone can be used, 
 
 Warm, stagnant water is the first failure. Mattson’s teaching band of 65–75°F is there in part to reduce Pythium infection; warm water also holds less oxygen. Air stones that are clogged, unplugged, or simply too small for the volume are the second. Light leaking into the reservoir grows algae, which then compete for oxygen and nutrients; the [troubleshooting guide](/guides/hydroponic-troubleshooting-root-rot) is the checklist once roots are already soft and brown. A power cut to the air pump is the quiet version of “if no oxygen is added, DO will drop to nearly 0 ppm.”
 
-[Kratky](/guides/kratky-method) is not aerated DWC. It is a related-looking suspended-pot system that relies on an air gap as the water level drops, and it has a published crop-water limit. An unaerated bucket is not “DWC without a pump.” Loading a first DWC with a long-season fruiting crop is also a mismatch: the raft literature UF is describing is short-cycle work. Climate around the reservoir still matters; [hydroponics in the Intermountain West](/guides/hydroponics-intermountain) covers heat and source water without repeating those figures here.
-
-This page does not invent bucket volumes, stone counts, or a “change the water every X days” schedule. Official pages opened for this brief do not print those house rules.
+[Kratky](/guides/kratky-method) is not aerated DWC. It is a related-looking suspended-pot system that relies on an air gap as the water level drops, and it has a published crop-water limit. An unaerated bucket is not “DWC without a pump.” Loading a first DWC with a long-season fruiting crop is also a mismatch: the raft literature UF is describing is short-cycle work. Climate around the reservoir still matters; [hydroponics in the Intermountain West](/guides/hydroponics-intermountain) covers heat and source water without repeating those figures here. Official pages reviewed here do not print those house rules.
 
 ## Common mistakes
 
@@ -56,7 +53,6 @@ Calling an unaerated Kratky jar “DWC” is the first. Assuming bubbles equal a
 **Is an air stone required?** For DWC as UKY describes it, an air pump and air stones are in the system definition. Kratky is the published no-pump alternative, with its own limits.
 
 ## Sources
-
 
 1. Tyson, Richard, Robert Hochmuth, and Daniel J. Cantliffe. “Hydroponic Vegetable Production in Florida.” UF/IFAS HS405. Original January 2010. https://ask.ifas.ufl.edu/publication/HS405/pdf
 2. Sharma, Arundathi, Kim Leonberger, Nicole Gauthier, and Qinglu Ying. “Hydroponic Lettuce Production in Controlled Environments.” University of Kentucky Center for Crop Diversification, CCD-CP-63, 2025. https://ccd.uky.edu/sites/default/files/2026-02/ccd-cp-63_hydrolettuce-updated_accessible.pdf
@@ -77,7 +73,7 @@ A sunny windowsill tote, no air stone, lid ajar so light hits the solution, and 
 - [Choosing crops for a hydroponic system](/guides/hydroponic-crop-choice) — official pairing of leafy crops with rafts, and fruiting crops with media.
 - [Food safety in hydroponics and aquaponics](/guides/soilless-food-safety) — a raft that drips production water onto leaves at harvest is a produce-safety problem, not only a handling habit.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the reservoir, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Ready to set up or tune your bench? Browse [hydroponic systems, meters, and pumps](/products/hydroponics), find companion references in the [Learn](/learn) hub, or map structure placement on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to measure dissolved oxygen in the reservoir, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

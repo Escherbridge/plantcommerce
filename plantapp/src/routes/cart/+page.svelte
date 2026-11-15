@@ -138,7 +138,8 @@
 			<div class="empty-card">
 				<h2 class="empty-title">Your cart is empty</h2>
 				<p class="empty-lead">
-					Nothing here yet. The catalogue is a preview while we onboard growers and makers.
+					Your cart is empty. Browse growing systems and supplies while independent sellers finish
+					onboarding.
 				</p>
 				<a href="/products" class="btn-primary">Explore the catalogue</a>
 			</div>

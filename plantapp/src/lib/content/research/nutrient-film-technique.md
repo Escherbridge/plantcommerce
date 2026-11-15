@@ -28,14 +28,13 @@ FAO's 2014 aquaponics manual, on aquaponic NFT pipes, says water flow “for eac
 
 University of Kentucky's 2025 lettuce systems guide contrasts oxygenation: NFT has no air pump — “continuous thin film provides oxygen” — unlike [deep water culture](/guides/deep-water-culture), which needs air stones and a 6–8 ppm dissolved-oxygen target. A thin film that has become a puddle is no longer that system.
 
-
 ## What belongs in a channel
 
 OSU: channels “are best suited for short-lived or small-rooted crops such as herbs and leafy greens.” UF: “Lettuce is particularly adapted to NFT because it is a short-term crop and less subject to damage from root rot.” Transplants are “usually started in rockwool or foam cubes.” In true NFT, “the plastic liner is wrapped around the stems to prevent algae growth in the channel.” Light on the film is also a topic in the [troubleshooting](/guides/hydroponic-troubleshooting-root-rot) guide.
 
 UF’s cautionary tale is tomatoes in 4-inch PVC, a popular hobby and 1980s north-Florida commercial idea: “The PVC tube is extremely confining to the root system, making continual bathing of the root system impossible because it stops water flow and causes the root systems to flood.” Even with pulsed irrigation, “many growers still have problems with oxygen availability to the roots. Pythium root rot then can attack the roots.” “Essentially all PVC tomato growers have since switched to bag or other soilless media culture.” [Choosing a first hydroponic system](/guides/choosing-hydroponic-system) already notes that official fruiting-crop work often uses drip in media. Florida's hydroponic systems guide is the supporting reminder that in a recirculating water-culture system a root pathogen can spread.
 
-Shallow channels, OSU says, “are sensitive to ambient temperature changes”; mitigate by “increasing slope, shortening channel lengths and using larger stock tanks.” This page does not invent a maximum length in feet or meters; OSU says “shortening” without a number. Vertical NFT arrangements “can significantly increase crop density” but “adding more vertical levels will increase shading,” which “may require using low-light crops or providing supplemental lighting.” A later vertical-growing guide is queued. Nutrient targets still belong on the [EC and pH](/guides/hydroponic-ec-ph-nutrients) page. If the loop includes fish, FAO’s pipe figures also appear in [aquaponic system types](/guides/aquaponic-system-types).
+Shallow channels, OSU says, “are sensitive to ambient temperature changes”; mitigate by “increasing slope, shortening channel lengths and using larger stock tanks.” Vertical NFT arrangements “can significantly increase crop density” but “adding more vertical levels will increase shading,” which “may require using low-light crops or providing supplemental lighting.” A later vertical-growing guide is queued. Nutrient targets still belong on the [EC and pH](/guides/hydroponic-ec-ph-nutrients) page. If the loop includes fish, FAO’s pipe figures also appear in [aquaponic system types](/guides/aquaponic-system-types).
 
 ## Common mistakes
 
@@ -50,7 +49,6 @@ A “film” that is actually a standing puddle is the first; official advice is
 **Can I grow tomatoes in NFT?** UF describes attempts in narrow PVC, oxygen problems, Pythium, and a general move to media culture. Lettuce is the crop the recent official hints call “particularly adapted.”
 
 ## Sources
-
 
 1. Nelson II, Mykl; Gail Langellotto; and Lloyd Nackley. “Hydro hints: Nutrient film technique.” Oregon State University Extension EM 9457, May 2025. Peer-reviewed, Orange level. https://extension.oregonstate.edu/catalog/pub/em-9457-hydro-hints-nutrient-film-technique
 2. UF/IFAS, “Production Systems,” Florida Greenhouse Vegetable Production Handbook, Vol. 3, HS785 / CV263. Original December 1990; revised through September 2018. https://ask.ifas.ufl.edu/publication/CV263/pdf
@@ -73,7 +71,7 @@ A long, almost-flat PVC run of tomatoes, the pump on a single circuit, and a wee
 - [Vertical hydroponic growing: density and light](/guides/vertical-growing) — Oregon State’s shading cost for standing channels on end.
 - [Starting seeds and transplants for soilless systems](/guides/soilless-seed-starting) — rockwool or foam cubes, and covering the channel.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the channel, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Ready to set up or tune your bench? Browse [hydroponic systems, meters, and pumps](/products/hydroponics), find companion references in the [Learn](/learn) hub, or map structure placement on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to check whether the film is still a film, and whether the pump has a backup, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

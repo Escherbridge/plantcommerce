@@ -24,9 +24,9 @@ export const cornerstoneEssays: readonly CornerstoneEssay[] = [
 		slug: 'cooling-can-use-more-water-than-the-crop',
 		title: 'In a dry climate, cooling can use more water than the plants',
 		excerpt:
-			'A closed growing system in a dry climate is constrained by water, heat, and source-water quality, not by a catalogue photo. In a Tucson hydroponic-tomato trial, pad-and-fan cooling used more water than irrigation.',
+			'If you size a greenhouse water tank strictly for what tomatoes drink, August heat will empty it early. In a Tucson trial, evaporative cooling took nearly twice as much water as irrigation.',
 		metaDescription:
-			'In a Tucson tomato greenhouse, pad-and-fan cooling used more water than irrigation. A dry-climate closed system has to budget for both, and for source water.',
+			'In a Tucson hydroponic tomato greenhouse, pad-and-fan cooling used more water than irrigation. Here is how to budget water, shade, venting, and water quality in dry climates.',
 		publishedAt: '2026-11-10T00:00:00.000Z',
 		tags: ['Aevani', 'hydroponics', 'water', 'Intermountain West'],
 		sources: [
@@ -70,27 +70,274 @@ export const cornerstoneEssays: readonly CornerstoneEssay[] = [
 				datePublished: '2010-04'
 			}
 		],
-		body: 'In a Tucson, Arizona, single-span polyethylene greenhouse of hydroponic tomatoes, pad-and-fan cooling used more water than the crop. Sabeh, Giacomelli, and Kubota reported the result in *Transactions of the ASABE* in 2011, from a trial that ran from March to October 2006. Over those eight months, irrigation used 780 L/m² and pad-and-fan cooling used 1,450 L/m². That is a published semi-arid analog, not a Boise field trial, and it is worth saying so in the same breath as the numbers.\n\nThe daily figures make the same point at a closer range. Irrigation rose from 4.3 L/m²/day at establishment to 7.2 L/m²/day at maturity. Pad-and-fan cooling peaked at 11 L/m²/day in the hottest, driest conditions. Water-use efficiency was 30 kg of yield per cubic metre for irrigation alone, 16 for cooling, and 11 when both were combined. The abstract notes that semi-arid regions typically receive less than 500 mm of rain a year. University of Arizona CEAC teaching notes, in Chapter 10 of their fertigation material, give a working example for greenhouse hydroponic tomatoes of about 4 liters per plant per day, or 10 liters/m²/day at 2.5 plants/m², and add that if evaporative cooling is used, especially in deserts, water needs may double. The chapter presents the 4 L/plant/day line as an example, not a universal rule.\n\nA Treasure Valley grower cannot treat Tucson as a local measurement, but two official facts are close enough to use. The 2023 USDA Plant Hardiness Zone Map is built from 30-year averages of the lowest annual winter temperatures (1991–2020), in thirteen 10°F zones, each split into 5°F "a/b" half-zones. A designation is the average annual extreme minimum, not the coldest it has ever been or will be, and not a guarantee. In the official zone listings from the PRISM Group at Oregon State University, central Boise is zone 7a, 0 to 5°F; a foothills area is zone 6b, −5 to 0°F. Cooling water is only half of the budget question. CEAC lists source-water quality — pH, electrical conductivity or salt levels, and contaminants — as a constraint to know before any nutrient recipe. This page does not invent a Treasure Valley TDS figure. A current University of Idaho bulletin PDF could not be retrieved for this piece; Utah State University Extension\'s April 2010 note on temperature management in high tunnels is used instead as the Intermountain land-grant source on heat in a structure.\n\nThe question, then, is what actually limits a closed system in a dry or Intermountain climate. It is water, including the water spent on cooling; heat; light; and the quality of the water you start with. It is not a catalogue photograph. A reservoir sized only for the plants is a reservoir sized for half the problem, in the spirit of the Tucson measurements and the CEAC desert-cooling note. A tunnel that is not ventilated on a sunny day can already overheat in early spring, which is the kind of fact the USU Extension record exists to keep in view.\n\nThe longer climate argument, including official Boise precipitation and 90°F-day counts, lives in the [guide to hydroponics in the Intermountain West](/guides/hydroponics-intermountain). The [Learn](https://aevani.com/learn) hub is free to read, and it does not require an account. If you want to plan a parcel first, [PlantGeo](https://plantgeo.aevani.com) is the related map; [plan the land, then pick the tools](https://plantgeo.aevani.com/blog/plan-the-land-then-pick-the-tools) is the house note on that order, and catalogue items are not for sale yet. If you grow or make tools that belong here, [applications to sell](https://aevani.com/sell) are open. The seller fee is a flat 8%, with card processing included and no other fees; payout timing has not been set, so it is not promised.'
+		body: `If you plan a greenhouse around what the crop drinks, August will empty your cistern twice as fast as your math says it should.
+
+In a Tucson, Arizona trial inside a single-span polyethylene greenhouse growing hydroponic tomatoes from March to October 2006, Sabeh, Giacomelli, and Kubota measured two separate water budgets side by side in *Transactions of the ASABE* (2011). Across those eight months, the plants themselves took 780 L/m² of irrigation water. The pad-and-fan evaporative cooling system took 1,450 L/m²—nearly double the crop's own consumption.
+
+Daily demand tells the same story up close. Plant irrigation climbed from 4.3 L/m²/day during establishment to 7.2 L/m²/day at maturity, while evaporative cooling peaked at 11 L/m²/day on the hottest, driest afternoons. Measured by yield per drop, irrigation alone delivered 30 kg of yield per cubic metre, cooling alone came out to 16 kg/m³, and combining both dropped total water-use efficiency to 11 kg/m³. University of Arizona CEAC fertigation notes (Chapter 10) reinforce that pattern in regions receiving less than 500 mm of annual rainfall: a greenhouse hydroponic tomato crop takes roughly 4 liters per plant per day (about 10 liters/m²/day at 2.5 plants/m²), and running evaporative cooling in desert summers can easily double total water demand.
+
+A semi-arid trial in Tucson is not an exact stand-in for every backyard or Intermountain bench, yet three practical habits translate directly wherever summers run hot and dry:
+
+- **Size reservoirs and rainwater totes for cooling water, not just root uptake.** Pair cooling math with shade cloth and high ridge venting covered in our [greenhouse ventilation and heat guide](/guides/greenhouse-ventilation-heat).
+- **Read your hardiness map for winter lows, not spring tunnels.** On the 2023 USDA Plant Hardiness Zone Map (1991–2020 30-year averages), central Boise sits in zone 7a (0 to 5°F) and nearby foothills sit in zone 6b (−5 to 0°F). That guides overwintering perennials, not early spring hoop-house venting—unvented tunnels already overheat on bright March afternoons, as Utah State University Extension documents.
+- **Test raw water before mixing fertilizer recipes.** CEAC emphasizes checking source-water pH, electrical conductivity (EC), and dissolved salts up front so evaporation does not steadily concentrate carbonates inside recirculating reservoirs.
+
+When you set up a closed hydroponic shed or seasonal hoop house in a dry climate, total water—including cooling water—alongside airflow, light, and raw-water quality are the constraints that make or break a season. Read the full regional walkthrough in [hydroponics in the Intermountain West](/guides/hydroponics-intermountain), explore [hydroponic systems and meters](/products/hydroponics), or map sun and water across your site on [PlantGeo](https://plantgeo.aevani.com/). Build or sell cooling valves, shade hardware, or hydroponic kits? Apply at [Sell on Aevani](/sell) for a flat 8% commission with card processing included and zero listing, monthly, or ad fees.`
 	},
 	{
 		slug: 'a-flat-eight-percent',
 		title: 'The seller fee is a flat 8%',
 		excerpt:
-			'Sellers on Aevani are charged a flat 8% on each sale, with card processing included. There are no listing fees, monthly fees, or ad fees. Payout timing has not been set, so it is not promised.',
+			'Independent seed houses, nurseries, and growing-tool makers pay one flat 8% commission on completed Aevani sales—with card processing included and zero listing, monthly, or ad fees.',
 		metaDescription:
-			'Sellers on Aevani are charged a flat 8% on each sale, with card processing included. There are no listing, monthly, or ad fees. Payout timing is not promised.',
+			'Sellers on Aevani pay a flat 8% commission on each completed sale, with card processing included and zero listing, monthly, or ad fees.',
 		publishedAt: '2026-11-09T00:00:00.000Z',
 		tags: ['Aevani', 'seller fees', 'marketplace'],
 		sources: [
 			{ label: 'Sell on Aevani', href: 'https://aevani.com/sell' },
-			{ label: 'Aevani homepage', href: 'https://aevani.com' },
-			{ label: 'PlantGeo', href: 'https://plantgeo.aevani.com' },
+			{ label: 'Aevani growing guides', href: 'https://aevani.com/guides' },
+			{ label: 'PlantGeo site planner', href: 'https://plantgeo.aevani.com' }
+		],
+		body: `Marketplace fees have a way of arriving in pieces. There is a base commission, then a payment processing cut, then a per-item listing charge, then a monthly subscription just to keep your catalog online, and finally a promoted-listing tax if you want anyone to find your shop in search. By the time a small nursery, seed saver, or toolmaker finishes doing the math at year-end, the headline percentage on the brochure rarely matches what stayed in the farm account.
+
+The honest alternative is a single number—and a short, stubborn list of what is never stacked on top of it:
+
+- **8% flat commission on completed sales**
+- **Card processing included** (absorbed by Aevani, never tacked on at settlement)
+- **$0 listing fees**
+- **$0 monthly subscription fees**
+- **$0 ad fees**
+
+If you list a $50 heirloom seed box or a $180 broadfork on Aevani, you keep 92% before your own shipping costs. You do not have to mark packet prices up to feed an internal ad auction, and quiet winter months between growing seasons never burn cash in monthly storefront rent.
+
+## Why sellers own shipping, returns, and warranties
+
+Growing supplies do not behave like phone cases. Bare-root perennials, live starts, bulk compost amendments, heirloom seed packets, and welded Dutch-bucket frames each have completely different weight breaks, temperature sensitivity, and return realities. Rather than forcing specialty growers into a one-size-fits-all site template, each seller publishes their own shipping windows, carrier terms, return policies, and hardware warranties directly on every listing so buyers know what to expect before checkout.
+
+## Built beside PlantGeo—always for real growers and makers
+
+While growers read free [field guides](/guides) and sketch beds, greenhouses, and windbreaks on [PlantGeo](https://plantgeo.aevani.com/), independent sellers remain the center of Aevani. Whether you breed regional seeds, forge hand tools, assemble solar drip kits, or fabricate aquaponic and hydroponic hardware, our [seller application](/sell) takes just a few minutes. Tell us what you grow or build, and we follow up directly by email.`
+	},
+	{
+		slug: 'dwc-vs-kratky-vs-nft',
+		title: 'DWC vs. Kratky vs. NFT: Which First Hydroponic Setup Fits Your Kitchen or Spare Room?',
+		excerpt:
+			'Compare passive Kratky tubs, bubbling Deep Water Culture, and Nutrient Film channels side by side so you buy hardware once and keep roots bright white.',
+		metaDescription:
+			'Hands-on comparison of Kratky, Deep Water Culture (DWC), and Nutrient Film Technique (NFT) hydroponics for home growers—oxygen, summer heat, crop choice, and gear.',
+		publishedAt: '2026-10-18T00:00:00.000Z',
+		tags: ['hydroponics', 'Kratky', 'DWC', 'NFT', 'buyer guides'],
+		sources: [
 			{
-				label: 'Aevani affiliate program (live page; terms not settled)',
-				href: 'https://aevani.com/affiliate/join'
+				label:
+					'Kratky, B.A. — A Suspended Net-Pot, Non-Circulating Hydroponic Method for Growing Commercial Crops and Leafy Vegetables (UH-CTAHR VC-1)',
+				href: 'https://www3.ctahr.hawaii.edu/oc/freepubs/pdf/VC-1.pdf',
+				datePublished: '2010-09'
+			},
+			{
+				label:
+					'Tyson, Hochmuth, and Cantliffe — Hydroponic Vegetable Production in Florida (UF/IFAS HS405)',
+				href: 'https://ask.ifas.ufl.edu/publication/HS405/pdf'
+			},
+			{
+				label:
+					'Sharma et al. — Hydroponic Lettuce Production in Controlled Environments (University of Kentucky CCD-CP-63)',
+				href: 'https://ccd.uky.edu/sites/default/files/2026-02/ccd-cp-63_hydrolettuce-updated_accessible.pdf'
+			},
+			{
+				label: 'Cornell University CEA Program — Hydroponic Lettuce Handbook',
+				href: 'https://cpb-us-e1.wpmucdn.com/blogs.cornell.edu/dist/8/8824/files/2019/06/Cornell-CEA-Lettuce-Handbook-.pdf'
 			}
 		],
-		body: 'Marketplace fees have a way of arriving in pieces. There is a commission, and then a payment fee, and then a listing fee, and then a monthly fee for the privilege of remaining listed, and then a promotion fee for being seen at all. By the time a maker has added them up, the number on the marketing page is no longer the number that will leave the sale. The honest version is a single figure, and a short list of what is not added later.\n\nAevani\'s seller fee is a flat 8% on each sale. Card processing is included, and absorbed by Aevani. There are no listing fees, no monthly fees, and no ad fees. That is the whole published rate, and it can be quoted in a conversation with a grower or a maker who is deciding whether to apply. It should also be written, in type large enough to be the argument, on the page where they apply.\n\nThis is not a comparison with anyone else\'s schedule. Other platforms publish their own fees, and those pages change. Aevani is not going to win a seller by narrating a competitor\'s price list, and it is not going to invent a savings figure against a shop the seller already uses. The useful fact is narrower: if you sell on Aevani, the take from the sale is 8%, and the card fee is not an extra line.\n\nWhat the rate does not yet include is a promise about when the money moves. Payout timing has not been set. A page that says "monthly," or "after delivery," or "once you hit fifty dollars," is writing a term that does not exist. The application form should not imply one, and neither should a recruiter. When the timing is set, it should appear next to the 8%, in the same plain type, and not before.\n\nThe same discipline applies to referrals. A later path will let [PlantGeo](https://plantgeo.aevani.com) affiliates invite someone to plan a site and then send them to Aevani. Aevani would pay that referral share from its own margin, only on completed retail sales, and never for recruiting someone into the program. Affiliates would not be sub-affiliates on Amazon, Etsy, or eBay links. The share itself has not been set. Until it is, there is no rate to quote, and there is no application to accept. Direct sellers remain the core of the marketplace. They have a fee. The referral path has a description and a blank where the number will go.\n\nThere is, today, a public affiliate page on aevani.com that still describes a tiered commission, a cookie window, a payout minimum, instant approval, and a platform fee on top of the sale. That page is ahead of the terms, and it conflicts with the 8% rate. It should come down, or be replaced with a short notice that the referral program is not open, before anyone is invited to join it. A rate that has not been agreed is not a marketing asset. It is a draft that escaped.\n\nNone of this is a claim that 8% is the right number for every marketplace. It is the number Aevani is offering to its first sellers. The rest of the commercial picture \u2014 who ships, who handles a return, what a warranty says \u2014 will have to be written on the listing, by the seller, once there is a listing. Site-wide shipping promises and no-fuss guarantees do not belong on a shop that cannot complete a cart.\n\nIf you grow or make something that belongs here, the application is the next step, not a pricing negotiation in a thread. The fee is 8%, processing is included, and there are no other fees. When you get paid has not been written yet, and so you will not find it on the page.'
+		body: `Walk into any spare-room grow or sunlit kitchen counter and you will usually find one of two scenes: thriving leaf lettuce that cost next to nothing to raise, or a cloudy plastic tote full of brown, slimy tomato roots. Almost every beginner setback in indoor hydro comes down to buying a setup engineered for 35-day lettuce and asking it to carry a thirsty, heavy-rooting fruiting plant for four months.
+
+Here is how the three classic starter systems actually behave once you put water, fertilizer, and roots in them.
+
+## 1. Kratky (passive, zero electricity): unbeatable for quick greens, picky about refills
+
+In B.A. Kratky's non-circulating method at the University of Hawaiʻi (CTAHR VC-1), you fill a light-tight tub once, seat net pots so seedling roots barely kiss the solution, and leave it undisturbed. As lettuce drinks, the water level falls naturally—leaving upper roots suspended in damp air where they pull in oxygen without an aquarium pump.
+
+Where beginners trip: topping the tub back to the brim mid-crop drowns those specialized air roots and triggers rot, and setting passive tubs outdoors lets rain overflow the reservoir. For fast 30-to-40-day greens, basil, and baby kale in a cool room, it is the simplest, quietest entry point around. Check our full [Kratky method guide](/guides/kratky-method) before drilling tote lids.
+
+## 2. Deep Water Culture (DWC): one aquarium air pump solves most headaches
+
+Deep Water Culture uses the same light-blocking tub and net pots as Kratky, but adds a reliable air pump and fine-bubble air stone on the bottom. Continuous bubbles keep dissolved oxygen circulating straight through the water column—even when you top up nutrients or when summer spare rooms hit the mid-70s and warm water holds less oxygen.
+
+If you want steady butterhead lettuce harvests, perennial culinary herbs, or even a compact fruiting pepper indoors, aerated DWC is dramatically more forgiving than stagnant water. See dissolved-oxygen floors in our [Deep Water Culture guide](/guides/deep-water-culture).
+
+## 3. Nutrient Film Technique (NFT): sleek channels, thin margin for power hiccups
+
+White PVC gullies look clean along a bright wall because roots sit inside a shallow trickle of recirculating solution while the top of the root mat breathes moist channel air. For orderly rows of salad greens and herbs, harvesting and sanitizing channels between cycles is quick.
+
+The catch, noted in UF/IFAS HS405, is twofold: heavy fruiting crops like full-sized tomatoes and cucumbers pack thick root mats that quickly dam narrow channels, and because there is almost no standing water reserve inside the pipe, a tripped GFCI breaker or clogged submersible pump leaves plants wilting within hours on a warm afternoon. Compare capacities in [choosing a hydroponic system](/guides/choosing-hydroponic-system) and our [NFT guide](/guides/nutrient-film-technique).
+
+## Match the bench to your room and crops
+
+- **Zero outlets, cool room, 30-day greens:** Go passive Kratky with light-tight lids and clean net cups.
+- **One outlet, herbs, big lettuce heads, or warm rooms:** Run bubbling DWC with a dependable air pump and calibrated EC/pH meter.
+- **Row after row of greens with backup power habits:** Step into NFT channels—or use drip Dutch buckets for tomatoes and cucumbers.
+
+Ready to build your setup? Browse [hydroponic systems, meters, and pumps](/products/hydroponics) or lay out water and power access in [PlantGeo](https://plantgeo.aevani.com/). Build light-tight tubs, custom manifolds, or hobbyist dosing kits? Open a storefront on [Sell on Aevani](/sell) with a flat 8% commission, card processing included, and zero listing, monthly, or ad fees.`
+	},
+	{
+		slug: 'raised-beds-for-heavy-clay-and-hot-summers',
+		title: 'How to Build a Raised Bed That Works in Heavy Clay and Hot Summers',
+		excerpt:
+			'Skip five-foot-wide boxes you cannot reach across. Practical bed widths, drainage depths over clay, and drip irrigation rules for backyard plots.',
+		metaDescription:
+			'Size backyard raised beds cleanly for reach, drainage over heavy clay, and low-evaporation drip lines using OSU, USU, UF/IFAS, and Cornell extension benchmarks.',
+		publishedAt: '2026-10-25T00:00:00.000Z',
+		tags: ['raised beds', 'soil & compost', 'irrigation', 'buyer guides'],
+		sources: [
+			{
+				label:
+					'Heflebower, Wagner, Gunnell, and Condrat — Raised Bed Gardening (Utah State University Extension)',
+				href: 'https://extension.usu.edu/yardandgarden/research/raised-bed-gardening',
+				datePublished: '2012-02'
+			},
+			{
+				label: 'UF/IFAS Gardening Solutions — Building Raised Beds',
+				href: 'https://gardeningsolutions.ifas.ufl.edu/design/types-of-gardens/building-raised-beds/'
+			},
+			{
+				label:
+					'Schaible, Kopp, and Hoover — Irrigation System Maintenance (Utah State University Extension)',
+				href: 'https://extension.usu.edu/yardandgarden/research/irrigation-system-maintenance/',
+				datePublished: '2021-07'
+			},
+			{
+				label:
+					'Cornell Cooperative Extension St. Lawrence County — How to Build a Raised Garden Bed',
+				href: 'https://stlawrence.cce.cornell.edu/resources/how-to-build-a-raised-garden-bed'
+			}
+		],
+		body: `Most backyard raised-bed regrets happen in the first twenty minutes at the lumber rack. Someone grabs 10-foot boards, screws together a handsome five-foot-wide box in the middle of the lawn, hauls in forty bags of soil mix, and spends the next five summers kneeling on the very compost they paid to keep fluffy just to reach weeds down the middle.
+
+Two straightforward sizing habits—shared across Utah State, Cornell, and Florida extension guides—protect your back, your soil loft, and half your summer water bill.
+
+## Keep width to 3 or 4 feet—no exceptions
+
+Every raised-bed manual lands on human arm reach: if you can work from both long sides, **4 feet wide** is the practical ceiling (or **3 feet** if one edge sits against a fence or house wall). Leave **18 to 24 inches** between beds to kneel cleanly, or widen main paths to **3 to 4 feet** wherever you want a loaded wheelbarrow to clear the corners.
+
+## Pick depth around your native soil below
+
+- **6 to 8 inches** handles shallow greens, radishes, bush beans, and culinary herbs nicely when native soil underneath drains steadily.
+- **10 to 12+ inches** pays off fast when setting frames straight on packed yard clay, coarse gravel, or tree-root turf where spring melt water stands after storms.
+- Remember the summer trade-off: raised boxes drain well and warm sooner in March, which also means they dry out noticeably faster during 95°F July afternoons than in-ground rows.
+
+For soil blends, no-dig cardboard layering over turf, and timber safety notes, read our guides on [raised bed width, depth, and soil](/guides/raised-beds) and [no-dig sheet mulching](/guides/no-dig-sheet-mulch).
+
+## Trade overhead sprinklers for drip under mulch
+
+Waving a hose nozzle at dusk feels relaxing until gusty heat steals half the spray before it cools a root and wet foliage invites mildew overnight. Running simple 1/4-inch emitter line or drip tape along plant rows—tucked beneath 2 inches of clean straw, shredded leaves, or coarse compost—keeps root zones evenly damp without watering path weeds. Adding an inline filter screen and flushing line ends once or twice a season stops hard-water scale from plugging emitters mid-August, as USU Extension's irrigation maintenance bulletin underscores. See full emitter spacing notes in our [soil drip irrigation guide](/guides/soil-drip-irrigation).
+
+## Sketch sun, slope, and hose reach before buying lumber
+
+Walk your yard's summer sun arc and hose layout first on [PlantGeo's interactive 3D map](https://plantgeo.aevani.com/plan/sample-ada-county) so shade from garages or trees doesn't surprise you in May. Ready to break ground? Browse [starter kits and collections](/products?category=kits-collections) and [seeds and growing supplies](/products?category=seeds-supplies)—and if your workshop or nursery builds bed brackets, regional compost blends, or irrigation manifolds, apply at [Sell on Aevani](/sell) for one flat 8% commission with card processing included and zero listing, monthly, or ad fees.`
+	},
+	{
+		slug: 'pre-spring-grower-checklist',
+		title: 'Before You Buy Seed Packets: A Five-Step Pre-Spring Checklist',
+		excerpt:
+			'Stop leggy windowsill seedlings, cooked March trays, and pH drift before planting season hits with five practical bench checks.',
+		metaDescription:
+			'Pre-spring grower checklist: test source-water alkalinity, size LED grow lights by DLI, vent sunny hoop houses early, check frost calendars, and source independent gear.',
+		publishedAt: '2026-11-02T00:00:00.000Z',
+		tags: ['seed starting', 'lighting', 'water', 'season extension'],
+		sources: [
+			{
+				label:
+					'Torres and Lopez — Measuring Daily Light Integral in a Greenhouse (Purdue Extension HO-238-W)',
+				href: 'https://www.extension.purdue.edu/extmedia/HO/HO-238-W.pdf'
+			},
+			{
+				label:
+					'Singh and Dunn — Electrical Conductivity and pH Guide for Hydroponics (Oklahoma State Extension HLA-6722)',
+				href: 'https://extension.okstate.edu/fact-sheets/print-publications/hla/hydroponics-hla-6722.pdf'
+			},
+			{
+				label: 'USDA Agricultural Research Service — 2023 Plant Hardiness Zone Map',
+				href: 'https://planthardiness.ars.usda.gov/'
+			},
+			{
+				label: 'Utah State University Extension — Utah Vegetable Planting Date Calculator',
+				href: 'https://extension.usu.edu/yardandgarden/utah-planting-date-calculator'
+			}
+		],
+		body: `January seed catalogs land right when winter cabin fever peaks, which is why so many indoor trays wind up pale, four inches tall, and leaning desperately toward a chilly kitchen pane by February. Before tearing open fresh packets—or ordering an oversized lighting kit—run five quick checks across your water, lights, and shelters.
+
+## 1. Check your tap or well water before buying fertilizer bottles
+
+Hard well water and alkaline city supplies silently push liquid nutrients out of range. Oklahoma State Extension (HLA-6722) warns that elevated starting EC or high carbonate alkalinity forces pH upward day after day, locking iron and phosphorus away from seedling roots even when bottle ratios look spotless on paper. One quick baseline test (detailed in our [source-water testing guide](/guides/source-water-testing)) tells you whether straight tap water is fine, needs mild acid adjustment, or mixes best with captured rainwater.
+
+## 2. Ignore inflated "watt-equivalent" stickers—size lights for DLI
+
+Box labels shout 1000W equivalents that measure little useful leaf light. Purdue Extension (HO-238-W) frames indoor output cleanly via **Daily Light Integral (DLI)**—the total stream of photosynthetic photons landing on foliage over your timer's run hours. A crisp, cool-running LED bar mounted a few inches cleanly above trays—guided by our [indoor lighting and DLI guide](/guides/indoor-lighting-dli) and [soilless seed-starting guide](/guides/soilless-seed-starting)—grows sturdy seedlings instead of stretched stems reaching for a distant ceiling bulb.
+
+## 3. Respect how fast a closed hoop house overheats on a sunny 45°F day
+
+It surprises backyard growers and small market gardens every single spring: overnight frost lingers at 28°F, so you latch the plastic hoop house shut—and a calm, bright March noon turns the inside into a heat trap well above 100°F. Review simple venting habits and side-curtain timing in our [high tunnels and hoop houses guide](/guides/high-tunnels-hoop-houses) and [season-extension covers guide](/guides/season-extension-covers-frames) before leaving flats zipped up while you go to work.
+
+## 4. Never mistake a USDA Hardiness Zone for a spring planting calendar
+
+The 2023 USDA Plant Hardiness Zone Map averages 30 years of lowest *winter* nights—indispensable when picking perennial fruit trees, berry canes, and garlic, not for deciding when May warm-season transplants survive outdoors. Always pair your zone with local spring frost calculators (such as USU Extension's planting date tool) highlighted in our [frost dates and hardiness guide](/guides/frost-dates-hardiness).
+
+## 5. Map your site early and source from independent makers
+
+Sketch winter shadows, terrace slopes, and spigot reach on [PlantGeo](https://plantgeo.aevani.com/) before ordering beds or bulk flats. Browse gear across [Aevani's growing categories](/products)—and if your seed house, nursery, or fab shop sells regional seeds, heat mats, or irrigation hardware, apply at [Sell on Aevani](/sell) to list under a flat 8% commission with card processing included and zero listing, monthly, or ad fees.`
+	},
+	{
+		slug: 'cycling-your-first-aquaponics-loop',
+		title:
+			'The Patient First Month of Backyard Aquaponics: Cycling Your Biofilter Without Losing Fish',
+		excerpt:
+			'Why adding fish on day one wrecks new aquaponics loops—and how a four-to-six-week fishless cycle builds biofilter bacteria that keep fish alive.',
+		metaDescription:
+			'Cycle a backyard aquaponics biofilter safely over 4 to 6 weeks using FAO Technical Paper 589 ranges for ammonia, nitrites, pH 6.8–7.0, and dissolved oxygen.',
+		publishedAt: '2026-11-09T00:00:00.000Z',
+		tags: ['aquaponics', 'water', 'biofilter', 'beginner guides'],
+		sources: [
+			{
+				label:
+					'Somerville, Cohen, Pantanella, Stankus, and Lovatelli — Small-Scale Aquaponic Food Production (FAO Fisheries Technical Paper No. 589)',
+				href: 'https://www.fao.org/4/i4021e/i4021e.pdf'
+			},
+			{
+				label:
+					'University of Arizona Cooperative Extension — Aquaponics Basics: How Fish, Plants, and Microbes Work Together',
+				href: 'https://www.extension.arizona.edu/publication/aquaponics-basics-how-fish-plants-and-microbes-work-together'
+			},
+			{
+				label: 'DeLong and Losordo — How to Start a Biofilter (SRAC Publication No. 4502)',
+				href: 'https://srac.msstate.edu/pdfs/Fact%20Sheets/4502%20How%20to%20Start%20a%20Biofilter.pdf',
+				datePublished: '2012-02'
+			}
+		],
+		body: `There is a classic backyard aquaponics mistake that plays out every spring: someone spends two Saturday afternoons cutting and plumbing an IBC tote, washes expanded clay pebbles until their knuckles sting, fires up the pump, and drives straight to the hatchery or pond shop so the fish tank "looks finished." Five days later, the water smells sharp, fish gasp at the surface, and half the tank is dead.
+
+Nothing went wrong with the plumbing. The invisible middle crew just had not moved into the grow bed yet.
+
+## Fish don't feed greens directly—nitrifying bacteria bridge the loop
+
+Every aquaponic setup is a three-partner team: fish, beneficial microbes, and plants. Fish gills and waste release toxic ammonia (**NH₃ / NH₄⁺**). Inside wet gravel, expanded clay, or biofilter media, *Nitrosomonas*-type bacteria oxidize ammonia into **nitrite** (still harmful to fish), and *Nitrobacter*-group bacteria convert nitrite into **nitrate**—the safe nitrogen greens absorb smoothly.
+
+According to the FAO's *Small-Scale Aquaponic Food Production* manual (Technical Paper No. 589), establishing an active biofilm dense enough to clear daily fish waste normally takes **4 to 6 weeks**. Dropping fish into brand-new water on day one forces livestock to swim inside their own spiking ammonia and nitrite before bacteria exist to process it.
+
+## How a calm fishless cycle runs
+
+Instead of risking live fish to feed new biofilter media, circulate aerated water and dose small measured amounts of pure, unscented ammonia while checking water daily with a standard freshwater test kit:
+
+- **Weeks 1–2:** Dose to roughly 2–3 mg/L ammonia, run steady aeration, and keep water temperatures comfortable (cold garage or winter air slows bacterial growth noticeably).
+- **Weeks 2–4:** Watch daily ammonia fall while **nitrite** spikes vivid purple—proof colony one has settled onto your media.
+- **Weeks 4–6:** Wait until a fresh test dose converts all the way down to **zero ammonia and zero nitrite** within 24 hours, showing measurable **nitrate** instead. Only then transplant greens and introduce hardy fish slowly.
+
+See detailed cycling tables and startup ratios in our [aquaponic biofilter cycling guide](/guides/aquaponic-biofilter-cycling) and [small-scale aquaponics overview](/guides/small-scale-aquaponics).
+
+## Hold the pH truce and never skimp on aeration
+
+Aquaponics always balances three distinct preferences: fish stay comfortable near pH 6.5–8.5, nitrifiers prefer slightly above 7.0 and slow sharply below 6.0, and greens absorb micronutrients best around 6.0–6.5. Aiming right down the middle at **pH 6.8 to 7.0** keeps every partner productive without frantic swings, alongside continuous bubbling aeration (FAO targets **5 mg/L or higher** dissolved oxygen). Respect stocking limits too—FAO's conservative small-scale ceiling sits around **20 kg of fish per 1,000 liters** of system volume paired with balanced grow beds.
+
+Compare media beds, floating rafts, and NFT channels in [aquaponic system types](/guides/aquaponic-system-types) and match species to real seasonal water temperatures in [aquaponic fish species](/guides/aquaponic-fish-species) and map greenhouse or shed utility zones on [PlantGeo](https://plantgeo.aevani.com/). Browse [aquaponics tanks, siphons, and water test kits](/products/aquaponics)—or if you fabricate bell siphons, media frames, or solids filters, apply at [Sell on Aevani](/sell) for a flat 8% commission with card processing included and zero listing, monthly, or ad fees.`
 	}
 ];
 
@@ -109,16 +356,38 @@ export function cornerstoneEssayBySlug(slug: string): CornerstoneEssay | undefin
 	return bySlug.get(slug);
 }
 
-/** Paragraphs, emphasis, and markdown links only. The blog renderer sanitizes the result. */
+function formatEssayInline(text: string): string {
+	return text
+		.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+|\/(?!\/)[^)\s]+)\)/g, '<a href="$2">$1</a>')
+		.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+		.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+}
+
+/** Semantic blog blocks (headings, lists, emphasis, bold, links). The blog renderer sanitizes the result. */
 export function cornerstoneEssayHtml(body: string): string {
 	return body
 		.trim()
 		.split(/\n\s*\n/)
-		.map((paragraph) => {
-			const html = paragraph
-				.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+|\/(?!\/)[^)\s]+)\)/g, '<a href="$2">$1</a>')
-				.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
-			return `<p>${html}</p>`;
+		.map((block) => {
+			const trimmed = block.trim();
+			if (trimmed.startsWith('### ')) {
+				return `<h3>${formatEssayInline(trimmed.slice(4).trim())}</h3>`;
+			}
+			if (trimmed.startsWith('## ')) {
+				return `<h2>${formatEssayInline(trimmed.slice(3).trim())}</h2>`;
+			}
+			const lines = trimmed.split('\n').map((line) => line.trim());
+			if (lines.every((line) => line.startsWith('- '))) {
+				const items = lines.map((line) => `<li>${formatEssayInline(line.slice(2))}</li>`).join('');
+				return `<ul>${items}</ul>`;
+			}
+			if (lines.every((line) => /^\d+\.\s+/.test(line))) {
+				const items = lines
+					.map((line) => `<li>${formatEssayInline(line.replace(/^\d+\.\s+/, ''))}</li>`)
+					.join('');
+				return `<ol>${items}</ol>`;
+			}
+			return `<p>${formatEssayInline(trimmed)}</p>`;
 		})
 		.join('');
 }

@@ -34,7 +34,6 @@ University of Kentucky's 2025 lettuce systems guide gives an example lettuce fer
 
 Other rows exist in OSU’s table, including ornamentals; they are not dumped here because they drown the vegetable decision. How to take the reading, and why official tables do not all agree, belongs on the [EC and pH](/guides/hydroponic-ec-ph-nutrients) page. A [source-water test](/guides/source-water-testing) should happen before anyone chases a table number.
 
-
 ## System pairing
 
 Oregon State University Extension Oregon State's NFT guide (May 2025) again: NFT channels “are best suited for short-lived or small-rooted crops such as herbs and leafy greens.” Florida's greenhouse vegetable production guide, revised in September 2018, says “Lettuce is particularly adapted to NFT because it is a short-term crop and less subject to damage from root rot.” The same publication describes tomato in 4-inch PVC NFT as confining, prone to oxygen problems and Pythium, and says “essentially all PVC tomato growers have since switched to bag or other soilless media culture.” That is the official crop-to-system pairing. The [nutrient film technique](/guides/nutrient-film-technique) guide already told the pipe story; this page is where the pairing becomes the point.
@@ -61,7 +60,6 @@ Forcing tomatoes into a system sized for lettuce is the first (UF’s PVC histor
 
 ## Sources
 
-
 1. Singh, Hardeep, and Bruce Dunn. Oklahoma Cooperative Extension HLA-6722, Table 2. https://extension.okstate.edu/fact-sheets/print-publications/hla/hydroponics-hla-6722.pdf
 2. Tyson, Hochmuth, and Cantliffe. “Hydroponic Vegetable Production in Florida.” UF/IFAS HS405. Original January 2010. https://ask.ifas.ufl.edu/publication/HS405/pdf
 3. UF/IFAS, “Production Systems,” Florida Greenhouse Vegetable Production Handbook, Vol. 3, HS785 / CV263. Revised September 2018. https://ask.ifas.ufl.edu/publication/CV263/pdf
@@ -83,7 +81,7 @@ Tomatoes and butterhead in the same narrow PVC run, one EC, a mid-season root ma
 - [Drip and Dutch-bucket hydroponics](/guides/drip-dutch-bucket) — the official home for long-season fruiting crops.
 - [Hydroponic nutrient disorders: check pH and EC first](/guides/hydroponic-nutrient-disorders) — patterns come after the meter, not instead of the table.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the channel, [plan the land on PlantGeo](https://plantgeo.aevani.com). Catalogue listings, where they appear beside a crop, are a preview and not for sale yet.
+Ready to set up or tune your bench? Browse [hydroponic systems, meters, and pumps](/products/hydroponics), find companion references in the [Learn](/learn) hub, or map structure placement on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to match the crop to the root space you actually have, and to a labeled row in a published table, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

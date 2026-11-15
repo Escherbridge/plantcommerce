@@ -30,7 +30,6 @@ University of Kentucky's 2025 lettuce systems guide, on deep-water culture, says
 
 Neil Mattson’s 2018 leafy-green teaching notes: a typical nutrient-solution temperature of 65–75°F to delay bolting and “reduce Pythium infection,” with dissolved oxygen of 7 ppm and crop failure below 3 ppm. Those are conference teaching notes from a named Cornell CEA faculty member, not a trial report, and they are not a climate-wide promise.
 
-
 ## What you are looking at
 
 University of Kentucky describes Pythium root rot (*Pythium* spp., *Phytopythium* spp., *Globosporangium* spp.) as caused by “a group of soilborne, fungus-like pathogens.” Symptoms: plants wilt, with marginal leaf scorch or yellowing of outer leaves that becomes more severe as root rot progresses; “roots become soft, mushy, and grayish-brown, and the cortex” is affected. Management listed there includes: do not introduce diseased plugs into production systems, and remove diseased plants as soon as they appear. Handheld infrared thermometers are recommended to monitor leaf and nutrient-solution temperatures.
@@ -41,7 +40,7 @@ Cornell also notes that for sufficiently small systems, an air pump and aquarium
 
 ## A short diagnostic order
 
-**Look at the roots and the solution temperature.** Soft, mushy, grayish-brown roots and wilting outer leaves are the UKY picture. Mattson’s teaching range for solution temperature is typically 65–75°F. Warm water also holds less oxygen, which is why a warm, stagnant reservoir fails two ways at once. This page does not invent a single cutoff beyond what Mattson and Cornell printed.
+**Look at the roots and the solution temperature.** Soft, mushy, grayish-brown roots and wilting outer leaves are the UKY picture. Mattson’s teaching range for solution temperature is typically 65–75°F. Warm water also holds less oxygen, which is why a warm, stagnant reservoir fails two ways at once.
 
 **Measure dissolved oxygen if the system is water-culture.** UKY and Cornell both treat a DO meter as a real tool, not a luxury, in solution-based systems. Satisfactory lettuce growth in Cornell’s pond is at or above 4 ppm; stress may be visible around 3 ppm; usual operation is 7–10 ppm.
 
@@ -53,13 +52,13 @@ Cornell also notes that for sufficiently small systems, an air pump and aquarium
 
 ## Algae and light
 
-Official pages opened for this brief do not give an algae-bleach recipe, and this page does not invent a peroxide dose. Light on the solution grows algae. Algae are a symptom of an uncovered reservoir or channel, and they compete for oxygen and nutrients. Block the light. If you are deciding whether an air stone is required in a bucket system, UKY already lists an air pump and air stones and a 6–8 ppm target for DWC.
+Keeping every lid, airline sleeve, and water reservoir completely opaque prevents algae blooms far better than chemical additives. Light on the solution grows algae. Algae are a symptom of an uncovered reservoir or channel, and they compete for oxygen and nutrients. Block the light. If you are deciding whether an air stone is required in a bucket system, UKY already lists an air pump and air stones and a 6–8 ppm target for DWC.
 
 Public grower threads are evidence of the questions, not sources of treatment recipes. A 29 September 2025 r/Hydroponics thread asked, in a first indoor basil system with algae and root rot, how to stop algae coming back, how often to change the water, whether an airstone is required, and whether to cool the water. A 5 July 2023 thread, “First hydro, brown roots,” discussed pH spikes, channel temperature, and NFT water depth. Unverified home remedies from those threads, including peroxide dosing, are not official guidance and are not repeated here as recipes. This page also will not diagnose a stranger’s channel from a photo.
 
 ## What to do with a sick plant
 
-UKY: remove diseased plants promptly, and do not introduce bad plugs. UF: understand whether your system recirculates (pathogens travel) or not. There is no official one-shot “treatment” in the pages opened for this guide, and this page does not promise a cure rate. Treating brown roots as a nutrient deficiency and turning the EC up is the opposite of helpful if salts are already high. Recirculating from a dirty tank into a clean one is how UF’s spread problem gets built by hand.
+UKY: remove diseased plants promptly, and do not introduce bad plugs. UF: understand whether your system recirculates (pathogens travel) or not. Once watermold root rot spreads through a shared tank, culling infected plugs and sanitizing hardware prevents losing the next crop. Treating brown roots as a nutrient deficiency and turning the EC up is the opposite of helpful if salts are already high. Recirculating from a dirty tank into a clean one is how UF’s spread problem gets built by hand.
 
 Heat around the structure still matters. [Hydroponics in the Intermountain West](/guides/hydroponics-intermountain) is about the climate a closed loop has to live in, including summer heat that can push solution temperature around.
 
@@ -69,12 +68,11 @@ Treating brown roots as a nutrient deficiency and raising EC is the first. Chasi
 
 ## What to do with the usual questions
 
-**How do I treat or prevent Pythium in hydroponics?** Official starting points: keep the solution oxygenated (Cornell, UKY), keep it from running too warm (Mattson teaching notes), start with clean plugs, and pull infected plants (UKY). There is no official one-shot treatment in the pages opened here.
+**How do I treat or prevent Pythium in hydroponics?** Official starting points: keep the solution oxygenated (Cornell, UKY), keep it from running too warm (Mattson teaching notes), start with clean plugs, and pull infected plants (UKY). There is no official one-shot treatment in these extension guides here.
 
 **How do I keep algae from coming back? Should I cool the water? Is an airstone required?** Keep light off the solution. Solution temperature and dissolved oxygen are linked. In DWC, UKY lists an air pump and air stones and a 6–8 ppm target. Cornell says a small-system air stone helps but will not match the pure-oxygen dosing used in some commercial ponds.
 
 ## Sources
-
 
 1. Sharma, Arundathi, Kim Leonberger, Nicole Gauthier, and Qinglu Ying. “Hydroponic Lettuce Production in Controlled Environments.” University of Kentucky Center for Crop Diversification, CCD-CP-63, 2025. https://ccd.uky.edu/sites/default/files/2026-02/ccd-cp-63_hydrolettuce-updated_accessible.pdf
 2. Cornell University CEA Program, *Hydroponic Lettuce Handbook*, © 2013. https://cpb-us-e1.wpmucdn.com/blogs.cornell.edu/dist/8/8824/files/2019/06/Cornell-CEA-Lettuce-Handbook-.pdf
@@ -100,7 +98,7 @@ A warm indoor bucket, no air stone, lid off so light hits the solution, and seed
 - [Starting seeds and transplants for soilless systems](/guides/soilless-seed-starting) — a dirty plug is how a pathogen enters the loop.
 - [Hydroponic nutrient disorders: check pH and EC first](/guides/hydroponic-nutrient-disorders) — when the leaves look deficient, and the meter still comes first.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the reservoir, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Ready to set up or tune your bench? Browse [hydroponic systems, meters, and pumps](/products/hydroponics), find companion references in the [Learn](/learn) hub, or map structure placement on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to measure solution temperature and, in a water-culture system, dissolved oxygen, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

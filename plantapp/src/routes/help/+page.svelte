@@ -13,22 +13,23 @@
 			<p class="font-mono text-xs font-semibold tracking-widest text-secondary uppercase">
 				Support
 			</p>
-			<h1 class="font-display text-4xl tracking-tight uppercase md:text-5xl">
-				Help center in review
-			</h1>
+			<h1 class="font-display text-4xl tracking-tight uppercase md:text-5xl">How to get help</h1>
 			<p class="text-lg text-base-content/70">
-				Aevani has not yet published a verified searchable help center, product-support workflow,
-				order-support workflow, shipping or return guidance, affiliate support program, consultation
-				booking service, or article metrics.
+				Looking for practical crop answers, seller onboarding terms, or technical help with a guide
+				or listing? Reach us directly or jump straight to our growing library.
 			</p>
-			<div class="rounded-2xl border border-warning/30 bg-warning/10 p-6 text-base-content/80">
-				The former categories, article counts, and booking controls were template content.
-				Product-specific documentation will be published only after the catalog and support
-				workflows are verified.
+			<div class="rounded-2xl border border-base-300 bg-base-200/50 p-6 text-base-content/80">
+				Independent sellers set shipping, return, and warranty terms per listing, and our growing
+				guides link straight to equipment categories and primary university extension references.
 			</div>
-			<a href="/support" class="font-display btn tracking-wider uppercase btn-primary"
-				>Review support status</a
-			>
+			<div class="flex flex-wrap gap-3">
+				<a href="/guides" class="font-display btn tracking-wider uppercase btn-primary"
+					>Browse growing guides</a
+				>
+				<a href="/contact" class="font-display btn tracking-wider uppercase btn-outline"
+					>Contact Escherbridge</a
+				>
+			</div>
 		</div>
 	</Container>
 </Section>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { GuideDocument } from '$lib/content/research';
 	import GuideCopy from './GuideCopy.svelte';
+	import GuideFunnel from './GuideFunnel.svelte';
 
 	let { guide }: { guide: GuideDocument } = $props();
 </script>
@@ -13,5 +14,6 @@
 	</nav>
 	<article class="max-w-3xl">
 		<GuideCopy blocks={guide.blocks} />
+		<GuideFunnel />
 	</article>
 </main>

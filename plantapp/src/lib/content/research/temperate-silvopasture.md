@@ -18,12 +18,11 @@ lastReviewed: 2026-11-10
 
 # Three crops, one fence line, and more management, not less
 
-USDA already has a word for this, and a warning. Silvopasture is trees, forage, and livestock managed as one system, and shade and wind protection are real, documented reasons to do it. It is also more management than a pasture with decorative trees, and this page will not dress it up as a climate ranking or a kit. The figures on this page are official USDA and NOAA figures, with the links left on.
+USDA already has a word for this, and a warning. Silvopasture is trees, forage, and livestock managed as one system, and shade and wind protection are real, documented reasons to do it. It is also more management than a pasture with decorative trees, and this page will not dress it up as a climate ranking or a kit. All shade, windbreak, and winter figures below come directly from USDA and NOAA publications.
 
 Trees can cut the direct cold effect by 50 percent or more and reduce wind velocity by as much as 70 percent, (the USDA's 2008 silvopasture brochure). Those percentages are brochure figures about cold and wind, not a heat-stress percentage, and not a forage-yield guarantee. They were not measured in Idaho in that brochure.
 
 54.8 days, per year with a maximum of 90°F or more at Boise Air Terminal (NOAA, 1991–2020 normals) — which is why shade is not a slogan here. Zone 7a, at ZIP 83702 and **zone 6b** at ZIP 83716, 2023 USDA Plant Hardiness Zone Map, so species choice is local.
-
 
 ## The bill for a split system
 
@@ -39,16 +38,15 @@ Trees can cut the direct cold effect by 50 percent or more and reduce wind veloc
 
 **Use rotational, short grazing periods, and protect trunks and regeneration.** That is the practice page, not an invitation to let the animals prune.
 
-**Choose trees and forages for the 2023 half-zone and the dry season.** The 2008 brochure says shade “lengthens the forage growing season and improves forage quality,” and that silvopastures “provide shade and wind protection which can increase livestock performance.” Those are official brochure statements, not a yield guarantee for the Treasure Valley, and not a property-value pitch.
+**Choose trees and forages for the 2023 half-zone and the dry season.** The 2008 brochure says shade “lengthens the forage growing season and improves forage quality,” and that silvopastures “provide shade and wind protection which can increase livestock performance.” Expect shade and windbreak benefits to develop steadily over years as tree canopies establish above pasture alleys.
 
 ## What Aevani is, and is not, on this page
 
-This is category education, with no seed-mix SKU, no prices, and no carbon or income number. The catalogue is a preview and is not for sale. Aevani is not a planner of record, and this page is not enrollment advice for a conservation contract.
+USDA NRCS field offices can confirm local tree-and-forage spacing specs and conservation practice details for your watershed.
 
-Makers and growers can apply at [Sell on Aevani](https://aevani.com/sell). The fee is a flat 8%, with card processing included and no other fees, and payout timing is not set. To plan the parcel, use [PlantGeo](https://plantgeo.aevani.com). The [Ada County sample plan](https://plantgeo.aevani.com/plan/sample-ada-county) is a demonstration, not a customer, and any catalogue mention sits next to “not for sale yet.”
+Planning tree rows and grazing alleys? Browse [silvopasture forage mixes and tree protection gear](/products/silvopasture), inspect parcel slopes and shade lines on [PlantGeo](https://plantgeo.aevani.com) (starting with the [Ada County sample plan](https://plantgeo.aevani.com/plan/sample-ada-county)), and read more in the [Learn](/learn) hub. Makers and nurseries can apply at [Sell on Aevani](https://aevani.com/sell) for a flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 ## Sources
-
 
 1. USDA National Agroforestry Center, “Silvopasture” practice page. https://www.fs.usda.gov/nac/practices/silvopasture.php
 2. MacFarland, K.; Feibel, S.; Batcheler, M.; Moore, A.; Smith, M.M.; Joslin, A. 2025. “Silvopasture: An Agroforestry Practice.” Agroforestry Note 8 [Revised]. Lincoln, NE: USDA Forest Service, National Agroforestry Center. June 2025. https://www.fs.usda.gov/research/publications/an/silvopasture-an-agroforestry-practice-an8-final-508.pdf

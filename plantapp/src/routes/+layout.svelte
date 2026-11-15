@@ -318,7 +318,9 @@
 				<div class="newsletter-row">
 					<div class="newsletter-copy">
 						<p class="newsletter-blurb">
-							A monthly field note is planned. Sign-up is not open yet.
+							New growing guides and field notes go straight to the
+							<a class="link underline" href="/blog">Field Notes blog</a> and
+							<a class="link underline" href="/feed.xml">RSS feed</a>.
 						</p>
 					</div>
 				</div>

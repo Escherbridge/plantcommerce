@@ -1,5 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { demoProducts } from '$lib/server/db/catalogDemo';
+import { cornerstoneEssays } from '$lib/content/essays';
 import { publishedGuideSectors, writingSitemapPaths } from '$lib/content/writing';
 import { SITE_URL, publicIndexablePaths } from '$lib/config/site';
 
@@ -11,8 +12,7 @@ const publishedEditorialPaths = [
 	'/blog/introduction-to-aquaponics',
 	'/blog/what-is-silvopasture',
 	'/blog/monoculture-to-polyculture',
-	'/blog/cooling-can-use-more-water-than-the-crop',
-	'/blog/a-flat-eight-percent'
+	...cornerstoneEssays.map((essay) => `/blog/${essay.slug}`)
 ] as const;
 
 export const _publicSitemapRoutes = publicIndexablePaths;

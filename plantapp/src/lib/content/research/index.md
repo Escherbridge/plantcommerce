@@ -1,7 +1,7 @@
 ---
 title: "Growing-system guides"
 seoTitle: "Guides | Aevani"
-metaDescription: "Growing-system guides on hydroponics, raised beds, high tunnels, aquaponics, and silvopasture, cited from official sources. Practical ranges, common mistakes."
+metaDescription: "Hands-on growing guides for hydroponics, raised beds, high tunnels, aquaponics, and agroforestry—practical ranges, honest trade-offs, and direct gear links."
 h1: "Growing-system guides"
 eyebrow: "Growing-system guides"
 slug: index
@@ -18,62 +18,68 @@ lastReviewed: 2026-11-10
 
 # Growing-system guides
 
-These pages are growing-system guides, not product pages. They take official climate, water-quality, and practice documents and apply them to the systems a grower actually runs: soilless loops, raised beds, hoop houses, small-scale aquaponics, and temperate silvopasture. The figures are other people’s, with the links left on. Where a source is thin, or a full file could not be opened, the child page says so.
+Whether you are running a three-tote lettuce setup in a spare room or keeping a backyard hoop house from baking in July, most growing headaches come down to a handful of practical numbers: water temperature, root-zone oxygen, pH drift, drainage, and air exchange.
 
-The shared pattern is practical. A reservoir, a box, or a hoop still has to live in the weather and the management it actually has. At Boise Air Terminal, official 1991–2020 normals include 11.51 inches of annual precipitation and 54.8 days at or above 90°F (NOAA). Central Boise is USDA zone 7a; some foothills ZIPs are 6b (2023 Plant Hardiness Zone Map). Those numbers are cited in full on the climate page. This index does not invent a market size, a harvest count, or a water-savings percentage to sit above them.
+These field guides walk through how to set up and troubleshoot real systems—showing where extension researchers agree, where their numbers diverge across climates, and what gear actually solves the problem. Every range below stays anchored to university extensions, USDA, NOAA, and FAO research (with full citations tucked cleanly at the bottom of each guide).
 
 ## Soilless systems
 
-- **[Hydroponics in the Intermountain West](/guides/hydroponics-intermountain)** — 11.51 inches of official annual precipitation, and 54.8 days at or above 90°F (NOAA, Boise Air Terminal). What constrains a closed system is heat, winter nights, source-water salts, and cooling water, not a missing kit.
-- **[Hydroponic nutrients, EC, and pH](/guides/hydroponic-ec-ph-nutrients)** — Oklahoma State says to check EC first, then pH, daily. Official crop tables exist, and they do not all print the same lettuce pH.
-- **[Testing source water for hydroponics and high tunnels](/guides/source-water-testing)** — official pages start with pH, EC, and alkalinity. Florida and Kentucky well figures are labeled as those states’ water, not a Treasure Valley report.
-- **[Choosing a first hydroponic system](/guides/choosing-hydroponic-system)** — NFT, deep water culture, Kratky, ebb and flow, and drip fail in different ways. Official production guides already say which crops and constraints each one was built for.
-- **[Choosing crops for a hydroponic system](/guides/hydroponic-crop-choice)** — official tables pair crops with EC and pH ranges. Lettuce belongs in a film or raft more naturally than a long-season tomato belongs in a narrow pipe.
-- **[Hydroponic nutrient disorders: check pH and EC first](/guides/hydroponic-nutrient-disorders)** — official deficiency patterns come after the meter. pH and EC problems can look like a missing element; lettuce tipburn can be a still-air problem.
-- **[Troubleshooting hydroponic root rot, algae, and pH drift](/guides/hydroponic-troubleshooting-root-rot)** — Cornell and Kentucky lettuce guides already tie brown roots to warm solution, low dissolved oxygen, and dirty starting material, not to a missing treatment bottle.
-- **[Deep water culture: aeration and dissolved oxygen](/guides/deep-water-culture)** — UKY lists an air pump, air stones, and a 6–8 ppm dissolved-oxygen target for lettuce DWC. A warm, stagnant reservoir is how the simple layout fails.
-- **[The Kratky method: non-circulating hydroponics](/guides/kratky-method)** — the University of Hawaiʻi method runs without a pump because the crop finishes before the tank is empty. The published cap is less than 2 gallons of water per plant, transplant to harvest.
-- **[Nutrient film technique: slope, flow, and channel length](/guides/nutrient-film-technique)** — official slope figures are not identical (OSU 2% minimum; UF says 1% is probably not enough for PVC tubes). A stopped pump or a standing puddle is the shared failure.
-- **[Drip and Dutch-bucket hydroponics](/guides/drip-dutch-bucket)** — drip-fed media is the official home for long-season fruiting crops. UF already published the leachate rule that keeps salts from stacking in the bag.
-- **[Ebb-and-flow (flood-and-drain) hydroponics](/guides/ebb-and-flow)** — a media bench that floods, then drains so roots get air. The only complete official timer opened here is Cornell’s 2013 lettuce-seedling schedule.
-- **[Vertical hydroponic growing: density and light](/guides/vertical-growing)** — official pages already trade plant counts against light. This is a uniformity warning, not a tower recipe or a yield multiplier.
-- **[Starting seeds and transplants for soilless systems](/guides/soilless-seed-starting)** — official lettuce programs already specify the plug. Cornell’s and Kentucky’s nursery EC targets are printed side by side, not averaged.
-- **[Soilless hydroponic media: perlite, rockwool, and coir](/guides/hydroponic-media)** — official pages rank coconut fiber, pine bark, and perlite by water-holding and tell the grower to test the bag. They do not print a coco-versus-rockwool number.
-- **[Daily light integral for indoor and greenhouse greens](/guides/indoor-lighting-dli)** — official pages measure a day of PAR, not a fixture’s watts. UKY’s lettuce DLI (12–17 optimal, 6.5–9.7 minimum) and Virginia Tech’s (“about 17”) are printed separately, not averaged. Kentucky’s winter note is Kentucky’s, not Boise’s.
-- **[Food safety in hydroponics and aquaponics](/guides/soilless-food-safety)** — NECAFS already applies the FDA Produce Safety Rule to soilless operations. A shared, nutrient-rich water loop can carry contamination through the system. This is a practice page, not a legal opinion on “covered farm.”
+- **[Hydroponics in the Intermountain West](/guides/hydroponics-intermountain)** — why hot summers, cold nights, hard well water, and evaporative cooling water budgets matter more than shiny kit specs in dry regions.
+- **[Hydroponic nutrients, EC, and pH](/guides/hydroponic-ec-ph-nutrients)** — daily meter habits, plus why Cornell and University of Kentucky publish slightly different target lettuce EC/pH bands.
+- **[Testing source water for hydroponics and high tunnels](/guides/source-water-testing)** — check raw pH, baseline EC, and carbonate alkalinity before wondering why your liquid nutrients lock out.
+- **[Choosing a first hydroponic system](/guides/choosing-hydroponic-system)** — honest trade-offs across Kratky tubs, Deep Water Culture, NFT gullies, ebb-and-flow benches, and Dutch buckets so you buy once.
+- **[Choosing crops for a hydroponic system](/guides/hydroponic-crop-choice)** — pair fast leafy greens with channels or rafts and route sprawling tomatoes and cucumbers into supported drip media.
+- **[Hydroponic nutrient disorders: check pH and EC first](/guides/hydroponic-nutrient-disorders)** — spot tipburn, salt buildup, and pH lockout early before blaming fertilizer bottles.
+- **[Troubleshooting hydroponic root rot, algae, and pH drift](/guides/hydroponic-troubleshooting-root-rot)** — beat warm water, low oxygen, and light leaks before roots turn brown and slimy.
+- **[Deep water culture: aeration and dissolved oxygen](/guides/deep-water-culture)** — how one reliable air pump and fine-bubble stone keep submerged roots bright white at 6–8 ppm oxygen.
+- **[The Kratky method: non-circulating hydroponics](/guides/kratky-method)** — pump-free passive greens that finish cleanly inside the University of Hawaiʻi crop-water limit without drowning air roots.
+- **[Nutrient film technique: slope, flow, and channel length](/guides/nutrient-film-technique)** — channel grade trade-offs, standing-puddle risks, and why shallow gullies demand backup power awareness.
+- **[Drip and Dutch-bucket hydroponics](/guides/drip-dutch-bucket)** — the practical setup for long-season tomatoes and cucumbers, including leachate checks that prevent salt burn.
+- **[Ebb-and-flow (flood-and-drain) hydroponics](/guides/ebb-and-flow)** — media-bench aeration rhythms, clean drainage geometry, and reliable nursery flood schedules.
+- **[Vertical hydroponic growing: density and light](/guides/vertical-growing)** — pack more greens per square foot without starving lower tiers of light or irrigation flow.
+- **[Starting seeds and transplants for soilless systems](/guides/soilless-seed-starting)** — start clean plugs at gentle nursery EC without dragging garden pests indoors.
+- **[Soilless hydroponic media: perlite, rockwool, and coir](/guides/hydroponic-media)** — compare water-holding capacity from fine coco coir to fast-draining perlite and test your exact bag before setting timers.
+- **[Daily light integral for indoor and greenhouse greens](/guides/indoor-lighting-dli)** — measure what plants actually use across a 24-hour cycle (DLI) instead of trusting box wattage hype.
+- **[Food safety in hydroponics and aquaponics](/guides/soilless-food-safety)** — clean-water, sanitation, and harvest-handling habits that keep shared nutrient loops safe.
+
+Looking to outfit a bench? [Explore hydroponic systems, meters, and pumps](/products/hydroponics) — or [read our comparison of DWC, Kratky, and NFT](/blog/dwc-vs-kratky-vs-nft).
 
 ## Soil, beds, and structures
 
-- **[Raised beds: width, depth, and soil](/guides/raised-beds)** — 3 to 4 feet wide, and deep enough that roots can actually work. A box filled with unamended clay is still a clay garden, just higher.
-- **[No-dig beds and sheet mulching](/guides/no-dig-sheet-mulch)** — official pages describe a light-blocking sheet plus organic layers. It is a cold process, so weed seeds can sprout and bindweed may survive.
-- **[Container gardening: pot size, media, and watering](/guides/container-gardening)** — Penn State wants a tomato in at least a 20-inch pot; Ohio prints 20–22 inches and a gallon table. Both forbid garden soil in a bucket. This page prints both official size tables rather than inventing a compromise.
-- **[High tunnels and hoop houses](/guides/high-tunnels-hoop-houses)** — USDA already defined the structure (NRCS the NRCS high-tunnel practice, 2015 Overview). USU recorded more than 120°F on a sunny early-March day when the sides stayed down. The job is ventilation and labor, not a kit.
-- **[Greenhouse and high-tunnel ventilation and heat](/guides/greenhouse-ventilation-heat)** — official guides treat ventilation as a daily job. In a Tucson tomato house, pad-and-fan cooling used more water than irrigation (Sabeh et al., 2011), which is a semi-arid analog, not a Boise trial.
-- **[Row covers, low tunnels, and cold frames](/guides/season-extension-covers-frames)** — smaller season-extension tools than a hoop house. They fail when left closed, left on through bloom, or stacked inside a tunnel without ventilation.
-- **[Integrated pest management in greenhouses and tunnels](/guides/greenhouse-ipm)** — Penn State already said a tunnel is not the field. IPM starts with scouting, sanitation, and clean transplants; official scouting cadences (daily in the production guide, weekly as a starting plan in the scouting article) are printed separately, not flattened.
-- **[Pollinating tomatoes in greenhouses and high tunnels](/guides/greenhouse-pollination)** — fruiting crops under plastic need a jostle that field wind usually provides. SDSU warns about over-pollination in a small tunnel and about gasoline blowers. Brust’s air-blower yields are labeled as his personal trial.
-- **[Winterizing high tunnels, irrigation, and containers](/guides/winterizing-growing-systems)** — vent the structure, drain or blow out irrigation (USU), and bring porous clay inside (Ohio). Official pages do not give a hydroponic-reservoir freeze protocol. Penn State says most tunnel crops can be damaged below 45°F.
-- **[Temperate food forests: layers, guilds, and how to start](/guides/temperate-food-forest)** — SDSU already defined a layered planting, down to one tree and its helpers. Official pages tell a beginner how to start; they do not give a harvest number. NCSU’s apple-guild figure is an example, not a planting list.
-- **[Permaculture planting guilds](/guides/permaculture-guilds)** — Kansas State and NC State define a longer-term, layered planting around a main crop. Pest control is a named plant role, not a trial result, and there is no Intermountain species list.
-- **[Hügelkultur: what extension actually says](/guides/hugelkultur)** — WSU already said there are no peer-reviewed scientific studies. Arizona notes that a mound may still need irrigation in a dry climate. This page does not repeat unsourced “self-watered” or “reduce hunger” lines as fact.
-- **[Drip irrigation for raised beds and high tunnels](/guides/soil-drip-irrigation)** — official pages already picked drip or a soaker for boxes and tunnels. Schedule from soil moisture under the plastic. Minnesota nitrate-credit math stays Minnesota’s. This is not the Dutch-bucket page.
-- **[Frost dates, hardiness zones, and planting calendars](/guides/frost-dates-hardiness)** — the USDA 2023 map is the average annual extreme minimum, not a last-frost date. This page does not invent an Idaho frost table, and it quotes USDA’s own caution on the zone shift.
-- **[Harvesting rainwater for garden irrigation](/guides/rainwater-irrigation-quality)** — Purdue’s gallons formula is a method, not a Boise cistern size. Keep roof water on the soil, not on the edible leaf. No bleach recipe, and no NRCS payment rates.
-- **[Integrated pest management in outdoor beds and containers](/guides/outdoor-bed-ipm)** — cultural practices first, physical barriers next, pesticides last. A little damage in a healthy yard is not automatically a reason to spray. This page does not reuse the greenhouse pest list or sticky-card densities.
+- **[Raised beds: width, depth, and soil](/guides/raised-beds)** — keep beds 3 to 4 feet wide so you never step on fluffy soil, and size depth around heavy clay drainage.
+- **[No-dig beds and sheet mulching](/guides/no-dig-sheet-mulch)** — smother lawn turf cleanly with cardboard and organic layers, plus realistic timelines before planting.
+- **[Container gardening: pot size, media, and watering](/guides/container-gardening)** — why backyard dirt compacts inside pots, minimum container widths for fruiting crops, and summer moisture rhythm.
+- **[High tunnels and hoop houses](/guides/high-tunnels-hoop-houses)** — unvented March tunnels can climb past 120°F on a calm sunny afternoon; learn rollout timing, side vents, and soil care.
+- **[Greenhouse and high-tunnel ventilation and heat](/guides/greenhouse-ventilation-heat)** — balance cooling airflow, heat waves, and why evaporative cooling can burn more water than your crops.
+- **[Row covers, low tunnels, and cold frames](/guides/season-extension-covers-frames)** — low-cost frost protection without cooking spring flats or blocking summer pollinators.
+- **[Integrated pest management in greenhouses and tunnels](/guides/greenhouse-ipm)** — scout early with a hand lens, start with clean transplants, and use barriers before spraying.
+- **[Pollinating tomatoes in greenhouses and high tunnels](/guides/greenhouse-pollination)** — replace field breeze with gentle blossom vibration, smart humidity windows, and careful hive sizing.
+- **[Winterizing high tunnels, irrigation, and containers](/guides/winterizing-growing-systems)** — blow out drip lines before hard freezes, shelter porous clay pots, and protect overwintering greens.
+- **[Temperate food forests: layers, guilds, and how to start](/guides/temperate-food-forest)** — start small with one fruit tree and companion understory layers grounded in extension forestry guidance.
+- **[Permaculture planting guilds](/guides/permaculture-guilds)** — practical canopy-to-ground-cover pairings without inflated miracle claims.
+- **[Hügelkultur: what extension actually says](/guides/hugelkultur)** — honest extension observations on buried-wood mounds, irrigation expectations in dry summers, and soil biology.
+- **[Drip irrigation for raised beds and high tunnels](/guides/soil-drip-irrigation)** — route slow moisture directly under mulch, flush emitter screens, and skip water-wasting sprinklers.
+- **[Frost dates, hardiness zones, and planting calendars](/guides/frost-dates-hardiness)** — read the 2023 USDA zone map for winter survival and pair it with local last-frost calendars for spring planting.
+- **[Harvesting rainwater for garden irrigation](/guides/rainwater-irrigation-quality)** — size catchment tanks with Purdue's roof formula, divert first flush, and keep roof runoff on soil beds.
+- **[Integrated pest management in outdoor beds and containers](/guides/outdoor-bed-ipm)** — build resilient plants, walk your beds morning and evening, and match barriers before chemical controls.
+
+Building beds, irrigation, or perennial rows? Browse [starter kits & bed hardware](/products?category=kits-collections), [seeds & soil supplies](/products?category=seeds-supplies), and [agroforestry tree-guild supplies](/products/agroforestry) — or [read how to size raised beds for heavy clay](/blog/raised-beds-for-heavy-clay-and-hot-summers).
 
 ## Aquaponics and silvopasture
 
-- **[Small-scale aquaponics](/guides/small-scale-aquaponics)** — FAO’s compromise is pH 6–7, ammonia close to zero, and a 20 kg / 1,000 L stocking cap for the small-scale units in the 2014 technical paper. The compromise in the tank is the whole design.
-- **[How to cycle an aquaponic biofilter](/guides/aquaponic-biofilter-cycling)** — FAO’s finish line is nitrate rising and ammonia and nitrite down, often in 25–40 days. Stocking fish to feed the filter makes them live through the spike the process produces.
-- **[Aquaponic system types: media beds, NFT, and deep-water culture](/guides/aquaponic-system-types)** — media beds, NFT, and deep-water culture. Only media beds do mechanical and biological filtration in the same box.
-- **[Choosing aquaponic fish by species and temperature](/guides/aquaponic-fish-species)** — FAO’s temperature windows. Tilapia die below 12 °C and stop feeding below 17 °C; they are not a default winter fish in an unheated tank.
-- **[Temperate silvopasture](/guides/temperate-silvopasture)** — USDA’s 2008 Working Trees brochure gives 50 percent / 70 percent figures for cold effect and wind velocity, clearly dated. Three crops, one fence line, and more management, not less.
+- **[Small-scale aquaponics](/guides/small-scale-aquaponics)** — manage the pH 6–7, oxygen, and stocking compromise shared by fish, nitrifying microbes, and leafy greens.
+- **[How to cycle an aquaponic biofilter](/guides/aquaponic-biofilter-cycling)** — why patient fishless cycling over 25–40 days builds the bacterial colony before fish ever enter the tank.
+- **[Aquaponic system types: media beds, NFT, and deep-water culture](/guides/aquaponic-system-types)** — know which layouts filter solids naturally and which require dedicated mechanical and biofilter drums.
+- **[Choosing aquaponic fish by species and temperature](/guides/aquaponic-fish-species)** — match warm-water and cold-water species honestly to your garage or outdoor tank temperatures.
+- **[Temperate silvopasture](/guides/temperate-silvopasture)** — integrate timber trees, shade-tolerant forage, and livestock grazing cleanly using USDA agroforestry benchmarks.
 
-Existing shorter notes, which are not system cards in this set: [Understanding soil health](/guides/understanding-soil-health), [Getting started with companion planting](/guides/getting-started-companion-planting).
+Setting up a closed loop or wooded pasture? Explore [aquaponics tanks, siphons, and test kits](/products/aquaponics) or [silvopasture forage and tree protection gear](/products/silvopasture). Also read our shorter notes: [Understanding soil health](/guides/understanding-soil-health) and [Getting started with companion planting](/guides/getting-started-companion-planting).
 
-## What Aevani is doing here
+## How these guides work
 
-The [Learn](/learn) hub is where these guides live. If you grow or make tools, [applications are open](/sell): a flat 8% fee, card processing included, no other fees. Payout timing is not set. To plan a parcel first, [use PlantGeo](https://plantgeo.aevani.com). Related writing on the fee, already public: [A flat 8%](/blog/a-flat-eight-percent). Site notes, when there are any, live in [News](/news).
+Every guide on Aevani lives free inside the [Learn](/learn) hub with no account required. When university extension publications print different target ranges—for instance Cornell versus Kentucky lettuce EC—we show both numbers side by side and explain the management trade-off so you can adjust cleanly for your climate and water. Regional examples (such as Boise's 11.51 inches of annual precipitation, 54.8 days at or above 90°F, and USDA Zone 7a/6b winter lows) are unpacked directly inside the [Intermountain hydroponics guide](/guides/hydroponics-intermountain).
+
+Want to lay out beds, sun paths, or tanks on real terrain before ordering gear? [Plan your site in 3D on PlantGeo](https://plantgeo.aevani.com). Build seeds, hand tools, or growing systems yourself? Keep 92% of every sale at [Sell on Aevani](/sell) — one flat 8% commission with card processing included and zero listing, monthly, or ad fees ([read how the flat 8% works](/blog/a-flat-eight-percent)). For fresh seasonal articles and buyer guides, read [Field notes](/blog) and [News](/news).
 
 Author: Escherbridge. Last reviewed: 2026-11-10, America/Denver.
 

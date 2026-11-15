@@ -14,16 +14,18 @@
 	<Container>
 		<div class="mx-auto max-w-3xl">
 			<h1 class="font-display text-4xl tracking-tight">Field notes</h1>
-			<p class="mt-4 text-lg text-base-content/70">
-				Dated writing from Escherbridge on growing, selling, and the fee. The catalogue is still a
-				preview, and checkout is off.
+			<p class="mt-4 text-lg text-base-content/75">
+				Practical growing stories, side-by-side system comparisons, seasonal prep checklists, and
+				plain-math marketplace notes from Aevani.
 			</p>
 			<p class="mt-4 text-sm">
+				<a class="link link-primary" href="/guides">Growing guides</a>
+				·
+				<a class="link link-primary" href="/products">Explore gear</a>
+				·
+				<a class="link link-primary" href="/sell">Sell on Aevani (flat 8%)</a>
+				·
 				<a class="link link-primary" href="/feed.xml">RSS</a>
-				·
-				<a class="link link-primary" href="/guides">Guides</a>
-				·
-				<a class="link link-primary" href="/news">News</a>
 			</p>
 			<ul class="mt-6 flex flex-wrap gap-2" aria-label="Topics">
 				{#each fieldNoteTopics as topic}

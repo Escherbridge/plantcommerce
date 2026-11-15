@@ -18,9 +18,9 @@ lastReviewed: 2026-11-10
 
 # Hydroponic nutrients, EC, and pH
 
-Soil can hide a mixing mistake for a while. A reservoir cannot. The two numbers that actually run a soilless system are electrical conductivity — a stand-in for the salt load in the water — and pH.
+Soil can hide a mixing mistake for a few days; a hydroponic reservoir broadcasts it within hours. If lettuce leaf tips are crisping at the edges even though the tub looks full, nutrient salt strength (electrical conductivity) or drifting pH is usually fighting your room temperature.
 
-Oklahoma State's hydroponics guide is blunt about that. Check EC first, get it in range, then check pH, at the same time each day. Official crop tables exist, and they do not all print the same lettuce pH or the same tomato EC. This page is about those meter readings, not about a nutrient brand.
+Oklahoma State's hydroponics guide puts daily meter order bluntly: Check EC first, get it in range, then check pH at the same hour every day. University extension crop tables agree on the daily habit, though Cornell and Kentucky print slightly different EC and pH targets across climates—useful benchmarks once you understand what both meters measure.
 
 ## What the meters are telling you
 
@@ -36,7 +36,7 @@ Penn State Extension, updated 2 February 2026, defines hydroponics here as growi
 
 Oklahoma State, Florida, and Cornell all start with the water you already have. A source-water test should include pH, EC, and alkalinity, not a single pH dip. Oklahoma State's acceptable values, in ppm, are sodium under 50, calcium under 150, magnesium bicarbonate under 50, chloride under 140, and sulfate under 100. High-alkalinity water (over 75 ppm) "will cause the pH to increase in the nutrient solutions," so pH has to be checked more often.
 
-Florida asks for a water sample analyzed for pH, carbonates, S, Mg, Ca, and Fe, and notes that most well water in Florida has pH greater than 6.5, with most Florida irrigation water at an EC of 0.5 or less. Those Florida well statements are Florida well statements. They are not Intermountain well chemistry, and this page does not invent a Treasure Valley number to stand in for a lab report.
+Florida asks for a water sample analyzed for pH, carbonates, S, Mg, Ca, and Fe, and notes that most well water in Florida has pH greater than 6.5, with most Florida irrigation water at an EC of 0.5 or less. Those Florida well statements are regional reference points—not Intermountain well chemistry—so test your own tap or well water before mixing a batch.
 
 ## Published crop tables differ, and that is useful
 
@@ -61,7 +61,7 @@ In soilless media, Florida's water-and-nutrient guide says leachate EC "should n
 
 **Mix and set EC, then adjust pH.** That order is Oklahoma State's rule, and it is the one people skip when they chase a pH reading in an unfinished recipe. Once EC is in the crop's published band, or in the lower part of Florida's 1.5–3.5 dS/m delivered range on a young crop, then bring pH into the crop's published band.
 
-**Top up and interpret drift, without inventing a house schedule for reservoir changes.** Official pages opened for this guide do not give a universal daily or weekly dump-and-replace calendar, so this page does not invent one. EC rising often means water is leaving faster than salts; EC falling often means the opposite. If pH keeps climbing, alkalinity is a usual suspect (Oklahoma State's >75 ppm flag), and a single source-water pH reading is not a complete test.
+**Top up and interpret drift, without inventing a house schedule for reservoir changes.** Rather than dumping reservoirs on a rigid calendar, track daily EC and pH movement to spot salt concentration or nutrient uptake. EC rising often means water is leaving faster than salts; EC falling often means the opposite. If pH keeps climbing, alkalinity is a usual suspect (Oklahoma State's >75 ppm flag), and a single source-water pH reading is not a complete test.
 
 ## Common mistakes
 
@@ -74,7 +74,6 @@ Adjusting pH before EC is in range is the first one, because it treats the sympt
 **What EC should I maintain?** Oklahoma State's crop table is one official table (lettuce 1.2–1.8 mS/cm; tomato 2.0–4.0). Florida describes delivered greenhouse solutions usually at 1.5–3.5 dS/m, starting lower on young plants. Cornell lettuce: 1.15–1.25 mS/cm above source water. Subtract the source-water EC.
 
 ## Sources
-
 
 1. Singh, Hardeep, and Bruce Dunn. “Electrical Conductivity and pH Guide for Hydroponics.” Oklahoma Cooperative Extension Service, HLA-6722, October 2016. https://extension.okstate.edu/fact-sheets/electrical-conductivity-and-ph-guide-for-hydroponics.html — PDF: https://extension.okstate.edu/fact-sheets/print-publications/hla/electrical-conductivity-and-ph-guide-for-hydroponics-hla-6722.pdf
 2. Hochmuth, George J., and Robert C. Hochmuth. “Nutrient Solution Formulation for Hydroponic (Perlite, Rockwool, NFT) Tomatoes in Florida.” UF/IFAS, HS796 / CV216. Original October 1990 as SSVEC44; revised April 2001, September 2018, and December 2024. https://ask.ifas.ufl.edu/publication/CV216/pdf
@@ -99,7 +98,7 @@ Related notes: [Understanding soil health](/guides/understanding-soil-health), [
 - [Choosing crops for a hydroponic system](/guides/hydroponic-crop-choice) — official crop rows, not a blended house average.
 - [Hydroponic nutrient disorders: check pH and EC first](/guides/hydroponic-nutrient-disorders) — deficiency patterns come after the meter.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the reservoir, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Ready to set up or tune your bench? Browse [hydroponic systems, meters, and pumps](/products/hydroponics), find companion references in the [Learn](/learn) hub, or map structure placement on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to measure the source water, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

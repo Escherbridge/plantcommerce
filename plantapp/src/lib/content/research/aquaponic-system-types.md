@@ -32,7 +32,7 @@ Irrigation may be flood-and-drain (“adds oxygen to the plant roots and aids in
 
 NFT grow-pipe figures, already cited in the [hydroponic NFT](/guides/nutrient-film-technique) guide: flow “no greater than 1–2 litres/min” per grow pipe; slope “about 1 cm/m”; 11 cm diameter pipes for larger fruiting vegetables or small-scale mixed plantings, 7.5 cm for smaller leafy crops. Label those as aquaponic-pipe figures. Evaporation in NFT is “very low” because water is shielded from the sun; the technique is “far more complicated and expensive than media beds.”
 
-On aquaponic DWC, plants sit in polystyrene sheets with roots hanging in the canal. “This method is the most common for large commercial aquaponics growing one specific crop (typically lettuce, salad leaves or basil).” “The recommended depth is 30 cm to allow for adequate plant root space.” Canal retention time is generally “1–4 hours.” Aeration is vital; the [deep water culture](/guides/deep-water-culture) guide already covers dissolved-oxygen floors, and this page does not invent a second DO target. A “special case” DWC can skip extra filters at “a very low stocking density of fish (i.e. 1–1.5 kg of fish per m3 of fish tank),” relying on roots and canal surfaces for nitrifying bacteria. That is FAO’s low-density variant, not a general stocking rule. The existing stocking guide already holds the water-quality table and the 20 kg / 1,000 litre cap.
+On aquaponic DWC, plants sit in polystyrene sheets with roots hanging in the canal. “This method is the most common for large commercial aquaponics growing one specific crop (typically lettuce, salad leaves or basil).” “The recommended depth is 30 cm to allow for adequate plant root space.” Canal retention time is generally “1–4 hours.” Aeration is vital; the [deep water culture](/guides/deep-water-culture) guide already covers dissolved-oxygen floors, and A “special case” DWC can skip extra filters at “a very low stocking density of fish (i.e. 1–1.5 kg of fish per m3 of fish tank),” relying on roots and canal surfaces for nitrifying bacteria. That is FAO’s low-density variant, not a general stocking rule. The existing stocking guide already holds the water-quality table and the 20 kg / 1,000 litre cap.
 
 ## UVI as the commercial raft picture
 
@@ -54,9 +54,8 @@ Choosing NFT or rafts “because they look commercial,” then omitting the mech
 
 ## Sources
 
-
 1. Somerville, C., Cohen, M., Pantanella, E., Stankus, A. & Lovatelli, A. 2014. *Small-scale aquaponic food production.* FAO Fisheries and Aquaculture Technical Paper No. 589. Chapter 4. https://www.fao.org/4/i4021e/i4021e.pdf
-2. Rakocy, J.E., Bailey, D.S., Shultz, R.C. & Danaher, J.J. “A Commercial-Scale Aquaponic System Developed at the University of the Virgin Islands.” PDF opened 2026-11-10 from https://tag2grow.org/wp-content/uploads/2021/09/UVI-Aquaponics.pdf
+2. Rakocy, J.E., Bailey, D.S., Shultz, R.C. & Danaher, J.J. “A Commercial-Scale Aquaponic System Developed at the University of the Virgin Islands.” Available at https://tag2grow.org/wp-content/uploads/2021/09/UVI-Aquaponics.pdf
 3. University of the Virgin Islands, “Aquaponic Systems.” https://www.uvi.edu/research/agricultural-experiment-station/aquaculture/aquaponic-systems/index.html
 
 ## A situation like this
@@ -72,7 +71,7 @@ A first NFT loop is built without a solids trap because “lettuce already filte
 - [Ebb-and-flow (flood-and-drain) hydroponics](/guides/ebb-and-flow) — a hydroponic fertilizer bench is not FAO’s fish-loop flood-and-drain bed.
 - [Food safety in hydroponics and aquaponics](/guides/soilless-food-safety) — a fish loop has added produce-safety considerations; keep production water off the harvest.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. This page is not a system kit or a live-fish offer. When the question is the parcel rather than the loop, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Building out your system? Browse [aquaponics tanks, siphons, and water-testing gear](/products/aquaponics), check sibling guides in the [Learn](/learn) hub, or plan your lot on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to decide whether the medium will be the filter, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

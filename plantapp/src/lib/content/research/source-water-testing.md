@@ -18,13 +18,13 @@ lastReviewed: 2026-11-10
 
 # Testing source water for hydroponics and high tunnels
 
-People often buy a nutrient bottle and skip the municipal or well report. Official hydroponic and high-tunnel pages already say to test pH, EC, and alkalinity first. pH and alkalinity are related, and they are not the same measurement. A Kentucky typic or a Florida well is a cited example, not your well, and this page does not invent Treasure Valley numbers to sit beside them. It is a water-test guide, not a fertilizer brand and not a second soil-lab explainer.
+People often buy a nutrient bottle and skip the municipal or well report. Official hydroponic and high-tunnel pages already say to test pH, EC, and alkalinity first. pH and alkalinity are related, and they are not the same measurement. A Kentucky typic or a Florida well is a helpful benchmark, not a substitute for testing your own tap or well water.
 
 Oklahoma State's hydroponics guide tells growers to test source water “for pH, electrical conductivity (EC) and alkalinity. Poor-quality water can cause nutrient toxicity or deficiency problems initially or later in production.” The table of acceptable values for common nutrients found in water lists sodium less than 50 ppm, calcium less than 150 ppm, magnesium bicarbonate less than 50 ppm, chloride less than 140 ppm, and sulfate less than 100 ppm. “Alkalinity is a term used to express the concentration of bicarbonate (or carbonate, if pH is above 8.2) in ‘natural’ or uncontaminated waters. Bicarbonate (HCO₃⁻) is alkaline and therefore elevates the pH. High alkalinity water (>75 ppm) will cause the pH to increase in the nutrient solutions.” Check pH more often when the water is high-alkaline. Alkalinity “can be removed by using an acidic fertilizer; adding an acid such as phosphoric acid, citric acid or vinegar; or by reverse osmosis.” One millisiemens per centimeter equals 1,000 microsiemens per centimeter. This page uses that conversion and does not follow a typographical slip in the fact sheet that inverts it.
 
 University of Kentucky's 2025 lettuce systems guide recommends a comprehensive water analysis “prior to developing a nutrient management plan,” covering pH, EC, alkalinity, hardness, macro- and micronutrients, and potentially harmful ions. “In Kentucky, source water is typically alkaline and exhibits a high pH over 7.0, which can interfere with nutrient availability. Therefore, acidification, most commonly with phosphoric, nitric, or sulfuric acid, is often necessary to lower the pH of the irrigation water to the optimal range of 5.5 to 6.0 for nutrient uptake in hydroponic systems for lettuce.” “While pH reflects how acidic or basic the solution is, alkalinity measures the water’s buffering capacity, or its resistance to pH change, and the two should not be confused. Maintaining an alkalinity around 80 ppm (as calcium carbonate) is generally recommended because it provides enough buffering to keep the nutrient solution stable while still allowing growers to adjust pH effectively.” The Kentucky typic and the 5.5–6.0 lettuce target are Kentucky and lettuce, not a universal Intermountain prescription. An exact recipe “must be developed based on the specific test results of the source water.”
 
-Cornell's 2013 lettuce handbook subtracts source-water EC from the target. The handbook’s lettuce target in the opened pages is 1,150–1,250 µS/cm **above source water**, with pH 5.6–6 in that recipe. Always label it as Cornell’s lettuce program, not a universal crop EC. 1 dS/m equals 1 mS/cm; the unit warning also lives on the [EC and pH](/guides/hydroponic-ec-ph-nutrients) sibling.
+Cornell's 2013 lettuce handbook subtracts source-water EC from the target. The handbook’s lettuce target in the extension guides is 1,150–1,250 µS/cm **above source water**, with pH 5.6–6 in that recipe. Always label it as Cornell’s lettuce program, not a universal crop EC. 1 dS/m equals 1 mS/cm; the unit warning also lives on the [EC and pH](/guides/hydroponic-ec-ph-nutrients) sibling.
 
 Florida's tomato nutrient guide, revised in December 2024, tells tomato growers to test well water for pH, carbonates, sulfur, magnesium, calcium, and iron. Most Florida well water in that publication has pH greater than 6.5. That is Florida chemistry. Florida's water-and-nutrient guide (reviewed April 2025) likewise notes that “most Florida irrigation water has an EC of 0.5 or less (dS m⁻¹)” and warns Florida growers not to copy cooler, northern recipes. The converse also holds: a Florida recipe is not automatically an Intermountain one. The [drip and Dutch-bucket](/guides/drip-dutch-bucket) guide uses those leachate rules in context.
 
@@ -32,12 +32,11 @@ Natalie Hoidal, University of Minnesota Extension, “Should you acidify your hi
 
 Penn State Extension (Elsa Sánchez, updated 2 February 2026) states a general hydroponic vegetable pH range of 5.0–7.0 and reminds readers that the pH scale is logarithmic. Crop-specific rows, and how to take the tank reading, belong on the [EC and pH](/guides/hydroponic-ec-ph-nutrients) page and in [choosing crops for a hydroponic system](/guides/hydroponic-crop-choice).
 
-
 ## Alkalinity, in plain language
 
-Alkalinity is buffering capacity: the water’s resistance to a pH change (Kentucky). It is not the same reading as pH. Oklahoma State: water above 75 ppm alkalinity will push solution pH up. Kentucky: around 80 ppm as calcium carbonate is a working buffer for that lettuce program. This page prints both figures and does not invent a single “ideal alkalinity.”
+Alkalinity is buffering capacity: the water’s resistance to a pH change (Kentucky). It is not the same reading as pH. Oklahoma State: water above 75 ppm alkalinity will push solution pH up. Kentucky: around 80 ppm as calcium carbonate is a working buffer for that lettuce program. Stay near the 60–80 ppm alkalinity range if possible so pH buffers smoothly without swinging wildly or locking minerals up.
 
-When a recipe is written “above source,” as Cornell’s lettuce target is, subtract the source-water EC or you will overshoot. Acids named in the official pages above include phosphoric, citric, and vinegar, or reverse osmosis (Oklahoma State), and phosphoric, nitric, or sulfuric (Kentucky, for that lettuce program). This page names those options and does not invent a rate or a product brand.
+When a recipe is written “above source,” as Cornell’s lettuce target is, subtract the source-water EC or you will overshoot. Acids named in the official pages above include phosphoric, citric, and vinegar, or reverse osmosis (Oklahoma State), and phosphoric, nitric, or sulfuric (Kentucky, for that lettuce program). Always test small titration drops in a measured bucket before dosing an entire main tank.
 
 ## Common mistakes
 
@@ -49,10 +48,9 @@ Confusing pH with alkalinity is the first (Kentucky). Treating Florida or Kentuc
 
 **My pH keeps rising in the tank.** Oklahoma State: high-alkalinity water (above 75 ppm) will raise solution pH. Test more often and address alkalinity, not only the pH reading.
 
-**Can I use my well in a high tunnel?** Minnesota: tunnels do not get rain leaching, so salts and pH or alkalinity creep are a documented year-3–4 problem, especially after heavy compost. Test the water and the soil. This page does not invent a local correction rate.
+**Can I use my well in a high tunnel?** Minnesota: tunnels do not get rain leaching, so salts and pH or alkalinity creep are a documented year-3–4 problem, especially after heavy compost. Test the water and the soil.
 
 ## Sources
-
 
 1. Singh, Hardeep, and Bruce Dunn. Oklahoma Cooperative Extension HLA-6722, Table 1 and alkalinity section. https://extension.okstate.edu/fact-sheets/print-publications/hla/hydroponics-hla-6722.pdf
 2. Sharma et al. University of Kentucky CCD-CP-63, 2025. https://ccd.uky.edu/sites/default/files/2026-02/ccd-cp-63_hydrolettuce-updated_accessible.pdf
@@ -74,7 +72,7 @@ A tank mixed to a forum recipe, pH drifting up all week, never a water test, alk
 - [High tunnels and hoop houses](/guides/high-tunnels-hoop-houses) — the structure that does not get rain leaching unless you take the plastic off.
 - [Harvesting rainwater for garden irrigation](/guides/rainwater-irrigation-quality) — a roof is a catchment, not a filter, and official pages still want that water on the soil, not on the leaf.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the well, [plan the land on PlantGeo](https://plantgeo.aevani.com). Catalogue, if it is mentioned, is a preview and not for sale yet.
+Ready to set up or tune your bench? Browse [hydroponic systems, meters, and pumps](/products/hydroponics), find companion references in the [Learn](/learn) hub, or map structure placement on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to send a water sample before blaming the fertilizer, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

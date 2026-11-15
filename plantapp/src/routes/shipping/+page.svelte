@@ -7,7 +7,7 @@
 	<title>Shipping | Aevani</title>
 	<meta
 		name="description"
-		content="Nothing is for sale yet, so Aevani has no site-wide shipping promise. Seller terms are confirmed at checkout."
+		content="Shipping terms on Aevani are set directly by each independent grower or maker and shown clearly on each listing before checkout."
 	/>
 </svelte:head>
 
@@ -20,17 +20,18 @@
 				</p>
 				<h1 class="font-display text-4xl tracking-tight md:text-5xl">Shipping</h1>
 				<p class="max-w-3xl text-lg text-base-content/70">
-					Nothing is for sale yet, so there is nothing to ship. When a real seller lists a product,
-					the shipping terms on that listing are the terms that apply. Aevani does not currently
-					offer a site-wide shipping promise.
+					Independent seed houses, nurseries, and equipment makers ship directly from their own
+					benches and workshops. Because live plants, dry seed packets, and heavy hardware ship
+					differently, shipping rates, carriers, and handling terms are set per seller on every
+					listing and confirmed at checkout.
 				</p>
 			</header>
 
 			<section class="rounded-2xl border border-base-200 bg-base-100 p-6 shadow-sm md:p-8">
 				<h2 class="font-display text-2xl tracking-tight">Set per seller</h2>
 				<p class="mt-3 text-base-content/80">
-					Shipping terms are set by the seller and confirmed at checkout. They are not offered
-					site-wide today.
+					Each seller sets clear shipping windows and rates directly on their product listings
+					rather than squeezing specialty tools into a one-size-fits-all site policy.
 				</p>
 			</section>
 

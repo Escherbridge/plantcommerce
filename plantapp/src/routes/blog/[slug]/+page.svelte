@@ -111,6 +111,24 @@
 			<!-- Legacy CMS markdown is rendered, then sanitized. -->
 			{@html renderMarkdownBody(page.content)}
 		</div>
+		<aside
+			class="mt-10 flex flex-col gap-4 rounded-2xl border border-base-300 bg-base-200/50 p-6 sm:flex-row sm:items-center sm:justify-between"
+			aria-label="Next steps"
+		>
+			<div class="space-y-1">
+				<p class="font-mono text-xs font-semibold tracking-widest text-secondary uppercase">
+					Equip your grow or open a shop
+				</p>
+				<p class="text-sm text-base-content/80">
+					Browse growing systems by category, or sell tools and seeds with a flat 8% fee (card
+					processing included, zero listing or monthly fees).
+				</p>
+			</div>
+			<div class="flex shrink-0 flex-wrap gap-3">
+				<a class="btn btn-outline btn-sm" href="/products">Explore gear</a>
+				<a class="btn btn-sm btn-primary" href="/sell">Sell on Aevani</a>
+			</div>
+		</aside>
 		{#if data.post.sources.length > 0}
 			<section class="mt-12">
 				<h2 class="font-mono text-xs font-bold tracking-[0.18em] uppercase">Sources</h2>

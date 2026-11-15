@@ -26,9 +26,9 @@
 					Direct sellers are the core of Aevani, and they can apply now, at a flat 8%. A later path
 					will let PlantGeo affiliates send shoppers to Aevani. Aevani would pay that referral share
 					from its own margin, only on completed retail sales, and never for recruiting. Affiliates
-					would not be sub-affiliates on Amazon, Etsy, or eBay links. The referral share has not
-					been set, and applications are not being accepted. We will not quote a rate until those
-					terms exist.
+					would not be sub-affiliates on third-party retail links. The referral share has not been
+					set, and applications are not being accepted. We will not quote a rate until those terms
+					exist.
 				</p>
 			</header>
 			<div class="flex flex-wrap items-center gap-6">

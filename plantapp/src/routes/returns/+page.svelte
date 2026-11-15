@@ -7,7 +7,7 @@
 	<title>Returns | Aevani</title>
 	<meta
 		name="description"
-		content="Nothing is for sale yet, so there is nothing to return. Return terms will be set by the seller and confirmed at checkout."
+		content="Return policies on Aevani are set directly by each independent seller and shown on every product listing before checkout."
 	/>
 </svelte:head>
 
@@ -20,17 +20,17 @@
 				</p>
 				<h1 class="font-display text-4xl tracking-tight md:text-5xl">Returns</h1>
 				<p class="max-w-3xl text-lg text-base-content/70">
-					Nothing is for sale yet, so there is nothing to return. When a real seller lists a
-					product, the return terms on that listing are the terms that apply. Aevani does not
-					currently offer a site-wide 30-day return.
+					Return eligibility depends on what you are buying—spare emitters and pumps have very
+					different handling needs than open seed packets or perishables. Every seller publishes
+					their return window and restocking rules directly on their product listing.
 				</p>
 			</header>
 
 			<section class="rounded-2xl border border-base-200 bg-base-100 p-6 shadow-sm md:p-8">
 				<h2 class="font-display text-2xl tracking-tight">Set per seller</h2>
 				<p class="mt-3 text-base-content/80">
-					Return terms are set by the seller and confirmed at checkout. They are not offered
-					site-wide today.
+					Return terms are set by the individual seller and shown clearly before checkout, rather
+					than imposed as a blanket rule across perishable and durable growing gear alike.
 				</p>
 			</section>
 

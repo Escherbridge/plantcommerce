@@ -30,12 +30,11 @@ Florida's tomato nutrient guide, revised in December 2024, gives a final solutio
 
 Florida's greenhouse vegetable production guide, revised in September 2018 is the cautionary tale already told in the [nutrient film technique](/guides/nutrient-film-technique) guide: essentially all of the north-Florida PVC-tomato NFT growers in that account “have since switched to bag or other soilless media culture.” The pairing of fruiting crops with media, and leafy crops with films and rafts, is spelled out in [choosing crops for a hydroponic system](/guides/hydroponic-crop-choice).
 
-
 ## How the container is supposed to work
 
-A Dutch bucket, in Florida's hydroponic systems guide’s picture, is a two-gallon perlite container with a small bottom reservoir, drip in, and overflow out. The overflow can drain to waste or be recycled. A lay-flat bag and a rockwool slab are siblings of the same idea: a volume of inert media, a drip line, and a leachate you can catch and measure. This page does not name a commercial tower or bucket brand. The method is the container, the drip, and the number on the runoff.
+A Dutch bucket, in Florida's hydroponic systems guide’s picture, is a two-gallon perlite container with a small bottom reservoir, drip in, and overflow out. The overflow can drain to waste or be recycled. A lay-flat bag and a rockwool slab are siblings of the same idea: a volume of inert media, a drip line, and a leachate you can catch and measure. Any food-safe container with reliable drip irrigation and drain overflow follows the same principle—watch the runoff volume and EC.
 
-Non-recirculating media is the publication’s example of keeping a root infection in one container. Recirculating overflow is also described. This page does not invent a sanitation protocol beyond that contrast.
+Non-recirculating media is the publication’s example of keeping a root infection in one container. Recirculating overflow is also described.
 
 Daily operating numbers still sit on the [EC and pH](/guides/hydroponic-ec-ph-nutrients) page. Do not flatten the CEAC tomato bands or UF’s 5.8–6.2 tomato pH against Oklahoma State's crop table, which is printed on the crop-choice sibling. [Choosing a first hydroponic system](/guides/choosing-hydroponic-system) is the comparison menu this layout belongs in.
 
@@ -52,7 +51,6 @@ Growing long-season tomatoes in 4-inch NFT PVC because it worked for lettuce is 
 **Should I recirculate the drain?** Florida's hydroponic systems guide describes both drain-to-waste and recycled overflow. Non-recirculating media is the publication’s example of keeping a root infection localized.
 
 ## Sources
-
 
 1. Tyson, Hochmuth, and Cantliffe. “Hydroponic Vegetable Production in Florida.” UF/IFAS HS405. Original January 2010. https://ask.ifas.ufl.edu/publication/HS405/pdf
 2. Hochmuth, Robert C.; Natalie B. Parkell; Wanda L. Laughlin; and Sean C. Rider. “Water and Nutrient Management Guidelines for Greenhouse Hydroponic Vegetable Production in Florida.” UF/IFAS HS1274. Original December 2015; reviewed April 2025. https://ask.ifas.ufl.edu/publication/HS1274/pdf
@@ -75,7 +73,7 @@ A bag that was never leachate-tested, EC climbing, then a week of plain water �
 - [Soilless hydroponic media: perlite, rockwool, and coir](/guides/hydroponic-media) — water-holding, leachate, and why official pages do not print a coco-versus-rockwool number.
 - [Drip irrigation for raised beds and high tunnels](/guides/soil-drip-irrigation) — soil and tunnel drip, scheduled from moisture under the mulch, not a Dutch-bucket leachate rule.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the bag, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Ready to set up or tune your bench? Browse [hydroponic systems, meters, and pumps](/products/hydroponics), find companion references in the [Learn](/learn) hub, or map structure placement on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to catch the leachate and compare it with the incoming EC, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

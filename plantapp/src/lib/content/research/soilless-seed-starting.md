@@ -45,7 +45,7 @@ University of Hawaiʻi–CTAHR Kratky the University of Hawaiʻi Kratky guide (S
 
 Penn State Extension, “High Tunnel Production” (updated 13 March 2023), and University of Kentucky Purdue's greenhouse and high-tunnel guide (revised October 2018) both say to inspect every incoming transplant. Penn State: inspect all transplants before planting and remove plants with aphids, whiteflies, thrips, lesions, or weeds in the trays. UKY: inspect new plants coming into structures; a 2-week plant-free period before a new crop is part of that guide’s sanitation list. Dirty trays are an IPM problem, not only a germination problem. Details live in the [greenhouse and high-tunnel IPM](/guides/greenhouse-ipm) guide.
 
-The opened official soilless lettuce programs use bonded plugs or rockwool, not a washed field mix. This page does not invent a soil-to-hydro wash protocol that those pages do not give.
+The opened official soilless lettuce programs use bonded plugs or rockwool, not a washed field mix.
 
 ## Common mistakes
 
@@ -53,14 +53,13 @@ Averaging Cornell’s 1,200 µS/cm-above-source and Kentucky’s 1.0 mS/cm into 
 
 ## What to do with the usual questions
 
-**How do I start seeds in rockwool, and when do I transplant lettuce?** Official starting picture: one seed in a small bonded or rockwool plug, pre-wetted, under a short high-humidity period, then into the system once roots and a true leaf stage the grower can handle. Kratky’s publication uses a 1–3 week nursery window. This page does not invent days-to-transplant for crops the opened pages do not schedule.
+**How do I start seeds in rockwool, and when do I transplant lettuce?** Official starting picture: one seed in a small bonded or rockwool plug, pre-wetted, under a short high-humidity period, then into the system once roots and a true leaf stage the grower can handle. Kratky’s publication uses a 1–3 week nursery window.
 
 **Do I need a humidity dome?** Cornell uses covers for Days 0–1 and removes them on Day 2. Kentucky: a dome is optional for high humidity and comes off about two days after seeding, once seeds have emerged.
 
 **Can I start in potting soil and wash the roots?** The opened official soilless lettuce programs use bonded plugs or rockwool. No wash protocol is given there.
 
 ## Sources
-
 
 1. Cornell CEA Program. *Hydroponic Lettuce Handbook*. 2013. https://cpb-us-e1.wpmucdn.com/blogs.cornell.edu/dist/8/8824/files/2019/06/Cornell-CEA-Lettuce-Handbook-.pdf
 2. Sharma et al. University of Kentucky CCD-CP-63, 2025. https://ccd.uky.edu/sites/default/files/2026-02/ccd-cp-63_hydrolettuce-updated_accessible.pdf
@@ -83,7 +82,7 @@ A bargain tray of “ready” lettuce, already aphid-speckled, set straight into
 - [Soilless hydroponic media](/guides/hydroponic-media) — what the roots sit in after the plug stage.
 - [Daily light integral for indoor and greenhouse greens](/guides/indoor-lighting-dli) — nursery PAR is instantaneous; DLI is the day’s total, with lettuce bands labeled and not averaged.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the tray, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Ready to set up or tune your bench? Browse [hydroponic systems, meters, and pumps](/products/hydroponics), find companion references in the [Learn](/learn) hub, or map structure placement on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to start one seed per plug, take the dome off after emergence, and inspect the tray before it enters the system, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

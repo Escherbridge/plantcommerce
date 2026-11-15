@@ -9,14 +9,15 @@
 		{
 			title: 'Guides',
 			description:
-				'The notes we can stand behind, starting with soil health and companion planting.',
+				'Hands-on system guides for hydroponics, raised beds, hoop houses, aquaponics, and agroforestry.',
 			href: '/guides',
 			surfaceClass: 'bg-primary text-primary-content',
 			icon: 'book-open' as IconName
 		},
 		{
 			title: 'Field notes',
-			description: 'Occasional writing. Not a community newspaper, and not a product blog.',
+			description:
+				'Practical growing stories, side-by-side gear trade-offs, seasonal prep checklists, and seller updates.',
 			href: '/blog',
 			surfaceClass: 'bg-neutral text-neutral-content',
 			icon: 'clipboard-list' as IconName
@@ -24,14 +25,15 @@
 		{
 			title: 'FAQ',
 			description:
-				'Short answers. If a question is about buying, shipping, or returns, the honest answer today is that nothing is for sale.',
+				'Straight answers on using our guides, how independent sellers manage shipping and returns, and our flat 8% fee.',
 			href: '/faq',
 			surfaceClass: 'bg-secondary text-secondary-content',
 			icon: 'help-circle' as IconName
 		},
 		{
 			title: 'Resources',
-			description: 'This shelf is empty for now.',
+			description:
+				'Reference pointers, seasonal checklists, and site-planning tools across Aevani and PlantGeo.',
 			href: '/resources',
 			surfaceClass: 'border border-base-300 bg-base-200 text-base-content',
 			icon: 'code' as IconName
@@ -39,9 +41,9 @@
 	];
 
 	const buyingFaq = {
-		title: 'Can I buy something today?',
+		title: 'How does selling on Aevani work?',
 		excerpt:
-			'No. The catalogue is a preview. Checkout is off. If you grow or make something that belongs here, apply to sell.'
+			'Apply in minutes. Aevani charges a flat 8% commission with card processing included and zero listing, monthly, or ad fees.'
 	};
 </script>
 
@@ -49,7 +51,7 @@
 	<title>Learn — Aevani</title>
 	<meta
 		name="description"
-		content="Short guides and notes on soil, companion planting, hydroponics, aquaponics, and silvopasture. Free, no account. This is not a complete library, and it does not sell you a kit at the end."
+		content="Free, practical growing guides and field notes covering soil, raised beds, hydroponics, aquaponics, and agroforestry—no account required."
 	/>
 </svelte:head>
 
@@ -59,10 +61,9 @@
 		<div class="space-y-6 text-center">
 			<span class="text-editorial font-mono tracking-widest text-secondary">LEARN</span>
 			<h1 class="text-display font-display tracking-tight">Guides and notes</h1>
-			<p class="mx-auto max-w-3xl text-xl leading-relaxed font-light text-primary-content/70">
-				Short guides and notes on soil, companion planting, hydroponics, aquaponics, and
-				silvopasture. Free, no account. This is not a complete library, and it does not sell you a
-				kit at the end.
+			<p class="mx-auto max-w-3xl text-xl leading-relaxed font-light text-primary-content/80">
+				Practical guides and seasonal field notes on soil, raised beds, hydroponics, aquaponics, and
+				agroforestry—free to read with no account required.
 			</p>
 			<form
 				action="/search"
@@ -310,16 +311,20 @@
 				class="rounded-xl border border-primary-content/10 bg-primary p-12 text-primary-content shadow-md lg:p-16"
 			>
 				<h2 class="font-display mb-4 text-3xl font-bold tracking-tight lg:text-4xl">
-					If a guide is missing, write to us.
+					Grow or build supplies for backyard & market growers?
 				</h2>
+				<p class="mx-auto mb-6 max-w-2xl text-base text-primary-content/85">
+					Keep 92% of every sale on Aevani—one flat 8% fee with card processing included and zero
+					listing, monthly, or ad fees.
+				</p>
 				<div class="flex flex-wrap justify-center gap-4">
-					<a href="/contact" class="font-display btn tracking-wider uppercase btn-lg btn-secondary"
-						>Contact</a
+					<a href="/sell" class="font-display btn tracking-wider uppercase btn-lg btn-secondary"
+						>Sell on Aevani</a
 					>
 					<a
-						href="/sell"
+						href="/products"
 						class="font-display btn border-primary-content bg-transparent tracking-wider text-primary-content uppercase btn-lg hover:bg-primary-content hover:text-primary"
-						>Sell on Aevani</a
+						>Explore Catalogue</a
 					>
 				</div>
 			</div>

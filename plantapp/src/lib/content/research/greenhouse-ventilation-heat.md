@@ -26,8 +26,7 @@ Utah State University Extension (April 2010): in a Northern Utah high tunnel, �
 
 Penn State Extension (updated 13 March 2023): “Maintaining optimum growing conditions inside the high tunnel without having extreme temperature fluctuations is critical.” Internal temperatures “should be checked several times a day and the roll-up sides adjusted accordingly.” “Most crops in high tunnels can be damaged if air temperatures drop below 45°F.”
 
-Sabeh, Giacomelli, and Kubota (2011), Tucson, Arizona, March–October 2006: in a single-span polyethylene greenhouse of hydroponic tomatoes, eight-month irrigation water use was 780 L/m² and pad-and-fan cooling used 1,450 L/m² — more water on cooling than on the crop. That is a published semi-arid analog, one house and one season, not a Boise trial and not an Aevani result.
-
+Sabeh, Giacomelli, and Kubota (2011), Tucson, Arizona, March–October 2006: in a single-span polyethylene greenhouse of hydroponic tomatoes, eight-month irrigation water use was 780 L/m² and pad-and-fan cooling used 1,450 L/m² — more water spent on cooling than on the crop itself.
 
 ## Daily operation
 
@@ -37,7 +36,7 @@ Night-time cold is the other edge of the same job. The 45°F damage line is Penn
 
 ATTRA’s February 2026 season-extension publication treats shade cloth as a heat tool as well as a light tool. Example ratings in that text include 30% shade cloth as a common starting point, 30–47% in some cases, and up to 63% in extremely hot areas for shade-loving or heat-sensitive plants. Those figures are ATTRA’s published ratings, not a crop-by-crop house chart. The [row covers, low tunnels, and cold frames](/guides/season-extension-covers-frames) guide is the place for the broader cover toolkit, including the risk of stacking a low tunnel inside a hoop and leaving both closed.
 
-There is no single cubic-feet-per-minute ventilation number in the pages opened for this brief, and this page does not invent one. Official starting points are a way to exchange air (roll-up sides, vents, or fans), a way to know the temperature, and a plan for both heat and a 45°F night.
+There is no single cubic-feet-per-minute ventilation number in the pages reviewed here, Official starting points are a way to exchange air (roll-up sides, vents, or fans), a way to know the temperature, and a plan for both heat and a 45°F night.
 
 ## Cooling water, without repeating the climate page
 
@@ -51,14 +50,13 @@ Equating “unheated” with “cannot overheat” is the first. Checking the te
 
 ## What to do with the usual questions
 
-**What ventilation does a greenhouse need?** Official starting points: a way to exchange air, a way to know the temperature, and a plan for both heat and a 45°F night. There is no single cfm number in the pages opened here.
+**What ventilation does a greenhouse need?** Official starting points: a way to exchange air, a way to know the temperature, and a plan for both heat and a 45°F night. There is no single cfm number in these extension guides here.
 
 **Why is my tunnel so hot in spring?** USU already answered this with a March 120°F example when high and low tunnels were not vented.
 
 **Does evaporative cooling save water overall?** Not necessarily. In the Tucson hydroponic tomato house, cooling used more water than irrigation.
 
 ## Sources
-
 
 1. Black, Brent, and Dan Drost. “Temperature Management in High Tunnels.” Utah State University Extension, Horticulture/HighTunnels/2010-04, April 2010. https://extension.usu.edu/smallfarms/files/Greenhouses_Temp.Mgmt.pdf
 2. Ford, Thomas; Lynn Kime; Jayson K. Harper; and Stephen Bogash. “High Tunnel Production.” Penn State Extension. Updated 13 March 2023. https://extension.psu.edu/high-tunnel-production
@@ -79,7 +77,7 @@ A weekday forecast that looked mild, sides left down, a March sun, and a 120°F 
 - [Daily light integral for indoor and greenhouse greens](/guides/indoor-lighting-dli) — mid-winter light as a measured daily total, not only as a thermostat job.
 - [Pollinating tomatoes in greenhouses and high tunnels](/guides/greenhouse-pollination) — temperature bands that can abort flowers even when they are being jostled.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set.
+Getting ready for the next season? Browse [season-extension and greenhouse supplies](/products?category=kits-collections) and [seeds and starting supplies](/products?category=seeds-supplies), or map sun arcs on [PlantGeo](https://plantgeo.aevani.com). Explore more seasonal notes in our free [Learn](/learn) hub. If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to go read the temperature inside the structure, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

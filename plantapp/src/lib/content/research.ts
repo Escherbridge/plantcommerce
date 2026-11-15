@@ -98,17 +98,18 @@ const months: Record<string, string> = {
 const monthNames = Object.keys(months).join('|');
 
 function splitFrontmatter(raw: string): { data: Record<string, string>; body: string } {
-	if (!raw.startsWith('---\n')) throw new Error('research draft is missing frontmatter');
-	const end = raw.indexOf('\n---\n', 3);
+	const normalized = raw.replaceAll('\r\n', '\n');
+	if (!normalized.startsWith('---\n')) throw new Error('research draft is missing frontmatter');
+	const end = normalized.indexOf('\n---\n', 3);
 	if (end === -1) throw new Error('research draft frontmatter is unterminated');
 	const data: Record<string, string> = {};
-	for (const line of raw.slice(4, end).split('\n')) {
+	for (const line of normalized.slice(4, end).split('\n')) {
 		if (!line.trim()) continue;
 		const match = /^([A-Za-z][A-Za-z0-9]*):\s+(?:"([^"]*)"|(\S+))\s*$/.exec(line);
 		if (!match) throw new Error(`unreadable research frontmatter: ${line}`);
 		data[match[1]] = match[2] ?? match[3];
 	}
-	return { data, body: raw.slice(end + 5) };
+	return { data, body: normalized.slice(end + 5) };
 }
 
 function nextMark(input: string, from: number): number {
@@ -442,7 +443,12 @@ export function indexGuideLinks(
 	};
 	for (const block of doc.blocks) {
 		if (block.kind === 'h2') {
-			if (block.text === 'What Aevani is doing here') break;
+			if (
+				block.text === 'What Aevani is doing here' ||
+				block.text === 'How these guides work' ||
+				block.text === 'Sources, citations, and next steps'
+			)
+				break;
 			if (systemSectionHeadings.has(block.text)) include = true;
 			continue;
 		}

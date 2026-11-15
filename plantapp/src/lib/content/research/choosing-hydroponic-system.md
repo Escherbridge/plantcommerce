@@ -24,7 +24,6 @@ Kratky’s University of Hawaiʻi method is “intended only for crops that requ
 
 University of Kentucky's 2025 lettuce systems guide says DWC needs an air pump and air stones, with a 6–8 ppm dissolved-oxygen target; NFT has no air pump — “continuous thin film provides oxygen”; drip and ebb-and-flow “rely on air space in substrates.” Cornell's 2013 lettuce handbook says lettuce grows satisfactorily at a dissolved-oxygen level of at least 4 ppm, is usually held at 7–10 ppm, and can fail below 3 ppm. That is a worked lettuce recipe, not a claim that every first system must be a pond.
 
-
 ## The systems, and how they actually fail
 
 Florida's hydroponic systems guide, originally published in January 2010, surveys Florida greenhouse hydroponic systems actually in use: perlite (Dutch bucket, lay-flat bag); media-filled nursery pots or upright bags; raised beds or sand floor; nutrient film technique (NFT); floating rafts; vertical systems; or rockwool. Greenhouse designs in that survey were natural ventilation or pad-and-fan, mostly double polyethylene, often multi-bay. Crop rankings in the “latest published data” cited there, from most grown to least, were herbs, peppers, cucumbers, tomatoes, lettuce, mixed vegetable/herb, and strawberries. That is a 2010 Florida survey, not a current national market share, and it is useful here as a list of types already in production, not as a ranking to shop from.
@@ -59,7 +58,6 @@ Choosing a system from a photo of a tower or a barrel, then stuffing tomatoes in
 
 ## Sources
 
-
 1. Tyson, Richard, Robert Hochmuth, and Daniel J. Cantliffe. “Hydroponic Vegetable Production in Florida.” UF/IFAS HS405. Original January 2010. https://ask.ifas.ufl.edu/publication/HS405/pdf
 2. Sharma, Arundathi, Kim Leonberger, Nicole Gauthier, and Qinglu Ying. “Hydroponic Lettuce Production in Controlled Environments.” University of Kentucky Center for Crop Diversification, CCD-CP-63, 2025. https://ccd.uky.edu/sites/default/files/2026-02/ccd-cp-63_hydrolettuce-updated_accessible.pdf
 3. Cornell University CEA Program, *Hydroponic Lettuce Handbook*, © 2013. https://cpb-us-e1.wpmucdn.com/blogs.cornell.edu/dist/8/8824/files/2019/06/Cornell-CEA-Lettuce-Handbook-.pdf
@@ -85,7 +83,7 @@ Someone builds a long NFT channel for “tomatoes and lettuce together,” becau
 - [Vertical hydroponic growing: density and light](/guides/vertical-growing) — density can rise, and so can shading; not a tower recipe.
 - [Soilless hydroponic media: perlite, rockwool, and coir](/guides/hydroponic-media) — what the roots sit in when the layout needs a medium.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the reservoir, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Ready to set up or tune your bench? Browse [hydroponic systems, meters, and pumps](/products/hydroponics), find companion references in the [Learn](/learn) hub, or map structure placement on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to match the crop to a system you can actually aerate, pump, or shelter, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

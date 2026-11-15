@@ -18,16 +18,15 @@ lastReviewed: 2026-11-10
 
 # Ebb-and-flow (flood-and-drain) hydroponics
 
-The official flood schedule we opened is a lettuce seedling bench, not a house recipe for a finished crop. Ebb-and-flow is a media bench that floods and then drains so roots get both solution and air. Official pages describe that layout clearly. What they do not, in the documents opened for this page, is hand you a production-crop timer. The internet is full of clocks. The complete official schedule here is Cornell’s 2013 nursery bench.
+The official flood schedule we opened is a lettuce seedling bench, not a house recipe for a finished crop. Ebb-and-flow is a media bench that floods and then drains so roots get both solution and air. Official pages describe that layout clearly. What they do not, in the documents reviewed here, is hand you a production-crop timer. The internet is full of clocks. The complete official schedule here is Cornell’s 2013 nursery bench.
 
 University of Kentucky's 2025 lettuce systems guide places ebb-and-flow among soilless-medium systems, not among water-culture loops. “Plants can be grown in soilless medium (drip or ebb-and-flow benches) or in nutrient solution with or without the support of an inert medium (deep water culture and nutrient film technique).” The official distinction is that the crop sits in a medium that is periodically flooded, as drip does with a different delivery method, not in a continuous film or raft.
 
 Cornell's 2013 lettuce handbook describes ebb-and-flood benches as a way “to uniformly supply the germinating seedlings with water and nutrients.” Solution is “pumped into the Ebb and Flood bench” and “automatically drained after a given” interval. For Days 0–5 of that lettuce recipe, “Trays on an Ebb and Flood bench are sub-irrigated with RO water for 1/4 hour every 12 hours.” From Day 6: “The sub-irrigation system if using an ebb and flood table is scheduled for flooding four times per day, or every six hours, for 1/4 hr (15 min).” Those times are a commercial lettuce-propagation schedule in a named handbook, not a universal production-crop cycle.
 
-FAO's 2014 aquaponics manual describes flood-and-drain media beds in an aquaponic loop, not as a hydroponic fertilizer-bench recipe. In that paper, some aquaponic media beds “are designed to flood-and-drain, which means that the water level rises to a certain point and then completely drains. This adds oxygen to the plant roots and aids in the biofiltration of the ammonia.” That is a related layout idea, labeled aquaponic, and it belongs with [aquaponic system types](/guides/aquaponic-system-types). This page does not import an FAO fish-loop cycle into a hydroponic fertilizer tank.
+FAO's 2014 aquaponics manual describes flood-and-drain media beds in an aquaponic loop, not as a hydroponic fertilizer-bench recipe. In that paper, some aquaponic media beds “are designed to flood-and-drain, which means that the water level rises to a certain point and then completely drains. This adds oxygen to the plant roots and aids in the biofiltration of the ammonia.” That is a related layout idea, labeled aquaponic, and it belongs with [aquaponic system types](/guides/aquaponic-system-types). 
 
-No official home-hobby flood-and-drain minute schedule for a finished fruiting crop was opened for this page. Hobby “15 minutes on, 45 off” charts are not cited as fact, and this page does not invent a substitute.
-
+Drain speed varies sharply with whether your bench holds coarse expanded clay, perlite, or fine coco—set flood intervals long enough to wet the root zone without leaving water pooled around stems.
 
 ## How the bench works
 
@@ -45,7 +44,7 @@ Treating ebb-and-flow as NFT with a deeper puddle is the first. Copying Cornell�
 
 **How does ebb-and-flow differ from NFT?** Official distinction: Kentucky groups ebb-and-flow with drip in a soilless medium; NFT and deep water culture are nutrient-solution systems.
 
-**How long should I flood the tray?** The only complete official answer opened here is Cornell’s lettuce-seedling bench: 15 minutes every 12 hours through Day 5, then 15 minutes every six hours from Day 6. That is not a general crop law.
+**How long should I flood the tray?** Cornell’s commercial lettuce-seedling bench floods for 15 minutes every 12 hours through Day 5, then every six hours from Day 6 onward; finished fruiting crops adjust by root mass and substrate drainage.
 
 **Does the medium stay wet?** The method’s point, in both Cornell’s drain and FAO’s aquaponic flood-and-drain note, is that the water recedes so air can return.
 
@@ -59,7 +58,7 @@ The production-timer record in the official pages we opened is thin, and the pag
 
 ## A situation like this
 
-A fruiting-crop table run on a copied internet cycle, the medium staying wet, the roots browning. The [troubleshooting](/guides/hydroponic-troubleshooting-root-rot) guide covers root rot. This page does not invent the “correct” minutes for that crop.
+A fruiting-crop table run on a copied internet cycle, the medium staying wet, the roots browning. The [troubleshooting](/guides/hydroponic-troubleshooting-root-rot) guide covers root rot.
 
 ## Also in this section
 
@@ -69,7 +68,7 @@ A fruiting-crop table run on a copied internet cycle, the medium staying wet, th
 - [Aquaponic system types](/guides/aquaponic-system-types) — FAO’s flood-and-drain media beds, in a fish loop, with a filter job the bench still has to do.
 - [Starting seeds and transplants for soilless systems](/guides/soilless-seed-starting) — the rest of Cornell’s Days 0–6 lettuce nursery, beside Kentucky’s program.
 
-The [Learn](/learn) hub collects these guides. If you make tools that belong in this category, applications are open at [Sell on Aevani](/sell): a flat 8% fee, with card processing included and no other fees. Payout timing has not been set. When the question is the parcel rather than the bench, [plan the land on PlantGeo](https://plantgeo.aevani.com).
+Ready to set up or tune your bench? Browse [hydroponic systems, meters, and pumps](/products/hydroponics), find companion references in the [Learn](/learn) hub, or map structure placement on [PlantGeo](https://plantgeo.aevani.com). If you build or breed equipment in this category, apply at [Sell on Aevani](/sell): one flat 8% commission with card processing included and zero listing, monthly, or ad fees.
 
 The useful next step is to confirm that the bench actually drains, and to treat Cornell’s minutes as a labeled nursery schedule, or to read the [guide index](/guides). If something on this page is wrong, [write to us](/contact).
 

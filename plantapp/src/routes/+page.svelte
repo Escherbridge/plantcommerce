@@ -45,23 +45,23 @@
 		}
 	];
 
-	// Why Aevani — four value props (titles verbatim from the design).
+	// Why Aevani — practical marketplace & grower principles.
 	const values = [
 		{
-			title: 'First growers, first',
-			body: "We're onboarding our first growers and makers. Listings in the catalogue are placeholders until a real seller is ready."
+			title: 'Built for small makers',
+			body: 'No listing fees, no monthly rent, and no mandatory ad tax. Sellers pay one flat 8% commission with card processing included.'
 		},
 		{
-			title: 'Learn stays open',
-			body: 'The Learn hub is free to browse while the marketplace takes shape. No account is required to read it.'
+			title: 'Field-first guides',
+			body: 'Free, practical troubleshooting for EC, pH, clay raised beds, aquaponics biofilters, and hot-summer tunnels—no account required.'
 		},
 		{
-			title: 'Nothing for sale yet',
-			body: 'Product pages stay up so you can see the shape of the catalogue. Checkout is off. Prices on those pages are fixtures, not offers.'
+			title: 'Plan the site first',
+			body: 'Map yard sunlight, slope, windbreak placement, and hose reach in 3D on PlantGeo before cutting lumber or ordering pumps.'
 		},
 		{
-			title: 'Honest by default',
-			body: "We won't publish harvest counts, warranties, or impact numbers we can't stand behind."
+			title: 'Clear seller terms',
+			body: 'Independent growers and toolmakers publish shipping zones, return windows, and warranties directly on each product listing.'
 		}
 	];
 </script>
@@ -93,20 +93,20 @@
 		<div class="hero__left">
 			<span class="status-badge">
 				<span class="status-badge__dot" aria-hidden="true"></span>
-				We're onboarding our first growers and makers
+				Open for independent growers, seed houses & makers
 			</span>
 
 			<h1 class="hero__title">Grow something that outlasts the season.</h1>
 
 			<p class="hero__lead">
-				The catalogue is a preview. Nothing in it is for sale yet. If you grow or make hydroponic,
-				aquaponic, silvopasture, or agroforestry tools, apply to sell. The Learn hub stays open
-				while we onboard the first growers and makers.
+				Practical field guides for hydroponics, backyard beds, aquaponics, and agroforestry—paired
+				with a fair marketplace where independent seed sellers and toolmakers keep 92% under a flat
+				8% commission.
 			</p>
 
 			<div class="hero__ctas">
-				<Button href="/sell" variant="primary" size="lg">Sell on Aevani</Button>
-				<Button href="/learn" variant="secondary" size="lg">Read the Learn hub</Button>
+				<Button href="/guides" variant="primary" size="lg">Explore Growing Guides</Button>
+				<Button href="/sell" variant="secondary" size="lg">Sell on Aevani</Button>
 			</div>
 		</div>
 
@@ -119,12 +119,12 @@
 					fetchpriority="high"
 				/>
 				<div class="float-card float-card--top">
-					<span class="float-card__value">Preview</span>
-					<span class="float-card__label">Catalogue is not for sale yet</span>
+					<span class="float-card__value">Flat 8%</span>
+					<span class="float-card__label">Card processing included</span>
 				</div>
 				<div class="float-card float-card--bottom">
-					<span class="float-card__value">Sellers</span>
-					<span class="float-card__label">First growers and makers</span>
+					<span class="float-card__value">38+ Guides</span>
+					<span class="float-card__label">Free hydro, soil & tunnel playbooks</span>
 				</div>
 			</div>
 		</div>
@@ -134,15 +134,14 @@
 	<section id="systems" class="section container">
 		<SectionHeader
 			eyebrow="Four ways to grow"
-			title="Four ways to grow. The kits come later."
-			actionLabel="See the catalogue preview"
+			title="Systems, beds, and tools matched to your space."
+			actionLabel="Browse categories"
 			actionHref="/products"
 		/>
 		<p class="systems-intro">
-			These are the categories we will sell in, once real makers are on the platform. They are not
-			products, and they are not a promise that a kit will appear next week.
-			<a href="https://plantgeo.aevani.com">Plan a site on PlantGeo</a>. Items picked for a plan are
-			not for sale yet.
+			Explore hydroponic, aquaponic, silvopasture, and agroforestry categories side by side with our
+			free field guides. Sketch yard sun angles, slopes, and layout first on
+			<a href="https://plantgeo.aevani.com">PlantGeo</a> before ordering lumber or pumps.
 		</p>
 		<div class="systems-grid">
 			{#each systems as system}
@@ -163,7 +162,7 @@
 			<div class="why">
 				<div class="why__intro">
 					<span class="why__eyebrow">Why Aevani</span>
-					<h2 class="why__title">A marketplace that admits it is empty.</h2>
+					<h2 class="why__title">Plain math for sellers. Useful guides for growers.</h2>
 				</div>
 				<div class="why__grid">
 					{#each values as value}
@@ -179,38 +178,37 @@
 
 	<section class="section container">
 		<div class="silhouette">
-			<p class="silhouette__eyebrow">Catalogue preview</p>
-			<h2 class="silhouette__title">The catalogue is a silhouette.</h2>
+			<p class="silhouette__eyebrow">Growing Catalogue</p>
+			<h2 class="silhouette__title">Gear organized around real growing systems.</h2>
 			<p class="silhouette__body">
-				You can walk the category list to see what Aevani is for. You cannot buy anything from it.
-				Real listings will come from accepted sellers, and they will say who is actually selling
-				them.
+				Walk our hydroponic, aquaponic, silvopasture, and agroforestry categories—from Kratky
+				propagation trays and EC meters to heirloom seeds and orchard supplies—with seller
+				storefronts onboarding directly on Aevani.
 			</p>
-			<a class="silhouette__link" href="/products">See the catalogue preview</a>
+			<a class="silhouette__link" href="/products">Explore growing categories</a>
 		</div>
 	</section>
 
-	<!-- 5. Learn + Affiliate split -->
+	<!-- 5. Learn + Seller split -->
 	<section class="section container">
 		<div class="split">
 			<a class="learn-card" href="/learn">
 				<span class="learn-card__eyebrow">Learn hub</span>
-				<h2 class="learn-card__title">Guides you can read while the shop is still taking shape.</h2>
+				<h2 class="learn-card__title">Hands-on guides & seasonal field notes.</h2>
 				<p class="learn-card__body">
-					Short growing notes, free, with no account. We publish what we can stand behind, and we
-					leave a hole where we don't have a guide yet.
+					Read side-by-side trade-offs on DWC vs. Kratky, backyard raised-bed depth over heavy clay,
+					and aquaponic biofilter cycling—free with no account required.
 				</p>
 				<span class="learn-card__link">Open the Learn hub</span>
 			</a>
 
 			<div id="affiliate" class="affiliate-card">
-				<span class="affiliate-card__eyebrow">Affiliate program</span>
-				<h2 class="affiliate-card__title">A referral program will come after the writing does.</h2>
+				<span class="affiliate-card__eyebrow">Independent Sellers</span>
+				<h2 class="affiliate-card__title">Open your storefront at a flat 8% commission.</h2>
 				<p class="affiliate-card__body">
-					PlantGeo affiliates will later send people to Aevani, and Aevani will pay a referral share
-					from its own margin, only on completed retail sales. That share has not been set, and
-					applications are not open. Direct sellers, who are the core of this marketplace, can apply
-					now.
+					Keep 92% of every sale. Card processing is included inside the 8% fee with zero listing
+					fees, zero monthly fees, and zero mandatory ad surcharges. A PlantGeo creator referral
+					path will open later once terms are finalized.
 				</p>
 				<div class="affiliate-card__actions">
 					<Button href="/sell" variant="primary" size="lg">Sell on Aevani</Button>

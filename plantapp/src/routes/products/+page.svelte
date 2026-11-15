@@ -72,8 +72,12 @@
 		<span class="eyebrow">The catalogue</span>
 		<h1 class="cat-title">Every tool here earned its place.</h1>
 		<p class="cat-lead">
-			The catalogue is a preview. Nothing in it is for sale yet. Prices on these pages are fixtures,
-			not offers.
+			Growing systems, soil tools, water-testing kits, and supplies matched to our field guides.
+			Grow or build equipment that lasts? <a
+				href="/sell"
+				style="color: inherit; text-decoration: underline; text-underline-offset: 3px;"
+				>Apply to sell on Aevani</a
+			> for a flat 8% commission, card processing included.
 		</p>
 	</header>
 
