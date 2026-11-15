@@ -1,7 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { catalogChipMatches, productCategoryHref } from './catalog';
+import { catalogChipMatches, legacyCatalogueIndexRedirect, productCategoryHref } from './catalog';
 
 describe('product category links', () => {
+	it('redirects the old kit and supply indexes to the catalogue filters', () => {
+		expect(legacyCatalogueIndexRedirect('/products/kits')).toBe(
+			'/products?category=kits-collections'
+		);
+		expect(legacyCatalogueIndexRedirect('/products/supplies')).toBe(
+			'/products?category=seeds-supplies'
+		);
+		expect(legacyCatalogueIndexRedirect('/products/hydroponics')).toBeNull();
+	});
+
 	it('points kit and supply breadcrumbs at the catalogue filters', () => {
 		expect(productCategoryHref('kits')).toBe('/products?category=kits-collections');
 		expect(productCategoryHref('supplies')).toBe('/products?category=seeds-supplies');

@@ -3,7 +3,6 @@
 </script>
 
 <svelte:head>
-	<title>Help status | Aevani</title>
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 

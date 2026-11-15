@@ -2,7 +2,7 @@
 	import GuideSector from '$lib/components/content/GuideSector.svelte';
 	import SEO from '$lib/components/SEO.svelte';
 	import StructuredData from '$lib/components/StructuredData.svelte';
-	import { publicSiteUrl } from '$lib/config/site';
+	import { publicShareImage, publicSiteUrl } from '$lib/config/site';
 	import { articleBreadcrumbData, articleStructuredData } from '$lib/content/research';
 	import { renderMarkdownBody } from '$lib/utils/renderMarkdown';
 	import type { PageData } from './$types';
@@ -29,6 +29,8 @@
 		author="Escherbridge"
 		publishedTime={sector?.publishedAt ?? null}
 		modifiedTime={sector?.reviewedAt ?? null}
+		image={publicShareImage.path}
+		imageAlt={publicShareImage.alt}
 	/>
 </svelte:head>
 {#if sector}
@@ -41,6 +43,7 @@
 		data={{
 			headline: page.title,
 			description: page.metaDescription || page.excerpt || undefined,
+			image: publicShareImage.url,
 			author: { '@type': 'Organization', name: 'Escherbridge' },
 			publisher: { '@type': 'Organization', name: 'Escherbridge, LLC' },
 			mainEntityOfPage: url
@@ -64,7 +67,10 @@
 		</nav>
 		<article>
 			<p class="font-mono text-xs font-bold tracking-[0.18em] uppercase">Guide · Escherbridge</p>
-			<h1 class="font-display mt-3 text-4xl font-bold tracking-tight uppercase md:text-6xl">
+			<h1
+				class="font-display mt-3 text-4xl font-bold tracking-tight uppercase md:text-6xl"
+				style="line-height: 1.15"
+			>
 				{page.title}
 			</h1>
 			<p class="mt-5 text-xl leading-relaxed text-base-content/70">
@@ -72,7 +78,7 @@
 			</p>
 			<div class="prose prose-lg mt-10 max-w-none">
 				<!-- Legacy CMS markdown is rendered, then sanitized. Structured guides use GuideSector. -->
-				{@html renderMarkdownBody(page.content)}
+				{@html renderMarkdownBody(page.content, { dropLeadingH1: true })}
 			</div>
 		</article>
 	</main>

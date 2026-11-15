@@ -4,11 +4,6 @@
 </script>
 
 <svelte:head>
-	<title>Warranty | Aevani</title>
-	<meta
-		name="description"
-		content="Aevani does not currently offer a site-wide warranty. Warranty terms, if any, are set by the seller and confirmed at checkout."
-	/>
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 

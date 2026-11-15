@@ -126,8 +126,16 @@ function renderFallback(token: Token): string {
 /**
  * Legacy CMS bodies (`content_page.content`) are Markdown. Structured research
  * guides do not use this path. The result is sanitized before `{@html}`.
+ *
+ * Page templates already render the document title as the only h1. Pass
+ * `dropLeadingH1` so a stored `# Title` is not a second h1.
  */
-export function renderMarkdownBody(content: string | null | undefined): string {
+export function renderMarkdownBody(
+	content: string | null | undefined,
+	options?: { dropLeadingH1?: boolean }
+): string {
 	if (typeof content !== 'string' || !content.trim()) return '';
-	return sanitizeRichText(renderBlocks(marked.lexer(content))).replaceAll(lessThan, '&lt;');
+	const html = sanitizeRichText(renderBlocks(marked.lexer(content))).replaceAll(lessThan, '&lt;');
+	if (options?.dropLeadingH1) return html.replace(/^<h1>[\s\S]*?<\/h1>/, '');
+	return html;
 }

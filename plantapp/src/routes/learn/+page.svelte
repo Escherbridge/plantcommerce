@@ -47,14 +47,6 @@
 	};
 </script>
 
-<svelte:head>
-	<title>Learn — Aevani</title>
-	<meta
-		name="description"
-		content="Free, practical growing guides and field notes covering soil, raised beds, hydroponics, aquaponics, and agroforestry—no account required."
-	/>
-</svelte:head>
-
 <!-- Hero Section -->
 <section class="w-full bg-primary py-24 text-primary-content lg:py-32">
 	<Container>

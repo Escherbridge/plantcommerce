@@ -3,14 +3,6 @@
 	import { publicOperator } from '$lib/config/site';
 </script>
 
-<svelte:head>
-	<title>Shipping | Aevani</title>
-	<meta
-		name="description"
-		content="Shipping terms on Aevani are set directly by each independent grower or maker and shown clearly on each listing before checkout."
-	/>
-</svelte:head>
-
 <Section>
 	<Container>
 		<div class="mx-auto max-w-4xl space-y-10">

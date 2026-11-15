@@ -54,11 +54,15 @@ describe('public site origin', () => {
 		expect(layoutOwnsDocumentMeta('/guides/understanding-soil-health')).toBe(false);
 		expect(layoutOwnsDocumentMeta('/courses/hydroponics-field-guide')).toBe(false);
 		expect(layoutOwnsDocumentMeta('/products/hydroponics/net-pots')).toBe(false);
+		expect(layoutOwnsDocumentMeta('/login')).toBe(false);
+		expect(layoutOwnsDocumentMeta('/cart')).toBe(false);
+		expect(publicRouteMetadata('/login').title).not.toBe(publicSite.defaultTitle);
 	});
 
 	it('points robots at the apex sitemap', () => {
 		const robots = renderRobotsTxt();
 		expect(robots).toContain('Sitemap: https://aevani.com/sitemap.xml');
+		expect(robots).toContain('Allow: /');
 		expect(robots).toContain('Disallow: /learn/course/');
 		expect(robots).not.toContain('railway.app');
 	});

@@ -142,13 +142,12 @@
 </script>
 
 <svelte:head>
-	<title>{p.name} - Aevani</title>
-	<meta name="description" content={metaDescription} />
-
 	<SEO
 		title="{p.name} | Aevani"
 		description={metaDescription}
+		url={productUrl}
 		image={mainImageUrl}
+		imageAlt={p.images?.[0]?.altText || p.name}
 		type="product"
 		tags={[p.category?.name || 'Gardening']}
 	/>

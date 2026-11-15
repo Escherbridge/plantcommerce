@@ -172,6 +172,13 @@ export function productCategoryHref(categorySlug: string): string | null {
 	return productCategoryHrefs[categorySlug] ?? null;
 }
 
+/** Old category indexes. They have no page; the catalogue filter lists them. */
+export function legacyCatalogueIndexRedirect(pathname: string): string | null {
+	if (pathname === '/products/kits') return productCategoryHref('kits');
+	if (pathname === '/products/supplies') return productCategoryHref('supplies');
+	return null;
+}
+
 /** Chip id -> product system. Kits and supplies use the parent category slug. */
 export function catalogChipMatches(chipId: string, system: string): boolean {
 	if (chipId === 'all') return true;

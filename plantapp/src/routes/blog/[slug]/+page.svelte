@@ -1,7 +1,7 @@
 <script lang="ts">
 	import SEO from '$lib/components/SEO.svelte';
 	import StructuredData from '$lib/components/StructuredData.svelte';
-	import { publicSiteUrl } from '$lib/config/site';
+	import { publicShareImage, publicSiteUrl } from '$lib/config/site';
 	import { relatedEssays } from '$lib/content/writing';
 	import { renderMarkdownBody } from '$lib/utils/renderMarkdown';
 	import type { PageData } from './$types';
@@ -9,6 +9,11 @@
 	let { data }: { data: PageData } = $props();
 	const page = $derived(data.post.page);
 	const authorName = 'Escherbridge';
+	const documentTitle = $derived(
+		'documentTitle' in page && typeof page.documentTitle === 'string'
+			? page.documentTitle
+			: `${page.title} — Aevani`
+	);
 	const related = $derived(relatedEssays(page.slug));
 	const description = $derived(page.metaDescription || page.excerpt || page.title);
 	const citations = $derived(
@@ -39,12 +44,14 @@
 </script>
 
 <SEO
-	title={`${page.title} — Aevani`}
+	title={documentTitle}
 	{description}
 	url={publicSiteUrl(`/blog/${page.slug}`)}
 	type="article"
 	publishedTime={publishedIso}
 	author={authorName}
+	image={publicShareImage.path}
+	imageAlt={publicShareImage.alt}
 	{tags}
 />
 <StructuredData
@@ -52,6 +59,7 @@
 	data={{
 		headline: page.title,
 		description,
+		image: publicShareImage.url,
 		datePublished: publishedIso,
 		...(citations.length > 0 ? { citation: citations } : {}),
 		author: { '@type': 'Organization', name: 'Escherbridge' },
@@ -83,7 +91,10 @@
 	</nav>
 	<article>
 		<p class="font-mono text-xs font-bold tracking-[0.18em] uppercase">Field note</p>
-		<h1 class="font-display mt-3 text-4xl font-bold tracking-tight uppercase md:text-6xl">
+		<h1
+			class="font-display mt-3 text-4xl font-bold tracking-tight uppercase md:text-6xl"
+			style="line-height: 1.15"
+		>
 			{page.title}
 		</h1>
 		{#if page.excerpt}
@@ -109,7 +120,7 @@
 		{/if}
 		<div class="prose prose-lg mt-10 max-w-none">
 			<!-- Legacy CMS markdown is rendered, then sanitized. -->
-			{@html renderMarkdownBody(page.content)}
+			{@html renderMarkdownBody(page.content, { dropLeadingH1: true })}
 		</div>
 		<aside
 			class="mt-10 flex flex-col gap-4 rounded-2xl border border-base-300 bg-base-200/50 p-6 sm:flex-row sm:items-center sm:justify-between"

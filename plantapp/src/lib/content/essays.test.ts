@@ -58,6 +58,9 @@ describe('cornerstone essays', () => {
 
 		const cooling = cornerstoneEssayBySlug('cooling-can-use-more-water-than-the-crop');
 		expect(cooling?.title).toBe('In a dry climate, cooling can use more water than the plants');
+		expect(cooling?.seoTitle).toBe('Cooling can use more water than the crop — Aevani');
+		expect(cooling!.seoTitle!.length).toBeLessThanOrEqual(60);
+		expect(cornerstoneEssayRecord(cooling!).page.documentTitle).toBe(cooling?.seoTitle);
 		expect(cooling?.body).toContain('Tucson, Arizona');
 		expect(cooling?.body).toContain('semi-arid trial in Tucson');
 		expect(cooling?.body).toContain('780 L/m²');

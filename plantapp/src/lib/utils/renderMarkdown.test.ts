@@ -121,6 +121,26 @@ Pests specialize.
 		}
 	});
 
+	it('drops a leading h1 so the page template can keep the only one', () => {
+		for (const slug of legacySlugs) {
+			const markdown = legacyMarkdown(slug);
+			const html = renderMarkdownBody(markdown, { dropLeadingH1: true });
+			expect(html, slug).not.toMatch(/^<h1>/);
+			expect(html, slug).not.toContain('<h1>');
+			expect(html, slug).toMatch(/<h[23]>/);
+			expect(visibleText(html).length, slug).toBeGreaterThan(80);
+		}
+
+		for (const file of [
+			'../../routes/blog/[slug]/+page.svelte',
+			'../../routes/guides/[slug]/+page.svelte'
+		]) {
+			const page = readFileSync(new URL(file, import.meta.url), 'utf8');
+			expect(page).toContain('dropLeadingH1: true');
+			expect(page.match(/<h1[\s>]/g)?.length).toBe(1);
+		}
+	});
+
 	it('leaves structured guides on the block renderer', () => {
 		const sector = publishedGuideSectors.find((guide) => guide.slug === 'temperate-silvopasture');
 		expect(sector?.blocks.some((block) => block.kind === 'h1')).toBe(true);

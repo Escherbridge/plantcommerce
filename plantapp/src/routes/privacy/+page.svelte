@@ -3,14 +3,6 @@
 	import { publicOperator, publicOperatorLine } from '$lib/config/site';
 </script>
 
-<svelte:head>
-	<title>Privacy | Aevani</title>
-	<meta
-		name="description"
-		content="How Aevani handles information submitted for account and security features, and session storage."
-	/>
-</svelte:head>
-
 <Section>
 	<Container>
 		<div class="mx-auto max-w-4xl space-y-10">

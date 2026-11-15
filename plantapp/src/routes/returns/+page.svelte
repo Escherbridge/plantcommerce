@@ -3,14 +3,6 @@
 	import { publicOperator } from '$lib/config/site';
 </script>
 
-<svelte:head>
-	<title>Returns | Aevani</title>
-	<meta
-		name="description"
-		content="Return policies on Aevani are set directly by each independent seller and shown on every product listing before checkout."
-	/>
-</svelte:head>
-
 <Section>
 	<Container>
 		<div class="mx-auto max-w-4xl space-y-10">

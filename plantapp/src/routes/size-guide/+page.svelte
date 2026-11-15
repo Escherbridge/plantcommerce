@@ -2,14 +2,6 @@
 	import { Container, Section } from '$lib/components/layout';
 </script>
 
-<svelte:head>
-	<title>Size & Fit Guide | Aevani</title>
-	<meta
-		name="description"
-		content="Understand how to evaluate dimensions, compatibility, and included components for Aevani products."
-	/>
-</svelte:head>
-
 <Section>
 	<Container>
 		<div class="mx-auto max-w-4xl space-y-10">

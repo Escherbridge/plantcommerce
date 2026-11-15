@@ -150,6 +150,13 @@ describe('public crawler discovery', () => {
 			'<loc>https://aevani.com/guides/getting-started-companion-planting</loc>'
 		);
 		expect(published).not.toContain('aquaponics-stocking-notes');
+		expect(published).toContain(
+			'<loc>https://aevani.com/blog/cooling-can-use-more-water-than-the-crop</loc>\n\t\t<lastmod>2026-11-10</lastmod>'
+		);
+		expect(published).toContain(
+			'<loc>https://aevani.com/guides/hydroponics-intermountain</loc>\n\t\t<lastmod>2026-11-10</lastmod>'
+		);
+		expect(published).not.toMatch(/<loc>https:\/\/aevani\.com\/<\/loc>\s*<lastmod>/);
 	});
 
 	it('keeps private, administrative, API, and capability paths out of crawling', async () => {
