@@ -106,13 +106,29 @@ describe('product category guides', () => {
 				text: 'aquaponics field guide',
 				from: '/learn',
 				href: '/guides/small-scale-aquaponics'
+			},
+			{
+				text: 'silvopasture guide',
+				from: '/learn',
+				href: '/guides/temperate-silvopasture'
+			},
+			{
+				text: 'soil-health guide',
+				from: '/learn',
+				href: '/guides/understanding-soil-health'
+			},
+			{
+				text: 'silvopasture &amp; agroforestry guide',
+				from: '/learn',
+				href: '/guides/temperate-food-forest'
 			}
 		]);
 
 		const stored =
 			'<p>Read the <a href="/learn">hydroponics field guide</a>.</p>' +
 			'<p>Start with the <a href="/learn">aquaponics field guide</a>.</p>' +
-			'<p>See the <a href="/learn">silvopasture guide</a> and the <a href="/learn">Aevani learning hub</a>.</p>';
+			'<p>See the <a href="/learn">silvopasture guide</a>, the <a href="/learn">soil-health guide</a>, and the <a href="/learn">silvopasture &amp; agroforestry guide</a>.</p>' +
+			'<p>The <a href="/learn">Aevani learning hub</a> stays put.</p>';
 		const rewritten = rewriteProductGuideLinks(stored);
 		expect(rewritten).toContain(
 			'<a href="/guides/choosing-hydroponic-system">hydroponics field guide</a>'
@@ -120,10 +136,19 @@ describe('product category guides', () => {
 		expect(rewritten).toContain(
 			'<a href="/guides/small-scale-aquaponics">aquaponics field guide</a>'
 		);
-		expect(rewritten).toContain('<a href="/learn">silvopasture guide</a>');
+		expect(rewritten).toContain('<a href="/guides/temperate-silvopasture">silvopasture guide</a>');
+		expect(rewritten).toContain(
+			'<a href="/guides/understanding-soil-health">soil-health guide</a>'
+		);
+		expect(rewritten).toContain(
+			'<a href="/guides/temperate-food-forest">silvopasture &amp; agroforestry guide</a>'
+		);
 		expect(rewritten).toContain('<a href="/learn">Aevani learning hub</a>');
 		expect(rewritten).not.toContain('href="/learn">hydroponics field guide');
 		expect(rewritten).not.toContain('href="/learn">aquaponics field guide');
+		expect(rewritten).not.toContain('href="/learn">silvopasture guide');
+		expect(rewritten).not.toContain('href="/learn">soil-health guide');
+		expect(rewritten).not.toContain('href="/learn">silvopasture &amp; agroforestry guide');
 
 		expect(
 			rewriteProductGuideLinks(
@@ -162,9 +187,87 @@ describe('product category guides', () => {
 			'<a href="/guides/small-scale-aquaponics" rel="noopener noreferrer">aquaponics field guide</a>'
 		);
 
+		const retargeted = new Map<string, string>([
+			['silvopasture-seed-mix', '/guides/temperate-silvopasture'],
+			['portable-electric-netting-164-ft', '/guides/temperate-silvopasture'],
+			['tree-shelters-protectors-25-pack', '/guides/temperate-silvopasture'],
+			['chestnut-tree-seedlings-10-pack', '/guides/temperate-food-forest'],
+			['soil-building-amendment-kit', '/guides/understanding-soil-health']
+		]);
 		for (const product of demoProducts) {
-			expect(rewriteProductGuideLinks(product.descriptionHtml), product.slug).toBe(
-				product.descriptionHtml
+			const rewritten = rewriteProductGuideLinks(product.descriptionHtml);
+			const target = retargeted.get(product.slug);
+			if (!target) {
+				expect(rewritten, product.slug).toBe(product.descriptionHtml);
+				continue;
+			}
+			expect(product.descriptionHtml, product.slug).toContain('href="/learn"');
+			expect(rewritten, product.slug).toContain(`href="${target}"`);
+			expect(rewritten, product.slug).not.toContain('href="/learn"');
+		}
+	});
+
+	it('points the remaining stored /learn anchors at specific guides', () => {
+		for (const slug of [
+			'silvopasture-seed-mix',
+			'portable-electric-netting-164-ft',
+			'tree-shelters-protectors-25-pack'
+		]) {
+			const product = demoProducts.find((entry) => entry.slug === slug);
+			expect(product?.descriptionHtml, slug).toContain('<a href="/learn">silvopasture guide</a>');
+			expect(rewriteProductGuideLinks(product?.descriptionHtml ?? ''), slug).toContain(
+				'<a href="/guides/temperate-silvopasture">silvopasture guide</a>'
+			);
+		}
+
+		const soil = demoProducts.find((product) => product.slug === 'soil-building-amendment-kit');
+		expect(soil?.descriptionHtml).toContain('<a href="/learn">soil-health guide</a>');
+		expect(rewriteProductGuideLinks(soil?.descriptionHtml ?? '')).toContain(
+			'<a href="/guides/understanding-soil-health">soil-health guide</a>'
+		);
+
+		expect(
+			rewriteProductGuideLinks('<a href="/learn" rel="noopener noreferrer">silvopasture guide</a>')
+		).toBe(
+			'<a href="/guides/temperate-silvopasture" rel="noopener noreferrer">silvopasture guide</a>'
+		);
+		expect(rewriteProductGuideLinks(`<a href='/learn'> Soil-Health   Guide </a>`)).toBe(
+			`<a href='/guides/understanding-soil-health'> Soil-Health   Guide </a>`
+		);
+		expect(
+			rewriteProductGuideLinks(
+				'<a href="https://aevani.com/learn?topic=soil">soil-health guide</a>'
+			)
+		).toBe('<a href="/guides/understanding-soil-health">soil-health guide</a>');
+		expect(
+			rewriteProductGuideLinks('<a href="/guides/understanding-soil-health">soil-health guide</a>')
+		).toBe('<a href="/guides/understanding-soil-health">soil-health guide</a>');
+		expect(
+			rewriteProductGuideLinks('<a href="/products/silvopasture">silvopasture guide</a>')
+		).toBe('<a href="/products/silvopasture">silvopasture guide</a>');
+
+		const chestnut = demoProducts.find(
+			(product) => product.slug === 'chestnut-tree-seedlings-10-pack'
+		);
+		expect(chestnut?.descriptionHtml).toContain(
+			'<a href="/learn">silvopasture &amp; agroforestry guide</a>'
+		);
+		expect(rewriteProductGuideLinks(chestnut?.descriptionHtml ?? '')).toContain(
+			'<a href="/guides/temperate-food-forest">silvopasture &amp; agroforestry guide</a>'
+		);
+		expect(
+			rewriteProductGuideLinks(
+				'<a href="/learn" rel="noopener noreferrer">silvopasture &amp; agroforestry guide</a>'
+			)
+		).toBe(
+			'<a href="/guides/temperate-food-forest" rel="noopener noreferrer">silvopasture &amp; agroforestry guide</a>'
+		);
+
+		for (const slug of ['permaculture-starter-kit', 'heirloom-tomato-collection'] as const) {
+			const product = demoProducts.find((entry) => entry.slug === slug);
+			expect(product?.descriptionHtml, slug).toContain('<a href="/learn">Aevani learning hub</a>');
+			expect(rewriteProductGuideLinks(product?.descriptionHtml ?? ''), slug).toContain(
+				'<a href="/learn">Aevani learning hub</a>'
 			);
 		}
 	});
