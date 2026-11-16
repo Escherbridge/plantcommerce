@@ -52,7 +52,7 @@
 								<li>
 									<a class="link text-lg" href="/guides/{guide.slug}">{guide.title}</a>
 									{#if guide.excerpt}
-										<p class="text-sm text-base-content/60">{guide.excerpt}</p>
+										<p class="search-blurb text-sm">{guide.excerpt}</p>
 									{/if}
 								</li>
 							{/each}
@@ -69,7 +69,7 @@
 								<li>
 									<a class="link text-lg" href="/blog/{post.slug}">{post.title}</a>
 									{#if post.excerpt}
-										<p class="text-sm text-base-content/60">{post.excerpt}</p>
+										<p class="search-blurb text-sm">{post.excerpt}</p>
 									{/if}
 								</li>
 							{/each}
@@ -84,7 +84,7 @@
 								<li>
 									<a class="link text-lg" href="/courses/{course.slug}">{course.title}</a>
 									{#if course.description}
-										<p class="text-sm text-base-content/60">{course.description}</p>
+										<p class="search-blurb text-sm">{course.description}</p>
 									{/if}
 								</li>
 							{/each}
@@ -112,3 +112,10 @@
 		{/if}
 	</Container>
 </section>
+
+<style>
+	/* text-base-content/60 renders #768177 on #f4f1ea (3.59:1). #5c665d clears 4.5:1. */
+	.search-blurb {
+		color: #5c665d;
+	}
+</style>

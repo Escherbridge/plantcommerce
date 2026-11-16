@@ -4,8 +4,15 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { publishedGuideSectors } from '$lib/content/research';
 import { demoProducts } from '$lib/server/db/catalogDemo';
+import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
 import { load as loadGuide } from '../../routes/guides/[slug]/+page';
-import { categoryGuides, guideForCategory } from './categoryGuides';
+import {
+	categoryGuides,
+	guideForCategory,
+	guideForProduct,
+	productGuideLinks,
+	rewriteProductGuideLinks
+} from './categoryGuides';
 
 describe('product category guides', () => {
 	it('maps each catalogue category to one guide', () => {
@@ -69,9 +76,97 @@ describe('product category guides', () => {
 		expect(page).toContain('href={nextGuide.href}');
 		expect(page).toContain('Make something like this?');
 		expect(page).toContain('href="/sell">Apply to sell it on Aevani.</a>');
-		expect(page).toContain("sanitizeRichText(p.descriptionHtml || p.description || '')");
-		expect(page).not.toContain('retargetHydroponicsFieldGuide');
-		expect(page).not.toContain('retargetAquaponicsFieldGuide');
+		expect(page).toContain(
+			"sanitizeRichText(rewriteProductGuideLinks(p.descriptionHtml || p.description || ''))"
+		);
+		const productGuide = page.indexOf('guideForProduct(p.slug)');
+		const categoryGuide = page.indexOf('guideForCategory(p.category?.slug)');
+		expect(productGuide).toBeGreaterThan(-1);
+		expect(categoryGuide).toBeGreaterThan(productGuide);
+	});
+
+	it('points the tower preview at the vertical growing guide', () => {
+		expect(guideForProduct('vertical-tower-garden-system')).toEqual({
+			href: '/guides/vertical-growing',
+			label: 'Vertical hydroponic growing: density and light'
+		});
+		expect(guideForProduct('nft-hydroponic-channel-system')).toBeNull();
+		expect(guideForProduct('ibc-aquaponics-fish-tank')).toBeNull();
+		expect(guideForProduct(null)).toBeNull();
+	});
+
+	it('rewrites stored field-guide hrefs from the link text and the old /learn href', () => {
+		expect(productGuideLinks).toEqual([
+			{
+				text: 'hydroponics field guide',
+				from: '/learn',
+				href: '/guides/choosing-hydroponic-system'
+			},
+			{
+				text: 'aquaponics field guide',
+				from: '/learn',
+				href: '/guides/small-scale-aquaponics'
+			}
+		]);
+
+		const stored =
+			'<p>Read the <a href="/learn">hydroponics field guide</a>.</p>' +
+			'<p>Start with the <a href="/learn">aquaponics field guide</a>.</p>' +
+			'<p>See the <a href="/learn">silvopasture guide</a> and the <a href="/learn">Aevani learning hub</a>.</p>';
+		const rewritten = rewriteProductGuideLinks(stored);
+		expect(rewritten).toContain(
+			'<a href="/guides/choosing-hydroponic-system">hydroponics field guide</a>'
+		);
+		expect(rewritten).toContain(
+			'<a href="/guides/small-scale-aquaponics">aquaponics field guide</a>'
+		);
+		expect(rewritten).toContain('<a href="/learn">silvopasture guide</a>');
+		expect(rewritten).toContain('<a href="/learn">Aevani learning hub</a>');
+		expect(rewritten).not.toContain('href="/learn">hydroponics field guide');
+		expect(rewritten).not.toContain('href="/learn">aquaponics field guide');
+
+		expect(
+			rewriteProductGuideLinks(
+				'<a href="/learn" rel="noopener noreferrer">hydroponics field guide</a>'
+			)
+		).toBe(
+			'<a href="/guides/choosing-hydroponic-system" rel="noopener noreferrer">hydroponics field guide</a>'
+		);
+		expect(rewriteProductGuideLinks(`<a href='/learn'> Aquaponics   Field Guide </a>`)).toBe(
+			`<a href='/guides/small-scale-aquaponics'> Aquaponics   Field Guide </a>`
+		);
+		expect(
+			rewriteProductGuideLinks('<a href="https://aevani.com/learn/">aquaponics field guide</a>')
+		).toBe('<a href="/guides/small-scale-aquaponics">aquaponics field guide</a>');
+
+		const already =
+			'<p>Our <a href="/guides/choosing-hydroponic-system">hydroponics field guide</a> and <a href="/guides/vertical-growing">vertical growing guide</a>.</p>';
+		expect(rewriteProductGuideLinks(already)).toBe(already);
+		expect(
+			rewriteProductGuideLinks(
+				'<a href="/guides/nutrient-film-technique">hydroponics field guide</a>'
+			)
+		).toBe('<a href="/guides/nutrient-film-technique">hydroponics field guide</a>');
+		expect(rewriteProductGuideLinks('The field guide covers collection timing.')).toBe(
+			'The field guide covers collection timing.'
+		);
+		expect(rewriteProductGuideLinks('')).toBe('');
+		expect(
+			sanitizeRichText(rewriteProductGuideLinks('<a href="/learn">hydroponics field guide</a>'))
+		).toBe(
+			'<a href="/guides/choosing-hydroponic-system" rel="noopener noreferrer">hydroponics field guide</a>'
+		);
+		expect(
+			sanitizeRichText(rewriteProductGuideLinks('<a href="/learn">aquaponics field guide</a>'))
+		).toBe(
+			'<a href="/guides/small-scale-aquaponics" rel="noopener noreferrer">aquaponics field guide</a>'
+		);
+
+		for (const product of demoProducts) {
+			expect(rewriteProductGuideLinks(product.descriptionHtml), product.slug).toBe(
+				product.descriptionHtml
+			);
+		}
 	});
 
 	it('points the tower long read at the published vertical growing guide', async () => {
