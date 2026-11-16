@@ -1107,6 +1107,50 @@ export const orderBalanceHold = pgTable(
 	})
 );
 
+export const payoutTransfer = pgTable(
+	'payout_transfer',
+	{
+		id: text('id').primaryKey(),
+		kind: text('kind', { enum: ['seller', 'affiliate'] }).notNull(),
+		earningId: text('earning_id').references(() => sellerEarning.id),
+		payoutId: text('payout_id'),
+		batchId: text('batch_id'),
+		stripeAccountId: text('stripe_account_id'),
+		amountMinor: bigint('amount_minor', { mode: 'number' }).notNull(),
+		currency: varchar('currency', { length: 3 }).notNull(),
+		status: text('status', {
+			enum: ['skipped', 'failed', 'succeeded', 'pending_approval']
+		}).notNull(),
+		failureReason: text('failure_reason'),
+		idempotencyKey: text('idempotency_key').notNull(),
+		stripeTransferId: text('stripe_transfer_id'),
+		sourceTransaction: text('source_transaction'),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		idempotencyIdx: uniqueIndex('payout_transfer_idempotency_idx').on(table.idempotencyKey),
+		earningIdx: index('payout_transfer_earning_idx').on(table.earningId)
+	})
+);
+
+export const affiliatePayoutBatch = pgTable(
+	'affiliate_payout_batch',
+	{
+		id: text('id').primaryKey(),
+		currency: varchar('currency', { length: 3 }).notNull(),
+		totalMinor: bigint('total_minor', { mode: 'number' }).notNull(),
+		status: text('status', {
+			enum: ['pending_approval', 'approved', 'paid', 'skipped']
+		}).notNull(),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+		approvedAt: timestamp('approved_at', { withTimezone: true, mode: 'date' })
+	},
+	(table) => ({
+		statusIdx: index('affiliate_payout_batch_status_idx').on(table.status)
+	})
+);
+
 export const catalogSeedCategory = pgTable(
 	'catalog_seed_category',
 	{
