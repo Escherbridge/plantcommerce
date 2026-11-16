@@ -263,7 +263,7 @@ export const demoProducts: DemoProduct[] = [
 			'hydroponic-nutrients-trio'
 		],
 		descriptionHtml:
-			'<h2>Why grow vertically</h2><p>Most of a garden bed is wasted on walkways and root run. A tower throws that logic out: it stacks <strong>forty-four plant sites into two square feet of floor</strong>, feeds them from a single reservoir, and lets gravity do the work a pump would otherwise fight. On a balcony, in a spare room, or beside a south window, it turns a corner nobody was using into a salad garden.</p><p>We built this one around the parts that usually fail first. The pump is oversized so it loafs instead of straining. The reservoir is opaque HDPE, so algae never gets a foothold. The tiers rotate, so the greens on the shaded side get their turn in the light.</p><p>It is honestly forgiving. Miss a feeding, skip a weekend, run it a little out of balance — the plants coast. When you are ready to push it, dial in the nutrients and the yields climb fast.</p><p>New to soilless growing? Start with our <a href="/guides/choosing-hydroponic-system">hydroponics field guide</a> — it walks the whole first season.</p>',
+			'<h2>Why grow vertically</h2><p>Most of a garden bed is wasted on walkways and root run. A tower throws that logic out: it stacks <strong>forty-four plant sites into two square feet of floor</strong>, feeds them from a single reservoir, and lets gravity do the work a pump would otherwise fight. On a balcony, in a spare room, or beside a south window, it turns a corner nobody was using into a salad garden.</p><p>We built this one around the parts that usually fail first. The pump is oversized so it loafs instead of straining. The reservoir is opaque HDPE, so algae never gets a foothold. The tiers rotate, so the greens on the shaded side get their turn in the light.</p><p>It is honestly forgiving. Miss a feeding, skip a weekend, run it a little out of balance — the plants coast. When you are ready to push it, dial in the nutrients and the yields climb fast.</p><p>New to soilless growing? Start with our <a href="/guides/vertical-growing">vertical growing guide</a>.</p>',
 		keyFeatures: [
 			'Grows 40+ plants in a 2 sq ft footprint — indoors or out',
 			'Uses ~90% less water than a conventional bed',
@@ -1079,7 +1079,7 @@ export const demoProducts: DemoProduct[] = [
 			'aquaponics-water-testing-kit'
 		],
 		descriptionHtml:
-			'<h2>The heart of a backyard system</h2><p>An IBC tote is the workhorse of serious home aquaponics, and this one is converted properly — not just cleaned out. The interior carries a food-safe coating, the front holds a tempered-glass <strong>viewing window</strong> so you can actually watch your fish and their health, and a four-stone aeration manifold keeps the water alive. The insulated jacket buys you temperature stability that bare totes never have.</p><p>The steel cage carries the load and the pallet base lifts it for gravity-fed drainage down to your grow beds. It supports 50–75 food fish or a hundred-plus ornamentals, which is enough fish to fertilize a real garden.</p><p>We chose the parts a first-timer regrets skipping: the window that catches a sick fish early, the insulation that flattens a cold snap, the manifold that survives a pump hiccup. It is the tank we would put in our own yard.</p><p>Building your first loop? Start with the <a href="/learn">aquaponics field guide</a>.</p>',
+			'<h2>The heart of a backyard system</h2><p>An IBC tote is the workhorse of serious home aquaponics, and this one is converted properly — not just cleaned out. The interior carries a food-safe coating, the front holds a tempered-glass <strong>viewing window</strong> so you can actually watch your fish and their health, and a four-stone aeration manifold keeps the water alive. The insulated jacket buys you temperature stability that bare totes never have.</p><p>The steel cage carries the load and the pallet base lifts it for gravity-fed drainage down to your grow beds. It supports 50–75 food fish or a hundred-plus ornamentals, which is enough fish to fertilize a real garden.</p><p>We chose the parts a first-timer regrets skipping: the window that catches a sick fish early, the insulation that flattens a cold snap, the manifold that survives a pump hiccup. It is the tank we would put in our own yard.</p><p>Building your first loop? Start with the <a href="/guides/small-scale-aquaponics">aquaponics field guide</a>.</p>',
 		keyFeatures: [
 			'Properly converted 275-gal IBC with food-safe interior',
 			'12×18 in tempered-glass viewing window',
@@ -1207,7 +1207,7 @@ export const demoProducts: DemoProduct[] = [
 			'aquaponics-stocking-notes'
 		],
 		descriptionHtml:
-			'<h2>Production-scale growing</h2><p>This is the grow bed built to pair with a 275-gallon IBC tank in a proper 1:1 ratio. A 4×8 ft flood-and-drain bed, twelve inches deep for real root run, on a stainless frame that shrugs off a decade of greenhouse humidity. The food-grade HDPE liner and included bell-siphon assembly turn fish water into a garden.</p><p>It holds 32 cubic feet of media — enough to grow fruiting crops, not just greens.</p><p>Sizing a system? The <a href="/learn">aquaponics field guide</a> covers the tank-to-bed ratio.</p>',
+			'<h2>Production-scale growing</h2><p>This is the grow bed built to pair with a 275-gallon IBC tank in a proper 1:1 ratio. A 4×8 ft flood-and-drain bed, twelve inches deep for real root run, on a stainless frame that shrugs off a decade of greenhouse humidity. The food-grade HDPE liner and included bell-siphon assembly turn fish water into a garden.</p><p>It holds 32 cubic feet of media — enough to grow fruiting crops, not just greens.</p><p>Sizing a system? The <a href="/guides/small-scale-aquaponics">aquaponics field guide</a> covers the tank-to-bed ratio.</p>',
 		keyFeatures: [
 			'4×8 ft flood-and-drain bed, 12 in deep',
 			'Food-grade HDPE liner + bell siphon assembly',
@@ -1288,7 +1288,7 @@ export const demoProducts: DemoProduct[] = [
 			'aquaponics-bell-siphon-kit'
 		],
 		descriptionHtml:
-			'<h2>Aquaponics you can watch over breakfast</h2><p>A complete ecosystem that fits on a counter: fish waste feeds the herbs above, the plants clean the water below, and you get to watch the nitrogen cycle happen in miniature. A 3-gallon acrylic tank, a planted grow bed, an LED, an air pump, and a bottle of conditioner — everything to keep two or three small fish and a tray of greens.</p><p>It is the friendliest possible introduction to the idea, and quietly mesmerizing.</p><p>Curious how the loop works? The <a href="/learn">aquaponics field guide</a> explains it start to finish.</p>',
+			'<h2>Aquaponics you can watch over breakfast</h2><p>A complete ecosystem that fits on a counter: fish waste feeds the herbs above, the plants clean the water below, and you get to watch the nitrogen cycle happen in miniature. A 3-gallon acrylic tank, a planted grow bed, an LED, an air pump, and a bottle of conditioner — everything to keep two or three small fish and a tray of greens.</p><p>It is the friendliest possible introduction to the idea, and quietly mesmerizing.</p><p>Curious how the loop works? The <a href="/guides/small-scale-aquaponics">aquaponics field guide</a> explains it start to finish.</p>',
 		keyFeatures: [
 			'Self-contained fish-and-herb loop for the kitchen',
 			'3-gal clear acrylic tank with bamboo accents',
@@ -1376,7 +1376,7 @@ export const demoProducts: DemoProduct[] = [
 			'commercial-aquaponics-grow-bed'
 		],
 		descriptionHtml:
-			'<h2>A note, not a shipment</h2><p>This listing is a silhouette of a future seller note about stocking a tank. Aevani does not ship live fish, and checkout is off. When a real seller lists animals or plants, that seller writes the terms.</p><p>Read the <a href="/learn">aquaponics field guide</a> while the catalogue is still a preview.</p>',
+			'<h2>A note, not a shipment</h2><p>This listing is a silhouette of a future seller note about stocking a tank. Aevani does not ship live fish, and checkout is off. When a real seller lists animals or plants, that seller writes the terms.</p><p>Read the <a href="/guides/small-scale-aquaponics">aquaponics field guide</a> while the catalogue is still a preview.</p>',
 		keyFeatures: [
 			'Catalogue preview only',
 			'No live animals are offered',

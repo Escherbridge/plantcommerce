@@ -58,9 +58,10 @@ describe('pre-launch policy and FAQ copy', () => {
 		const warranty = render(Warranty).body;
 
 		expect(text(shipping)).toContain(
-			'When sellers join, each listing will show its own shipping rates, carriers and handling terms before checkout.'
+			'When sellers join, independent seed houses, nurseries, and equipment makers will ship from their own benches and workshops.'
 		);
-		expect(shipping).not.toMatch(/live plants/i);
+		expect(text(shipping)).not.toMatch(/live plants/i);
+		expect(text(shipping)).not.toContain('dry seed packets');
 		expect(returns).toContain('will be shown on each listing when sellers join');
 		expect(returns).not.toContain('shown clearly before checkout');
 		expect(warranty).toContain('will be shown on each listing when sellers join');

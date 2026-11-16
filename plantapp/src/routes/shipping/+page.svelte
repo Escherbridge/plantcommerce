@@ -14,16 +14,16 @@
 				</p>
 				<h1 class="font-display text-4xl tracking-tight md:text-5xl">Shipping</h1>
 				<p class="max-w-3xl text-lg text-base-content/70">
-					When sellers join, each listing will show its own shipping rates, carriers and handling
-					terms before checkout.
+					When sellers join, independent seed houses, nurseries, and equipment makers will ship from
+					their own benches and workshops.
 				</p>
 			</header>
 
 			<section class="rounded-2xl border border-base-200 bg-base-100 p-6 shadow-sm md:p-8">
 				<h2 class="font-display text-2xl tracking-tight">Set per seller</h2>
 				<p class="mt-3 text-base-content/80">
-					Each seller will set those terms on the listing, rather than one set of terms for every
-					item.
+					Each seller will set shipping terms on the listing when they join, rather than one policy
+					for every item.
 				</p>
 			</section>
 

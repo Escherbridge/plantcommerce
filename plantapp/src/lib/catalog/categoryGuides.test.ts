@@ -2,13 +2,10 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { publishedGuideSectors } from '$lib/content/research';
 import { demoProducts } from '$lib/server/db/catalogDemo';
-import {
-	categoryGuides,
-	guideForCategory,
-	retargetAquaponicsFieldGuide,
-	retargetHydroponicsFieldGuide
-} from './categoryGuides';
+import { load as loadGuide } from '../../routes/guides/[slug]/+page';
+import { categoryGuides, guideForCategory } from './categoryGuides';
 
 describe('product category guides', () => {
 	it('maps each catalogue category to one guide', () => {
@@ -27,36 +24,33 @@ describe('product category guides', () => {
 		expect(guideForCategory('missing')).toBeNull();
 	});
 
-	it('points the hydroponics field guide at the choosing guide and leaves other copy', () => {
-		const html = '<p>Read the <a href="/learn">hydroponics field guide</a>.</p>';
-		expect(retargetHydroponicsFieldGuide(html)).toBe(
-			'<p>Read the <a href="/guides/choosing-hydroponic-system">hydroponics field guide</a>.</p>'
-		);
-		const untouched = '<p>Read the <a href="/learn">aquaponics field guide</a>.</p>';
-		expect(retargetHydroponicsFieldGuide(untouched)).toBe(untouched);
-		expect(retargetHydroponicsFieldGuide('The field guide covers collection timing.')).toBe(
-			'The field guide covers collection timing.'
-		);
-	});
-
-	it('updates the demo long read and leaves specs and FAQs alone', () => {
-		const linked = demoProducts.filter((product) =>
+	it('stores the hydroponics and aquaponics field-guide hrefs on the real guides', () => {
+		const hydro = demoProducts.filter((product) =>
 			product.descriptionHtml.includes('hydroponics field guide')
 		);
-		expect(linked.length).toBeGreaterThan(0);
-		for (const product of linked) {
-			expect(product.descriptionHtml).toContain(
+		expect(hydro.length).toBeGreaterThan(0);
+		for (const product of hydro) {
+			expect(product.descriptionHtml, product.slug).toContain(
 				'<a href="/guides/choosing-hydroponic-system">hydroponics field guide</a>'
 			);
-			expect(product.descriptionHtml).not.toContain('<a href="/learn">hydroponics field guide</a>');
+			expect(product.descriptionHtml, product.slug).not.toContain('href="/learn"');
 		}
+
+		const aqua = demoProducts.filter((product) =>
+			product.descriptionHtml.includes('aquaponics field guide')
+		);
+		expect(aqua.map((product) => product.slug)).toContain('ibc-aquaponics-fish-tank');
+		for (const product of aqua) {
+			expect(product.descriptionHtml, product.slug).toContain(
+				'<a href="/guides/small-scale-aquaponics">aquaponics field guide</a>'
+			);
+			expect(product.descriptionHtml, product.slug).not.toContain('href="/learn"');
+		}
+
 		for (const product of demoProducts) {
-			expect(JSON.stringify(product.specs), product.slug).not.toContain(
-				'/guides/choosing-hydroponic-system'
-			);
-			expect(JSON.stringify(product.faqs), product.slug).not.toContain(
-				'/guides/choosing-hydroponic-system'
-			);
+			expect(JSON.stringify(product.specs), product.slug).not.toContain('/guides/');
+			expect(JSON.stringify(product.faqs), product.slug).not.toContain('aquaponics field guide');
+			expect(JSON.stringify(product.faqs), product.slug).not.toContain('hydroponics field guide');
 		}
 	});
 
@@ -75,36 +69,24 @@ describe('product category guides', () => {
 		expect(page).toContain('href={nextGuide.href}');
 		expect(page).toContain('Make something like this?');
 		expect(page).toContain('href="/sell">Apply to sell it on Aevani.</a>');
-		expect(page).toContain('retargetHydroponicsFieldGuide');
-		expect(page).toContain('retargetAquaponicsFieldGuide');
+		expect(page).toContain("sanitizeRichText(p.descriptionHtml || p.description || '')");
+		expect(page).not.toContain('retargetHydroponicsFieldGuide');
+		expect(page).not.toContain('retargetAquaponicsFieldGuide');
 	});
 
-	it('points the aquaponics field guide at the small-scale guide on the long read', () => {
-		const html = '<p>Read the <a href="/learn">aquaponics field guide</a>.</p>';
-		expect(retargetAquaponicsFieldGuide(html)).toBe(
-			'<p>Read the <a href="/guides/small-scale-aquaponics">aquaponics field guide</a>.</p>'
-		);
-		const untouched = '<p>Read the <a href="/learn">hydroponics field guide</a>.</p>';
-		expect(retargetAquaponicsFieldGuide(untouched)).toBe(untouched);
+	it('points the tower long read at the published vertical growing guide', async () => {
+		const guide = publishedGuideSectors.find((entry) => entry.slug === 'vertical-growing');
+		expect(guide?.canonical).toBe('https://aevani.com/guides/vertical-growing');
+		const loaded = await loadGuide({
+			params: { slug: 'vertical-growing' }
+		} as Parameters<typeof loadGuide>[0]);
+		expect(loaded).toMatchObject({ sector: { slug: 'vertical-growing' }, guide: null });
 
-		const linked = demoProducts.filter((product) =>
-			product.descriptionHtml.includes('<a href="/learn">aquaponics field guide</a>')
+		const tower = demoProducts.find((product) => product.slug === 'vertical-tower-garden-system');
+		expect(tower?.descriptionHtml).toContain(
+			'<a href="/guides/vertical-growing">vertical growing guide</a>'
 		);
-		expect(linked.map((product) => product.slug)).toContain('ibc-aquaponics-fish-tank');
-		for (const product of linked) {
-			const rendered = retargetAquaponicsFieldGuide(product.descriptionHtml);
-			expect(rendered, product.slug).toContain(
-				'<a href="/guides/small-scale-aquaponics">aquaponics field guide</a>'
-			);
-			expect(rendered, product.slug).not.toContain('<a href="/learn">aquaponics field guide</a>');
-		}
-		for (const product of demoProducts) {
-			expect(JSON.stringify(product.specs), product.slug).not.toContain(
-				'/guides/small-scale-aquaponics'
-			);
-			expect(JSON.stringify(product.faqs), product.slug).not.toContain(
-				'/guides/small-scale-aquaponics'
-			);
-		}
+		expect(tower?.descriptionHtml).not.toContain('/guides/choosing-hydroponic-system');
+		expect(tower?.descriptionHtml).not.toContain('href="/learn"');
 	});
 });
