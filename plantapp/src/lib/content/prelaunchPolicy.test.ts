@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import type { ComponentProps } from 'svelte';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
+import { publicRouteMetadata } from '$lib/config/site';
 import { prelaunchSellerTerms } from '$lib/content/prelaunchPolicy';
 import Shipping from '../../routes/shipping/+page.svelte';
 import Returns from '../../routes/returns/+page.svelte';
@@ -47,6 +48,33 @@ describe('pre-launch policy and FAQ copy', () => {
 		expect(count(html, 'href="mailto:contact@escherbridge.com"')).toBe(1);
 		expect(html).not.toContain('Our support team is here to help you');
 		expect(html).not.toContain('Find answers to common questions about our products');
+		expect(html).not.toContain('Still have questions?');
+		expect(html).not.toContain('Contact Support');
+	});
+
+	it('keeps policy pages in the future tense and off live plants', () => {
+		const shipping = render(Shipping).body;
+		const returns = render(Returns).body;
+		const warranty = render(Warranty).body;
+
+		expect(text(shipping)).toContain(
+			'When sellers join, each listing will show its own shipping rates, carriers and handling terms before checkout.'
+		);
+		expect(shipping).not.toMatch(/live plants/i);
+		expect(returns).toContain('will be shown on each listing when sellers join');
+		expect(returns).not.toContain('shown clearly before checkout');
+		expect(warranty).toContain('will be shown on each listing when sellers join');
+		expect(warranty).not.toContain('confirmed before purchase');
+
+		expect(publicRouteMetadata('/shipping').description).toBe(
+			'When sellers join, each listing will show its own shipping rates, carriers and handling terms before checkout.'
+		);
+		expect(publicRouteMetadata('/returns').description).toBe(
+			'When sellers join, return terms will be shown on each listing.'
+		);
+		expect(publicRouteMetadata('/warranty').description).toBe(
+			'When sellers join, warranty terms will be shown on each listing.'
+		);
 	});
 
 	it('leaves product pages and the nav alone', () => {

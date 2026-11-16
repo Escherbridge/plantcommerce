@@ -84,7 +84,7 @@
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.14em;
-		color: #7c9585;
+		color: #587364;
 	}
 
 	.system-card__title {

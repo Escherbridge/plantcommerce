@@ -3,7 +3,12 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { demoProducts } from '$lib/server/db/catalogDemo';
-import { categoryGuides, guideForCategory, retargetHydroponicsFieldGuide } from './categoryGuides';
+import {
+	categoryGuides,
+	guideForCategory,
+	retargetAquaponicsFieldGuide,
+	retargetHydroponicsFieldGuide
+} from './categoryGuides';
 
 describe('product category guides', () => {
 	it('maps each catalogue category to one guide', () => {
@@ -71,5 +76,35 @@ describe('product category guides', () => {
 		expect(page).toContain('Make something like this?');
 		expect(page).toContain('href="/sell">Apply to sell it on Aevani.</a>');
 		expect(page).toContain('retargetHydroponicsFieldGuide');
+		expect(page).toContain('retargetAquaponicsFieldGuide');
+	});
+
+	it('points the aquaponics field guide at the small-scale guide on the long read', () => {
+		const html = '<p>Read the <a href="/learn">aquaponics field guide</a>.</p>';
+		expect(retargetAquaponicsFieldGuide(html)).toBe(
+			'<p>Read the <a href="/guides/small-scale-aquaponics">aquaponics field guide</a>.</p>'
+		);
+		const untouched = '<p>Read the <a href="/learn">hydroponics field guide</a>.</p>';
+		expect(retargetAquaponicsFieldGuide(untouched)).toBe(untouched);
+
+		const linked = demoProducts.filter((product) =>
+			product.descriptionHtml.includes('<a href="/learn">aquaponics field guide</a>')
+		);
+		expect(linked.map((product) => product.slug)).toContain('ibc-aquaponics-fish-tank');
+		for (const product of linked) {
+			const rendered = retargetAquaponicsFieldGuide(product.descriptionHtml);
+			expect(rendered, product.slug).toContain(
+				'<a href="/guides/small-scale-aquaponics">aquaponics field guide</a>'
+			);
+			expect(rendered, product.slug).not.toContain('<a href="/learn">aquaponics field guide</a>');
+		}
+		for (const product of demoProducts) {
+			expect(JSON.stringify(product.specs), product.slug).not.toContain(
+				'/guides/small-scale-aquaponics'
+			);
+			expect(JSON.stringify(product.faqs), product.slug).not.toContain(
+				'/guides/small-scale-aquaponics'
+			);
+		}
 	});
 });

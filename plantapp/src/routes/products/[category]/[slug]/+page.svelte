@@ -5,7 +5,11 @@
 	import { StatTile, SectionHeader, Badge, Button, GlassCard } from '$lib/components/ui';
 	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
 	import { productCategoryHref } from '../../catalog';
-	import { guideForCategory, retargetHydroponicsFieldGuide } from '$lib/catalog/categoryGuides';
+	import {
+		guideForCategory,
+		retargetAquaponicsFieldGuide,
+		retargetHydroponicsFieldGuide
+	} from '$lib/catalog/categoryGuides';
 	import { productStructuredData } from '$lib/catalog/placeholderListing';
 	import { cart } from '$lib/stores/cart';
 	import type { PageData } from './$types';
@@ -107,7 +111,11 @@
 
 	// ---- The long read: the ONLY @html on the page, always sanitized. ----
 	const longReadHtml = $derived(
-		sanitizeRichText(retargetHydroponicsFieldGuide(p.descriptionHtml || p.description || ''))
+		sanitizeRichText(
+			retargetAquaponicsFieldGuide(
+				retargetHydroponicsFieldGuide(p.descriptionHtml || p.description || '')
+			)
+		)
 	);
 	const hasLongRead = $derived(stripHtml(p.descriptionHtml || p.description || '').length > 0);
 

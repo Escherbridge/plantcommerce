@@ -19,12 +19,19 @@ export function publicAliasRedirect(pathname: string): string | null {
 	return PUBLIC_ALIAS_REDIRECTS[path] ?? null;
 }
 
-/** `/products?q=...` belongs on the search page. The query string is kept. */
+/** `/products?q=` and `/products?search=` belong on the search page. Other params stay. */
 export function catalogueSearchRedirect(url: URL): string | null {
 	const path =
 		url.pathname.length > 1 && url.pathname.endsWith('/')
 			? url.pathname.slice(0, -1)
 			: url.pathname;
-	if (path !== '/products' || !url.searchParams.has('q')) return null;
-	return `/search${url.search}`;
+	if (path !== '/products') return null;
+	if (url.searchParams.has('q')) return `/search${url.search}`;
+	if (!url.searchParams.has('search')) return null;
+
+	const params = new URLSearchParams();
+	for (const [key, value] of url.searchParams) {
+		params.append(key === 'search' ? 'q' : key, value);
+	}
+	return `/search?${params.toString()}`;
 }
