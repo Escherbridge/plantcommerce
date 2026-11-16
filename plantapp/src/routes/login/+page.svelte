@@ -5,7 +5,9 @@
 	import { toasts } from '$lib/stores/toast';
 	import { Icon } from '$lib/components/icons';
 	import type { ActionData } from './$types';
-	import { firstEmptyLoginField } from './validation';
+	import CredentialErrorSummary from '$lib/components/forms/CredentialErrorSummary.svelte';
+	import { describedByFor } from '$lib/auth/credentialFieldErrors';
+	import { LOGIN_MISSING_CREDENTIALS, firstEmptyLoginField } from './validation';
 
 	export let form: ActionData = null;
 
@@ -19,26 +21,40 @@
 	// These read the fields directly. A helper call in the template is not tracked.
 	let emailInvalid: 'true' | undefined = undefined;
 	let passwordInvalid: 'true' | undefined = undefined;
+	let emailDescribedBy: string | undefined = undefined;
+	let passwordDescribedBy: string | undefined = undefined;
+	$: emailErrorIds = describedByFor(form?.fieldErrors, 'usernameOrEmail');
+	$: passwordErrorIds = describedByFor(form?.fieldErrors, 'password');
 	$: emailInvalid = (
-		error === 'Please enter your email and password.'
-			? email.trim()
-				? undefined
-				: 'true'
-			: error || form?.message
-				? 'true'
-				: undefined
+		emailErrorIds
+			? 'true'
+			: error === LOGIN_MISSING_CREDENTIALS
+				? email.trim()
+					? undefined
+					: 'true'
+				: error || form?.message
+					? 'true'
+					: undefined
 	) as 'true' | undefined;
 	$: passwordInvalid = (
-		error === 'Please enter your email and password.'
-			? password
-				? undefined
-				: 'true'
-			: error || form?.message
-				? 'true'
-				: undefined
+		passwordErrorIds
+			? 'true'
+			: error === LOGIN_MISSING_CREDENTIALS
+				? password
+					? undefined
+					: 'true'
+				: error || form?.message
+					? 'true'
+					: undefined
 	) as 'true' | undefined;
-	$: emailDescribedBy = emailInvalid ? 'login-form-error' : undefined;
-	$: passwordDescribedBy = passwordInvalid ? 'login-form-error' : undefined;
+	$: emailDescribedBy =
+		[emailErrorIds, emailInvalid && !emailErrorIds ? 'login-form-error' : undefined]
+			.filter(Boolean)
+			.join(' ') || undefined;
+	$: passwordDescribedBy =
+		[passwordErrorIds, passwordInvalid && !passwordErrorIds ? 'login-form-error' : undefined]
+			.filter(Boolean)
+			.join(' ') || undefined;
 
 	function getRedirectUrl(): string {
 		const redirect = $page.url.searchParams.get('redirect');
@@ -63,7 +79,7 @@
 		const usernameOrEmail = email.trim();
 		const emptyField = firstEmptyLoginField({ usernameOrEmail, password });
 		if (emptyField) {
-			error = 'Please enter your email and password.';
+			error = LOGIN_MISSING_CREDENTIALS;
 			loading = false;
 			await tick();
 			(emptyField === 'usernameOrEmail' ? emailInput : passwordInput)?.focus();
@@ -123,6 +139,12 @@
 
 			<!-- Form -->
 			<form method="post" class="login-form" onsubmit={handleSubmit} novalidate aria-busy={loading}>
+				{#if form?.fieldErrors?.length}
+					<CredentialErrorSummary
+						errors={form.fieldErrors}
+						fieldIds={{ usernameOrEmail: 'email-address', password: 'password' }}
+					/>
+				{/if}
 				<div class="form-control">
 					<label class="label" for="email-address">
 						<span class="label-text">Email address or username</span>

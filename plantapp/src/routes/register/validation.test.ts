@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-import { firstRegistrationError, focusRegistrationField } from './validation';
+import {
+	firstRegistrationError,
+	focusRegistrationField,
+	registrationFieldErrors
+} from './validation';
 
 const valid = {
 	username: 'grower',
@@ -71,6 +75,23 @@ describe('firstRegistrationError', () => {
 	it('accepts a complete registration', () => {
 		expect(firstRegistrationError(valid)).toBeNull();
 		expect(firstRegistrationError({ ...valid, email: '  grower@example.com  ' })).toBeNull();
+	});
+});
+
+describe('registrationFieldErrors', () => {
+	it('lists every failing field with the existing messages', () => {
+		expect(
+			registrationFieldErrors({
+				username: '',
+				email: '',
+				password: '',
+				confirmPassword: ''
+			})
+		).toEqual([
+			{ field: 'username', message: 'Username must be at least 3 characters' },
+			{ field: 'email', message: 'Enter a valid email address' },
+			{ field: 'password', message: 'Password must be at least 8 characters' }
+		]);
 	});
 });
 

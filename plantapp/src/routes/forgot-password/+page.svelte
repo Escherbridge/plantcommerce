@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { trpc } from '$lib/trpc/client';
 	import type { ActionData } from './$types';
+	import CredentialErrorSummary from '$lib/components/forms/CredentialErrorSummary.svelte';
+	import { describedByFor } from '$lib/auth/credentialFieldErrors';
+	import { forgotPasswordFieldErrors } from './validation';
 
 	export let form: ActionData = null;
 
@@ -10,10 +13,24 @@
 	let deliveryAvailable = false;
 	let error = '';
 
+	$: emailErrorIds = describedByFor(form?.fieldErrors, 'email');
+	$: emailInvalid = (emailErrorIds || error || form?.message ? 'true' : undefined) as
+		| 'true'
+		| undefined;
+	$: emailDescribedBy =
+		[emailErrorIds, (error || form?.message) && !emailErrorIds ? 'forgot-form-error' : undefined]
+			.filter(Boolean)
+			.join(' ') || undefined;
+
 	async function submit(event: SubmitEvent) {
 		event.preventDefault();
-		loading = true;
 		error = '';
+		const emailError = forgotPasswordFieldErrors(email)[0];
+		if (emailError) {
+			error = emailError.message;
+			return;
+		}
+		loading = true;
 		try {
 			const result = await trpc.auth.requestPasswordReset.mutate({ email });
 			deliveryAvailable = result.deliveryAvailable;
@@ -50,20 +67,25 @@
 					Enter your account email address. For security, this confirmation is the same whether or
 					not an account exists.
 				</p>
-				<form method="post" class="mt-4 space-y-4" onsubmit={submit}>
+				<form method="post" class="mt-4 space-y-4" onsubmit={submit} novalidate>
+					{#if form?.fieldErrors?.length}
+						<CredentialErrorSummary errors={form.fieldErrors} fieldIds={{ email: 'email' }} />
+					{/if}
 					<label class="form-control" for="email">
 						<span class="label-text">Email address</span>
 						<input
 							id="email"
+							name="email"
 							class="input-bordered input"
 							type="email"
 							bind:value={email}
 							autocomplete="email"
-							required
 							disabled={loading}
+							aria-invalid={emailInvalid}
+							aria-describedby={emailDescribedBy}
 						/>
 					</label>
-					{#if error || form?.message}<p class="text-error" role="alert">
+					{#if error || form?.message}<p id="forgot-form-error" class="text-error" role="alert">
 							{error || form?.message}
 						</p>{/if}
 					<button class="btn w-full btn-primary" type="submit" disabled={loading}>
