@@ -81,10 +81,18 @@
 			? 'true'
 			: undefined
 	);
+	const firstNameInvalid = $derived(
+		describedByFor(form?.fieldErrors, 'firstName') || fieldInvalid('firstName') ? 'true' : undefined
+	);
+	const lastNameInvalid = $derived(
+		describedByFor(form?.fieldErrors, 'lastName') || fieldInvalid('lastName') ? 'true' : undefined
+	);
 	const usernameDescribedBy = $derived(described('username'));
 	const emailDescribedBy = $derived(described('email'));
 	const passwordDescribedBy = $derived(described('password'));
 	const confirmDescribedBy = $derived(described('confirmPassword'));
+	const firstNameDescribedBy = $derived(described('firstName'));
+	const lastNameDescribedBy = $derived(described('lastName'));
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
@@ -220,6 +228,8 @@
 						<CredentialErrorSummary
 							errors={form.fieldErrors}
 							fieldIds={{
+								firstName: 'firstName',
+								lastName: 'lastName',
 								username: 'username',
 								email: 'email',
 								password: 'password',
@@ -241,6 +251,8 @@
 								class="input-bordered input w-full"
 								bind:value={firstName}
 								disabled={isLoading}
+								aria-invalid={firstNameInvalid}
+								aria-describedby={firstNameDescribedBy}
 							/>
 						</div>
 
@@ -257,6 +269,8 @@
 								class="input-bordered input w-full"
 								bind:value={lastName}
 								disabled={isLoading}
+								aria-invalid={lastNameInvalid}
+								aria-describedby={lastNameDescribedBy}
 							/>
 						</div>
 					</div>

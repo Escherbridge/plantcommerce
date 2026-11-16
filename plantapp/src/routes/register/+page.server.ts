@@ -6,6 +6,8 @@ export const actions: Actions = {
 	default: async ({ request }) => {
 		const data = await request.formData();
 		const fieldErrors = registrationFieldErrors({
+			firstName: formText(data, 'firstName'),
+			lastName: formText(data, 'lastName'),
 			username: formText(data, 'username'),
 			email: formText(data, 'email'),
 			password: formText(data, 'password'),

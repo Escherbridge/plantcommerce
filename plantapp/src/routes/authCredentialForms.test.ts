@@ -116,6 +116,8 @@ describe('credential forms', () => {
 				'https://aevani.com/register',
 				registerActions,
 				{
+					firstName: 'Fern',
+					lastName: 'Willow',
 					username: 'grower',
 					email: 'ada@example.com',
 					password: secret,
@@ -145,6 +147,8 @@ describe('credential forms', () => {
 			expect(serialized).not.toContain(secret);
 			expect(serialized).not.toContain('ada@example.com');
 			expect(serialized).not.toContain('grower');
+			expect(serialized).not.toContain('Fern');
+			expect(serialized).not.toContain('Willow');
 			expect(serialized).not.toMatch(/location|redirect/i);
 		}
 
@@ -173,10 +177,32 @@ describe('credential forms', () => {
 					confirmPassword: 'other'
 				},
 				errors: [
+					{ field: 'firstName', message: 'Enter your first name' },
+					{ field: 'lastName', message: 'Enter your last name' },
 					{ field: 'username', message: 'Username must be at least 3 characters' },
 					{ field: 'email', message: 'Enter a valid email address' },
 					{ field: 'password', message: 'Password must be at least 8 characters' },
 					{ field: 'password', message: 'Passwords do not match' }
+				]
+			},
+			{
+				href: 'https://aevani.com/register',
+				actions: registerActions,
+				body: {
+					firstName: '',
+					lastName: '',
+					username: '',
+					email: '',
+					password: '',
+					confirmPassword: ''
+				},
+				errors: [
+					{ field: 'firstName', message: 'Enter your first name' },
+					{ field: 'lastName', message: 'Enter your last name' },
+					{ field: 'username', message: 'Username must be at least 3 characters' },
+					{ field: 'email', message: 'Enter a valid email address' },
+					{ field: 'password', message: 'Password must be at least 8 characters' },
+					{ field: 'confirmPassword', message: 'Confirm your password' }
 				]
 			},
 			{
@@ -209,6 +235,7 @@ describe('credential forms', () => {
 		expect(summary).toContain('role="alert"');
 		expect(summary).toContain('autofocus');
 		expect(summary).toContain('tabindex="-1"');
+		expect(summary).toContain('credentialSummaryItems');
 		expect(readFileSync(join(srcDir, 'lib/auth/credentialFieldErrors.ts'), 'utf8')).toContain(
 			'Please review the following'
 		);
@@ -221,6 +248,17 @@ describe('credential forms', () => {
 			expect(source).toContain('aria-invalid=');
 			expect(source).toContain('aria-describedby=');
 		}
+
+		const register = readFileSync(join(routesDir, 'register', '+page.svelte'), 'utf8');
+		expect(register).toContain('aria-invalid={firstNameInvalid}');
+		expect(register).toContain('aria-describedby={firstNameDescribedBy}');
+		expect(register).toContain('aria-invalid={lastNameInvalid}');
+		expect(register).toContain('aria-describedby={lastNameDescribedBy}');
+		expect(register).toContain('aria-invalid={confirmInvalid}');
+		expect(register).toContain('aria-describedby={confirmDescribedBy}');
+		expect(register).toContain("firstName: 'firstName'");
+		expect(register).toContain("lastName: 'lastName'");
+		expect(register).toContain("confirmPassword: 'confirmPassword'");
 
 		for (const item of cases) {
 			const result = await item.actions.default({

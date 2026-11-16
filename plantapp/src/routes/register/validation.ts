@@ -1,10 +1,18 @@
-export type RegisterField = 'username' | 'email' | 'password' | 'confirmPassword';
+export type RegisterField =
+	| 'firstName'
+	| 'lastName'
+	| 'username'
+	| 'email'
+	| 'password'
+	| 'confirmPassword';
 
 export interface RegisterInput {
 	username: string;
 	email: string;
 	password: string;
 	confirmPassword: string;
+	firstName?: string;
+	lastName?: string;
 }
 
 export interface RegisterFieldError {
@@ -14,10 +22,13 @@ export interface RegisterFieldError {
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+export const FIRST_NAME_REQUIRED = 'Enter your first name';
+export const LAST_NAME_REQUIRED = 'Enter your last name';
 export const USERNAME_TOO_SHORT = 'Username must be at least 3 characters';
 export const EMAIL_ADDRESS_ERROR = 'Enter a valid email address';
 export const PASSWORD_TOO_SHORT = 'Password must be at least 8 characters';
 export const PASSWORDS_DO_NOT_MATCH = 'Passwords do not match';
+export const CONFIRM_PASSWORD_REQUIRED = 'Confirm your password';
 
 /**
  * Client-side registration checks, in the same order the form already uses.
@@ -46,9 +57,19 @@ export function firstRegistrationError(input: RegisterInput): RegisterFieldError
 	return null;
 }
 
-/** Every failing register field, using the same messages as the JavaScript path. */
+/**
+ * Every failing register field on a no-JS post.
+ * Username, email, and password keep the JavaScript messages.
+ * A blank first name, last name, or confirm password is flagged as well.
+ */
 export function registrationFieldErrors(input: RegisterInput): RegisterFieldError[] {
 	const errors: RegisterFieldError[] = [];
+	if (!(input.firstName ?? '').trim()) {
+		errors.push({ field: 'firstName', message: FIRST_NAME_REQUIRED });
+	}
+	if (!(input.lastName ?? '').trim()) {
+		errors.push({ field: 'lastName', message: LAST_NAME_REQUIRED });
+	}
 	if (input.username.trim().length < 3) {
 		errors.push({ field: 'username', message: USERNAME_TOO_SHORT });
 	}
@@ -58,7 +79,9 @@ export function registrationFieldErrors(input: RegisterInput): RegisterFieldErro
 	if (input.password.length < 8) {
 		errors.push({ field: 'password', message: PASSWORD_TOO_SHORT });
 	}
-	if (input.password !== input.confirmPassword) {
+	if (!input.confirmPassword) {
+		errors.push({ field: 'confirmPassword', message: CONFIRM_PASSWORD_REQUIRED });
+	} else if (input.password !== input.confirmPassword) {
 		errors.push({ field: 'password', message: PASSWORDS_DO_NOT_MATCH });
 	}
 	return errors;
