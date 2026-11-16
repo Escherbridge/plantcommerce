@@ -59,7 +59,10 @@
 			]
 		}}
 	/>
-	<main class="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+	<section
+		class="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 lg:px-8"
+		aria-labelledby="guide-title"
+	>
 		<nav class="mb-8 text-sm" aria-label="Breadcrumb">
 			<a class="link" href="/guides">Growing Guides</a>
 			<span aria-hidden="true"> / </span>
@@ -68,6 +71,7 @@
 		<article>
 			<p class="font-mono text-xs font-bold tracking-[0.18em] uppercase">Guide · Escherbridge</p>
 			<h1
+				id="guide-title"
 				class="font-display mt-3 text-4xl font-bold tracking-tight uppercase md:text-6xl"
 				style="line-height: 1.15"
 			>
@@ -81,5 +85,5 @@
 				{@html renderMarkdownBody(page.content, { dropLeadingH1: true })}
 			</div>
 		</article>
-	</main>
+	</section>
 {/if}

@@ -3,13 +3,20 @@
 	import GuideInline from './GuideInline.svelte';
 
 	let { blocks }: { blocks: GuideBlock[] } = $props();
+
+	const titleIndex = $derived(blocks.findIndex((block) => block.kind === 'h1'));
 </script>
 
-{#each blocks as block}
+{#each blocks as block, index}
 	{#if block.kind === 'eyebrow'}
 		<p class="font-mono text-xs font-bold tracking-[0.18em] uppercase">{block.text}</p>
 	{:else if block.kind === 'h1'}
-		<h1 class="font-display mt-3 text-4xl font-bold tracking-tight md:text-6xl">{block.text}</h1>
+		<h1
+			id={index === titleIndex ? 'guide-title' : undefined}
+			class="font-display mt-3 text-4xl font-bold tracking-tight md:text-6xl"
+		>
+			{block.text}
+		</h1>
 	{:else if block.kind === 'h2'}
 		<h2 class="font-display mt-12 text-2xl">{block.text}</h2>
 	{:else if block.kind === 'p'}

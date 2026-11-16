@@ -120,10 +120,10 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<main class="cart">
+<section class="cart" aria-labelledby="cart-title">
 	<header class="cart-head">
 		<span class="eyebrow">Your order</span>
-		<h1 class="cart-title">Your cart</h1>
+		<h1 id="cart-title" class="cart-title">Your cart</h1>
 		{#if !isEmpty}
 			<p class="cart-lead">
 				{totalItems}
@@ -247,7 +247,7 @@
 			</aside>
 		</div>
 	{/if}
-</main>
+</section>
 
 <style>
 	.cart {
