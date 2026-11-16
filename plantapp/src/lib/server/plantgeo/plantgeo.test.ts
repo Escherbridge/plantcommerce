@@ -113,6 +113,22 @@ describe('PlantGeo data minimization', () => {
 			id: 'product_7',
 			price: { amountMinor: 2499, currency: 'USD' }
 		});
+		const unpriced = projectPlantGeoCatalogProduct({
+			productId: 8,
+			canonicalUrl: 'https://aevani.example/products/soil-mix',
+			title: 'Soil Mix',
+			summary: null,
+			price: null,
+			availability: 'unavailable',
+			availabilityCheckedAt: new Date('2026-07-20T11:00:00.000Z'),
+			category: { id: 3, name: 'Soil', slug: 'soil' },
+			merchant: { id: 'merchant_aevani', fulfillment: 'merchant_fulfilled' },
+			suitability: { geography: [], climate: [], evidence: [] },
+			claims: [],
+			images: [],
+			updatedAt: new Date('2026-07-20T11:00:00.000Z')
+		});
+		expect(unpriced.price).toBeNull();
 		expect(product).not.toHaveProperty('sku');
 		expect(product).not.toHaveProperty('costPrice');
 		expect(product).not.toHaveProperty('stockQuantity');

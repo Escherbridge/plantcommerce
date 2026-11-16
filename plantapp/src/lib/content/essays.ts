@@ -243,7 +243,7 @@ If you want steady butterhead lettuce harvests, perennial culinary herbs, or eve
 
 White PVC gullies look clean along a bright wall because roots sit inside a shallow trickle of recirculating solution while the top of the root mat breathes moist channel air. For orderly rows of salad greens and herbs, harvesting and sanitizing channels between cycles is quick.
 
-The catch is twofold: heavy fruiting crops like full-sized tomatoes and cucumbers pack thick root mats that quickly dam narrow channels, and because there is almost no standing water reserve inside the pipe, a tripped GFCI breaker or clogged submersible pump leaves plants wilting within hours on a warm afternoon. Compare capacities in [choosing a hydroponic system](/guides/choosing-hydroponic-system) and our [NFT guide](/guides/nutrient-film-technique).
+Compare capacities in [choosing a hydroponic system](/guides/choosing-hydroponic-system) and our [NFT guide](/guides/nutrient-film-technique).
 
 ## Match the bench to your room and crops
 
@@ -329,7 +329,7 @@ Walk your yard's summer sun arc and hose layout first on [PlantGeo's interactive
 			{
 				label:
 					'Singh and Dunn — Electrical Conductivity and pH Guide for Hydroponics (Oklahoma State Extension HLA-6722)',
-				href: 'https://extension.okstate.edu/fact-sheets/print-publications/hla/hydroponics-hla-6722.pdf'
+				href: 'https://pods.okstate.edu/fact-sheets/HLA-6722pod.pdf'
 			},
 			{
 				label: 'USDA Agricultural Research Service — 2023 Plant Hardiness Zone Map',

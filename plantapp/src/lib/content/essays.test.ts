@@ -101,5 +101,15 @@ describe('cornerstone essays', () => {
 		const dwcHtml = sanitizeRichText(cornerstoneEssayHtml(dwc!.body));
 		expect(dwcHtml).toContain('<h2>');
 		expect(dwcHtml).toContain('href="/products/hydroponics"');
+		expect(dwc?.body).toContain('the top of the root mat breathes');
+		expect(dwc?.body).toContain('Compare capacities in');
+		expect(dwc?.body).not.toContain('wilting within hours');
+		expect(dwc?.body).not.toContain('root mats that quickly dam');
+
+		const checklist = cornerstoneEssayBySlug('pre-spring-grower-checklist');
+		const hla = checklist?.sources.find((source) => source.label.includes('HLA-6722'));
+		expect(hla?.label).toContain('Singh and Dunn');
+		expect(hla?.href).toBe('https://pods.okstate.edu/fact-sheets/HLA-6722pod.pdf');
+		expect(checklist?.body).toContain('Oklahoma State Extension (HLA-6722)');
 	});
 });
