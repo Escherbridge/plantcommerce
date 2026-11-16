@@ -17,7 +17,7 @@
 
 <Section>
 	<Container>
-		<div class="mx-auto max-w-3xl space-y-8 py-10">
+		<div class="sell-page mx-auto max-w-3xl space-y-8 py-10">
 			<header class="space-y-4">
 				<p class="font-mono text-xs font-semibold tracking-widest text-secondary uppercase">
 					Sell on Aevani

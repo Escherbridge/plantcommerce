@@ -194,6 +194,23 @@
 	/* ── Legacy support ── */
 	--column-width: 42rem;
 	--column-margin-top: 4rem;
+
+	/* Sticky header footprint: the bar plus the offset it keeps from the viewport top. */
+	--aevani-header-offset: 14px;
+	--aevani-header-bar-height: 64px;
+	--aevani-header-height: calc(var(--aevani-header-offset) + var(--aevani-header-bar-height));
+	--aevani-focus: #2e6b4f;
+}
+
+@media (max-width: 767px) {
+	:root {
+		/* 44px icon buttons + the mobile bar's vertical padding and 1px border. */
+		--aevani-header-bar-height: calc(44px + 0.9rem + 2px);
+	}
+}
+
+html {
+	scroll-padding-top: var(--aevani-header-height);
 }
 
 body {
@@ -380,6 +397,14 @@ textarea.textarea-bordered {
 	outline: none !important;
 	outline-offset: 0 !important;
 	background: var(--glass-bg-strong) !important;
+}
+
+/* Text fields on register, login, and sell. Brand green stays at least 3:1 on the cream page and the white field. */
+.register-page input.input:focus,
+.login-page input.input:focus,
+.sell-page input.input:focus {
+	outline: 2px solid var(--aevani-focus) !important;
+	outline-offset: 2px !important;
 }
 
 .input:disabled,
