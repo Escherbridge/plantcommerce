@@ -47,9 +47,10 @@ function emailBaseUrl(): URL {
 	return baseUrl;
 }
 
-function capabilityLink(pathname: string, token: string): string {
+function capabilityLink(pathname: string, token: string, returnPath?: string): string {
 	const url = new URL(pathname, emailBaseUrl());
 	url.searchParams.set('token', token);
+	if (returnPath) url.searchParams.set('redirect', returnPath);
 	return url.toString();
 }
 
@@ -117,8 +118,12 @@ export class EmailService {
 		}
 	}
 
-	static async sendVerificationEmail(email: string, token: string): Promise<void> {
-		const link = capabilityLink('/verify-email', token);
+	static async sendVerificationEmail(
+		email: string,
+		token: string,
+		returnPath?: string
+	): Promise<void> {
+		const link = capabilityLink('/verify-email', token, returnPath);
 		await this.send({
 			to: email,
 			subject: 'Verify your Aevani email address',

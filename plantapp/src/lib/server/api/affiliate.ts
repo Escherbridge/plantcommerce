@@ -47,6 +47,15 @@ function shareableLink<T extends { linkCode: string }>(origin: string, link: T) 
 	};
 }
 
+function assertVerifiedAffiliateEmail(user: { emailVerified: boolean }) {
+	if (!user.emailVerified) {
+		throw new TRPCError({
+			code: 'FORBIDDEN',
+			message: 'Verify your email before using the affiliate program.'
+		});
+	}
+}
+
 const activeAffiliateRequiredMessage = 'Your affiliate application must be active and approved';
 
 function withoutAffiliateOperations<
@@ -99,6 +108,7 @@ export const affiliateRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
+			assertVerifiedAffiliateEmail(ctx.user);
 			try {
 				const affiliate = await AffiliateService.createAffiliate(ctx.user.id, input.customCode);
 
@@ -117,6 +127,7 @@ export const affiliateRouter = router({
 	 * Apply to become an affiliate (public-facing onboarding endpoint)
 	 */
 	submitApplication: protectedProcedure.input(applicationInput).mutation(async ({ ctx, input }) => {
+		assertVerifiedAffiliateEmail(ctx.user);
 		try {
 			const result = await AffiliateService.createOrGetAffiliate(ctx.user.id, undefined, {
 				website: input.website,
@@ -305,6 +316,7 @@ export const affiliateRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
+			assertVerifiedAffiliateEmail(ctx.user);
 			try {
 				if (input.affiliateId !== undefined && ctx.user.role !== 'admin') {
 					throw new TRPCError({ code: 'FORBIDDEN', message: 'Access denied' });

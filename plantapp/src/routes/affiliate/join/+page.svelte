@@ -25,6 +25,7 @@
 	const portalStatus = $derived(affiliatePortalStatus(data.affiliate));
 	const signupHref = $derived(affiliateSignupHref($page.url.origin));
 	const signInHref = $derived(affiliateSignInHref($page.url.origin));
+	const resendHref = '/resend-verification?redirect=%2Faffiliate%2Fjoin';
 
 	function describedBy(field: string, hintId?: string): string | undefined {
 		const ids = [fieldErrors[field] ? `${field}-error` : undefined, hintId].filter(Boolean);
@@ -39,12 +40,8 @@
 		if (Object.keys(errors).length > 0) return;
 
 		const payload = affiliateApplicationPayload(draft);
-		if (!payload) return;
-
-		if (!data.user) {
-			window.location.href = affiliateSignupHref(window.location.origin);
-			return;
-		}
+		if (!payload || !data.user) return;
+		if (!data.user.emailVerified) return;
 
 		isSubmitting = true;
 		try {
@@ -67,11 +64,26 @@
 				</p>
 				<h1 class="font-display text-4xl tracking-tight">Affiliate application</h1>
 				<p class="text-base-content/70">
-					Submit this form with the account you will use to create tracked links.
+					An affiliate account lets you create tracked links for catalogue items after you sign in
+					and verify your email.
 				</p>
 			</header>
 
-			{#if portalStatus === 'active'}
+			{#if !data.user}
+				<div class="space-y-4">
+					<p>Sign in with an existing account, or create one, then come back to this form.</p>
+					<div class="flex flex-wrap gap-3">
+						<a class="btn btn-primary" href={signInHref}>Sign in</a>
+						<a class="btn btn-outline" href={signupHref}>Create an account</a>
+					</div>
+				</div>
+			{:else if !data.user.emailVerified}
+				<div class="space-y-4 rounded-box border border-base-300 p-6" role="status">
+					<h2 class="font-display text-2xl">Verify your email first</h2>
+					<p>This account cannot join or open the affiliate pages until the email is verified.</p>
+					<a class="btn btn-primary" href={resendHref}>Resend verification email</a>
+				</div>
+			{:else if portalStatus === 'active'}
 				<div class="space-y-4 rounded-box border border-base-300 p-6">
 					<h2 class="font-display text-2xl">Your affiliate account is active</h2>
 					<p>Open the dashboard to review activity and create tracked links.</p>
@@ -93,16 +105,6 @@
 					<p>Tracked links stay unavailable while the account is suspended.</p>
 				</div>
 			{:else}
-				{#if !data.user}
-					<p>
-						New here?
-						<a class="link link-primary" href={signupHref}>Create an account</a>
-						or
-						<a class="link link-primary" href={signInHref}>sign in</a>
-						before submitting. A completed form sends you to account creation first.
-					</p>
-				{/if}
-
 				<form class="space-y-5" novalidate onsubmit={handleSubmit}>
 					{#if formError || Object.keys(fieldErrors).length > 0}
 						<div id="affiliate-form-error" class="alert alert-error" role="alert">

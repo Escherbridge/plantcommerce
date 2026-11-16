@@ -24,18 +24,14 @@ test('9. public affiliate pages stay closed while join validates', async ({ page
 	await expect(
 		page.getByRole('heading', { level: 1, name: 'Affiliate application' })
 	).toBeVisible();
-	await page.getByRole('button', { name: 'Submit application' }).click();
-	await expect(page.getByRole('alert')).toBeVisible();
-	await expect(page).toHaveURL(/\/affiliate\/join$/);
-
-	await page.locator('#audience').fill('Garden readers');
-	await page.locator('#promotionMethod').selectOption('website');
-	await page.locator('#monthlyTraffic').selectOption('under-1000');
-	await page.locator('#whyJoin').fill('I will share catalogue links with readers.');
-	await page.locator('#agreeTerms').check();
-	await page.getByRole('button', { name: 'Submit application' }).click();
-	await expect(page).toHaveURL(/\/register\?redirect=%2Faffiliate%2Fjoin$/);
-	await expect(page.getByRole('heading', { level: 1, name: 'Create an account' })).toBeVisible();
+	await expect(page.getByRole('link', { name: 'Create an account' })).toHaveAttribute(
+		'href',
+		'/register?redirect=%2Faffiliate%2Fjoin'
+	);
+	await expect(page.getByRole('link', { name: 'Sign in' })).toHaveAttribute(
+		'href',
+		'/login?redirect=%2Faffiliate%2Fjoin'
+	);
 });
 
 test('9b. affiliate dashboard is reachable for a signed-in admin', async ({ page }) => {

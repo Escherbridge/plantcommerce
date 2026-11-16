@@ -46,6 +46,21 @@ describe('EmailService', () => {
 			expect.objectContaining({ 'Idempotency-Key': expect.stringContaining(token) })
 		);
 		expect(String(request.body)).toContain('https://aevani.example/verify-email?token=');
+		expect(String(request.body)).not.toContain('redirect=');
+	});
+
+	it('keeps a same-origin return path on the verification link', async () => {
+		await EmailService.sendVerificationEmail(
+			'person@example.net',
+			'B'.repeat(43),
+			'/affiliate/join'
+		);
+		const request = vi.mocked(fetch).mock.calls.at(-1)?.[1] as RequestInit;
+		expect(String(request.body)).toContain(
+			'https://aevani.example/verify-email?token=' +
+				'B'.repeat(43) +
+				'&redirect=%2Faffiliate%2Fjoin'
+		);
 	});
 
 	it('fails explicitly when production sender configuration is absent', async () => {

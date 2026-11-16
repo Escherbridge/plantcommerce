@@ -38,9 +38,9 @@ const active = {
 	totalConversions: 0
 };
 
-function caller(role: 'customer' | 'admin' = 'customer') {
+function caller(role: 'customer' | 'admin' = 'customer', emailVerified = true) {
 	return affiliateRouter.createCaller({
-		user: { id: 'user-1', role } as any,
+		user: { id: 'user-1', role, emailVerified } as any,
 		session: { id: 'session-1' } as any,
 		event: { url: new URL('https://aevani.com/affiliate/links') } as any
 	});
@@ -78,6 +78,17 @@ describe('affiliate self-serve API', () => {
 			})
 		).rejects.toThrow();
 		expect(service.createOrGetAffiliate).not.toHaveBeenCalled();
+	});
+
+	it('refuses an unverified email before creating an affiliate or a link', async () => {
+		await expect(caller('customer', false).submitApplication(application)).rejects.toMatchObject({
+			code: 'FORBIDDEN'
+		});
+		await expect(
+			caller('customer', false).createLink({ productId: 3, customCode: 'garden-kit' })
+		).rejects.toMatchObject({ code: 'FORBIDDEN' });
+		expect(service.createOrGetAffiliate).not.toHaveBeenCalled();
+		expect(service.createAffiliateLink).not.toHaveBeenCalled();
 	});
 
 	it('creates an active affiliate for the signed-in user', async () => {

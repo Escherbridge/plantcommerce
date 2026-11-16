@@ -30,10 +30,12 @@
 			{#if data.isAdmin && !data.affiliate}
 				Admin view. This login has no affiliate account of its own.
 			{:else}
-				Activity for your tracked links.
+				Status: {data.affiliate?.status ?? 'active'}. Activity for your tracked links.
 			{/if}
 		</p>
 	</div>
+
+	<section data-slot="manager-invites" aria-label="Manager invites"></section>
 
 	{#if data.isAdmin && !data.affiliate}
 		<div class="platform-card">
@@ -53,7 +55,7 @@
 				<span class="platform-stat__value">{data.stats.totalClicks}</span>
 			</div>
 			<div class="platform-stat">
-				<span class="platform-stat__label">Conversions</span>
+				<span class="platform-stat__label">Attributed orders</span>
 				<span class="platform-stat__value">{data.stats.totalConversions}</span>
 			</div>
 			<div class="platform-stat">

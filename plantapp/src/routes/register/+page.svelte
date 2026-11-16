@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { get } from 'svelte/store';
+	import { page } from '$app/stores';
 	import Icon from '$lib/components/icons/Icon.svelte';
 	import CredentialErrorSummary from '$lib/components/forms/CredentialErrorSummary.svelte';
 	import { describedByFor } from '$lib/auth/credentialFieldErrors';
 	import { authHandoffHref, safeRedirectPath } from '$lib/auth/safeRedirect';
 	import { trpc } from '$lib/trpc/client';
-	import { onMount, tick } from 'svelte';
+	import { tick } from 'svelte';
 	import type { ActionData } from './$types';
 	import {
 		PASSWORD_TOO_SHORT,
@@ -16,16 +18,33 @@
 
 	let { form }: { form: ActionData } = $props();
 
-	// Defaults match a direct visit. A return path is applied after mount, which is also when
-	// account creation itself runs, so the success link is ready before it is shown.
-	let continuePath = $state('/account/profile');
-	let signInHref = $state('/login');
-	onMount(() => {
-		continuePath = safeRedirectPath(
-			new URLSearchParams(window.location.search).get('redirect'),
-			window.location.origin
-		);
-		signInHref = authHandoffHref('login', continuePath, window.location.origin);
+	function pageRedirect(): { origin: string; redirect: string | null } | null {
+		try {
+			const current = get(page);
+			return {
+				origin: current.url.origin,
+				redirect: current.url.searchParams.get('redirect')
+			};
+		} catch {
+			if (typeof window === 'undefined') return null;
+			return {
+				origin: window.location.origin,
+				redirect: new URLSearchParams(window.location.search).get('redirect')
+			};
+		}
+	}
+
+	const continuePath = $derived.by(() => {
+		const current = pageRedirect();
+		return current
+			? safeRedirectPath(current.redirect, current.origin)
+			: '/account/profile';
+	});
+	const signInHref = $derived.by(() => {
+		const current = pageRedirect();
+		return current
+			? authHandoffHref('login', continuePath, current.origin)
+			: '/login';
 	});
 
 	let username = $state('');
@@ -141,7 +160,8 @@
 				email: normalizedEmail,
 				password,
 				firstName: firstName.trim() || undefined,
-				lastName: lastName.trim() || undefined
+				lastName: lastName.trim() || undefined,
+				returnPath: continuePath
 			});
 
 			if (result.user) {

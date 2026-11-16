@@ -21,6 +21,7 @@ export type PublicSessionUser = Pick<
 	| 'lastName'
 	| 'role'
 	| 'isActive'
+	| 'emailVerified'
 	| 'createdAt'
 	| 'updatedAt'
 >;
@@ -38,6 +39,7 @@ export function toPublicSessionUser(user: table.User | null): PublicSessionUser 
 		lastName: user.lastName,
 		role: user.role,
 		isActive: user.isActive,
+		emailVerified: user.emailVerified,
 		createdAt: user.createdAt,
 		updatedAt: user.updatedAt
 	};

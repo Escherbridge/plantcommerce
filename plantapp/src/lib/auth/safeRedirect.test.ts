@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { authHandoffHref, safeRedirectPath } from './safeRedirect';
+import { authHandoffHref, pathWithRedirect, safeRedirectPath } from './safeRedirect';
 
 const origin = 'https://aevani.com';
 const fallback = '/account/profile';
@@ -45,6 +45,9 @@ describe('safeRedirectPath', () => {
 		);
 		expect(authHandoffHref('login', '/affiliate/join', origin)).toBe(
 			'/login?redirect=%2Faffiliate%2Fjoin'
+		);
+		expect(pathWithRedirect('/resend-verification', '/affiliate/join', origin)).toBe(
+			'/resend-verification?redirect=%2Faffiliate%2Fjoin'
 		);
 		expect(authHandoffHref('register', 'https://evil.com', origin)).toBe('/register');
 		expect(authHandoffHref('login', null, origin)).toBe('/login');

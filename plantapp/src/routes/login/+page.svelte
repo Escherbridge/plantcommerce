@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { onMount, tick } from 'svelte';
+	import { get } from 'svelte/store';
+	import { tick } from 'svelte';
 	import { trpc } from '$lib/trpc/client';
 	import { page } from '$app/stores';
 	import { toasts } from '$lib/stores/toast';
@@ -7,7 +8,7 @@
 	import type { ActionData } from './$types';
 	import CredentialErrorSummary from '$lib/components/forms/CredentialErrorSummary.svelte';
 	import { describedByFor } from '$lib/auth/credentialFieldErrors';
-	import { authHandoffHref, safeRedirectPath } from '$lib/auth/safeRedirect';
+	import { authHandoffHref, pathWithRedirect, safeRedirectPath } from '$lib/auth/safeRedirect';
 	import { LOGIN_MISSING_CREDENTIALS, firstEmptyLoginField } from './validation';
 
 	export let form: ActionData = null;
@@ -57,19 +58,34 @@
 			.filter(Boolean)
 			.join(' ') || undefined;
 
-	function getRedirectUrl(): string {
-		return safeRedirectPath($page.url.searchParams.get('redirect'), $page.url.origin);
+	function pageRedirect(): { origin: string; redirect: string | null } | null {
+		try {
+			const current = get(page);
+			return {
+				origin: current.url.origin,
+				redirect: current.url.searchParams.get('redirect')
+			};
+		} catch {
+			if (typeof window === 'undefined') return null;
+			return {
+				origin: window.location.origin,
+				redirect: new URLSearchParams(window.location.search).get('redirect')
+			};
+		}
 	}
 
-	// Read the return path after mount so server-side unit renders do not touch the request store.
-	let registerHref = '/register';
-	onMount(() => {
-		registerHref = authHandoffHref(
-			'register',
-			new URLSearchParams(window.location.search).get('redirect'),
-			window.location.origin
-		);
-	});
+	function getRedirectUrl(): string {
+		const current = pageRedirect();
+		return safeRedirectPath(current?.redirect, current?.origin ?? 'http://localhost');
+	}
+
+	$: redirectState = pageRedirect();
+	$: registerHref = redirectState
+		? authHandoffHref('register', redirectState.redirect, redirectState.origin)
+		: '/register';
+	$: resendHref = redirectState
+		? pathWithRedirect('/resend-verification', redirectState.redirect, redirectState.origin)
+		: '/resend-verification';
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
@@ -205,12 +221,12 @@
 			<!-- Footer -->
 			<div class="login-footer">
 				<p>
-					<a href="/forgot-password" class="link font-semibold link-primary"
+					<a href="/forgot-password" class="login-target link font-semibold link-primary"
 						>Forgot your password?</a
 					>
 				</p>
 				<p>
-					<a href="/resend-verification" class="link font-semibold link-primary"
+					<a href={resendHref} class="login-target link font-semibold link-primary"
 						>Resend verification email</a
 					>
 				</p>
@@ -305,5 +321,13 @@
 		border-top: 1px solid oklch(var(--bc) / 0.08);
 		font-size: 0.875rem;
 		color: oklch(var(--bc) / 0.6);
+	}
+
+	.login-target {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 24px;
+		min-height: 24px;
 	}
 </style>

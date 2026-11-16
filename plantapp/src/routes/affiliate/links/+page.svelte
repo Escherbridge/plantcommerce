@@ -13,6 +13,13 @@
 	let notice = $state('');
 	let isSubmitting = $state(false);
 	let links = $state(data.links ?? []);
+	let copiedUrl = $state('');
+
+	async function copyLink(url: string) {
+		if (!navigator.clipboard) return;
+		await navigator.clipboard.writeText(url);
+		copiedUrl = url;
+	}
 
 	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
@@ -174,7 +181,16 @@
 								<tr>
 									<td>{link.product?.name ?? 'Catalogue item'}</td>
 									<td><code>{link.linkCode}</code></td>
-									<td><a href={link.affiliateUrl}>{link.affiliateUrl}</a></td>
+									<td>
+										<a href={link.affiliateUrl}>{link.affiliateUrl}</a>
+										<button
+											type="button"
+											class="btn btn-ghost btn-xs"
+											onclick={() => copyLink(link.affiliateUrl)}
+										>
+											{copiedUrl === link.affiliateUrl ? 'Copied' : 'Copy link'}
+										</button>
+									</td>
 								</tr>
 							{/each}
 						</tbody>
