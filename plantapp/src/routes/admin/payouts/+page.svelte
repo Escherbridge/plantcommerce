@@ -13,6 +13,12 @@
 		<form method="POST">
 			<button class="platform-action-btn" type="submit">Run hold check</button>
 		</form>
+		<form method="POST" action="?/transfers">
+			<button class="platform-action-btn" type="submit">Run seller transfers</button>
+		</form>
+		<form method="POST" action="?/batch">
+			<button class="platform-action-btn" type="submit">Run affiliate batch</button>
+		</form>
 		{#if form?.summary}
 			<p>{form.summary}</p>
 		{/if}
