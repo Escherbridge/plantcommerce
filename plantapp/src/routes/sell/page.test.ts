@@ -19,6 +19,7 @@ import {
 import { SellerApplicationService } from '$lib/server/sellerApplication/service';
 import SellPage from './+page.svelte';
 import { actions, load } from './+page.server';
+import { applySellEnhanceResult, SELL_TRANSPORT_ERROR, sellDraftFromFormData } from './enhance';
 
 const pageSource = readFileSync(
 	join(dirname(fileURLToPath(import.meta.url)), '+page.svelte'),
@@ -96,12 +97,16 @@ describe('seller application page', () => {
 		expect(SellerApplicationService.create).not.toHaveBeenCalled();
 		expect(SellerApplicationService.hasRecentDuplicate).not.toHaveBeenCalled();
 
-		const body = render(SellPage, {
+		const rendered = render(SellPage, {
 			props: {
 				data: { applied: false, user: null, session: null, commerceMode: 'database' },
 				form: result.data
 			}
-		}).body;
+		});
+		const body = rendered.body;
+		expect(rendered.head.match(/<title\b[^>]*>[\s\S]*?<\/title>/g)).toEqual([
+			'<title>Sell on Aevani — a flat 8%</title>'
+		]);
 
 		const summaryAt = body.indexOf(
 			"Your application didn't go through. Fix these and send it again:"
@@ -195,5 +200,56 @@ describe('seller application page', () => {
 		expect(pageSource).toContain('Sending your application…');
 		expect(pageSource).toContain('Submit application');
 		expect(pageSource).toContain('disabled={submitting}');
+	});
+
+	it('keeps the form when enhance gets an error result instead of opening the error page', async () => {
+		const update = vi.fn(async () => {});
+		await expect(applySellEnhanceResult({ type: 'error' }, update)).resolves.toBe('kept');
+		expect(update).not.toHaveBeenCalled();
+
+		await expect(applySellEnhanceResult({ type: 'failure' }, update)).resolves.toBe('applied');
+		await expect(applySellEnhanceResult({ type: 'redirect' }, update)).resolves.toBe('applied');
+		expect(update).toHaveBeenCalledTimes(2);
+
+		const callback = pageSource.slice(pageSource.indexOf('const submitApplication'));
+		expect(callback).toContain('applySellEnhanceResult(result, () => update())');
+		expect(callback.indexOf("outcome === 'kept'")).toBeLessThan(
+			callback.indexOf('keptDraft = null')
+		);
+		expect(callback).toContain('transportError = true');
+		expect(callback).toContain('controller.signal.addEventListener');
+		expect(callback).toContain("'abort'");
+		expect(pageSource).toContain('role="alert"');
+		expect(pageSource).toContain('{SELL_TRANSPORT_ERROR}');
+		expect(SELL_TRANSPORT_ERROR).toBe("That didn't send. Check your connection and try again.");
+
+		const open = render(SellPage, {
+			props: {
+				data: { applied: false, user: null, session: null, commerceMode: 'database' },
+				form: null
+			}
+		}).body;
+		expect(open).not.toContain(SELL_TRANSPORT_ERROR);
+		expect(open).not.toContain('This page did not load');
+		expect(open).toContain('Submit application');
+
+		const entered = new FormData();
+		entered.set('name', 'Ada Grower');
+		entered.set('email', 'ada@example.com');
+		entered.set('businessName', 'North Bed Farm');
+		entered.set('websiteOrSocial', '');
+		entered.set('offerings', 'Herb starts');
+		entered.set('location', 'Hudson Valley, NY');
+		entered.set('message', 'Seasonal starts');
+		entered.set('company_fax', 'ignore me');
+		expect(sellDraftFromFormData(entered)).toEqual({
+			name: 'Ada Grower',
+			email: 'ada@example.com',
+			businessName: 'North Bed Farm',
+			websiteOrSocial: '',
+			offerings: 'Herb starts',
+			location: 'Hudson Valley, NY',
+			message: 'Seasonal starts'
+		});
 	});
 });

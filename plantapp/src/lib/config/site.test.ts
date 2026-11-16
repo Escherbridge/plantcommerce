@@ -56,6 +56,8 @@ describe('public site origin', () => {
 		expect(layoutOwnsDocumentMeta('/products/hydroponics/net-pots')).toBe(false);
 		expect(layoutOwnsDocumentMeta('/login')).toBe(false);
 		expect(layoutOwnsDocumentMeta('/cart')).toBe(false);
+		expect(layoutOwnsDocumentMeta('/sell')).toBe(false);
+		expect(publicRouteMetadata('/sell').title).toBe('Sell on Aevani — a flat 8%');
 		expect(publicRouteMetadata('/login').title).not.toBe(publicSite.defaultTitle);
 	});
 

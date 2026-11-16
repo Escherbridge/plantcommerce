@@ -80,6 +80,12 @@ describe('auth page titles and register hints', () => {
 	it('asks a signed-out visitor to sign in before resending verification', () => {
 		const signedOut = render(ResendPage, { props: { data: { user: null } as never } }).body;
 		expect(signedOut).toContain('Sign in first, then come back here for a new link.');
+		expect(signedOut.indexOf('Sign in first, then come back here for a new link.')).toBeLessThan(
+			signedOut.indexOf('href="/login?redirect=/resend-verification"')
+		);
+		expect(signedOut).not.toContain(
+			'Request a new verification email for the address on your signed-in account.'
+		);
 		expect(signedOut).toContain('href="/login?redirect=/resend-verification"');
 		expect(signedOut).toContain('>Sign in<');
 		expect(signedOut).not.toContain('Send verification email');
@@ -87,6 +93,12 @@ describe('auth page titles and register hints', () => {
 		const signedIn = render(ResendPage, {
 			props: { data: { user: { id: 'user_1' } } as never }
 		}).body;
+		expect(signedIn).toContain(
+			'Request a new verification email for the address on your signed-in account.'
+		);
+		expect(signedIn.indexOf('Request a new verification email')).toBeLessThan(
+			signedIn.indexOf('Send verification email')
+		);
 		expect(signedIn).toContain('Send verification email');
 		expect(signedIn).not.toContain('Sign in first, then come back here for a new link.');
 	});
