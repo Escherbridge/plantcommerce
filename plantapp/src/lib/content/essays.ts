@@ -139,11 +139,6 @@ While growers read free [field guides](/guides) and sketch beds, greenhouses, an
 			},
 			{
 				label:
-					'Tyson, Hochmuth, and Cantliffe — Hydroponic Vegetable Production in Florida (UF/IFAS HS405)',
-				href: 'https://ask.ifas.ufl.edu/publication/HS405/pdf'
-			},
-			{
-				label:
 					'Sharma et al. — Hydroponic Lettuce Production in Controlled Environments (University of Kentucky CCD-CP-63)',
 				href: 'https://ccd.uky.edu/sites/default/files/2026-02/ccd-cp-63_hydrolettuce-updated_accessible.pdf'
 			},
@@ -172,7 +167,7 @@ If you want steady butterhead lettuce harvests, perennial culinary herbs, or eve
 
 White PVC gullies look clean along a bright wall because roots sit inside a shallow trickle of recirculating solution while the top of the root mat breathes moist channel air. For orderly rows of salad greens and herbs, harvesting and sanitizing channels between cycles is quick.
 
-The catch, noted in UF/IFAS HS405, is twofold: heavy fruiting crops like full-sized tomatoes and cucumbers pack thick root mats that quickly dam narrow channels, and because there is almost no standing water reserve inside the pipe, a tripped GFCI breaker or clogged submersible pump leaves plants wilting within hours on a warm afternoon. Compare capacities in [choosing a hydroponic system](/guides/choosing-hydroponic-system) and our [NFT guide](/guides/nutrient-film-technique).
+The catch is twofold: heavy fruiting crops like full-sized tomatoes and cucumbers pack thick root mats that quickly dam narrow channels, and because there is almost no standing water reserve inside the pipe, a tripped GFCI breaker or clogged submersible pump leaves plants wilting within hours on a warm afternoon. Compare capacities in [choosing a hydroponic system](/guides/choosing-hydroponic-system) and our [NFT guide](/guides/nutrient-film-technique).
 
 ## Match the bench to your room and crops
 
@@ -265,6 +260,18 @@ Walk your yard's summer sun arc and hose layout first on [PlantGeo's interactive
 			{
 				label: 'Utah State University Extension — Utah Vegetable Planting Date Calculator',
 				href: 'https://extension.usu.edu/yardandgarden/utah-planting-date-calculator'
+			},
+			{
+				label:
+					'Black, Brent, and Dan Drost, “Temperature Management in High Tunnels,” Utah State University Extension, April 2010.',
+				href: 'https://extension.usu.edu/smallfarms/files/Greenhouses_Temp.Mgmt.pdf',
+				datePublished: '2010-04'
+			},
+			{
+				label:
+					'Ford, Thomas; Lynn Kime; Jayson K. Harper; and Stephen Bogash, “High Tunnel Production,” Penn State Extension, updated 13 March 2023.',
+				href: 'https://extension.psu.edu/high-tunnel-production',
+				datePublished: '2023-03-13'
 			}
 		],
 		body: `January seed catalogs land right when winter cabin fever peaks, which is why so many indoor trays wind up pale, four inches tall, and leaning desperately toward a chilly kitchen pane by February. Before tearing open fresh packets—or ordering an oversized lighting kit—run five quick checks across your water, lights, and shelters.
@@ -277,9 +284,9 @@ Hard well water and alkaline city supplies silently push liquid nutrients out of
 
 Box labels shout 1000W equivalents that measure little useful leaf light. Purdue Extension (HO-238-W) frames indoor output cleanly via **Daily Light Integral (DLI)**—the total stream of photosynthetic photons landing on foliage over your timer's run hours. A crisp, cool-running LED bar mounted a few inches cleanly above trays—guided by our [indoor lighting and DLI guide](/guides/indoor-lighting-dli) and [soilless seed-starting guide](/guides/soilless-seed-starting)—grows sturdy seedlings instead of stretched stems reaching for a distant ceiling bulb.
 
-## 3. Respect how fast a closed hoop house overheats on a sunny 45°F day
+## 3. Respect how fast a closed hoop house overheats on a sunny early-March day
 
-It surprises backyard growers and small market gardens every single spring: overnight frost lingers at 28°F, so you latch the plastic hoop house shut—and a calm, bright March noon turns the inside into a heat trap well above 100°F. Review simple venting habits and side-curtain timing in our [high tunnels and hoop houses guide](/guides/high-tunnels-hoop-houses) and [season-extension covers guide](/guides/season-extension-covers-frames) before leaving flats zipped up while you go to work.
+It surprises backyard growers and small market gardens every single spring: most crops can be damaged if air temperatures drop below 45°F, so you latch the plastic hoop house shut—and a calm, bright March noon turns the inside into a heat trap that exceeded 120°F. Review simple venting habits and side-curtain timing in our [high tunnels and hoop houses guide](/guides/high-tunnels-hoop-houses) and [season-extension covers guide](/guides/season-extension-covers-frames) before leaving flats zipped up while you go to work.
 
 ## 4. Never mistake a USDA Hardiness Zone for a spring planting calendar
 
@@ -294,9 +301,9 @@ Sketch winter shadows, terrace slopes, and spigot reach on [PlantGeo](https://pl
 		title:
 			'The Patient First Month of Backyard Aquaponics: Cycling Your Biofilter Without Losing Fish',
 		excerpt:
-			'Why adding fish on day one wrecks new aquaponics loops—and how a four-to-six-week fishless cycle builds biofilter bacteria that keep fish alive.',
+			'Why adding fish on day one wrecks new aquaponics loops—and how a three-to-five-week fishless cycle, which FAO also calls three to six weeks, builds biofilter bacteria that keep fish alive.',
 		metaDescription:
-			'Cycle a backyard aquaponics biofilter safely over 4 to 6 weeks using FAO Technical Paper 589 ranges for ammonia, nitrites, pH 6.8–7.0, and dissolved oxygen.',
+			'Cycle a backyard aquaponics biofilter safely over 3 to 5 weeks, which FAO also states as 3 to 6 weeks, using FAO Technical Paper 589 ranges for ammonia, nitrites, pH 6–7, and dissolved oxygen.',
 		publishedAt: '2026-11-09T00:00:00.000Z',
 		tags: ['aquaponics', 'water', 'biofilter', 'beginner guides'],
 		sources: [
@@ -324,13 +331,13 @@ Nothing went wrong with the plumbing. The invisible middle crew just had not mov
 
 Every aquaponic setup is a three-partner team: fish, beneficial microbes, and plants. Fish gills and waste release toxic ammonia (**NH₃ / NH₄⁺**). Inside wet gravel, expanded clay, or biofilter media, *Nitrosomonas*-type bacteria oxidize ammonia into **nitrite** (still harmful to fish), and *Nitrobacter*-group bacteria convert nitrite into **nitrate**—the safe nitrogen greens absorb smoothly.
 
-According to the FAO's *Small-Scale Aquaponic Food Production* manual (Technical Paper No. 589), establishing an active biofilm dense enough to clear daily fish waste normally takes **4 to 6 weeks**. Dropping fish into brand-new water on day one forces livestock to swim inside their own spiking ammonia and nitrite before bacteria exist to process it.
+According to the FAO's *Small-Scale Aquaponic Food Production* manual (Technical Paper No. 589), establishing an active biofilm dense enough to clear daily fish waste normally takes **3 to 5 weeks**, and the same manual also says **3 to 6 weeks**. Dropping fish into brand-new water on day one forces livestock to swim inside their own spiking ammonia and nitrite before bacteria exist to process it.
 
 ## How a calm fishless cycle runs
 
 Instead of risking live fish to feed new biofilter media, circulate aerated water and dose small measured amounts of pure, unscented ammonia while checking water daily with a standard freshwater test kit:
 
-- **Weeks 1–2:** Dose to roughly 2–3 mg/L ammonia, run steady aeration, and keep water temperatures comfortable (cold garage or winter air slows bacterial growth noticeably).
+- **Weeks 1–2:** Dose to 1–2 mg/L ammonia (FAO) or 3–5 mg/L (SRAC 4502), run steady aeration, and keep water temperatures comfortable (cold garage or winter air slows bacterial growth noticeably).
 - **Weeks 2–4:** Watch daily ammonia fall while **nitrite** spikes vivid purple—proof colony one has settled onto your media.
 - **Weeks 4–6:** Wait until a fresh test dose converts all the way down to **zero ammonia and zero nitrite** within 24 hours, showing measurable **nitrate** instead. Only then transplant greens and introduce hardy fish slowly.
 
@@ -338,7 +345,7 @@ See detailed cycling tables and startup ratios in our [aquaponic biofilter cycli
 
 ## Hold the pH truce and never skimp on aeration
 
-Aquaponics always balances three distinct preferences: fish stay comfortable near pH 6.5–8.5, nitrifiers prefer slightly above 7.0 and slow sharply below 6.0, and greens absorb micronutrients best around 6.0–6.5. Aiming right down the middle at **pH 6.8 to 7.0** keeps every partner productive without frantic swings, alongside continuous bubbling aeration (FAO targets **5 mg/L or higher** dissolved oxygen). Respect stocking limits too—FAO's conservative small-scale ceiling sits around **20 kg of fish per 1,000 liters** of system volume paired with balanced grow beds.
+Aquaponics always balances three distinct preferences: fish stay comfortable near pH 6.5–8.5, nitrifiers prefer slightly above 7.0 and slow sharply below 6.0, and greens absorb micronutrients best around 6.0–6.5. Aiming right down the middle at **pH 6–7** keeps every partner productive without frantic swings, alongside continuous bubbling aeration (FAO targets **4–8 mg/L** dissolved oxygen). Respect stocking limits too—FAO's conservative small-scale ceiling sits around **20 kg of fish per 1,000 liters** of system volume paired with balanced grow beds.
 
 Compare media beds, floating rafts, and NFT channels in [aquaponic system types](/guides/aquaponic-system-types) and match species to real seasonal water temperatures in [aquaponic fish species](/guides/aquaponic-fish-species) and map greenhouse or shed utility zones on [PlantGeo](https://plantgeo.aevani.com/). Browse [aquaponics tanks, siphons, and water test kits](/products/aquaponics)—or if you fabricate bell siphons, media frames, or solids filters, apply at [Sell on Aevani](/sell) for a flat 8% commission with card processing included and zero listing, monthly, or ad fees.`
 	}
