@@ -72,16 +72,18 @@ export async function runSellerTransfers(
 				)
 			)
 			.limit(1);
-		const debts = await db
-			.select({ amount: table.sellerEarningEvent.amountDeltaMinor })
+		const adjustments = await db
+			.select({
+				eventType: table.sellerEarningEvent.eventType,
+				amount: table.sellerEarningEvent.amountDeltaMinor
+			})
 			.from(table.sellerEarningEvent)
-			.where(
-				and(
-					eq(table.sellerEarningEvent.earningId, earning.earningId),
-					eq(table.sellerEarningEvent.eventType, 'debt')
-				)
-			);
-		const debtMinor = debts.reduce((sum, row) => sum + row.amount, 0);
+			.where(eq(table.sellerEarningEvent.earningId, earning.earningId));
+		const debtMinor = adjustments.reduce((sum, row) => {
+			if (row.eventType === 'debt') return sum + row.amount;
+			if (row.eventType === 'reversed') return sum + Math.abs(row.amount);
+			return sum;
+		}, 0);
 		const { payMinor } = netAfterDebt(earning.netMinor, debtMinor);
 		if (
 			!account?.stripeAccountId ||
