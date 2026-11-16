@@ -4,8 +4,10 @@ import { normalizeCatalogProduct, buildParentSlugMap } from '../../routes/produc
 import { normalizeProduct } from '../../routes/products/detail';
 import {
 	FAQ_DEAD_FISH,
+	FAQ_IBC_GROW_BED,
 	FAQ_TILAPIA_LEGAL,
 	HERB_TAGLINE,
+	LIVE_PLANTS_TAGLINE,
 	isPlaceholderListing,
 	isTimingOrPerformanceStat,
 	presentPlaceholderListing,
@@ -210,9 +212,12 @@ describe('placeholder catalogue presentation', () => {
 				'Acclimation guide'
 			],
 			specs: [{ label: 'Shipping', value: 'Overnight, Mon–Wed, oxygen-packed' }],
+			inTheBox: ['25 live tilapia fingerlings', 'Oxygen-packed insulated box'],
 			bundleOffer: { title: 'Bundle', price: '70.00', compareAt: '90.00', blurb: 'Save' },
+			shippingNote: 'Overnight, Mon–Wed, oxygen-packed',
 			images: [{ url: '/fish.png', altText: 'Live Nile tilapia with overnight shipping.' }]
 		};
+		const priced = { ...raw, price: '32.99', comparePrice: null, costPrice: null };
 
 		const pageProduct = normalizeProduct(raw);
 		const catalogue = normalizeCatalogProduct(
@@ -230,12 +235,15 @@ describe('placeholder catalogue presentation', () => {
 			pageProduct,
 			catalogue,
 			searchRow,
-			direct: sanitizePlaceholderProduct(raw)
+			direct: sanitizePlaceholderProduct(raw),
+			priced: sanitizePlaceholderProduct(priced)
 		});
 
 		expect(serialized).not.toMatch(/IN STOCK|BESTSELLER/i);
 		expect(serialized).not.toMatch(/overnight/i);
-		expect(serialized).not.toMatch(/59\.99|79\.99|20\.00|70\.00|90\.00/);
+		expect(serialized).not.toMatch(/oxygen-packed/i);
+		expect(serialized).not.toMatch(/59\.99|79\.99|20\.00|70\.00|90\.00|32\.99/);
+		expect(serialized).not.toMatch(/"price":"(?!null)/);
 		expect(serialized).not.toMatch(/"stockQuantity":\s*(?!null)/);
 		expect(serialized).not.toMatch(/"reservedQuantity":\s*(?!null)/);
 		expect(pageProduct.shortDescription).toBe(TILAPIA_TAGLINE);
@@ -263,5 +271,23 @@ describe('placeholder catalogue presentation', () => {
 
 		const herb = demoProducts.find((product) => product.slug === 'medicinal-herb-garden-kit');
 		expect(presentPlaceholderListing(herb ?? {}).shortDescription).toBe(HERB_TAGLINE);
+
+		for (const slug of [
+			'chestnut-tree-seedlings-10-pack',
+			'forage-chicory-plants-50-plugs',
+			'herb-spiral-garden-kit'
+		]) {
+			const product = demoProducts.find((item) => item.slug === slug);
+			expect(presentPlaceholderListing(product ?? {}).shortDescription, slug).toBe(
+				LIVE_PLANTS_TAGLINE
+			);
+		}
+
+		const tank = demoProducts.find((product) => product.slug === 'ibc-aquaponics-fish-tank');
+		const growBed = presentPlaceholderListing(tank ?? {}).faqs.find((faq) =>
+			faq.q.toLowerCase().startsWith('does it come with the grow bed')
+		);
+		expect(growBed?.a).toBe(FAQ_IBC_GROW_BED);
+		expect(growBed?.a).not.toMatch(/sold separately|Commercial Aquaponics Grow Bed/);
 	});
 });

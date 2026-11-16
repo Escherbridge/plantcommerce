@@ -60,15 +60,25 @@ ${routes
 </urlset>`;
 }
 
+/**
+ * Product URLs that have a public page. Stocking notes has no page.
+ * The live fingerling card uses a slug the demo seed does not.
+ */
+function publishedCataloguePaths(): string[] {
+	const paths = demoProducts
+		.filter((product) => product.slug !== 'aquaponics-stocking-notes')
+		.map((product) => `/products/${product.system}/${product.slug}`);
+	const tilapia = '/products/aquaponics/tilapia-fingerlings-starter-pack';
+	if (!paths.includes(tilapia)) paths.push(tilapia);
+	return paths;
+}
+
 function publishedContentPaths(): string[] {
 	return [
 		...publishedEditorialPaths,
 		...publishedGuideSectors.map((guide) => `/guides/${guide.slug}`),
 		...writingSitemapPaths,
-		...demoProducts
-			// Placeholder row. The product route has no published page for this slug.
-			.filter((product) => product.slug !== 'aquaponics-stocking-notes')
-			.map((product) => `/products/${product.system}/${product.slug}`)
+		...publishedCataloguePaths()
 	];
 }
 

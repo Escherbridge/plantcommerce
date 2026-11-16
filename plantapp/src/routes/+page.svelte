@@ -54,7 +54,7 @@
 		},
 		{
 			title: 'Clear seller terms',
-			body: 'Independent growers and toolmakers publish shipping zones, return windows, and warranties directly on each product listing.'
+			body: 'Independent growers and toolmakers will set shipping, returns, and warranties on their real listings.'
 		}
 	];
 </script>

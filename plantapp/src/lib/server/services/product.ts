@@ -1,4 +1,4 @@
-import { eq, and, like, or, desc, asc, inArray } from 'drizzle-orm';
+import { eq, and, like, ilike, or, desc, asc, inArray } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { FileService } from './file';
@@ -807,7 +807,8 @@ export class ProductService {
 		}
 
 		if (search) {
-			conditions.push(like(table.product.name, `%${sanitizeLike(search)}%`));
+			const term = `%${sanitizeLike(search)}%`;
+			conditions.push(or(ilike(table.product.name, term), ilike(table.product.slug, term))!);
 		}
 
 		if (featured !== undefined) {

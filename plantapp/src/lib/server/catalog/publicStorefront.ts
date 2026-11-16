@@ -158,6 +158,20 @@ async function loadRelated(current: ReturnType<typeof normalizeProduct>) {
 
 export async function loadSearchProducts(query: string) {
 	if (!query) return [];
-	const rows = await ProductService.getProducts({ search: query, limit: 20 });
-	return rows.map((row) => sanitizePlaceholderRow(row));
+	const [rows, categories] = await Promise.all([
+		ProductService.getProducts({ search: query, limit: 20 }),
+		ProductService.getCategories()
+	]);
+	const parentSlugMap = buildParentSlugMap(Array.isArray(categories) ? categories : []);
+	return rows.map((row) => {
+		const sanitized = sanitizePlaceholderRow(row);
+		const category = (sanitized as { category?: { id?: number; slug?: string } | null }).category;
+		const slug = (sanitized as { product?: { slug?: string } }).product?.slug;
+		const system =
+			category?.id != null ? (parentSlugMap.get(category.id) ?? category.slug) : category?.slug;
+		return {
+			...sanitized,
+			href: system && slug ? `/products/${system}/${slug}` : undefined
+		};
+	});
 }

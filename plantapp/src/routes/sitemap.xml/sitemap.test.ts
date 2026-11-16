@@ -156,6 +156,13 @@ describe('public crawler discovery', () => {
 		);
 		expect(published).not.toContain('aquaponics-stocking-notes');
 		expect(published).toContain(
+			'<loc>https://aevani.com/products/aquaponics/tilapia-fingerlings-starter-pack</loc>'
+		);
+		const productDetailUrls = published.match(
+			/<loc>https:\/\/aevani\.com\/products\/[^/<]+\/[^<]+<\/loc>/g
+		);
+		expect(productDetailUrls).toHaveLength(40);
+		expect(published).toContain(
 			'<loc>https://aevani.com/blog/cooling-can-use-more-water-than-the-crop</loc>\n\t\t<lastmod>2026-11-10</lastmod>'
 		);
 		expect(published).toContain(

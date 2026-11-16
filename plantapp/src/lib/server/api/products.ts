@@ -3,6 +3,10 @@ import { publicProcedure, adminProcedure, router } from './trpc';
 import { ProductService } from '../services/product';
 import { AuditLogService } from '../services/auditLog';
 import { getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
+import {
+	sanitizePlaceholderProduct,
+	sanitizePlaceholderRow
+} from '$lib/catalog/placeholderListing';
 
 export const productsRouter = router({
 	getCatalogAvailability: publicProcedure.query(() => getPublicCatalogAvailability()),
@@ -22,11 +26,15 @@ export const productsRouter = router({
 				sortOrder: z.enum(['asc', 'desc']).default('desc')
 			})
 		)
-		.query(({ input }) => ProductService.getProducts(input)),
+		.query(async ({ input }) => {
+			const rows = await ProductService.getProducts(input);
+			return rows.map((row) => sanitizePlaceholderRow(row));
+		}),
 
-	getProduct: publicProcedure
-		.input(z.object({ slug: z.string() }))
-		.query(({ input }) => ProductService.getProductBySlug(input.slug)),
+	getProduct: publicProcedure.input(z.object({ slug: z.string() })).query(async ({ input }) => {
+		const product = await ProductService.getProductBySlug(input.slug);
+		return product ? sanitizePlaceholderProduct(product) : null;
+	}),
 
 	getProductById: adminProcedure
 		.input(z.object({ id: z.number() }))
