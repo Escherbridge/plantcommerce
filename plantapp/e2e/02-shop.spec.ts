@@ -19,9 +19,12 @@ test('2. shop renders the seeded catalogue, featured tiles, filtering, and categ
 	// valid price on every card rather than pinning a brittle exact number.
 	const cardCount = await cards.count();
 	expect(cardCount).toBeGreaterThan(0);
-	const prices = await cards.locator('.pc__price').allInnerTexts();
-	expect(prices).toHaveLength(cardCount);
-	expect(prices.every((price) => /\$\d/.test(price))).toBe(true);
+	await expect(cards.locator('.pc__price')).toHaveCount(0);
+	await expect(featured.locator('.pc__price')).toHaveCount(0);
+	const badges = await page.locator('.pc__badge').allInnerTexts();
+	expect(
+		badges.every((badge) => !/^(?:bestseller|live|in stock|out of stock|sale)$/i.test(badge.trim()))
+	).toBe(true);
 	await expectImagesLoaded(page, cards.locator('img.pc__img').first());
 	await page.screenshot({ path: 'e2e/screenshots/shop.png', fullPage: true });
 

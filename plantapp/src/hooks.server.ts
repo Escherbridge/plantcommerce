@@ -1,5 +1,6 @@
-import type { Handle } from '@sveltejs/kit';
+import { redirect, type Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
+import { publicAliasRedirect } from '$lib/http/publicRedirects';
 import * as auth from '$lib/server/auth';
 import { ensureAdditiveMigrations } from '$lib/server/db/applyAdditiveMigrations';
 import { readGuestCartSessionId } from '$lib/server/guestCart';
@@ -8,6 +9,12 @@ import { handleError } from '$lib/utils/errorHandler';
 
 // Static icons are served before handle(), so this has to run at startup.
 installStaticIconContentTypes();
+
+const handlePublicAliases: Handle = async ({ event, resolve }) => {
+	const target = publicAliasRedirect(event.url.pathname);
+	if (target) redirect(308, target);
+	return resolve(event);
+};
 
 const handleMigrations: Handle = async ({ event, resolve }) => {
 	await ensureAdditiveMigrations();
@@ -62,4 +69,9 @@ const handleSecurityHeaders: Handle = async ({ event, resolve }) => {
 	return response;
 };
 
-export const handle: Handle = sequence(handleMigrations, handleAuth, handleSecurityHeaders);
+export const handle: Handle = sequence(
+	handlePublicAliases,
+	handleMigrations,
+	handleAuth,
+	handleSecurityHeaders
+);

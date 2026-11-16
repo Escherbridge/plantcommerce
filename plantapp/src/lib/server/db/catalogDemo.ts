@@ -247,7 +247,7 @@ export const demoProducts: DemoProduct[] = [
 		shortDescription: '40+ plants in 2 sq ft with quiet drip irrigation.',
 		metaTitle: 'Vertical Tower Garden System | Aevani Hydroponics',
 		metaDescription:
-			'Grow 40+ plants in 2 sq ft with a quiet, self-watering vertical hydroponic tower. Uses 90% less water — ships with seeds, nutrients, and a full guide.',
+			'Grow 40+ plants in 2 sq ft with a quiet, self-watering vertical hydroponic tower. Uses 90% less water, with seeds, nutrients, and a full guide in the example.',
 		tags: [
 			'hydroponics',
 			'vertical garden',
@@ -263,16 +263,15 @@ export const demoProducts: DemoProduct[] = [
 			'hydroponic-nutrients-trio'
 		],
 		descriptionHtml:
-			'<h2>Why grow vertically</h2><p>Most of a garden bed is wasted on walkways and root run. A tower throws that logic out: it stacks <strong>forty-four plant sites into two square feet of floor</strong>, feeds them from a single reservoir, and lets gravity do the work a pump would otherwise fight. On a balcony, in a spare room, or beside a south window, it turns a corner nobody was using into a salad garden.</p><p>We built this one around the parts that usually fail first. The pump is oversized so it loafs instead of straining. The reservoir is opaque HDPE, so algae never gets a foothold. The tiers rotate, so the greens on the shaded side get their turn in the light. In our test room it went from seedling to first lettuce harvest in about three weeks, on roughly a weekly top-up of the reservoir.</p><p>It is honestly forgiving. Miss a feeding, skip a weekend, run it a little out of balance — the plants coast. When you are ready to push it, dial in the nutrients and the yields climb fast.</p><p>New to soilless growing? Start with our <a href="/learn">hydroponics field guide</a> — it walks the whole first season.</p>',
+			'<h2>Why grow vertically</h2><p>Most of a garden bed is wasted on walkways and root run. A tower throws that logic out: it stacks <strong>forty-four plant sites into two square feet of floor</strong>, feeds them from a single reservoir, and lets gravity do the work a pump would otherwise fight. On a balcony, in a spare room, or beside a south window, it turns a corner nobody was using into a salad garden.</p><p>We built this one around the parts that usually fail first. The pump is oversized so it loafs instead of straining. The reservoir is opaque HDPE, so algae never gets a foothold. The tiers rotate, so the greens on the shaded side get their turn in the light.</p><p>It is honestly forgiving. Miss a feeding, skip a weekend, run it a little out of balance — the plants coast. When you are ready to push it, dial in the nutrients and the yields climb fast.</p><p>New to soilless growing? Start with our <a href="/learn">hydroponics field guide</a> — it walks the whole first season.</p>',
 		keyFeatures: [
 			'Grows 40+ plants in a 2 sq ft footprint — indoors or out',
 			'Uses ~90% less water than a conventional bed',
 			'20-minute assembly, no tools — timer runs itself',
-			'Ships with seeds, nutrients, and our full growing guide'
+			'The example includes seeds, nutrients, and a growing guide'
 		],
 		stats: [
 			{ value: '40+', label: 'plant sites across 8 rotating tiers — greens, herbs, strawberries' },
-			{ value: '~3 wks', label: 'from seedling to first lettuce harvest in our test room' },
 			{ value: '20 gal', label: 'reservoir — top up about once a week, less in winter' },
 			{ value: '38 dB', label: 'pump noise — quieter than a refrigerator hum' }
 		],
@@ -315,11 +314,11 @@ export const demoProducts: DemoProduct[] = [
 			},
 			{
 				q: 'What if a part breaks?',
-				a: 'Pumps, timers, tiers, and net pots are all stocked as individual spares. Two-year warranty covers defects; after that, replacements are a few dollars each.'
+				a: 'Pumps, timers, tiers, and net pots are the usual spare parts for this kind of tower.'
 			}
 		],
 		testBedNote:
-			'Honest note: heavy fruiting crops (full-size tomatoes, peppers) get top-heavy above tier five. Keep them low, keep greens high, and the tower stays happy. Everything else exceeded our yield notes.',
+			'Honest note: heavy fruiting crops (full-size tomatoes, peppers) get top-heavy above tier five. Keep them low, keep greens high, and the tower stays happy.',
 		shippingNote: SHIP_FREE,
 		warranty: SYSTEM_WARRANTY,
 		bundleOffer: {
@@ -584,7 +583,7 @@ export const demoProducts: DemoProduct[] = [
 			'Grows up to 36 heads of lettuce or herbs at once',
 			'UV-stable white channels keep roots cool and reflect light',
 			'Under 2-hour, tool-free assembly',
-			'Ships with starter nutrients and a pH kit'
+			'Starter nutrients and a pH kit are part of the example'
 		],
 		stats: [
 			{ value: '36', label: 'plant sites across 4 channels' },
@@ -1444,8 +1443,7 @@ export const demoProducts: DemoProduct[] = [
 		],
 		stats: [
 			{ value: '6', label: 'parameters covered' },
-			{ value: '150+', label: 'tests per parameter' },
-			{ value: '5 min', label: 'to a full water reading' }
+			{ value: '150+', label: 'tests per parameter' }
 		],
 		specs: [
 			{ label: 'Parameters', value: 'pH, NH3/NH4+, NO2-, NO3-, DO, GH' },
@@ -2237,10 +2235,10 @@ export const demoProducts: DemoProduct[] = [
 		assetKey: 'medicinalHerb',
 		badges: [],
 		isFeatured: false,
-		shortDescription: '6 live herb starters with care cards and preparation guide.',
+		shortDescription:
+			"Example listing for starter plants. Aevani doesn't sell or ship live plants.",
 		metaTitle: 'Medicinal Herb Garden Kit | Aevani Agroforestry',
-		metaDescription:
-			'Six live medicinal herb starters with care cards and a preparation guide. Grow a home apothecary of teas, salves, and remedies.',
+		metaDescription: "Example listing for starter plants. Aevani doesn't sell or ship live plants.",
 		tags: ['agroforestry', 'medicinal herbs', 'herbs', 'apothecary', 'herbalism', 'perennial'],
 		relatedSlugs: [
 			'chestnut-tree-seedlings-10-pack',
@@ -2248,9 +2246,9 @@ export const demoProducts: DemoProduct[] = [
 			'nitrogen-fixing-tree-seeds-collection'
 		],
 		descriptionHtml:
-			'<h2>Start a home apothecary</h2><p>The understory of an agroforestry system is where medicinal herbs belong, and this kit is the friendliest way in. Six live starters — lavender, chamomile, echinacea, peppermint, lemon balm, and calendula — arrive in biodegradable coir pots, each with a care card covering growing, harvest timing, drying, and traditional use.</p><p>The field guide walks 30+ preparations from teas to tinctures.</p>',
+			'<h2>Start a home apothecary</h2><p>The understory of an agroforestry system is where medicinal herbs belong, and this kit is an example of that kind of start. Six starters — lavender, chamomile, echinacea, peppermint, lemon balm, and calendula — are the plants in this example, in biodegradable coir pots, each with a care card covering growing, harvest timing, drying, and traditional use.</p><p>The field guide walks 30+ preparations from teas to tinctures.</p>',
 		keyFeatures: [
-			'6 live medicinal herb starters',
+			'6 herb starters',
 			'Biodegradable coir pots — plant the whole thing',
 			'Care card for each herb',
 			'Field guide to 30+ herbal preparations'
@@ -2265,12 +2263,12 @@ export const demoProducts: DemoProduct[] = [
 				label: 'Herbs',
 				value: 'Lavender, chamomile, echinacea, peppermint, lemon balm, calendula'
 			},
-			{ label: 'Form', value: 'Live starters in coir pots' },
+			{ label: 'Form', value: 'Starters in coir pots' },
 			{ label: 'Care', value: 'Per-herb care cards' },
 			{ label: 'Guide', value: '30+ preparation field guide' }
 		],
 		inTheBox: [
-			'6 live herb starters',
+			'6 herb starters',
 			'6 care cards',
 			'Herbal preparation field guide',
 			'Biodegradable coir pots'
