@@ -1,4 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('$lib/server/db', () => ({ db: {}, sqlClient: null }));
+
 import { PayoutAccountService } from './payoutAccount';
 
 function selectChain(rows: unknown[]) {

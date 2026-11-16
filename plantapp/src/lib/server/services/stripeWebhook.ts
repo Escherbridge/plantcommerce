@@ -10,6 +10,8 @@ import {
 	minorUnitsToDecimal
 } from './checkoutDraft';
 import { AffiliateCommissionService } from './affiliateCommission';
+import { connectAccountSnapshot } from './connectAccountStatus';
+import { PayoutAccountService } from './payoutAccount';
 import { orderProviderChargeFields } from './stripeCharge';
 import { StripeCheckoutService } from './stripeCheckout';
 
@@ -189,6 +191,50 @@ export class StripeWebhookService {
 
 			await this.fulfillPaidSession(event.id, session, payment);
 			return 'processed';
+		} catch (error) {
+			await this.failEvent(event.id, error);
+			throw error;
+		}
+	}
+
+	/** Connected-account events. Uses the same idempotent event table. Does not call Stripe. */
+	static async processConnectEvent(
+		event: Stripe.Event,
+		rawPayload: Buffer
+	): Promise<StripeWebhookProcessResult> {
+		const claim = await this.claimEvent(event.id, event.type, payloadDigest(rawPayload));
+		if (claim.kind === 'complete') return 'already_complete';
+		if (claim.kind === 'in_progress') return 'in_progress';
+
+		try {
+			const type = event.type as string;
+			const connectedAccount =
+				'account' in event && typeof event.account === 'string' ? event.account : null;
+			if (type === 'account.updated' || type.startsWith('v2.core.account')) {
+				const snapshot = connectAccountSnapshot(event.data.object);
+				if (!snapshot) {
+					await this.finishEvent(event.id, 'ignored');
+					return 'ignored';
+				}
+				await PayoutAccountService.applyAccountSnapshot(snapshot);
+				await this.finishEvent(event.id, 'processed');
+				return 'processed';
+			}
+			if ((type === 'payout.paid' || type === 'payout.failed') && connectedAccount) {
+				await PayoutAccountService.notePayout(
+					connectedAccount,
+					type === 'payout.paid' ? 'paid' : 'failed'
+				);
+				await this.finishEvent(event.id, 'processed');
+				return 'processed';
+			}
+			if (type === 'account.external_account.updated' && connectedAccount) {
+				await PayoutAccountService.noteExternalAccountUpdated(connectedAccount);
+				await this.finishEvent(event.id, 'processed');
+				return 'processed';
+			}
+			await this.finishEvent(event.id, 'ignored');
+			return 'ignored';
 		} catch (error) {
 			await this.failEvent(event.id, error);
 			throw error;

@@ -4,6 +4,7 @@ import sellerApplicationSql from '../../../../drizzle/0011_seller_application.sq
 import managerInviteSql from '../../../../drizzle/0012_manager_invites.sql?raw';
 import orderTransferGroupSql from '../../../../drizzle/0013_order_transfer_group.sql?raw';
 import sellerPayoutAccountSql from '../../../../drizzle/0014_seller_payout_account.sql?raw';
+import payoutAccountStatusSql from '../../../../drizzle/0015_payout_account_status.sql?raw';
 import { executableMigrationSql } from './additiveMigration';
 
 const migrations = [
@@ -11,7 +12,8 @@ const migrations = [
 	sellerApplicationSql,
 	managerInviteSql,
 	orderTransferGroupSql,
-	sellerPayoutAccountSql
+	sellerPayoutAccountSql,
+	payoutAccountStatusSql
 ];
 
 let pending: Promise<void> | null = null;
