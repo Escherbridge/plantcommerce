@@ -5,6 +5,8 @@ import {
 	createManagerInvite,
 	InviteForbiddenError,
 	listManagerInvites,
+	listWaitingApprovals,
+	reviewInviteUse,
 	revokeManagerInvite
 } from '$lib/server/services/managerInvite';
 import type { InviteFieldError, InviteFormInput } from '$lib/invites/validation';
@@ -33,12 +35,18 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const actor = forbidUnlessAdmin(locals.user);
 	try {
 		const invites = await listManagerInvites({ actor });
+		const waiting = await listWaitingApprovals({ actor });
 		const createdId = url.searchParams.get('created');
 		return {
 			invites,
+			waiting,
+			approval: url.searchParams.get('approval') === 'pending' ? 'pending' : 'all',
 			created: createdId ? (invites.find((invite) => invite.id === createdId) ?? null) : null,
 			roleQuery: url.searchParams.get('role') ?? '',
-			revokedNotice: url.searchParams.get('revoked') === '1'
+			revokedNotice: url.searchParams.get('revoked') === '1',
+			notice: url.searchParams.get('notice'),
+			noticeName: url.searchParams.get('name') ?? '',
+			noticeRole: url.searchParams.get('role') ?? ''
 		};
 	} catch (caught) {
 		if (caught instanceof InviteForbiddenError) error(403, 'Forbidden');
@@ -81,5 +89,26 @@ export const actions = {
 			if (caught instanceof InviteForbiddenError) error(403, 'Forbidden');
 			return fail(500, { transport: true });
 		}
-	}
+	},
+	approve: async ({ request, locals }) => decide(request, locals.user, 'approved'),
+	decline: async ({ request, locals }) => decide(request, locals.user, 'declined')
 } satisfies Actions;
+
+async function decide(
+	request: Request,
+	user: App.Locals['user'],
+	decision: 'approved' | 'declined'
+) {
+	const actor = forbidUnlessAdmin(user);
+	const useId = formText(await request.formData(), 'useId');
+	try {
+		const result = await reviewInviteUse({ actor, useId, decision });
+		if (!result.ok) return fail(400, { transport: true });
+		const name = encodeURIComponent(result.name);
+		throw redirect(303, `/admin/invites?notice=${decision}&name=${name}&role=${result.role}`);
+	} catch (caught) {
+		if (isRedirect(caught) || isHttpError(caught)) throw caught;
+		if (caught instanceof InviteForbiddenError) error(403, 'Forbidden');
+		return fail(500, { transport: true });
+	}
+}

@@ -366,7 +366,7 @@ export const managerInviteUse = pgTable(
 		userId: text('user_id')
 			.notNull()
 			.references(() => user.id),
-		status: text('status', { enum: ['pending', 'approved', 'rejected'] })
+		status: text('status', { enum: ['pending', 'approved', 'declined'] })
 			.notNull()
 			.default('pending'),
 		roleRemovedAt: timestamp('role_removed_at', { withTimezone: true, mode: 'date' }),
@@ -383,7 +383,7 @@ export const managerInviteUse = pgTable(
 		userIdx: index('manager_invite_use_user_idx').on(table.userId),
 		statusCheck: check(
 			'manager_invite_use_status_check',
-			sql`${table.status} in ('pending', 'approved', 'rejected')`
+			sql`${table.status} in ('pending', 'approved', 'declined')`
 		)
 	})
 );

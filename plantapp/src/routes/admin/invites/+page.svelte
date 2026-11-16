@@ -1,16 +1,22 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import CredentialErrorSummary from '$lib/components/forms/CredentialErrorSummary.svelte';
-	import { inviteRoles, type InviteRole } from '$lib/auth/userRole';
+	import { inviteRoles, isInviteRole, type InviteRole } from '$lib/auth/userRole';
 	import { formatBoiseDate } from '$lib/invites/dates';
 	import {
+		APPROVE_NEEDS_VERIFICATION,
 		COPY_LINK_FAILED,
 		COPY_LINK_OK,
+		approvedStatus,
 		createdPanelExtra,
+		declinedStatus,
+		displayName,
 		listRowTitle,
+		nextStep,
 		REVOKE_DISABLED,
 		REVOKE_STATUS,
-		roleLabel
+		roleLabel,
+		rolePhrase
 	} from '$lib/invites/copy';
 	import { canStillRevoke, statusLabel, usesLabel } from '$lib/invites/status';
 	import {
@@ -33,6 +39,48 @@
 	let revokeOpener = $state<HTMLButtonElement | null>(null);
 	let createdPanel = $state<HTMLElement | null>(null);
 	let revokedNotice = $state<HTMLElement | null>(null);
+	let approvalFilter = $state(data.approval === 'pending' ? 'pending' : 'all');
+	let decisionMode = $state<'approve' | 'decline'>('approve');
+	let decisionUseId = $state('');
+	let decisionName = $state('');
+	let decisionRole = $state<InviteRole>('affiliate');
+	let decisionDialog = $state<HTMLDialogElement | null>(null);
+	let decisionHeading = $state<HTMLHeadingElement | null>(null);
+	let decisionOpener = $state<HTMLButtonElement | null>(null);
+
+	const waitingPeople = $derived(
+		(data.waiting ?? []).filter((person) => approvalFilter === 'all' || person.status === 'pending')
+	);
+	const decisionNotice = $derived.by(() => {
+		if (!isInviteRole(data.noticeRole)) return '';
+		if (data.notice === 'approved') return approvedStatus(data.noticeRole, data.noticeName);
+		if (data.notice === 'declined') return declinedStatus(data.noticeRole, data.noticeName);
+		return '';
+	});
+
+	function pendingCount(id: string): number {
+		return (data.waiting ?? []).filter(
+			(person) => person.inviteId === id && person.status === 'pending'
+		).length;
+	}
+
+	function openDecision(
+		mode: 'approve' | 'decline',
+		opener: HTMLButtonElement,
+		person: {
+			id: string;
+			name: string;
+			role: InviteRole;
+		}
+	) {
+		decisionMode = mode;
+		decisionUseId = person.id;
+		decisionName = person.name;
+		decisionRole = person.role;
+		decisionOpener = opener;
+		decisionDialog?.showModal();
+		decisionHeading?.focus();
+	}
 
 	const values = $derived(form && 'values' in form ? form.values : undefined);
 	const fieldErrors = $derived(
@@ -131,6 +179,9 @@
 		>
 			{REVOKE_STATUS}
 		</p>
+	{/if}
+	{#if decisionNotice}
+		<p class="invite-status" role="status" tabindex="-1">{decisionNotice}</p>
 	{/if}
 
 	{#if data.created}
@@ -316,6 +367,108 @@
 	</section>
 
 	<section>
+		<h2>Waiting for approval</h2>
+		<div class="admin-filters">
+			<label for="approvals">Approvals</label>
+			<select id="approvals" class="invite-target admin-filter-select" bind:value={approvalFilter}>
+				<option value="all">All</option>
+				<option value="pending">Pending</option>
+			</select>
+		</div>
+		{#if waitingPeople.length === 0}
+			<div class="platform-empty">
+				<p class="platform-empty__title">No one is waiting for approval.</p>
+				<p class="platform-empty__text">
+					When someone finishes an invite, they will show up here until you approve or decline them.
+				</p>
+			</div>
+		{:else}
+			<div class="platform-table-wrapper">
+				<table class="platform-table">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Role</th>
+							<th>Invite</th>
+							<th>Next step</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each waitingPeople as person (person.id)}
+							{@const name = displayName(person)}
+							<tr>
+								<td>{name}</td>
+								<td>{person.email}</td>
+								<td>{roleLabel(person.inviteRole)}</td>
+								<td>
+									<a class="invite-target" href="/admin/invites/{person.inviteId}?approval=pending">
+										{listRowTitle({
+											label: person.inviteLabel,
+											role: person.inviteRole,
+											createdAt: person.inviteCreatedAt
+										})}
+									</a>
+								</td>
+								<td>
+									{nextStep({
+										emailVerified: person.emailVerified,
+										state: person.status,
+										role: person.inviteRole,
+										roleRemoved: person.roleRemovedAt != null,
+										sellerApplicationReceived: person.sellerApplicationReceived
+									})}
+								</td>
+								<td>
+									{#if person.status === 'pending'}
+										{#if person.emailVerified}
+											<button
+												type="button"
+												class="invite-target"
+												onclick={(event) =>
+													openDecision('approve', event.currentTarget, {
+														id: person.id,
+														name,
+														role: person.inviteRole
+													})}
+											>
+												Approve
+											</button>
+										{:else}
+											<button
+												type="button"
+												class="invite-target"
+												disabled
+												aria-describedby="approve-wait-{person.id}"
+											>
+												Approve
+											</button>
+											<span id="approve-wait-{person.id}">{APPROVE_NEEDS_VERIFICATION}</span>
+										{/if}
+										<button
+											type="button"
+											class="invite-target admin-table-btn--reject"
+											onclick={(event) =>
+												openDecision('decline', event.currentTarget, {
+													id: person.id,
+													name,
+													role: person.inviteRole
+												})}
+										>
+											Decline
+										</button>
+									{/if}
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
+		{/if}
+	</section>
+
+	<section>
 		<h2>Invite links</h2>
 		<div class="admin-filters">
 			<label for="invite-status">Status</label>
@@ -362,7 +515,12 @@
 								</td>
 								<td>{roleLabel(invite.role)}</td>
 								<td>{statusLabel(invite.displayStatus)}</td>
-								<td>{usesLabel(invite.useCount, invite.useLimit)}</td>
+								<td>
+									{usesLabel(invite.useCount, invite.useLimit)}
+									{#if pendingCount(invite.id)}
+										· {pendingCount(invite.id)} pending
+									{/if}
+								</td>
 								<td>{formatBoiseDate(invite.createdAt)}</td>
 								<td>
 									<button type="button" class="invite-target" onclick={() => copyText(invite.url)}>
@@ -425,6 +583,45 @@
 		<input type="hidden" name="id" value={revokeId} />
 		<button type="submit" class="invite-target admin-table-btn--reject">Revoke invite</button>
 		<button type="button" class="invite-target" onclick={closeRevoke}>Keep the invite</button>
+	</form>
+</dialog>
+
+<dialog
+	bind:this={decisionDialog}
+	class="invite-dialog"
+	aria-labelledby="decision-heading"
+	onclose={() => decisionOpener?.focus()}
+>
+	<h2 id="decision-heading" tabindex="-1" bind:this={decisionHeading}>
+		{#if decisionMode === 'approve'}
+			Approve {decisionName} as {rolePhrase(decisionRole)}?
+		{:else}
+			Decline {decisionName}?
+		{/if}
+	</h2>
+	<p>
+		{#if decisionMode === 'approve'}
+			They'll get the role, and we'll let them know. This does not change anyone else's access to
+			this invite.
+		{:else}
+			They won't get the role. Their account stays, and you can invite them again later.
+		{/if}
+	</p>
+	<form method="post" action={decisionMode === 'approve' ? '?/approve' : '?/decline'}>
+		<input type="hidden" name="useId" value={decisionUseId} />
+		<button type="submit" class="invite-target"
+			>{decisionMode === 'approve' ? 'Approve' : 'Decline'}</button
+		>
+		<button
+			type="button"
+			class="invite-target"
+			onclick={() => {
+				decisionDialog?.close();
+				decisionOpener?.focus();
+			}}
+		>
+			{decisionMode === 'approve' ? "Don't approve yet" : 'Keep them pending'}
+		</button>
 	</form>
 </dialog>
 

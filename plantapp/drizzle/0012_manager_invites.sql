@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS "public"."manager_invite_use" (
 	"reviewed_at" timestamp with time zone,
 	"reviewed_by" text,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
-	CONSTRAINT "manager_invite_use_status_check" CHECK ("status" IN ('pending', 'approved', 'rejected')),
+	CONSTRAINT "manager_invite_use_status_check" CHECK ("status" IN ('pending', 'approved', 'declined')),
 	CONSTRAINT "manager_invite_use_invite_fk" FOREIGN KEY ("invite_id") REFERENCES "public"."manager_invite"("id"),
 	CONSTRAINT "manager_invite_use_user_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id"),
 	CONSTRAINT "manager_invite_use_reviewer_fk" FOREIGN KEY ("reviewed_by") REFERENCES "public"."user"("id")

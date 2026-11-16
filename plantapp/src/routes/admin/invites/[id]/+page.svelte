@@ -6,16 +6,19 @@
 		COPY_LINK_OK,
 		REVOKE_DISABLED,
 		REVOKE_STATUS,
+		APPROVE_NEEDS_VERIFICATION,
 		approvedStatus,
+		declinedStatus,
 		detailHeading,
 		detailSubtitle,
 		displayName,
 		nextStep,
 		personHelpMessage,
-		rejectedStatus,
 		resendFailed,
 		resendOk,
+		reviewStatusLabel,
 		roleLabel,
+		rolePhrase,
 		roleRemovedStatus,
 		unusedHelpMessage
 	} from '$lib/invites/copy';
@@ -30,19 +33,25 @@
 	let dialog = $state<HTMLDialogElement | null>(null);
 	let dialogHeading = $state<HTMLHeadingElement | null>(null);
 	let dialogOpener = $state<HTMLButtonElement | null>(null);
-	let dialogMode = $state<'revoke' | 'remove' | 'reject'>('revoke');
+	let dialogMode = $state<'revoke' | 'remove' | 'decline' | 'approve'>('revoke');
+	let peopleFilter = $state(data.approval === 'pending' ? 'pending' : 'all');
 	let dialogUseId = $state('');
 	let dialogName = $state('');
 	let dialogRole = $state<'affiliate' | 'seller' | 'instructor'>('affiliate');
 
 	const detail = $derived(data.detail);
+	const visiblePeople = $derived(
+		(detail?.uses ?? []).filter(
+			(person) => peopleFilter === 'all' || person.status === peopleFilter
+		)
+	);
 	const notice = $derived.by(() => {
 		if (data.notice === 'revoked') return REVOKE_STATUS;
 		if (data.notice === 'resent') return resendOk(data.noticeEmail);
 		if (data.notice === 'resend-failed') return resendFailed(data.noticeEmail);
 		if (!isInviteRole(data.noticeRole)) return '';
 		if (data.notice === 'approved') return approvedStatus(data.noticeRole, data.noticeName);
-		if (data.notice === 'rejected') return rejectedStatus(data.noticeRole, data.noticeName);
+		if (data.notice === 'declined') return declinedStatus(data.noticeRole, data.noticeName);
 		if (data.notice === 'removed') return roleRemovedStatus(data.noticeRole, data.noticeName);
 		return '';
 	});
@@ -52,7 +61,7 @@
 	});
 
 	function openDialog(
-		mode: 'revoke' | 'remove' | 'reject',
+		mode: 'revoke' | 'remove' | 'decline' | 'approve',
 		opener: HTMLButtonElement,
 		use?: { id: string; name: string; role: 'affiliate' | 'seller' | 'instructor' }
 	) {
@@ -187,6 +196,19 @@
 
 		<section>
 			<h2>People who used this link</h2>
+			<div class="admin-filters">
+				<label for="people-status">Status</label>
+				<select
+					id="people-status"
+					class="invite-target admin-filter-select"
+					bind:value={peopleFilter}
+				>
+					<option value="all">All people</option>
+					<option value="pending">Pending</option>
+					<option value="approved">Approved</option>
+					<option value="declined">Declined</option>
+				</select>
+			</div>
 			{#if detail.uses.length === 0}
 				<div class="platform-empty">
 					<p class="platform-empty__title">No one has used this link yet.</p>
@@ -200,13 +222,18 @@
 					<table class="platform-table">
 						<thead>
 							<tr>
-								<th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Verification</th><th
-									>Next step</th
-								><th>Actions</th>
+								<th>Name</th>
+								<th>Email</th>
+								<th>Role</th>
+								<th>Status</th>
+								<th>Joined</th>
+								<th>Verification</th>
+								<th>Next step</th>
+								<th>Actions</th>
 							</tr>
 						</thead>
 						<tbody>
-							{#each detail.uses as person (person.id)}
+							{#each visiblePeople as person (person.id)}
 								{@const name = displayName(person)}
 								<tr>
 									<td>{name}</td>
@@ -214,6 +241,7 @@
 									<td>
 										{roleLabel(person.inviteRole)}{person.roleRemovedAt ? ' (removed)' : ''}
 									</td>
+									<td>{reviewStatusLabel(person.status)}</td>
 									<td>{formatBoiseDate(person.createdAt)}</td>
 									<td>{person.emailVerified ? 'Verified' : 'Not verified'}</td>
 									<td>
@@ -251,21 +279,41 @@
 											Copy a help message
 										</button>
 										{#if person.status === 'pending' && !person.roleRemovedAt}
-											<form method="post" action="?/approve">
-												<input type="hidden" name="useId" value={person.id} />
-												<button type="submit" class="invite-target">Approve {name}</button>
-											</form>
+											{#if person.emailVerified}
+												<button
+													type="button"
+													class="invite-target"
+													onclick={(event) =>
+														openDialog('approve', event.currentTarget, {
+															id: person.id,
+															name,
+															role: person.inviteRole
+														})}
+												>
+													Approve
+												</button>
+											{:else}
+												<button
+													type="button"
+													class="invite-target"
+													disabled
+													aria-describedby="approve-wait-{person.id}"
+												>
+													Approve
+												</button>
+												<span id="approve-wait-{person.id}">{APPROVE_NEEDS_VERIFICATION}</span>
+											{/if}
 											<button
 												type="button"
-												class="invite-target"
+												class="invite-target admin-table-btn--reject"
 												onclick={(event) =>
-													openDialog('reject', event.currentTarget, {
+													openDialog('decline', event.currentTarget, {
 														id: person.id,
 														name,
 														role: person.inviteRole
 													})}
 											>
-												Reject {name}
+												Decline
 											</button>
 										{/if}
 										{#if person.status === 'approved' && !person.roleRemovedAt}
@@ -302,8 +350,10 @@
 	<h2 id="invite-dialog-heading" tabindex="-1" bind:this={dialogHeading}>
 		{#if dialogMode === 'revoke'}
 			Revoke this invite?
-		{:else if dialogMode === 'reject'}
-			Reject this invite for {dialogName}?
+		{:else if dialogMode === 'approve'}
+			Approve {dialogName} as {rolePhrase(dialogRole)}?
+		{:else if dialogMode === 'decline'}
+			Decline {dialogName}?
 		{:else}
 			Remove the {dialogRole} role from {dialogName}?
 		{/if}
@@ -312,8 +362,11 @@
 		{#if dialogMode === 'revoke'}
 			The link will stop working for anyone who hasn't used it yet. People who already joined keep
 			their accounts. This cannot be undone.
-		{:else if dialogMode === 'reject'}
-			They will not receive the {dialogRole} role. They can still sign in as a regular account.
+		{:else if dialogMode === 'approve'}
+			They'll get the role, and we'll let them know. This does not change anyone else's access to
+			this invite.
+		{:else if dialogMode === 'decline'}
+			They won't get the role. Their account stays, and you can invite them again later.
 		{:else}
 			They can still sign in as a regular customer account. This does not delete their account, and
 			it does not change anyone else's access to this invite.
@@ -324,11 +377,17 @@
 			<button type="submit" class="invite-target">Revoke invite</button>
 			<button type="button" class="invite-target" onclick={closeDialog}>Keep the invite</button>
 		</form>
-	{:else if dialogMode === 'reject'}
-		<form method="post" action="?/reject">
+	{:else if dialogMode === 'approve'}
+		<form method="post" action="?/approve">
 			<input type="hidden" name="useId" value={dialogUseId} />
-			<button type="submit" class="invite-target">Reject the invite</button>
-			<button type="button" class="invite-target" onclick={closeDialog}>Keep it pending</button>
+			<button type="submit" class="invite-target">Approve</button>
+			<button type="button" class="invite-target" onclick={closeDialog}>Don't approve yet</button>
+		</form>
+	{:else if dialogMode === 'decline'}
+		<form method="post" action="?/decline">
+			<input type="hidden" name="useId" value={dialogUseId} />
+			<button type="submit" class="invite-target admin-table-btn--reject">Decline</button>
+			<button type="button" class="invite-target" onclick={closeDialog}>Keep them pending</button>
 		</form>
 	{:else}
 		<form method="post" action="?/remove">
@@ -356,6 +415,23 @@
 	.invite-live,
 	.invite-status {
 		margin: 0;
+	}
+
+	.admin-filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		align-items: center;
+		margin: 0.75rem 0 1rem;
+	}
+
+	.admin-filter-select {
+		min-height: 24px;
+		padding: 0.625rem 1rem;
+	}
+
+	.admin-table-btn--reject {
+		color: oklch(var(--er));
 	}
 
 	dl {

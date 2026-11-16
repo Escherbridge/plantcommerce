@@ -247,7 +247,7 @@ describe('invite token pages', () => {
 			sellerApplicationReceived: false,
 			dashboardAvailable: false
 		});
-		expect(panel.heading).toBe("We've saved your invite");
+		expect(panel.heading).toBe('Waiting for approval');
 		expect(inviteCopyForbidden(panel.body)).toBeNull();
 		const rendered = render(InvitePage, {
 			props: {
@@ -259,7 +259,7 @@ describe('invite token pages', () => {
 				}
 			} as never
 		});
-		expect(rendered.body).toContain("We've saved your invite");
+		expect(rendered.body).toContain('Waiting for approval');
 		expect(rendered.body).toContain('id="invite-complete"');
 		expect(rendered.body).not.toContain('stripe');
 

@@ -114,6 +114,7 @@ const actor = { id: 'admin-1', role: 'admin' };
 describe('invite detail actions', () => {
 	it('approves the seller role, rejects without granting it, and keeps history on revoke', async () => {
 		const { repo, use, roles, setRole, invite } = harness();
+		use.emailVerified = true;
 		const approved = await reviewInviteUse({
 			actor,
 			useId: use.id,
@@ -130,13 +131,13 @@ describe('invite detail actions', () => {
 		await reviewInviteUse({
 			actor,
 			useId: rejected.use.id,
-			decision: 'rejected',
+			decision: 'declined',
 			now,
 			repo: rejected.repo,
 			setRole: rejected.setRole
 		});
 		expect(rejected.roles).toEqual([]);
-		expect(rejected.use.status).toBe('rejected');
+		expect(rejected.use.status).toBe('declined');
 
 		await revokeManagerInvite({ actor, id: invite.id, now, repo });
 		expect(invite.status).toBe('revoked');
@@ -224,7 +225,11 @@ describe('invite detail actions', () => {
 		});
 		expect(rendered.body).toContain('Waiting to verify their email.');
 		expect(rendered.body).toContain('Resend verification');
-		expect(rendered.body).toContain('Approve Ada Grower');
+		expect(rendered.body).toContain('>Approve<');
+		expect(rendered.body).toContain('>Decline<');
+		expect(rendered.body).toContain(
+			'They still need to verify their email before you can approve them.'
+		);
 		expect(inviteCopyForbidden(rendered.body)).toBeNull();
 	});
 });

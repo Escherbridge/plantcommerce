@@ -169,7 +169,18 @@ export function verifyPanel(email: string): { heading: string; body: string } {
 	};
 }
 
-export type ReviewState = 'pending' | 'approved' | 'rejected';
+export type ReviewState = 'pending' | 'approved' | 'declined';
+
+export function reviewStatusLabel(state: ReviewState): string {
+	switch (state) {
+		case 'pending':
+			return 'Pending';
+		case 'approved':
+			return 'Approved';
+		case 'declined':
+			return 'Declined';
+	}
+}
 
 export function statusPanel(input: {
 	role: InviteRole;
@@ -179,22 +190,16 @@ export function statusPanel(input: {
 	dashboardAvailable: boolean;
 }): { heading: string; body: string; link?: { href: string; label: string } } {
 	const phrase = roleLabel(input.role).toLowerCase();
-	if (input.state === 'rejected') {
+	if (input.state === 'declined') {
 		return {
-			heading: 'This invite was not approved',
-			body: `Thanks. We reviewed this invite and did not add the ${phrase} role to your account. You can still sign in as a regular account. We'll follow up at ${input.email} if that changes.`
+			heading: "This invite wasn't approved",
+			body: `A manager declined this invite, so you don't have the ${phrase} role. Your account is still here. If you think that's a mistake, ask the person who invited you.`
 		};
 	}
 	if (input.state === 'pending') {
-		const remainder =
-			input.role === 'instructor'
-				? 'Teaching tools are not part of this invite.'
-				: input.role === 'affiliate'
-					? 'Payouts are not set up yet, and this page does not quote a referral share.'
-					: 'Payouts are not set up yet.';
 		return {
-			heading: "We've saved your invite",
-			body: `Thanks. We have your account and this invite, and we'll review it before the role is active. We'll follow up at ${input.email}. ${remainder}`
+			heading: 'Waiting for approval',
+			body: `Thanks for joining. A manager will look over your account and let you know when it's approved. We'll write to ${input.email}.`
 		};
 	}
 	if (input.role === 'affiliate') {
@@ -209,13 +214,13 @@ export function statusPanel(input: {
 	if (input.role === 'seller') {
 		if (input.sellerApplicationReceived) {
 			return {
-				heading: 'Your seller invite is saved',
-				body: `Thanks. We have your account and this invite, and we have your application. Payouts are not set up yet. We'll reply to ${input.email}.`
+				heading: 'Your seller account is ready',
+				body: `Thanks. Your account is set up as a seller, and we have your application. Payouts are not set up yet. We'll reply to ${input.email}.`
 			};
 		}
 		return {
-			heading: 'Your seller invite is saved',
-			body: `Thanks. We have your account and this invite. Payouts are not set up yet. You can tell us what you grow or make on the sell page, or wait for us to write to you at ${input.email}.`,
+			heading: 'Your seller account is ready',
+			body: `Thanks. Your account is set up as a seller. Payouts are not set up yet. You can tell us what you grow or make on the sell page, or wait for us to write to you at ${input.email}.`,
 			link: { href: '/sell', label: 'Tell us what you grow or make' }
 		};
 	}
@@ -236,28 +241,28 @@ export function nextStep(input: {
 		return 'The invited role was removed. They can still sign in as a regular account.';
 	}
 	if (!input.emailVerified) return 'Waiting to verify their email.';
-	if (input.state === 'rejected') {
-		return `This invite was rejected. The ${roleLabel(input.role).toLowerCase()} role was not added.`;
+	if (input.state === 'declined') {
+		return 'This invite was declined. They can still sign in as a regular account.';
 	}
 	if (input.state === 'pending') {
-		return `Waiting for a manager to approve the ${roleLabel(input.role).toLowerCase()} role.`;
+		return 'Waiting for a manager to approve this account.';
 	}
 	if (input.role === 'affiliate') {
-		return 'Signed up. They can use the affiliate dashboard when it is available to them.';
+		return 'Approved. They can use the affiliate dashboard when it is available to them.';
 	}
 	if (input.role === 'seller') {
 		return input.sellerApplicationReceived
-			? 'Application received. Waiting for a reply from Aevani.'
-			: "Hasn't finished telling us what they grow or make.";
+			? 'Approved. Application received. Waiting for a reply from Aevani.'
+			: "Approved. Hasn't finished telling us what they grow or make.";
 	}
-	return 'Signed up as an instructor. Next steps for teaching are not set in this tool yet.';
+	return 'Approved as an instructor. Next steps for teaching are not set in this tool yet.';
 }
 
 export function unusedHelpMessage(role: InviteRole, url: string): string {
 	return [
 		`Here's an Aevani invite: ${url}`,
 		'',
-		`It lets you create an account as ${rolePhrase(role)}. Open the link, create an account or sign in, and verify the email you use. Payouts aren't set up yet, so this is just the account.`
+		`It lets you create an account as ${rolePhrase(role)}. Open the link, create an account or sign in, and verify the email you use. A manager will look over the account before the role is approved. Payouts aren't set up yet, so this is just the account.`
 	].join('\n');
 }
 
@@ -277,17 +282,27 @@ export function personHelpMessage(input: {
 			`You're partway through your Aevani invite. Check ${input.email} for a verification message, or sign in and request a new one from the verification page. Your invite link is ${input.url}.`
 		].join('\n');
 	}
-	if (input.state === 'rejected') {
+	if (input.state === 'declined') {
 		return [
 			`Hi ${name},`,
 			'',
-			`We reviewed your Aevani invite and did not add the ${roleLabel(input.role).toLowerCase()} role. You can still sign in as a regular account. We'll follow up at ${input.email} if that changes.`
+			`A manager declined this invite, so you don't have the ${roleLabel(input.role).toLowerCase()} role. Your account is still here. If you think that's a mistake, write back and we can look again.`,
+			input.url
+		].join('\n');
+	}
+	if (input.state === 'pending') {
+		return [
+			`Hi ${name},`,
+			'',
+			`Thanks for joining. A manager will look over your account and let you know when it's approved. We'll write to ${input.email}.`,
+			input.url
 		].join('\n');
 	}
 	return [
 		`Hi ${name},`,
 		'',
-		`Your Aevani account is set up. We'll follow up at ${input.email} when there is a next step. Payouts aren't set up yet.`
+		`Your Aevani account is set up. We'll follow up at ${input.email} when there is a next step. Payouts aren't set up yet.`,
+		input.url
 	].join('\n');
 }
 
@@ -310,12 +325,15 @@ export function roleRemovedStatus(role: InviteRole, name: string): string {
 }
 
 export function approvedStatus(role: InviteRole, name: string): string {
-	return `The ${roleLabel(role).toLowerCase()} role was approved for ${name}.`;
+	return `You approved ${name}. They now have the ${roleLabel(role).toLowerCase()} role.`;
 }
 
-export function rejectedStatus(role: InviteRole, name: string): string {
-	return `The invite for ${name} was rejected. The ${roleLabel(role).toLowerCase()} role was not added.`;
+export function declinedStatus(role: InviteRole, name: string): string {
+	return `You declined ${name}. They don't have the ${roleLabel(role).toLowerCase()} role. Their account is still there.`;
 }
+
+export const APPROVE_NEEDS_VERIFICATION =
+	'They still need to verify their email before you can approve them.';
 
 const PRICE_OR_RATE =
 	/\d+(?:\.\d+)?\s*%|\$\s*\d|\bcommission\b|\bstreet\b|\bper lead\b|\bflat 8\b/i;

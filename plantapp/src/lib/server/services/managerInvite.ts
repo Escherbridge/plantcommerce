@@ -494,7 +494,7 @@ function defaultRoleUpdate(userId: string, role: UserRole): Promise<void> {
 export async function reviewInviteUse(input: {
 	actor: { id: string; role: string };
 	useId: string;
-	decision: 'approved' | 'rejected';
+	decision: 'approved' | 'declined';
 	now?: Date;
 	repo?: InviteRepository;
 	setRole?: RoleUpdater;
@@ -504,6 +504,7 @@ export async function reviewInviteUse(input: {
 	const use = await repo.getUse(input.useId);
 	if (!use) return { ok: false };
 	const now = input.now ?? new Date();
+	if (input.decision === 'approved' && !use.emailVerified) return { ok: false };
 	if (input.decision === 'approved' && use.userRole !== 'admin' && !use.roleRemovedAt) {
 		await (input.setRole ?? defaultRoleUpdate)(use.userId, use.inviteRole);
 	}
@@ -568,6 +569,27 @@ export async function getManagerInvite(input: {
 	if (!invite) return null;
 	const uses = await repo.listUses(invite.id);
 	return { invite: toDisplayedInvite(invite, now), uses };
+}
+
+export async function listWaitingApprovals(input: {
+	actor: { role: string } | null;
+	repo?: InviteRepository;
+}) {
+	assertInviteAdmin(input.actor);
+	const repo = input.repo ?? drizzleRepository;
+	const invites = await repo.listInvites();
+	const people = [];
+	for (const invite of invites) {
+		const uses = await repo.listUses(invite.id);
+		for (const use of uses) {
+			people.push({
+				...use,
+				inviteLabel: invite.label,
+				inviteCreatedAt: invite.createdAt
+			});
+		}
+	}
+	return people;
 }
 
 async function sendVerificationEmail(email: string, returnPath: string): Promise<boolean> {

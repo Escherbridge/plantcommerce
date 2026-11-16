@@ -27,7 +27,8 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 			notice: url.searchParams.get('notice'),
 			noticeName: url.searchParams.get('name') ?? '',
 			noticeEmail: url.searchParams.get('email') ?? '',
-			noticeRole: url.searchParams.get('role') ?? ''
+			noticeRole: url.searchParams.get('role') ?? '',
+			approval: url.searchParams.get('approval') === 'pending' ? 'pending' : 'all'
 		};
 	} catch (caught) {
 		if (caught instanceof InviteForbiddenError) error(403, 'Forbidden');
@@ -43,7 +44,7 @@ export const actions = {
 		throw redirect(303, `/admin/invites/${params.id}?notice=revoked`);
 	},
 	approve: async ({ request, locals, params }) => act(request, locals.user, params.id, 'approved'),
-	reject: async ({ request, locals, params }) => act(request, locals.user, params.id, 'rejected'),
+	decline: async ({ request, locals, params }) => act(request, locals.user, params.id, 'declined'),
 	remove: async ({ request, locals, params }) => {
 		const actor = admin(locals.user);
 		const useId = formText(await request.formData(), 'useId');
@@ -77,7 +78,7 @@ async function act(
 	request: Request,
 	user: App.Locals['user'],
 	inviteId: string,
-	decision: 'approved' | 'rejected'
+	decision: 'approved' | 'declined'
 ) {
 	const actor = admin(user);
 	const useId = formText(await request.formData(), 'useId');
