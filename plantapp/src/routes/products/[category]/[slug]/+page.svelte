@@ -5,6 +5,7 @@
 	import { StatTile, SectionHeader, Badge, Button, GlassCard } from '$lib/components/ui';
 	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
 	import { productCategoryHref } from '../../catalog';
+	import { productStructuredData } from '$lib/catalog/placeholderListing';
 	import { cart } from '$lib/stores/cart';
 	import type { PageData } from './$types';
 
@@ -66,24 +67,16 @@
 			serializeJsonLd({
 				'@context': 'https://schema.org',
 				'@graph': [
-					{
-						'@type': 'Product',
+					productStructuredData({
 						name: p.name,
 						description: metaDescription,
 						image: mainImageUrl,
-						brand: { '@type': 'Brand', name: 'Aevani' },
-						offers: {
-							'@type': 'Offer',
-							price: p.price,
-							priceCurrency: currencyCode,
-							availability:
-								p.comingSoon || !p.inStock
-									? 'https://schema.org/OutOfStock'
-									: 'https://schema.org/InStock',
-							url: `https://aevani.com${productUrl}`,
-							itemCondition: 'https://schema.org/NewCondition'
-						}
-					},
+						placeholder: p.comingSoon,
+						price: p.price,
+						priceCurrency: currencyCode,
+						inStock: p.inStock,
+						url: `https://aevani.com${productUrl}`
+					}),
 					{
 						'@type': 'BreadcrumbList',
 						itemListElement: [
@@ -119,7 +112,7 @@
 	const galleryCaption = $derived(p.images?.[0]?.altText || p.category?.name || p.name);
 
 	// ---- Buy-box running total (unit price × qty + optional bundle). ----
-	const unitPrice = $derived(parseFloat(p.price) || 0);
+	const unitPrice = $derived(parseFloat(p.price ?? '') || 0);
 	const bundlePrice = $derived(p.bundleOffer ? parseFloat(p.bundleOffer.price) || 0 : 0);
 	const runningTotal = $derived(fmtPrice(unitPrice * quantity + (addBundle ? bundlePrice : 0)));
 
@@ -193,12 +186,12 @@
 						{#each p.badges as badge (badge)}
 							<Badge variant="tag-green">{badge}</Badge>
 						{/each}
-						{#if p.comingSoon}
-							<Badge variant="dark-glass">Coming soon</Badge>
-						{:else if p.inStock}
-							<Badge variant="water">In stock</Badge>
-						{:else}
-							<Badge variant="dark-glass">Out of stock</Badge>
+						{#if !p.comingSoon}
+							{#if p.inStock}
+								<Badge variant="water">In stock</Badge>
+							{:else}
+								<Badge variant="dark-glass">Out of stock</Badge>
+							{/if}
 						{/if}
 					</div>
 
@@ -208,13 +201,15 @@
 						<p class="buy__tagline">{p.shortDescription}</p>
 					{/if}
 
-					<!-- Price -->
-					<div class="buy__price-row">
-						<span class="buy__price">{fmtPrice(p.price)}</span>
-						{#if p.comparePrice}
-							<span class="buy__compare">{fmtPrice(p.comparePrice)}</span>
-						{/if}
-					</div>
+					<!-- Price stays off a placeholder. A real sale can still show it. -->
+					{#if !p.comingSoon}
+						<div class="buy__price-row">
+							<span class="buy__price">{fmtPrice(p.price)}</span>
+							{#if p.comparePrice}
+								<span class="buy__compare">{fmtPrice(p.comparePrice)}</span>
+							{/if}
+						</div>
+					{/if}
 					<!-- Key features checklist -->
 					{#if p.keyFeatures.length > 0}
 						<ul class="buy__features">
@@ -324,7 +319,10 @@
 		<!-- 4. By the numbers -->
 		{#if p.stats.length > 0}
 			<section class="block">
-				<SectionHeader eyebrow="By the numbers" title="Field-tested performance" />
+				<SectionHeader
+					eyebrow="By the numbers"
+					title={p.comingSoon ? 'Listed specifications' : 'Field-tested performance'}
+				/>
 				<div class="stats-grid">
 					{#each p.stats as stat (stat.label)}
 						<StatTile value={stat.value} label={stat.label} />
@@ -351,7 +349,10 @@
 		<!-- 6. In the box -->
 		{#if p.inTheBox.length > 0}
 			<section class="block">
-				<SectionHeader eyebrow="In the box" title="Everything that ships" />
+				<SectionHeader
+					eyebrow="In the box"
+					title={p.comingSoon ? "What's typically in the box" : 'Everything that ships'}
+				/>
 				<GlassCard class="inbox">
 					<ul class="inbox__list">
 						{#each p.inTheBox as item (item)}
@@ -378,7 +379,9 @@
 		{#if p.testBedNote}
 			<section class="block">
 				<div class="testbed">
-					<span class="testbed__eyebrow">From our test beds</span>
+					<span class="testbed__eyebrow">
+						{p.comingSoon ? 'A note on this kind of kit' : 'From our test beds'}
+					</span>
 					<p class="testbed__note">{p.testBedNote}</p>
 				</div>
 			</section>
@@ -429,8 +432,9 @@
 							title={rp.name}
 							category={rp.category?.name ?? ''}
 							description={rp.shortDescription ?? undefined}
-							price={rp.price}
-							compareAt={rp.comparePrice ?? undefined}
+							price={rp.comingSoon ? undefined : rp.price}
+							compareAt={rp.comingSoon ? undefined : (rp.comparePrice ?? undefined)}
+							placeholder={rp.comingSoon}
 							badge={rp.badges?.[0]}
 						/>
 					{/each}

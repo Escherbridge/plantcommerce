@@ -97,7 +97,10 @@
 						<ul class="space-y-3">
 							{#each data.products as row}
 								<li>
-									<a class="link text-lg" href="/products/{row.category.slug}/{row.product.slug}">
+									<a
+										class="link text-lg"
+										href={row.href ?? `/products/${row.category.slug}/${row.product.slug}`}
+									>
 										{row.product.name}
 									</a>
 								</li>

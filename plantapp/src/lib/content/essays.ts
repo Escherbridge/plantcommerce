@@ -122,8 +122,84 @@ Growing supplies do not behave like phone cases. Bare-root perennials, live star
 While growers read free [field guides](/guides) and sketch beds, greenhouses, and windbreaks on [PlantGeo](https://plantgeo.aevani.com/), independent sellers remain the center of Aevani. Whether you breed regional seeds, forge hand tools, assemble solar drip kits, or fabricate aquaponic and hydroponic hardware, our [seller application](/sell) takes just a few minutes. Tell us what you grow or build, and we follow up directly by email.`
 	},
 	{
+		slug: 'the-fee-that-didnt-move',
+		title: "The fee that didn't move: what a small grower actually pays to sell online",
+		excerpt:
+			"Etsy's headline seller fees didn't change in 2026. On a $40 seed order, listing, processing, and sometimes an ad line still show up. Here is the arithmetic, including Aevani's flat 8%.",
+		metaDescription:
+			"Etsy's headline seller fees didn't change in 2026. On a $40 seed order, listing, processing, and sometimes an ad line still show up. Here is the arithmetic.",
+		publishedAt: '2026-11-10T00:00:00.000Z',
+		tags: ['Aevani', 'seller fees', 'marketplace'],
+		sources: [
+			{
+				label: 'Etsy Help: What are the Fees and Taxes for Selling on Etsy',
+				href: 'https://help.etsy.com/hc/en-us/articles/115014483627-What-are-the-Fees-and-Taxes-for-Selling-on-Etsy'
+			},
+			{
+				label: 'Etsy Help: What are Payment Processing Fees for Selling on Etsy',
+				href: 'https://help.etsy.com/hc/en-us/articles/115015628847-What-are-Payment-Processing-Fees-for-Selling-on-Etsy'
+			},
+			{
+				label: 'eBay Seller Center: seller fees',
+				href: 'https://www.ebay.com/sellercenter/selling/start-selling-on-ebay/seller-fees'
+			},
+			{
+				label: 'Growtsy, Etsy changes changelog (Oct. 5 and June 22 dates)',
+				href: 'https://www.growtsy.com/etsy-changes'
+			},
+			{ label: 'Sell on Aevani', href: 'https://aevani.com/sell' }
+		],
+		body: `A $40 order of seed packets, shipping included, no sales tax, from a U.S. seller with a U.S. bank account. That is a small, ordinary sale. What the seller keeps is not the headline rate someone checked in the spring. It is the total of every line that still prints on the statement.
+
+Etsy's headline seller fees did not change in 2026 for a U.S. shop. Growtsy's changelog, which compared the February 13 and October 5 versions of the fees policy, is the source for that October 5 revision date. Etsy's own legal fees page blocked a fetch for this piece, so the date is treated as secondary. The number people watch held still. The other lines did what they always do.
+
+## What Etsy actually charges
+
+Etsy's help page on fees and taxes, opened 10 November 2026, still lists a $0.20 listing fee, paid "regardless of resulting sales." A listing expires after four months, and auto-renew is another $0.20. The transaction fee is 6.5% of the total order amount, including shipping and gift wrap. Offsite Ads, if the order came from one, are 15% of the order total when the shop made under $10,000 on Etsy in the past 365 days, or 12% at or above that, and never more than $100 per order.
+
+Payment processing, for a U.S. seller, is 3% + $0.25 USD, taken from the total sale price including shipping and any sales tax, and charged "in addition to the 6.5% transaction fee," according to Etsy's processing-fees help page. A one-time shop set-up fee also applies, and the cost "varies by location." This page does not invent a U.S. dollar figure for that set-up fee.
+
+The 2026 changes that did land were at the edges. Regulatory Operating Fees changed in seven non-U.S. markets on June 22, 2026, a date taken from Growtsy's changelog. An Etsy Community announcement on that change appeared in search results; the announcement itself was not opened for this piece. None of those apply to U.S. sellers.
+
+## What eBay charges, without a Store subscription
+
+eBay's Seller Center fees page, also opened 10 November 2026, is free to list for most casual sellers, then $0.35 per listing after 250 in a month. In most categories the final value fee is 13.6% of the total sale — item, shipping, sales tax, and other fees — up to $7,500, plus $0.30 per order at $10 or less, or $0.40 above. Promoted Listings and optional upgrades cost extra.
+
+## One $40 order, four outcomes
+
+The table below is our arithmetic from each platform's published fees, 10 November 2026, rounded to the cent. It is not a platform statement, and it is not a savings guarantee.
+
+| Platform | What gets charged | Fees | Seller keeps |
+|---|---|---|---|
+| Etsy, no Offsite Ad | $0.20 listing + 6.5% ($2.60) + 3% + $0.25 ($1.45) | $4.25 (10.6%) | $35.75 |
+| Etsy, order came from an Offsite Ad (shop under $10k) | the above + 15% ($6.00) | $10.25 (25.6%) | $29.75 |
+| eBay, most categories | 13.6% ($5.44) + $0.40 | $5.84 (14.6%) | $34.16 |
+| Aevani | 8% ($3.20), processing included | $3.20 (8%) | $36.80 |
+
+A few limits belong next to those numbers. The Etsy listing fee is per listing, not per order, so a multi-item listing that sells many times spreads the $0.20 out — but each extra quantity sold is another $0.20. Sales tax raises the base for Etsy processing and for the eBay fee. Shipping labels and ads are extra everywhere.
+
+Selling on Aevani is one line: a flat 8% on each sale, with card processing included and absorbed by Aevani, and no listing, monthly, or ad fees. That is the whole published rate. Etsy and eBay bring a buyer audience that Aevani does not have yet. That is the honest trade, and it is the part of the comparison that a headline rate will not tell you.
+
+This is not a claim that Etsy or eBay are a bad deal. They are large markets with real buyers. The useful critique is of a fee bill with many lines, not of the companies. It is also not a pitch to buyers. If you grow or make tools that belong here, [applications to sell](https://aevani.com/sell) are open.
+
+## Sources
+
+1. Etsy Help, “What are the Fees and Taxes for Selling on Etsy,” opened 10 November 2026. https://help.etsy.com/hc/en-us/articles/115014483627-What-are-the-Fees-and-Taxes-for-Selling-on-Etsy
+2. Etsy Help, “What are Payment Processing Fees for Selling on Etsy,” opened 10 November 2026. https://help.etsy.com/hc/en-us/articles/115015628847-What-are-Payment-Processing-Fees-for-Selling-on-Etsy
+3. eBay Seller Center, “Seller fees,” opened 10 November 2026. https://www.ebay.com/sellercenter/selling/start-selling-on-ebay/seller-fees
+4. Growtsy, Etsy changes changelog, opened 10 November 2026. Used only for the October 5 revision date and the June 22 non-U.S. Regulatory Operating Fee date. https://www.growtsy.com/etsy-changes
+5. Sell on Aevani, flat 8% with card processing included and no other fees. https://aevani.com/sell
+
+## Related
+
+- [The seller fee is a flat 8%](/blog/a-flat-eight-percent) — the published Aevani rate, in one place.
+- [In a dry climate, cooling can use more water than the plants](/blog/cooling-can-use-more-water-than-the-crop)
+- [Sell on Aevani](/sell)`
+	},
+	{
 		slug: 'dwc-vs-kratky-vs-nft',
 		title: 'DWC vs. Kratky vs. NFT: Which First Hydroponic Setup Fits Your Kitchen or Spare Room?',
+		seoTitle: 'DWC vs. Kratky vs. NFT for a first setup — Aevani',
 		excerpt:
 			'Compare passive Kratky tubs, bubbling Deep Water Culture, and Nutrient Film channels side by side so you buy hardware once and keep roots bright white.',
 		metaDescription:
@@ -136,11 +212,6 @@ While growers read free [field guides](/guides) and sketch beds, greenhouses, an
 					'Kratky, B.A. — A Suspended Net-Pot, Non-Circulating Hydroponic Method for Growing Commercial Crops and Leafy Vegetables (UH-CTAHR VC-1)',
 				href: 'https://www3.ctahr.hawaii.edu/oc/freepubs/pdf/VC-1.pdf',
 				datePublished: '2010-09'
-			},
-			{
-				label:
-					'Tyson, Hochmuth, and Cantliffe — Hydroponic Vegetable Production in Florida (UF/IFAS HS405)',
-				href: 'https://ask.ifas.ufl.edu/publication/HS405/pdf'
 			},
 			{
 				label:
@@ -172,7 +243,7 @@ If you want steady butterhead lettuce harvests, perennial culinary herbs, or eve
 
 White PVC gullies look clean along a bright wall because roots sit inside a shallow trickle of recirculating solution while the top of the root mat breathes moist channel air. For orderly rows of salad greens and herbs, harvesting and sanitizing channels between cycles is quick.
 
-The catch, noted in UF/IFAS HS405, is twofold: heavy fruiting crops like full-sized tomatoes and cucumbers pack thick root mats that quickly dam narrow channels, and because there is almost no standing water reserve inside the pipe, a tripped GFCI breaker or clogged submersible pump leaves plants wilting within hours on a warm afternoon. Compare capacities in [choosing a hydroponic system](/guides/choosing-hydroponic-system) and our [NFT guide](/guides/nutrient-film-technique).
+The catch is twofold: heavy fruiting crops like full-sized tomatoes and cucumbers pack thick root mats that quickly dam narrow channels, and because there is almost no standing water reserve inside the pipe, a tripped GFCI breaker or clogged submersible pump leaves plants wilting within hours on a warm afternoon. Compare capacities in [choosing a hydroponic system](/guides/choosing-hydroponic-system) and our [NFT guide](/guides/nutrient-film-technique).
 
 ## Match the bench to your room and crops
 
@@ -185,6 +256,7 @@ Ready to build your setup? Browse [hydroponic systems, meters, and pumps](/produ
 	{
 		slug: 'raised-beds-for-heavy-clay-and-hot-summers',
 		title: 'How to Build a Raised Bed That Works in Heavy Clay and Hot Summers',
+		seoTitle: 'Raised beds for heavy clay and hot summers — Aevani',
 		excerpt:
 			'Skip five-foot-wide boxes you cannot reach across. Practical bed widths, drainage depths over clay, and drip irrigation rules for backyard plots.',
 		metaDescription:
@@ -241,6 +313,7 @@ Walk your yard's summer sun arc and hose layout first on [PlantGeo's interactive
 	{
 		slug: 'pre-spring-grower-checklist',
 		title: 'Before You Buy Seed Packets: A Five-Step Pre-Spring Checklist',
+		seoTitle: 'A five-step pre-spring grower checklist — Aevani',
 		excerpt:
 			'Stop leggy windowsill seedlings, cooked March trays, and pH drift before planting season hits with five practical bench checks.',
 		metaDescription:
@@ -265,6 +338,18 @@ Walk your yard's summer sun arc and hose layout first on [PlantGeo's interactive
 			{
 				label: 'Utah State University Extension — Utah Vegetable Planting Date Calculator',
 				href: 'https://extension.usu.edu/yardandgarden/utah-planting-date-calculator'
+			},
+			{
+				label:
+					'Black, Brent, and Dan Drost, “Temperature Management in High Tunnels,” Utah State University Extension, April 2010.',
+				href: 'https://extension.usu.edu/smallfarms/files/Greenhouses_Temp.Mgmt.pdf',
+				datePublished: '2010-04'
+			},
+			{
+				label:
+					'Ford, Thomas; Lynn Kime; Jayson K. Harper; and Stephen Bogash, “High Tunnel Production,” Penn State Extension, updated 13 March 2023.',
+				href: 'https://extension.psu.edu/high-tunnel-production',
+				datePublished: '2023-03-13'
 			}
 		],
 		body: `January seed catalogs land right when winter cabin fever peaks, which is why so many indoor trays wind up pale, four inches tall, and leaning desperately toward a chilly kitchen pane by February. Before tearing open fresh packets—or ordering an oversized lighting kit—run five quick checks across your water, lights, and shelters.
@@ -277,9 +362,9 @@ Hard well water and alkaline city supplies silently push liquid nutrients out of
 
 Box labels shout 1000W equivalents that measure little useful leaf light. Purdue Extension (HO-238-W) frames indoor output cleanly via **Daily Light Integral (DLI)**—the total stream of photosynthetic photons landing on foliage over your timer's run hours. A crisp, cool-running LED bar mounted a few inches cleanly above trays—guided by our [indoor lighting and DLI guide](/guides/indoor-lighting-dli) and [soilless seed-starting guide](/guides/soilless-seed-starting)—grows sturdy seedlings instead of stretched stems reaching for a distant ceiling bulb.
 
-## 3. Respect how fast a closed hoop house overheats on a sunny 45°F day
+## 3. Respect how fast a closed hoop house overheats on a sunny early-March day
 
-It surprises backyard growers and small market gardens every single spring: overnight frost lingers at 28°F, so you latch the plastic hoop house shut—and a calm, bright March noon turns the inside into a heat trap well above 100°F. Review simple venting habits and side-curtain timing in our [high tunnels and hoop houses guide](/guides/high-tunnels-hoop-houses) and [season-extension covers guide](/guides/season-extension-covers-frames) before leaving flats zipped up while you go to work.
+It surprises backyard growers and small market gardens every single spring: most crops can be damaged if air temperatures drop below 45°F, so you latch the plastic hoop house shut—and a calm, bright March noon turns the inside into a heat trap that exceeded 120°F. Review simple venting habits and side-curtain timing in our [high tunnels and hoop houses guide](/guides/high-tunnels-hoop-houses) and [season-extension covers guide](/guides/season-extension-covers-frames) before leaving flats zipped up while you go to work.
 
 ## 4. Never mistake a USDA Hardiness Zone for a spring planting calendar
 
@@ -293,10 +378,11 @@ Sketch winter shadows, terrace slopes, and spigot reach on [PlantGeo](https://pl
 		slug: 'cycling-your-first-aquaponics-loop',
 		title:
 			'The Patient First Month of Backyard Aquaponics: Cycling Your Biofilter Without Losing Fish',
+		seoTitle: 'Cycling your first aquaponics biofilter — Aevani',
 		excerpt:
-			'Why adding fish on day one wrecks new aquaponics loops—and how a four-to-six-week fishless cycle builds biofilter bacteria that keep fish alive.',
+			'Why adding fish on day one wrecks new aquaponics loops—and how a three-to-five-week fishless cycle, which FAO also calls three to six weeks, builds biofilter bacteria that keep fish alive.',
 		metaDescription:
-			'Cycle a backyard aquaponics biofilter safely over 4 to 6 weeks using FAO Technical Paper 589 ranges for ammonia, nitrites, pH 6.8–7.0, and dissolved oxygen.',
+			'Cycle a backyard aquaponics biofilter safely over 3 to 5 weeks, which FAO also states as 3 to 6 weeks, using FAO Technical Paper 589 ranges for ammonia, nitrites, pH 6–7, and dissolved oxygen.',
 		publishedAt: '2026-11-09T00:00:00.000Z',
 		tags: ['aquaponics', 'water', 'biofilter', 'beginner guides'],
 		sources: [
@@ -324,13 +410,13 @@ Nothing went wrong with the plumbing. The invisible middle crew just had not mov
 
 Every aquaponic setup is a three-partner team: fish, beneficial microbes, and plants. Fish gills and waste release toxic ammonia (**NH₃ / NH₄⁺**). Inside wet gravel, expanded clay, or biofilter media, *Nitrosomonas*-type bacteria oxidize ammonia into **nitrite** (still harmful to fish), and *Nitrobacter*-group bacteria convert nitrite into **nitrate**—the safe nitrogen greens absorb smoothly.
 
-According to the FAO's *Small-Scale Aquaponic Food Production* manual (Technical Paper No. 589), establishing an active biofilm dense enough to clear daily fish waste normally takes **4 to 6 weeks**. Dropping fish into brand-new water on day one forces livestock to swim inside their own spiking ammonia and nitrite before bacteria exist to process it.
+According to the FAO's *Small-Scale Aquaponic Food Production* manual (Technical Paper No. 589), establishing an active biofilm dense enough to clear daily fish waste normally takes **3 to 5 weeks**, and the same manual also says **3 to 6 weeks**. Dropping fish into brand-new water on day one forces livestock to swim inside their own spiking ammonia and nitrite before bacteria exist to process it.
 
 ## How a calm fishless cycle runs
 
 Instead of risking live fish to feed new biofilter media, circulate aerated water and dose small measured amounts of pure, unscented ammonia while checking water daily with a standard freshwater test kit:
 
-- **Weeks 1–2:** Dose to roughly 2–3 mg/L ammonia, run steady aeration, and keep water temperatures comfortable (cold garage or winter air slows bacterial growth noticeably).
+- **Weeks 1–2:** Dose to 1–2 mg/L ammonia (FAO) or 3–5 mg/L (SRAC 4502), run steady aeration, and keep water temperatures comfortable (cold garage or winter air slows bacterial growth noticeably).
 - **Weeks 2–4:** Watch daily ammonia fall while **nitrite** spikes vivid purple—proof colony one has settled onto your media.
 - **Weeks 4–6:** Wait until a fresh test dose converts all the way down to **zero ammonia and zero nitrite** within 24 hours, showing measurable **nitrate** instead. Only then transplant greens and introduce hardy fish slowly.
 
@@ -338,7 +424,7 @@ See detailed cycling tables and startup ratios in our [aquaponic biofilter cycli
 
 ## Hold the pH truce and never skimp on aeration
 
-Aquaponics always balances three distinct preferences: fish stay comfortable near pH 6.5–8.5, nitrifiers prefer slightly above 7.0 and slow sharply below 6.0, and greens absorb micronutrients best around 6.0–6.5. Aiming right down the middle at **pH 6.8 to 7.0** keeps every partner productive without frantic swings, alongside continuous bubbling aeration (FAO targets **5 mg/L or higher** dissolved oxygen). Respect stocking limits too—FAO's conservative small-scale ceiling sits around **20 kg of fish per 1,000 liters** of system volume paired with balanced grow beds.
+Aquaponics always balances three distinct preferences: fish stay comfortable near pH 6.5–8.5, nitrifiers prefer slightly above 7.0 and slow sharply below 6.0, and greens absorb micronutrients best around 6.0–6.5. Aiming right down the middle at **pH 6–7** keeps every partner productive without frantic swings, alongside continuous bubbling aeration (FAO targets **4–8 mg/L** dissolved oxygen). Respect stocking limits too—FAO's conservative small-scale ceiling sits around **20 kg of fish per 1,000 liters** of system volume paired with balanced grow beds.
 
 Compare media beds, floating rafts, and NFT channels in [aquaponic system types](/guides/aquaponic-system-types) and match species to real seasonal water temperatures in [aquaponic fish species](/guides/aquaponic-fish-species) and map greenhouse or shed utility zones on [PlantGeo](https://plantgeo.aevani.com/). Browse [aquaponics tanks, siphons, and water test kits](/products/aquaponics)—or if you fabricate bell siphons, media frames, or solids filters, apply at [Sell on Aevani](/sell) for a flat 8% commission with card processing included and zero listing, monthly, or ad fees.`
 	}
@@ -389,6 +475,21 @@ export function cornerstoneEssayHtml(body: string): string {
 					.map((line) => `<li>${formatEssayInline(line.replace(/^\d+\.\s+/, ''))}</li>`)
 					.join('');
 				return `<ol>${items}</ol>`;
+			}
+			if (lines.length >= 2 && lines.every((line) => line.startsWith('|') && line.endsWith('|'))) {
+				return lines
+					.filter((line) => {
+						const cells = line.split('|').slice(1, -1);
+						return !cells.every((cell) => /^:?-+:?$/.test(cell.trim()));
+					})
+					.map((line) => {
+						const cells = line
+							.split('|')
+							.slice(1, -1)
+							.map((cell) => formatEssayInline(cell.trim()));
+						return `<p>${cells.join(' ')}</p>`;
+					})
+					.join('');
 			}
 			return `<p>${formatEssayInline(trimmed)}</p>`;
 		})

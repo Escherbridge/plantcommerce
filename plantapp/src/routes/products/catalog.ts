@@ -2,6 +2,13 @@
 // category pages. Lives in a plain module (NOT +page.ts) because SvelteKit
 // route modules may only export `load`/`_`-prefixed symbols. See design-spec §6/§7.
 
+import {
+	isPlaceholderListing,
+	isSuppressedCatalogueBadge,
+	presentPlaceholderListing,
+	sanitizePlaceholderProduct
+} from '$lib/catalog/placeholderListing';
+
 /**
  * Exact product slug -> real `/assets/*.png` image (normalized from each product's
  * DB bucket_path). A real url from tRPC always wins when present. See design-spec §7.
@@ -85,10 +92,12 @@ export type CatalogProduct = {
 	slug: string;
 	shortDescription: string | null;
 	description: string | null;
-	price: string;
+	price: string | null;
 	comparePrice: string | null;
 	isFeatured: boolean;
 	badges: string[];
+	/** True when the row is not an actual sale. Prices and stock badges stay off. */
+	placeholder: boolean;
 	/** Top-level growing-system slug (hydroponics, aquaponics, plants-seeds, …). */
 	system: string;
 	categoryName: string;
@@ -118,24 +127,35 @@ export function normalizeCatalogProduct(
 	const p = row.product ?? row;
 	const cat = row.category ?? p.category ?? null;
 	const system = cat ? (parentSlugMap.get(cat.id) ?? cat.slug) : 'all';
-	const realUrl = Array.isArray(p.images) && p.images[0]?.url ? String(p.images[0].url) : null;
-	const image = realUrl ?? PRODUCT_IMAGE[p.slug] ?? SYSTEM_FALLBACK[system] ?? FALLBACK_IMAGE;
+	const placeholder = isPlaceholderListing(p);
+	const source = placeholder ? sanitizePlaceholderProduct(p) : p;
+	const copy = placeholder ? presentPlaceholderListing(source) : null;
+	const realUrl =
+		Array.isArray(source.images) && source.images[0]?.url ? String(source.images[0].url) : null;
+	const image = realUrl ?? PRODUCT_IMAGE[source.slug] ?? SYSTEM_FALLBACK[system] ?? FALLBACK_IMAGE;
 
 	return {
-		id: p.id,
-		name: p.name,
-		slug: p.slug,
-		shortDescription: p.shortDescription ?? null,
-		description: p.description ?? null,
-		price: String(p.price),
-		comparePrice: p.comparePrice ? String(p.comparePrice) : null,
-		isFeatured: Boolean(p.isFeatured),
-		badges: Array.isArray(p.badges) ? p.badges : [],
+		id: source.id,
+		name: source.name,
+		slug: source.slug,
+		shortDescription: copy ? copy.shortDescription : (source.shortDescription ?? null),
+		description: copy ? copy.description : (source.description ?? null),
+		price: placeholder ? null : String(source.price),
+		comparePrice: placeholder || !source.comparePrice ? null : String(source.comparePrice),
+		isFeatured: Boolean(source.isFeatured),
+		badges: (Array.isArray(source.badges) ? source.badges : []).filter(
+			(badge: string) => !placeholder || !isSuppressedCatalogueBadge(badge)
+		),
+		placeholder,
 		system,
 		categoryName: cat?.name ?? '',
 		image,
-		imageAlt: (Array.isArray(p.images) && p.images[0]?.altText) || p.shortDescription || p.name,
-		href: `/products/${system}/${p.slug}`
+		imageAlt:
+			(Array.isArray(source.images) && source.images[0]?.altText) ||
+			copy?.shortDescription ||
+			source.shortDescription ||
+			source.name,
+		href: `/products/${system}/${source.slug}`
 	};
 }
 

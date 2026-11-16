@@ -1,6 +1,6 @@
 ---
 title: "Aquaponic system types: media beds, NFT, and deep-water culture"
-seoTitle: "Aquaponic system types: media beds, NFT, and deep-water culture — Guides | Aevani"
+seoTitle: "Aquaponic types: media beds, NFT, DWC — Guides | Aevani"
 metaDescription: "FAO’s three small-scale layouts — media beds, NFT, and deep-water culture — all move water from fish to plants, but only media beds filter in the same box."
 h1: "Aquaponic system types: media beds, NFT, and deep-water culture"
 eyebrow: "Aquaponic system types: media beds, NFT, and deep-water culture"

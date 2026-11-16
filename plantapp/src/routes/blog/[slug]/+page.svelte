@@ -2,6 +2,7 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { publicShareImage, publicSiteUrl } from '$lib/config/site';
+	import { shortDocumentTitle } from '$lib/content/documentTitles';
 	import { relatedEssays } from '$lib/content/writing';
 	import { renderMarkdownBody } from '$lib/utils/renderMarkdown';
 	import type { PageData } from './$types';
@@ -10,9 +11,10 @@
 	const page = $derived(data.post.page);
 	const authorName = 'Escherbridge';
 	const documentTitle = $derived(
-		'documentTitle' in page && typeof page.documentTitle === 'string'
-			? page.documentTitle
-			: `${page.title} — Aevani`
+		shortDocumentTitle(page.slug) ??
+			('documentTitle' in page && typeof page.documentTitle === 'string'
+				? page.documentTitle
+				: `${page.title} — Aevani`)
 	);
 	const related = $derived(relatedEssays(page.slug));
 	const description = $derived(page.metaDescription || page.excerpt || page.title);
@@ -83,7 +85,7 @@
 	}}
 />
 
-<main class="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+<section class="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 lg:px-8" aria-labelledby="note-title">
 	<nav class="mb-8 text-sm" aria-label="Breadcrumb">
 		<a class="link" href="/blog">Field notes</a>
 		<span aria-hidden="true"> / </span>
@@ -92,6 +94,7 @@
 	<article>
 		<p class="font-mono text-xs font-bold tracking-[0.18em] uppercase">Field note</p>
 		<h1
+			id="note-title"
 			class="font-display mt-3 text-4xl font-bold tracking-tight uppercase md:text-6xl"
 			style="line-height: 1.15"
 		>
@@ -174,4 +177,4 @@
 			<a class="link link-primary" href="/contact">Contact</a>
 		</p>
 	</article>
-</main>
+</section>

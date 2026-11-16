@@ -1,7 +1,9 @@
 <script lang="ts">
 	import Icon from '$lib/components/icons/Icon.svelte';
 	import { trpc } from '$lib/trpc/client';
+	import { tick } from 'svelte';
 	import type { ActionData } from './$types';
+	import { firstRegistrationError, focusRegistrationField, type RegisterField } from './validation';
 
 	let { form }: { form: ActionData } = $props();
 
@@ -12,14 +14,15 @@
 	let firstName = $state('');
 	let lastName = $state('');
 	let errorMessage = $state('');
+	let invalidField = $state<RegisterField | null>(null);
 	let isLoading = $state(false);
 	let registrationComplete = $state(false);
 	let registeredEmail = $state('');
 	let verificationEmailSent = $state(false);
-
-	function validEmail(value: string): boolean {
-		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-	}
+	let usernameInput = $state<HTMLInputElement | null>(null);
+	let emailInput = $state<HTMLInputElement | null>(null);
+	let passwordInput = $state<HTMLInputElement | null>(null);
+	let confirmPasswordInput = $state<HTMLInputElement | null>(null);
 
 	const passwordErrors = $derived(() => {
 		const errors: string[] = [];
@@ -34,30 +37,42 @@
 		return errors;
 	});
 
+	function fieldInvalid(field: RegisterField): 'true' | undefined {
+		if (invalidField === field) return 'true';
+		if (field === 'password' && password && passwordErrors().length > 0) return 'true';
+		return undefined;
+	}
+
+	function fieldDescribedBy(field: RegisterField): string | undefined {
+		const ids: string[] = [];
+		if (invalidField === field && errorMessage) ids.push('register-form-error');
+		if (field === 'password' && password && passwordErrors().length > 0) {
+			ids.push('register-password-errors');
+		}
+		return ids.length > 0 ? ids.join(' ') : undefined;
+	}
+
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
 		errorMessage = '';
+		invalidField = null;
 
-		if (password !== confirmPassword) {
-			errorMessage = 'Passwords do not match';
-			return;
-		}
-
-		if (password.length < 8) {
-			errorMessage = 'Password must be at least 8 characters';
+		const failure = firstRegistrationError({ username, email, password, confirmPassword });
+		if (failure) {
+			errorMessage = failure.message;
+			invalidField = failure.field;
+			await tick();
+			focusRegistrationField(failure.field, {
+				username: usernameInput,
+				email: emailInput,
+				password: passwordInput,
+				confirmPassword: confirmPasswordInput
+			});
 			return;
 		}
 
 		const normalizedUsername = username.trim();
 		const normalizedEmail = email.trim();
-		if (normalizedUsername.length < 3) {
-			errorMessage = 'Username must be at least 3 characters';
-			return;
-		}
-		if (!validEmail(normalizedEmail)) {
-			errorMessage = 'Enter a valid email address';
-			return;
-		}
 
 		isLoading = true;
 
@@ -145,8 +160,10 @@
 				<!-- Header -->
 				<div class="register-header">
 					<a href="/" class="register-wordmark">AEVANI</a>
-					<h1 class="register-title">Create Your Account</h1>
-					<p class="register-subtitle">Join our community of sustainable growers.</p>
+					<h1 class="register-title">Create an account</h1>
+					<p class="register-subtitle">
+						An account saves your course progress and, once something is for sale, your orders.
+					</p>
 				</div>
 
 				<!-- Error -->
@@ -168,7 +185,7 @@
 					<div class="register-row">
 						<div class="form-control">
 							<label class="label" for="firstName">
-								<span class="label-text">First Name</span>
+								<span class="label-text">First name</span>
 							</label>
 							<input
 								id="firstName"
@@ -184,7 +201,7 @@
 
 						<div class="form-control">
 							<label class="label" for="lastName">
-								<span class="label-text">Last Name</span>
+								<span class="label-text">Last name</span>
 							</label>
 							<input
 								id="lastName"
@@ -213,10 +230,11 @@
 							placeholder="Choose a username"
 							class="input-bordered input w-full"
 							bind:value={username}
+							bind:this={usernameInput}
 							required
 							disabled={isLoading}
-							aria-invalid={Boolean(errorMessage || form?.message)}
-							aria-describedby={errorMessage || form?.message ? 'register-form-error' : undefined}
+							aria-invalid={fieldInvalid('username')}
+							aria-describedby={fieldDescribedBy('username')}
 							minlength="3"
 							maxlength="50"
 						/>
@@ -237,10 +255,11 @@
 							placeholder="your.email@example.com"
 							class="input-bordered input w-full"
 							bind:value={email}
+							bind:this={emailInput}
 							required
 							disabled={isLoading}
-							aria-invalid={Boolean(errorMessage || form?.message)}
-							aria-describedby={errorMessage || form?.message ? 'register-form-error' : undefined}
+							aria-invalid={fieldInvalid('email')}
+							aria-describedby={fieldDescribedBy('email')}
 						/>
 					</div>
 
@@ -256,14 +275,15 @@
 							placeholder="Create a strong password"
 							class="input-bordered input w-full"
 							bind:value={password}
+							bind:this={passwordInput}
 							required
 							disabled={isLoading}
-							aria-invalid={Boolean(errorMessage || form?.message) || passwordErrors().length > 0}
-							aria-describedby={errorMessage || form?.message ? 'register-form-error' : undefined}
+							aria-invalid={fieldInvalid('password')}
+							aria-describedby={fieldDescribedBy('password')}
 							minlength="8"
 						/>
 						{#if passwordErrors().length > 0 && password}
-							<div class="register-field-errors">
+							<div id="register-password-errors" class="register-field-errors">
 								{#each passwordErrors() as error}
 									<span class="register-field-error">{error}</span>
 								{/each}
@@ -275,7 +295,7 @@
 
 					<div class="form-control">
 						<label class="label" for="confirmPassword">
-							<span class="label-text">Confirm Password</span>
+							<span class="label-text">Confirm password</span>
 						</label>
 						<input
 							id="confirmPassword"
@@ -285,10 +305,11 @@
 							placeholder="Re-enter your password"
 							class="input-bordered input w-full"
 							bind:value={confirmPassword}
+							bind:this={confirmPasswordInput}
 							required
 							disabled={isLoading}
-							aria-invalid={Boolean(errorMessage || form?.message) || passwordErrors().length > 0}
-							aria-describedby={errorMessage || form?.message ? 'register-form-error' : undefined}
+							aria-invalid={fieldInvalid('confirmPassword')}
+							aria-describedby={fieldDescribedBy('confirmPassword')}
 							minlength="8"
 						/>
 					</div>
@@ -296,15 +317,15 @@
 					<div class="register-actions">
 						<button
 							type="submit"
-							class="font-display btn w-full tracking-wider uppercase btn-primary"
-							disabled={isLoading || passwordErrors().length > 0}
+							class="font-display btn w-full tracking-wider btn-primary"
+							disabled={isLoading}
 							aria-busy={isLoading}
 						>
 							{#if isLoading}
 								<span class="loading loading-sm loading-spinner" aria-hidden="true"></span>
 								Creating account...
 							{:else}
-								Create Account
+								Create account
 							{/if}
 						</button>
 					</div>
@@ -314,7 +335,7 @@
 				<div class="register-footer">
 					<p>
 						Already have an account?
-						<a href="/login" class="link font-semibold link-primary">Login here</a>
+						<a href="/login" class="link font-semibold link-primary">Sign in</a>.
 					</p>
 					<p class="register-legal">
 						By creating an account, you agree to our
@@ -368,7 +389,6 @@
 		font-family: var(--font-display);
 		font-size: 1.5rem;
 		font-weight: 700;
-		text-transform: uppercase;
 		letter-spacing: -0.01em;
 		color: oklch(var(--bc));
 		margin-bottom: 0.5rem;

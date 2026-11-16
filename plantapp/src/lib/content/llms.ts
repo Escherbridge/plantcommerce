@@ -20,18 +20,6 @@ const legacyPages = [
 		title: 'Understanding Soil Health: The Foundation of Every Garden'
 	},
 	{
-		path: '/blog/hydroponics-for-beginners',
-		title: 'Hydroponics for Beginners: Growing Without Soil'
-	},
-	{
-		path: '/blog/introduction-to-aquaponics',
-		title: 'Introduction to Aquaponics: Fish Meet Plants'
-	},
-	{
-		path: '/blog/what-is-silvopasture',
-		title: 'What is Silvopasture? Integrating Trees, Forage, and Livestock'
-	},
-	{
 		path: '/blog/monoculture-to-polyculture',
 		title: 'From Monoculture to Polyculture: Why Diversity Matters'
 	}
@@ -72,6 +60,7 @@ export function renderLlmsTxt(): string {
 		'',
 		'## Site',
 		...siteLinks,
+		'- Apply to sell: a short web form at https://aevani.com/sell. There is no public API, and applications are read by a person.',
 		link('/feed.xml', 'RSS'),
 		link('/sitemap.xml', 'Sitemap'),
 		'',

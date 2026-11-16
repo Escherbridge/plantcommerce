@@ -1,6 +1,6 @@
 ---
 title: "Troubleshooting hydroponic root rot, algae, and pH drift"
-seoTitle: "Troubleshooting hydroponic root rot, algae, and pH drift — Guides | Aevani"
+seoTitle: "Hydroponic root rot, algae, and pH drift — Guides | Aevani"
 metaDescription: "Soft brown roots usually point to warm solution, low dissolved oxygen, or dirty starting material. Official lettuce guides already print the floors."
 h1: "Troubleshooting hydroponic root rot, algae, and pH drift"
 eyebrow: "Troubleshooting hydroponic root rot, algae, and pH drift"

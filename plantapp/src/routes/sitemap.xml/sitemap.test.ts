@@ -64,7 +64,8 @@ describe('public crawler discovery', () => {
 		expect(fullXml).toContain('<loc>https://aevani.com/blog/dwc-vs-kratky-vs-nft</loc>');
 		expect(source).not.toContain('nothing-for-sale-yet');
 		expect(fullXml).not.toContain('nothing-for-sale-yet');
-		expect(fullXml).not.toContain('the-fee-that-didnt-move');
+		expect(fullXml).toContain('<loc>https://aevani.com/blog/the-fee-that-didnt-move</loc>');
+		expect(contentPaths).toContain('/blog/the-fee-that-didnt-move');
 
 		for (const indexableRoute of [
 			'/contact',
@@ -146,10 +147,22 @@ describe('public crawler discovery', () => {
 			expect(published).toContain(`<loc>https://aevani.com/guides/${slug}</loc>`);
 		}
 		expect(published).toContain('<loc>https://aevani.com/guides/understanding-soil-health</loc>');
+		expect(published).not.toContain('<loc>https://aevani.com/blog/hydroponics-for-beginners</loc>');
+		expect(published).not.toContain(
+			'<loc>https://aevani.com/blog/introduction-to-aquaponics</loc>'
+		);
+		expect(published).not.toContain('<loc>https://aevani.com/blog/what-is-silvopasture</loc>');
 		expect(published).toContain(
 			'<loc>https://aevani.com/guides/getting-started-companion-planting</loc>'
 		);
 		expect(published).not.toContain('aquaponics-stocking-notes');
+		expect(published).toContain(
+			'<loc>https://aevani.com/products/aquaponics/tilapia-fingerlings-starter-pack</loc>'
+		);
+		const productDetailUrls = published.match(
+			/<loc>https:\/\/aevani\.com\/products\/[^/<]+\/[^<]+<\/loc>/g
+		);
+		expect(productDetailUrls).toHaveLength(40);
 		expect(published).toContain(
 			'<loc>https://aevani.com/blog/cooling-can-use-more-water-than-the-crop</loc>\n\t\t<lastmod>2026-11-10</lastmod>'
 		);

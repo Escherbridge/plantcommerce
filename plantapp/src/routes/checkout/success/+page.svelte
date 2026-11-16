@@ -23,14 +23,14 @@
 
 {#if data.context.isMock}<MockCommerceNotice label={data.context.label} />{/if}
 
-<main class="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6">
+<section class="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6" aria-labelledby="order-title">
 	{#if data.status === 'complete' && data.demoOrder}
 		<section class="rounded-3xl border border-base-300 p-6 sm:p-10">
 			<MockCommerceNotice compact label="Mock/test order success" />
 			<p class="mt-6 font-mono text-xs font-bold tracking-[0.18em] uppercase">
 				Simulation complete
 			</p>
-			<h1 class="font-display mt-2 text-4xl font-bold uppercase sm:text-6xl">
+			<h1 id="order-title" class="font-display mt-2 text-4xl font-bold uppercase sm:text-6xl">
 				Test order simulated
 			</h1>
 			<p class="mt-4 text-lg leading-relaxed text-base-content/75">
@@ -77,7 +77,9 @@
 		</section>
 	{:else if data.status === 'complete' && data.databaseOrder}
 		<section class="rounded-3xl border border-base-300 p-6 text-center sm:p-10">
-			<h1 class="font-display text-4xl font-bold uppercase sm:text-6xl">Order confirmed</h1>
+			<h1 id="order-title" class="font-display text-4xl font-bold uppercase sm:text-6xl">
+				Order confirmed
+			</h1>
 			<p class="mt-4 font-mono font-bold">{data.databaseOrder.orderNumber}</p>
 			<p class="mt-4 text-base-content/70">
 				Your payment was confirmed and the order record is available below. Keep this reference for
@@ -89,7 +91,7 @@
 		</section>
 	{:else if data.status === 'processing'}
 		<section class="rounded-3xl border border-base-300 p-10 text-center">
-			<h1 class="font-display text-4xl font-bold uppercase">
+			<h1 id="order-title" class="font-display text-4xl font-bold uppercase">
 				{data.pollAttempt < 10 ? 'Confirming payment' : 'Confirmation is taking longer'}
 			</h1>
 			<p class="mt-4 text-base-content/70">
@@ -116,11 +118,13 @@
 		</section>
 	{:else}
 		<section class="rounded-3xl border border-base-300 p-10 text-center">
-			<h1 class="font-display text-4xl font-bold uppercase">Order details protected</h1>
+			<h1 id="order-title" class="font-display text-4xl font-bold uppercase">
+				Order details protected
+			</h1>
 			<p class="mt-4 text-base-content/70">
 				This browser does not have access to that order result.
 			</p>
 			<a class="btn mt-6" href="/products">Return to catalogue</a>
 		</section>
 	{/if}
-</main>
+</section>

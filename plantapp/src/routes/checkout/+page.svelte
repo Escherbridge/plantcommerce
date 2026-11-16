@@ -12,12 +12,15 @@
 
 {#if data.context.isMock}<MockCommerceNotice label={data.context.label} />{/if}
 
-<main class="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+<section
+	class="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8"
+	aria-labelledby="checkout-title"
+>
 	<header class="max-w-3xl">
 		<p class="font-mono text-xs font-bold tracking-[0.16em] uppercase">
 			{data.context.isMock ? 'Simulation step' : 'Secure checkout'}
 		</p>
-		<h1 class="font-display mt-2 text-5xl font-bold uppercase md:text-7xl">
+		<h1 id="checkout-title" class="font-display mt-2 text-5xl font-bold uppercase md:text-7xl">
 			{data.context.isMock ? 'Test checkout review' : 'Checkout review'}
 		</h1>
 		{#if data.context.isMock}
@@ -106,4 +109,4 @@
 				</p>{/if}
 		</aside>
 	</div>
-</main>
+</section>

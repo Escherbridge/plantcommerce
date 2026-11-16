@@ -1,6 +1,6 @@
 ---
 title: "Temperate food forests: layers, guilds, and how to start"
-seoTitle: "Temperate food forests: layers, guilds, and how to start — Guides | Aevani"
+seoTitle: "Temperate food forests: layers and guilds — Guides | Aevani"
 metaDescription: "South Dakota State and NC State define a food forest as a multi-layer planting that mimics a forest, and tell a beginner how to start, without a harvest number."
 h1: "Temperate food forests: layers, guilds, and how to start"
 eyebrow: "Temperate food forests: layers, guilds, and how to start"

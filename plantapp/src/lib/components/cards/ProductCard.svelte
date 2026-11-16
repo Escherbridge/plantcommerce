@@ -8,9 +8,11 @@
 		title: string;
 		category: string;
 		description?: string;
-		price: number | string;
+		price?: number | string | null;
 		compareAt?: number | string;
 		badge?: string;
+		/** Placeholder row: hide the price. Does not add a badge. */
+		placeholder?: boolean;
 		variant?: 'standard' | 'featured';
 		class?: string;
 	}
@@ -25,6 +27,7 @@
 		price,
 		compareAt,
 		badge,
+		placeholder = false,
 		variant = 'standard',
 		class: className = ''
 	}: Props = $props();
@@ -41,8 +44,12 @@
 		return trimmed !== '' && Number.isFinite(parsed) ? usd.format(parsed) : value;
 	}
 
-	const priceLabel = $derived(formatPrice(price));
-	const compareLabel = $derived(compareAt != null ? formatPrice(compareAt) : undefined);
+	const priceLabel = $derived(
+		placeholder || price == null || price === '' ? '' : formatPrice(price)
+	);
+	const compareLabel = $derived(
+		placeholder || compareAt == null || compareAt === '' ? undefined : formatPrice(compareAt)
+	);
 </script>
 
 {#if variant === 'featured'}
@@ -56,7 +63,9 @@
 			<div class="pc__caption">
 				<span class="pc__eyebrow pc__eyebrow--dark">{category}</span>
 				<h3 class="pc__title pc__title--dark">{title}</h3>
-				<span class="pc__price pc__price--mint">{priceLabel}</span>
+				{#if priceLabel}
+					<span class="pc__price pc__price--mint">{priceLabel}</span>
+				{/if}
 			</div>
 		</div>
 	</a>
@@ -75,13 +84,15 @@
 			{#if description}
 				<p class="pc__desc">{description}</p>
 			{/if}
-			<div class="pc__footer">
-				<span class="pc__price">
-					{priceLabel}
-					{#if compareLabel}
-						<span class="pc__compare">{compareLabel}</span>
-					{/if}
-				</span>
+			<div class="pc__footer" class:pc__footer--end={!priceLabel}>
+				{#if priceLabel}
+					<span class="pc__price">
+						{priceLabel}
+						{#if compareLabel}
+							<span class="pc__compare">{compareLabel}</span>
+						{/if}
+					</span>
+				{/if}
 				<span class="pc__view">View &rarr;</span>
 			</div>
 		</div>
@@ -198,6 +209,10 @@
 		align-items: baseline;
 		justify-content: space-between;
 		gap: 12px;
+	}
+
+	.pc__footer--end {
+		justify-content: flex-end;
 	}
 
 	.pc__price {

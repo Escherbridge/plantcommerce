@@ -2,6 +2,7 @@
 	// Agroforestry landing page — same catalogue look, filtered to the system.
 	// System H1 + lead, chip nav (active = this system), 4-col product grid. Design-spec §6.
 	import { ProductCard } from '$lib/components/cards';
+	import { isSuppressedCatalogueBadge } from '$lib/catalog/placeholderListing';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -22,17 +23,19 @@
 	];
 
 	function badgeFor(p: PageData['products'][number]): string | undefined {
-		if (p.badges && p.badges.length > 0) return p.badges[0];
+		const badge = p.badges?.find((item) => !p.placeholder || !isSuppressedCatalogueBadge(item));
+		if (badge) return badge;
+		if (p.placeholder) return undefined;
 		if (p.comparePrice) return 'Sale';
 		if (p.isFeatured) return 'Bestseller';
 		return undefined;
 	}
 </script>
 
-<main class="catalogue">
+<section class="catalogue" aria-labelledby="catalogue-title">
 	<header class="cat-head">
 		<span class="eyebrow">Growing systems</span>
-		<h1 class="cat-title">{TITLE}</h1>
+		<h1 id="catalogue-title" class="cat-title">{TITLE}</h1>
 		<p class="cat-lead">{LEAD}</p>
 	</header>
 
@@ -61,8 +64,9 @@
 						title={product.name}
 						category={product.categoryName}
 						description={product.shortDescription ?? undefined}
-						price={product.price}
-						compareAt={product.comparePrice ?? undefined}
+						price={product.placeholder ? undefined : product.price}
+						compareAt={product.placeholder ? undefined : (product.comparePrice ?? undefined)}
+						placeholder={product.placeholder}
 						badge={badgeFor(product)}
 					/>
 				{/each}
@@ -76,7 +80,7 @@
 			</div>
 		{/if}
 	</section>
-</main>
+</section>
 
 <style>
 	.catalogue {

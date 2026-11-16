@@ -3,6 +3,7 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { publicShareImage, publicSiteUrl } from '$lib/config/site';
+	import { shortDocumentTitle } from '$lib/content/documentTitles';
 	import { articleBreadcrumbData, articleStructuredData } from '$lib/content/research';
 	import { renderMarkdownBody } from '$lib/utils/renderMarkdown';
 	import type { PageData } from './$types';
@@ -10,7 +11,9 @@
 	let { data }: { data: PageData } = $props();
 	const sector = $derived(data.sector);
 	const page = $derived(data.guide?.page);
-	const title = $derived(sector ? sector.seoTitle : `${page?.title} — Aevani`);
+	const title = $derived(
+		sector ? sector.seoTitle : (shortDocumentTitle(page?.slug) ?? `${page?.title} — Aevani`)
+	);
 	const description = $derived(
 		sector?.description ||
 			page?.metaDescription ||
@@ -59,7 +62,10 @@
 			]
 		}}
 	/>
-	<main class="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+	<section
+		class="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 lg:px-8"
+		aria-labelledby="guide-title"
+	>
 		<nav class="mb-8 text-sm" aria-label="Breadcrumb">
 			<a class="link" href="/guides">Growing Guides</a>
 			<span aria-hidden="true"> / </span>
@@ -68,6 +74,7 @@
 		<article>
 			<p class="font-mono text-xs font-bold tracking-[0.18em] uppercase">Guide · Escherbridge</p>
 			<h1
+				id="guide-title"
 				class="font-display mt-3 text-4xl font-bold tracking-tight uppercase md:text-6xl"
 				style="line-height: 1.15"
 			>
@@ -81,5 +88,5 @@
 				{@html renderMarkdownBody(page.content, { dropLeadingH1: true })}
 			</div>
 		</article>
-	</main>
+	</section>
 {/if}

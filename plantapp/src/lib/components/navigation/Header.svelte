@@ -138,7 +138,7 @@
 
 <svelte:window onkeydown={handleUserMenuKeydown} />
 
-<header class="aevani-header" class:scrolled>
+<header class="aevani-header" class:scrolled aria-label="Site">
 	<div class="header-inner">
 		<div class="glass-bar">
 			<!-- Left: mobile hamburger + brand -->
@@ -290,9 +290,9 @@
 	/* ---- Sticky glass shell ---- */
 	.aevani-header {
 		position: sticky;
-		top: 14px;
+		top: var(--aevani-header-offset);
 		z-index: 80;
-		margin-top: 14px;
+		margin-top: var(--aevani-header-offset);
 		padding: 0 24px;
 	}
 
@@ -312,7 +312,7 @@
 		display: flex;
 		align-items: center;
 		gap: 1.5rem;
-		min-height: 64px;
+		min-height: var(--aevani-header-bar-height);
 		padding: 0.55rem 0.75rem 0.55rem 1.25rem;
 		background: rgba(248, 245, 238, 0.72);
 		backdrop-filter: blur(20px) saturate(1.3);
@@ -336,7 +336,6 @@
 
 	@media (max-width: 767px) {
 		.glass-bar {
-			min-height: 58px;
 			padding: 0.45rem 0.65rem 0.45rem 0.85rem;
 			gap: 0.75rem;
 		}
@@ -551,6 +550,8 @@
 		justify-content: center;
 		width: 2.6rem;
 		height: 2.6rem;
+		min-width: 24px;
+		min-height: 24px;
 		color: #1c3527;
 		background: rgba(255, 255, 255, 0.5);
 		border: 1px solid rgba(255, 255, 255, 0.7);
@@ -570,6 +571,13 @@
 	.account-btn .icon {
 		width: 1.2rem;
 		height: 1.2rem;
+	}
+
+	@media (max-width: 767px) {
+		.account-btn {
+			width: 44px;
+			height: 44px;
+		}
 	}
 
 	/* ---- User dropdown ---- */
@@ -691,11 +699,20 @@
 		gap: 5px;
 		width: 2.4rem;
 		height: 2.4rem;
+		min-width: 24px;
+		min-height: 24px;
 		cursor: pointer;
 		padding: 0.4rem;
 		border: 0;
 		background: none;
 		flex-shrink: 0;
+	}
+
+	@media (max-width: 767px) {
+		.hamburger {
+			width: 44px;
+			height: 44px;
+		}
 	}
 
 	@media (min-width: 1024px) {

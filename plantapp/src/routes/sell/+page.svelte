@@ -17,7 +17,7 @@
 
 <Section>
 	<Container>
-		<div class="mx-auto max-w-3xl space-y-8 py-10">
+		<div class="sell-page mx-auto max-w-3xl space-y-8 py-10">
 			<header class="space-y-4">
 				<p class="font-mono text-xs font-semibold tracking-widest text-secondary uppercase">
 					Sell on Aevani
@@ -31,7 +31,7 @@
 				<p class="max-w-2xl text-lg text-base-content/70">
 					Whether you run a regional seed house, weld Dutch-bucket frames, build aquaponic filters,
 					or stock orchard and raised-bed hardware, tell us what you grow or make below. We follow
-					up directly by email to get your storefront listed.
+					up directly by email.
 				</p>
 				<div class="grid grid-cols-2 gap-3 pt-2 sm:grid-cols-4">
 					<div class="rounded-xl border border-base-300 bg-base-200/50 p-3">
@@ -60,10 +60,11 @@
 
 			{#if succeeded}
 				<div class="rounded-2xl border border-success/30 bg-success/10 p-6" role="status">
-					<h2 class="font-display text-2xl tracking-tight uppercase">Application received</h2>
+					<h2 class="font-display text-2xl tracking-tight">Application received</h2>
 					<p class="mt-3 text-base-content/80">
 						Thanks. We saved your application and will reply to the email you entered. If we list
-						you, the fee is a flat 8%. Card processing is included. There are no other fees.
+						you, nothing is charged unless you sell something, and then the fee is a flat 8%. Card
+						processing is included. There are no other fees.
 					</p>
 				</div>
 			{:else}
@@ -76,6 +77,10 @@
 					</p>
 				{/if}
 
+				<p class="max-w-2xl text-lg text-base-content/80">
+					You don't need an Aevani account to apply. We read each application and reply by email.
+				</p>
+
 				<form method="POST" class="space-y-5" novalidate>
 					<div class="company-fax" aria-hidden="true">
 						<label for="company_fax">Fax</label>
@@ -86,6 +91,11 @@
 							tabindex="-1"
 							autocomplete="off"
 						/>
+					</div>
+
+					<div class="space-y-2">
+						<h2 class="font-display text-2xl tracking-tight">Application</h2>
+						<p class="text-base-content/80">All fields are required except Website or social.</p>
 					</div>
 
 					<div class="space-y-2">

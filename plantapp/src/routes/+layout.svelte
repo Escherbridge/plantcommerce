@@ -153,7 +153,7 @@
 		{
 			label: 'Catalog',
 			href: '/products',
-			children: [{ label: 'Catalog Status', href: '/products' }]
+			children: [{ label: 'Catalogue status', href: '/products' }]
 		},
 		{
 			label: 'Learn',
@@ -172,7 +172,7 @@
 			children: [
 				{ label: 'Support Overview', href: '/support' },
 				{ label: 'Contact', href: '/contact' },
-				{ label: 'Help Center', href: '/help' },
+				{ label: 'Help center', href: '/help' },
 				{ label: 'Shipping', href: '/shipping' },
 				{ label: 'Returns', href: '/returns' },
 				{ label: 'Warranty', href: '/warranty' },
@@ -315,7 +315,7 @@
 						<span class="user-bottom-bar__name">{user.firstName || user.username}</span>
 					</div>
 
-					<nav class="user-bottom-bar__nav">
+					<nav class="user-bottom-bar__nav" aria-label="Account">
 						<a href="/account/profile" class="user-bottom-bar__link">
 							<svg
 								viewBox="0 0 24 24"
@@ -543,7 +543,7 @@
 		</a>
 
 		<!-- Primary nav -->
-		<nav class="drawer-nav">
+		<nav class="drawer-nav" aria-label="Help and resources">
 			{#each mobileNavigation as item, i}
 				<div class="drawer-nav-item" style="transition-delay: {drawerOpen ? i * 50 : 0}ms">
 					{#if item.children}
