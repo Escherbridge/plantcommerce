@@ -22,8 +22,7 @@
 				Frequently Asked Questions
 			</h1>
 			<p class="text-lg text-base-content/70">
-				Find answers to common questions about our products, services, and sustainable agriculture
-				practices.
+				Answers to common questions about growing, our guides and selling on Aevani.
 			</p>
 		</div>
 
@@ -75,7 +74,9 @@
 		<div class="mt-12 rounded-3xl border border-base-200/30 bg-base-200 p-8 text-center shadow-md">
 			<h2 class="font-display mb-4 text-2xl tracking-tight uppercase">Still have questions?</h2>
 			<p class="mb-6 text-base-content/70">
-				Our support team is here to help you with any questions or concerns.
+				Still stuck? Write to <a class="link link-primary" href="mailto:contact@escherbridge.com"
+					>contact@escherbridge.com</a
+				> and a person will get back to you.
 			</p>
 			<a href="/contact" class="font-display btn tracking-wider uppercase btn-primary"
 				>Contact Support</a

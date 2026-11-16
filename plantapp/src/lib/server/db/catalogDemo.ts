@@ -263,7 +263,7 @@ export const demoProducts: DemoProduct[] = [
 			'hydroponic-nutrients-trio'
 		],
 		descriptionHtml:
-			'<h2>Why grow vertically</h2><p>Most of a garden bed is wasted on walkways and root run. A tower throws that logic out: it stacks <strong>forty-four plant sites into two square feet of floor</strong>, feeds them from a single reservoir, and lets gravity do the work a pump would otherwise fight. On a balcony, in a spare room, or beside a south window, it turns a corner nobody was using into a salad garden.</p><p>We built this one around the parts that usually fail first. The pump is oversized so it loafs instead of straining. The reservoir is opaque HDPE, so algae never gets a foothold. The tiers rotate, so the greens on the shaded side get their turn in the light.</p><p>It is honestly forgiving. Miss a feeding, skip a weekend, run it a little out of balance — the plants coast. When you are ready to push it, dial in the nutrients and the yields climb fast.</p><p>New to soilless growing? Start with our <a href="/learn">hydroponics field guide</a> — it walks the whole first season.</p>',
+			'<h2>Why grow vertically</h2><p>Most of a garden bed is wasted on walkways and root run. A tower throws that logic out: it stacks <strong>forty-four plant sites into two square feet of floor</strong>, feeds them from a single reservoir, and lets gravity do the work a pump would otherwise fight. On a balcony, in a spare room, or beside a south window, it turns a corner nobody was using into a salad garden.</p><p>We built this one around the parts that usually fail first. The pump is oversized so it loafs instead of straining. The reservoir is opaque HDPE, so algae never gets a foothold. The tiers rotate, so the greens on the shaded side get their turn in the light.</p><p>It is honestly forgiving. Miss a feeding, skip a weekend, run it a little out of balance — the plants coast. When you are ready to push it, dial in the nutrients and the yields climb fast.</p><p>New to soilless growing? Start with our <a href="/guides/choosing-hydroponic-system">hydroponics field guide</a> — it walks the whole first season.</p>',
 		keyFeatures: [
 			'Grows 40+ plants in a 2 sq ft footprint — indoors or out',
 			'Uses ~90% less water than a conventional bed',
@@ -395,7 +395,7 @@ export const demoProducts: DemoProduct[] = [
 			'digital-ph-ec-meter-set'
 		],
 		descriptionHtml:
-			'<h2>A controlled room, minus the room</h2><p>A grow tent gives you a sealed, reflective box where you set the weather. This 4×4 kit arrives with the parts that usually get bought piecemeal — a full-spectrum LED, an inline fan and carbon filter for odor, a clip fan for airflow, and a thermometer-hygrometer so you are never guessing.</p><p>The 600D exterior blocks light leaks completely, and the mylar lining bounces every watt back onto the canopy. It is the honest shortcut to year-round growing in a spare closet or garage.</p><p>Dialing in your first environment? Our <a href="/learn">hydroponics field guide</a> covers airflow, humidity, and light height.</p>',
+			'<h2>A controlled room, minus the room</h2><p>A grow tent gives you a sealed, reflective box where you set the weather. This 4×4 kit arrives with the parts that usually get bought piecemeal — a full-spectrum LED, an inline fan and carbon filter for odor, a clip fan for airflow, and a thermometer-hygrometer so you are never guessing.</p><p>The 600D exterior blocks light leaks completely, and the mylar lining bounces every watt back onto the canopy. It is the honest shortcut to year-round growing in a spare closet or garage.</p><p>Dialing in your first environment? Our <a href="/guides/choosing-hydroponic-system">hydroponics field guide</a> covers airflow, humidity, and light height.</p>',
 		keyFeatures: [
 			'Complete 4×4×7 ft environment — light, air, and monitoring included',
 			'400W-equivalent full-spectrum LED (draws ~200W)',
@@ -483,7 +483,7 @@ export const demoProducts: DemoProduct[] = [
 			'hydroponic-nutrients-trio'
 		],
 		descriptionHtml:
-			'<h2>Roots in the air</h2><p>Aeroponics suspends roots in open air and feeds them a fine 50-micron fog. With that much oxygen at the root zone, plants grow noticeably faster than in water culture. This is a high-pressure setup — a real 80 PSI diaphragm pump, brass nozzles, an accumulator tank, and a cycle timer — not a low-pressure toy.</p><p>It rewards attention. Keep the filter clean and the cycles tight and it is the fastest way we know to grow. Skip maintenance and clogged nozzles will remind you.</p><p>Ready to push technique? The <a href="/learn">hydroponics field guide</a> has a full aeroponics chapter.</p>',
+			'<h2>Roots in the air</h2><p>Aeroponics suspends roots in open air and feeds them a fine 50-micron fog. With that much oxygen at the root zone, plants grow noticeably faster than in water culture. This is a high-pressure setup — a real 80 PSI diaphragm pump, brass nozzles, an accumulator tank, and a cycle timer — not a low-pressure toy.</p><p>It rewards attention. Keep the filter clean and the cycles tight and it is the fastest way we know to grow. Skip maintenance and clogged nozzles will remind you.</p><p>Ready to push technique? The <a href="/guides/choosing-hydroponic-system">hydroponics field guide</a> has a full aeroponics chapter.</p>',
 		keyFeatures: [
 			'True 80 PSI high-pressure misting for 50-micron fog',
 			'12 anti-drip brass nozzles on a cycle timer',
@@ -578,7 +578,7 @@ export const demoProducts: DemoProduct[] = [
 			'net-pots-clay-pebbles-bundle'
 		],
 		descriptionHtml:
-			'<h2>The lettuce workhorse</h2><p>Nutrient Film Technique runs a thin, constant film of nutrient over the roots in gently sloped channels. It is the method commercial lettuce farms trust because it is simple, cheap to run, and easy to scale. This kit is four food-safe PVC channels, a pump, a 20-gallon reservoir, a timer, and 36 net pots.</p><p>It is the sweet spot between the beginner DWC bucket and a full aeroponic build — forgiving, productive, and tidy.</p><p>Growing greens at volume? The <a href="/learn">hydroponics field guide</a> covers NFT spacing and flow rates.</p>',
+			'<h2>The lettuce workhorse</h2><p>Nutrient Film Technique runs a thin, constant film of nutrient over the roots in gently sloped channels. It is the method commercial lettuce farms trust because it is simple, cheap to run, and easy to scale. This kit is four food-safe PVC channels, a pump, a 20-gallon reservoir, a timer, and 36 net pots.</p><p>It is the sweet spot between the beginner DWC bucket and a full aeroponic build — forgiving, productive, and tidy.</p><p>Growing greens at volume? The <a href="/guides/choosing-hydroponic-system">hydroponics field guide</a> covers NFT spacing and flow rates.</p>',
 		keyFeatures: [
 			'Grows up to 36 heads of lettuce or herbs at once',
 			'UV-stable white channels keep roots cool and reflect light',
@@ -665,7 +665,7 @@ export const demoProducts: DemoProduct[] = [
 			'net-pots-clay-pebbles-bundle'
 		],
 		descriptionHtml:
-			'<h2>The easiest way in</h2><p>Deep Water Culture is hydroponics at its simplest: a plant sits in a net-pot lid with its roots dangling in oxygenated, nutrient-rich water. An air pump keeps the roots breathing, the opaque bucket keeps algae out, and that is the whole system. It is the kit we hand beginners and classrooms.</p><p>One big plant — a tomato, a pepper, a basil bush — thrives in a single bucket. Master this and every other method makes sense.</p><p>First time growing without soil? Read the <a href="/learn">hydroponics field guide</a>.</p>',
+			'<h2>The easiest way in</h2><p>Deep Water Culture is hydroponics at its simplest: a plant sits in a net-pot lid with its roots dangling in oxygenated, nutrient-rich water. An air pump keeps the roots breathing, the opaque bucket keeps algae out, and that is the whole system. It is the kit we hand beginners and classrooms.</p><p>One big plant — a tomato, a pepper, a basil bush — thrives in a single bucket. Master this and every other method makes sense.</p><p>First time growing without soil? Read the <a href="/guides/choosing-hydroponic-system">hydroponics field guide</a>.</p>',
 		keyFeatures: [
 			'Simplest possible hydroponic system — great for beginners',
 			'Grows one large plant: tomato, pepper, or basil',
@@ -996,7 +996,7 @@ export const demoProducts: DemoProduct[] = [
 			'rockwool-cubes-growing-media-sampler'
 		],
 		descriptionHtml:
-			'<h2>Stop guessing your water</h2><p>In hydroponics, pH and EC are the two numbers that decide everything. Get them right and nutrients flow; get them wrong and plants starve in a full reservoir. This set pairs a 0.01-accuracy pH meter with an EC/TDS meter, both with automatic temperature compensation, backlit displays, and one-touch calibration.</p><p>They arrive with calibration solutions and waterproof cases, ready to use the day they land.</p><p>Not sure what your numbers should be? The <a href="/learn">hydroponics field guide</a> lists target ranges by crop.</p>',
+			'<h2>Stop guessing your water</h2><p>In hydroponics, pH and EC are the two numbers that decide everything. Get them right and nutrients flow; get them wrong and plants starve in a full reservoir. This set pairs a 0.01-accuracy pH meter with an EC/TDS meter, both with automatic temperature compensation, backlit displays, and one-touch calibration.</p><p>They arrive with calibration solutions and waterproof cases, ready to use the day they land.</p><p>Not sure what your numbers should be? The <a href="/guides/choosing-hydroponic-system">hydroponics field guide</a> lists target ranges by crop.</p>',
 		keyFeatures: [
 			'pH accurate to 0.01 with automatic temperature compensation',
 			'EC/TDS meter for nutrient strength',

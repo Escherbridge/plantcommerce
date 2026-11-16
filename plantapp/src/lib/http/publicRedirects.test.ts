@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { publicAliasRedirect } from './publicRedirects';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { catalogueSearchRedirect, publicAliasRedirect } from './publicRedirects';
 
 describe('public alias redirects', () => {
 	it('sends sign-up aliases to register and seller aliases to sell', () => {
@@ -28,6 +31,31 @@ describe('public alias redirects', () => {
 		expect(publicAliasRedirect('/blog/dwc-vs-kratky-vs-nft')).toBeNull();
 		expect(publicAliasRedirect('/guides/small-scale-aquaponics')).toBeNull();
 		expect(publicAliasRedirect('/blog/monoculture-to-polyculture')).toBeNull();
+	});
+
+	it('308s /products?q=... to /search and keeps the query', () => {
+		expect(catalogueSearchRedirect(new URL('https://aevani.com/products?q=basil'))).toBe(
+			'/search?q=basil'
+		);
+		expect(
+			catalogueSearchRedirect(
+				new URL('https://aevani.com/products?q=red+basil&category=hydroponics')
+			)
+		).toBe('/search?q=red+basil&category=hydroponics');
+		expect(catalogueSearchRedirect(new URL('https://aevani.com/products/?q=mint'))).toBe(
+			'/search?q=mint'
+		);
+		expect(catalogueSearchRedirect(new URL('https://aevani.com/products?q='))).toBe('/search?q=');
+		expect(catalogueSearchRedirect(new URL('https://aevani.com/products?search=basil'))).toBeNull();
+		expect(catalogueSearchRedirect(new URL('https://aevani.com/products'))).toBeNull();
+		expect(catalogueSearchRedirect(new URL('https://aevani.com/search?q=basil'))).toBeNull();
+
+		const hooks = readFileSync(
+			join(dirname(fileURLToPath(import.meta.url)), '../../hooks.server.ts'),
+			'utf8'
+		);
+		expect(hooks).toContain('catalogueSearchRedirect(event.url)');
+		expect(hooks).toContain('redirect(308, target)');
 	});
 
 	it('leaves the real pages alone', () => {

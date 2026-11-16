@@ -40,7 +40,7 @@
 			{#if posts.length > 0}
 				{#each posts as post}
 					<article>
-						<p class="font-mono text-xs text-base-content/60">
+						<p class="blog-date font-mono text-xs">
 							{post.publishedAt
 								? new Date(post.publishedAt).toLocaleDateString('en-US', {
 										year: 'numeric',
@@ -91,3 +91,9 @@
 		]
 	}}
 />
+
+<style>
+	.blog-date {
+		color: #5c665d;
+	}
+</style>

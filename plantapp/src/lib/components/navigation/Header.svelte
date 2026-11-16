@@ -5,6 +5,7 @@
 	import { cart } from '$lib/stores/cart';
 	import { tick } from 'svelte';
 	import LeafMark from '$lib/components/ui/LeafMark.svelte';
+	import { navLinkIsCurrent } from '$lib/navigation/currentNav';
 
 	interface Props {
 		drawerOpen?: boolean;
@@ -73,10 +74,12 @@
 	const mainNavigation = [
 		{ label: 'Sell on Aevani', href: '/sell', primary: true },
 		{ label: 'Catalogue', href: '/products' },
+		{ label: 'Search', href: '/search' },
 		{ label: 'Learn', href: '/learn' },
 		{ label: 'Growing systems', href: '/products' },
 		{ label: 'About', href: '/about' }
 	];
+	const navHrefs = mainNavigation.map((item) => item.href);
 
 	const userNavigation = $derived.by(() => {
 		const base = [
@@ -164,12 +167,15 @@
 
 			<!-- Center navigation -->
 			<nav class="desktop-nav" aria-label="Primary">
-				{#each mainNavigation as item}
+				{#each mainNavigation as item, index}
 					<a
 						href={item.href}
 						class="nav-link"
 						class:nav-link--cta={item.href === '/sell'}
 						class:active={isActive(item.href)}
+						aria-current={navLinkIsCurrent($page.url.pathname, navHrefs, index)
+							? 'page'
+							: undefined}
 					>
 						{item.label}
 					</a>

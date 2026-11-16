@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Container, Section } from '$lib/components/layout';
 	import { publicOperator } from '$lib/config/site';
+	import { prelaunchSellerTerms } from '$lib/content/prelaunchPolicy';
 </script>
 
 <svelte:head>
@@ -10,6 +11,7 @@
 <Section>
 	<Container>
 		<div class="mx-auto max-w-4xl space-y-10">
+			<p class="max-w-3xl text-lg text-base-content/70">{prelaunchSellerTerms}</p>
 			<header class="space-y-4">
 				<p class="font-mono text-xs font-semibold tracking-widest text-secondary uppercase">
 					Warranty
