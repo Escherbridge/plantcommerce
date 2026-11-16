@@ -1,6 +1,6 @@
 ---
 title: "Integrated pest management in outdoor beds and containers"
-seoTitle: "Integrated pest management in outdoor beds and containers — Guides | Aevani"
+seoTitle: "Outdoor bed and container pest management — Guides | Aevani"
 metaDescription: "Penn State and UF describe outdoor garden IPM as a triangle: cultural practices first, barriers next, pesticides last. Minor damage is not a reason to spray."
 h1: "Integrated pest management in outdoor beds and containers"
 eyebrow: "Integrated pest management in outdoor beds and containers"

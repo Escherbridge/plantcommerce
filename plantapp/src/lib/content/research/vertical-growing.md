@@ -1,6 +1,6 @@
 ---
 title: "Vertical hydroponic growing: density and light"
-seoTitle: "Vertical hydroponic growing: density and light — Guides | Aevani"
+seoTitle: "Vertical hydroponics: density and light — Guides | Aevani"
 metaDescription: "Official pages already trade density against light in vertical systems. UF and Oregon State describe a uniformity warning, not a tower recipe."
 h1: "Vertical hydroponic growing: density and light"
 eyebrow: "Vertical hydroponic growing: density and light"

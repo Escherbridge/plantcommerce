@@ -1,6 +1,6 @@
 ---
 title: "Frost dates, hardiness zones, and planting calendars"
-seoTitle: "Frost dates, hardiness zones, and planting calendars — Guides | Aevani"
+seoTitle: "Frost dates and hardiness zones — Guides | Aevani"
 metaDescription: "The USDA’s 2023 hardiness map shows the average annual extreme minimum temperature. That is not the coldest it has ever been, and it is not a last-frost date."
 h1: "Frost dates, hardiness zones, and planting calendars"
 eyebrow: "Frost dates, hardiness zones, and planting calendars"

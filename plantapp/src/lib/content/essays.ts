@@ -124,6 +124,7 @@ While growers read free [field guides](/guides) and sketch beds, greenhouses, an
 	{
 		slug: 'dwc-vs-kratky-vs-nft',
 		title: 'DWC vs. Kratky vs. NFT: Which First Hydroponic Setup Fits Your Kitchen or Spare Room?',
+		seoTitle: 'DWC vs. Kratky vs. NFT for a first setup — Aevani',
 		excerpt:
 			'Compare passive Kratky tubs, bubbling Deep Water Culture, and Nutrient Film channels side by side so you buy hardware once and keep roots bright white.',
 		metaDescription:
@@ -185,6 +186,7 @@ Ready to build your setup? Browse [hydroponic systems, meters, and pumps](/produ
 	{
 		slug: 'raised-beds-for-heavy-clay-and-hot-summers',
 		title: 'How to Build a Raised Bed That Works in Heavy Clay and Hot Summers',
+		seoTitle: 'Raised beds for heavy clay and hot summers — Aevani',
 		excerpt:
 			'Skip five-foot-wide boxes you cannot reach across. Practical bed widths, drainage depths over clay, and drip irrigation rules for backyard plots.',
 		metaDescription:
@@ -241,6 +243,7 @@ Walk your yard's summer sun arc and hose layout first on [PlantGeo's interactive
 	{
 		slug: 'pre-spring-grower-checklist',
 		title: 'Before You Buy Seed Packets: A Five-Step Pre-Spring Checklist',
+		seoTitle: 'A five-step pre-spring grower checklist — Aevani',
 		excerpt:
 			'Stop leggy windowsill seedlings, cooked March trays, and pH drift before planting season hits with five practical bench checks.',
 		metaDescription:
@@ -293,6 +296,7 @@ Sketch winter shadows, terrace slopes, and spigot reach on [PlantGeo](https://pl
 		slug: 'cycling-your-first-aquaponics-loop',
 		title:
 			'The Patient First Month of Backyard Aquaponics: Cycling Your Biofilter Without Losing Fish',
+		seoTitle: 'Cycling your first aquaponics biofilter — Aevani',
 		excerpt:
 			'Why adding fish on day one wrecks new aquaponics loops—and how a four-to-six-week fishless cycle builds biofilter bacteria that keep fish alive.',
 		metaDescription:

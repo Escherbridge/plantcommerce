@@ -1115,7 +1115,7 @@ export const demoProducts: DemoProduct[] = [
 		faqs: [
 			{
 				q: 'Does it come with the grow bed?',
-				a: 'No — the tank is sized to pair 1:1 with our Commercial Aquaponics Grow Bed, which is sold separately so you can match your space.'
+				a: 'No — the tank is sized to pair 1:1 with a grow bed, so you can match your space.'
 			},
 			{
 				q: 'How many fish can I really keep?',

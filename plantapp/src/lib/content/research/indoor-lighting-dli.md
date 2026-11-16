@@ -1,6 +1,6 @@
 ---
 title: "Daily light integral for indoor and greenhouse greens"
-seoTitle: "Daily light integral for indoor and greenhouse greens — Guides | Aevani"
+seoTitle: "Daily light integral (DLI) for greens — Guides | Aevani"
 metaDescription: "Measure Daily Light Integral (DLI) in moles per square meter per day instead of box wattage—with University of Kentucky and Virginia Tech lettuce lighting ranges."
 h1: "Daily light integral for indoor and greenhouse greens"
 eyebrow: "Daily light integral for indoor and greenhouse greens"

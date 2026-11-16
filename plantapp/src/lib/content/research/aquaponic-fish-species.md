@@ -1,6 +1,6 @@
 ---
 title: "Choosing aquaponic fish by species and temperature"
-seoTitle: "Choosing aquaponic fish by species and temperature — Guides | Aevani"
+seoTitle: "Aquaponic fish by species and temperature — Guides | Aevani"
 metaDescription: "FAO already published temperature windows for the usual aquaponic species. Tilapia is not a winter fish in an unheated Intermountain tank."
 h1: "Choosing aquaponic fish by species and temperature"
 eyebrow: "Choosing aquaponic fish by species and temperature"

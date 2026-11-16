@@ -1,6 +1,6 @@
 ---
 title: "Nutrient film technique: slope, flow, and channel length"
-seoTitle: "Nutrient film technique: slope, flow, and channel length — Guides | Aevani"
+seoTitle: "Nutrient film technique: slope and flow — Guides | Aevani"
 metaDescription: "NFT is a thin, moving film in a sloped channel. Official guides disagree slightly on slope, and agree that a stopped pump or a standing puddle is the failure."
 h1: "Nutrient film technique: slope, flow, and channel length"
 eyebrow: "Nutrient film technique: slope, flow, and channel length"

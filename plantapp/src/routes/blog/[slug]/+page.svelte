@@ -2,6 +2,7 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { publicShareImage, publicSiteUrl } from '$lib/config/site';
+	import { shortDocumentTitle } from '$lib/content/documentTitles';
 	import { relatedEssays } from '$lib/content/writing';
 	import { renderMarkdownBody } from '$lib/utils/renderMarkdown';
 	import type { PageData } from './$types';
@@ -10,9 +11,10 @@
 	const page = $derived(data.post.page);
 	const authorName = 'Escherbridge';
 	const documentTitle = $derived(
-		'documentTitle' in page && typeof page.documentTitle === 'string'
-			? page.documentTitle
-			: `${page.title} — Aevani`
+		shortDocumentTitle(page.slug) ??
+			('documentTitle' in page && typeof page.documentTitle === 'string'
+				? page.documentTitle
+				: `${page.title} — Aevani`)
 	);
 	const related = $derived(relatedEssays(page.slug));
 	const description = $derived(page.metaDescription || page.excerpt || page.title);

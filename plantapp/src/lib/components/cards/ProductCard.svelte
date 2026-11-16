@@ -8,7 +8,7 @@
 		title: string;
 		category: string;
 		description?: string;
-		price?: number | string;
+		price?: number | string | null;
 		compareAt?: number | string;
 		badge?: string;
 		/** Placeholder row: hide the price. Does not add a badge. */

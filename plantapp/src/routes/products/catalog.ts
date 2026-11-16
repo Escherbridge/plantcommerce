@@ -5,7 +5,8 @@
 import {
 	isPlaceholderListing,
 	isSuppressedCatalogueBadge,
-	presentPlaceholderListing
+	presentPlaceholderListing,
+	sanitizePlaceholderProduct
 } from '$lib/catalog/placeholderListing';
 
 /**
@@ -91,7 +92,7 @@ export type CatalogProduct = {
 	slug: string;
 	shortDescription: string | null;
 	description: string | null;
-	price: string;
+	price: string | null;
 	comparePrice: string | null;
 	isFeatured: boolean;
 	badges: string[];
@@ -126,21 +127,23 @@ export function normalizeCatalogProduct(
 	const p = row.product ?? row;
 	const cat = row.category ?? p.category ?? null;
 	const system = cat ? (parentSlugMap.get(cat.id) ?? cat.slug) : 'all';
-	const realUrl = Array.isArray(p.images) && p.images[0]?.url ? String(p.images[0].url) : null;
-	const image = realUrl ?? PRODUCT_IMAGE[p.slug] ?? SYSTEM_FALLBACK[system] ?? FALLBACK_IMAGE;
 	const placeholder = isPlaceholderListing(p);
-	const copy = placeholder ? presentPlaceholderListing(p) : null;
+	const source = placeholder ? sanitizePlaceholderProduct(p) : p;
+	const copy = placeholder ? presentPlaceholderListing(source) : null;
+	const realUrl =
+		Array.isArray(source.images) && source.images[0]?.url ? String(source.images[0].url) : null;
+	const image = realUrl ?? PRODUCT_IMAGE[source.slug] ?? SYSTEM_FALLBACK[system] ?? FALLBACK_IMAGE;
 
 	return {
-		id: p.id,
-		name: p.name,
-		slug: p.slug,
-		shortDescription: copy ? copy.shortDescription : (p.shortDescription ?? null),
-		description: copy ? copy.description : (p.description ?? null),
-		price: placeholder ? '' : String(p.price),
-		comparePrice: placeholder || !p.comparePrice ? null : String(p.comparePrice),
-		isFeatured: Boolean(p.isFeatured),
-		badges: (Array.isArray(p.badges) ? p.badges : []).filter(
+		id: source.id,
+		name: source.name,
+		slug: source.slug,
+		shortDescription: copy ? copy.shortDescription : (source.shortDescription ?? null),
+		description: copy ? copy.description : (source.description ?? null),
+		price: placeholder ? null : String(source.price),
+		comparePrice: placeholder || !source.comparePrice ? null : String(source.comparePrice),
+		isFeatured: Boolean(source.isFeatured),
+		badges: (Array.isArray(source.badges) ? source.badges : []).filter(
 			(badge: string) => !placeholder || !isSuppressedCatalogueBadge(badge)
 		),
 		placeholder,
@@ -148,11 +151,11 @@ export function normalizeCatalogProduct(
 		categoryName: cat?.name ?? '',
 		image,
 		imageAlt:
-			(Array.isArray(p.images) && p.images[0]?.altText) ||
+			(Array.isArray(source.images) && source.images[0]?.altText) ||
 			copy?.shortDescription ||
-			p.shortDescription ||
-			p.name,
-		href: `/products/${system}/${p.slug}`
+			source.shortDescription ||
+			source.name,
+		href: `/products/${system}/${source.slug}`
 	};
 }
 

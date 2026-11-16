@@ -12,6 +12,8 @@ export const TILAPIA_TAGLINE =
 export const HERB_TAGLINE =
 	"Example listing for starter plants. Aevani doesn't sell or ship live plants.";
 
+export const LIVE_PLANTS_TAGLINE = "Example listing. Aevani doesn't sell or ship live plants.";
+
 export const SHIPPING_SPEC = 'Shipping terms will be written by the seller on a real listing.';
 
 export const FAQ_DEAD_FISH =
@@ -19,6 +21,9 @@ export const FAQ_DEAD_FISH =
 
 export const FAQ_TILAPIA_LEGAL =
 	"Some states restrict tilapia. That's a real limit for any future listing, but Aevani doesn't sell or ship live animals now.";
+
+export const FAQ_IBC_GROW_BED =
+	'No — the tank is sized to pair 1:1 with a grow bed, so you can match your space.';
 
 export interface ListingStat {
 	value: string;
@@ -59,7 +64,7 @@ export function isPlaceholderListing(
 }
 
 const CLAIM_SENTENCE =
-	/\b(?:overnight|live-arrival|live shipment|packed with oxygen|oxygen packs?|we ship|ships with|we replace|warrant(?:y|ies)|test beds?|test rooms?|field-tested|field tested|before they arrive|yield notes|free replacement)\b/i;
+	/\b(?:overnight|live-arrival|live shipment|packed with oxygen|oxygen[-\s]?packed|oxygen packs?|we ship|ships with|we replace|warrant(?:y|ies)|test beds?|test rooms?|field-tested|field tested|before they arrive|yield notes|free replacement)\b/i;
 
 const TIMING_STAT =
 	/(?:^|\s)[~<]*\d[\d.+–-]*\s*(?:min|mins|minutes|hrs?|hours|days?|wks?|weeks?|mos?|months?|yrs?|years?)\b/i;
@@ -148,10 +153,27 @@ function looksLikeHerbKit(product: PlaceholderCopySource, short: string): boolea
 	);
 }
 
+const LIVE_PLANT_SLUGS = new Set([
+	'chestnut-tree-seedlings-10-pack',
+	'forage-chicory-plants-50-plugs',
+	'herb-spiral-garden-kit'
+]);
+
+/** Chestnut seedlings, chicory plugs, and the herb-spiral kit ship as live plants in the copy. */
+function looksLikeShippedLivePlants(product: PlaceholderCopySource, short: string): boolean {
+	const slug = (product.slug ?? '').toLowerCase();
+	const name = (product.name ?? '').toLowerCase();
+	if (LIVE_PLANT_SLUGS.has(slug)) return true;
+	if (/chestnut/.test(name) && /seedling/.test(name)) return true;
+	if (/chicory/.test(name) && /plug/.test(name)) return true;
+	return /herb spiral/.test(name) && /seedling/.test(`${name} ${short}`);
+}
+
 function presentShortDescription(product: PlaceholderCopySource): string | null {
 	const short = (product.shortDescription ?? '').trim();
 	if (looksLikeTilapia(product, short)) return TILAPIA_TAGLINE;
 	if (looksLikeHerbKit(product, short)) return HERB_TAGLINE;
+	if (looksLikeShippedLivePlants(product, short)) return LIVE_PLANTS_TAGLINE;
 	if (!short) return null;
 	const cleaned = scrubProse(rewriteKnownPhrases(short));
 	return cleaned || null;
@@ -173,7 +195,9 @@ function presentSpec(spec: ListingSpec): ListingSpec {
 	if (/^shipping$/i.test(spec.label.trim())) {
 		return { label: spec.label, value: SHIPPING_SPEC };
 	}
-	if (/overnight|oxygen pack|live-arrival|ships with|\bwe ship\b/i.test(spec.value)) {
+	if (
+		/overnight|oxygen[-\s]?packed|oxygen pack|live-arrival|ships with|\bwe ship\b/i.test(spec.value)
+	) {
 		return { label: spec.label, value: SHIPPING_SPEC };
 	}
 	return { label: spec.label, value: rewriteKnownPhrases(spec.value) };
@@ -186,6 +210,12 @@ function presentFaq(faq: ListingFaq): ListingFaq | null {
 	}
 	if (question.startsWith('is tilapia legal')) {
 		return { q: faq.q, a: FAQ_TILAPIA_LEGAL };
+	}
+	if (
+		question.startsWith('does it come with the grow bed') ||
+		(/commercial aquaponics grow bed/i.test(faq.a) && /sold separately/i.test(faq.a))
+	) {
+		return { q: faq.q, a: FAQ_IBC_GROW_BED };
 	}
 	const answer = scrubProse(rewriteKnownPhrases(faq.a));
 	if (!answer) return null;
@@ -240,6 +270,110 @@ export function presentPlaceholderListing(product: PlaceholderCopySource): Prese
 		badges: visibleCatalogueBadges(product.badges),
 		testBedNote: note || null
 	};
+}
+
+/**
+ * Page-data copy of a catalogue row. Placeholder rows lose sale fields and
+ * leftover shipping claims before SvelteKit serializes the load result.
+ * A real sale (`comingSoon === false`) is returned unchanged.
+ */
+export function sanitizePlaceholderProduct<T extends PlaceholderCopySource>(product: T): T {
+	if (!isPlaceholderListing(product)) return product;
+	const copy = presentPlaceholderListing(product);
+	const record = product as T & Record<string, unknown>;
+	const metaDescription =
+		typeof record.metaDescription === 'string' ? presentLongText(record.metaDescription) : null;
+	const metaTitle =
+		typeof record.metaTitle === 'string' ? presentLongText(record.metaTitle) : record.metaTitle;
+	const images = Array.isArray(record.images)
+		? record.images.map((image) => {
+				if (!image || typeof image !== 'object') return image;
+				const altText =
+					typeof (image as { altText?: unknown }).altText === 'string'
+						? presentLongText((image as { altText: string }).altText)
+						: (image as { altText?: unknown }).altText;
+				return { ...image, altText };
+			})
+		: record.images;
+
+	return redactPlaceholderSalePayload({
+		...product,
+		...copy,
+		metaDescription,
+		metaTitle,
+		images,
+		price: null,
+		comparePrice: null,
+		costPrice: null,
+		stockQuantity: null,
+		reservedQuantity: null,
+		inStock: false,
+		bundleOffer: null
+	}) as T;
+}
+
+const PLACEHOLDER_PRICE_KEYS = new Set([
+	'price',
+	'comparePrice',
+	'costPrice',
+	'stockQuantity',
+	'reservedQuantity'
+]);
+
+const PLACEHOLDER_DROPPED_KEYS = new Set([
+	'shippingNote',
+	'warranty',
+	'reviews',
+	'aggregateRating',
+	'ratingAverage',
+	'reviewCount'
+]);
+
+/** Last pass so an unmapped column cannot keep a price, badge, or overnight spec. */
+function redactPlaceholderSalePayload(value: unknown): unknown {
+	if (typeof value === 'string') {
+		if (!/overnight|oxygen[-\s]?packed|oxygen packs?/i.test(value)) return value;
+		return scrubProse(value);
+	}
+	if (Array.isArray(value)) {
+		return value.map(redactPlaceholderSalePayload).filter((item) => item !== '');
+	}
+	if (!value || typeof value !== 'object') return value;
+	const prototype = Object.getPrototypeOf(value);
+	if (prototype !== Object.prototype && prototype !== null) return value;
+	const out: Record<string, unknown> = {};
+	for (const [key, child] of Object.entries(value as Record<string, unknown>)) {
+		if (PLACEHOLDER_DROPPED_KEYS.has(key)) continue;
+		if (key === 'bundleOffer') {
+			out[key] = null;
+			continue;
+		}
+		if (PLACEHOLDER_PRICE_KEYS.has(key)) {
+			out[key] = null;
+			continue;
+		}
+		if (key === 'badges' && Array.isArray(child)) {
+			out[key] = visibleCatalogueBadges(
+				child.filter((badge): badge is string => typeof badge === 'string')
+			);
+			continue;
+		}
+		out[key] = redactPlaceholderSalePayload(child);
+	}
+	return out;
+}
+
+/** Sanitize a `{ product, category }` list row, or a bare product. */
+export function sanitizePlaceholderRow<T>(row: T): T {
+	if (!row || typeof row !== 'object') return row;
+	const record = row as { product?: PlaceholderCopySource };
+	if (record.product && typeof record.product === 'object') {
+		return {
+			...record,
+			product: sanitizePlaceholderProduct(record.product)
+		} as T;
+	}
+	return sanitizePlaceholderProduct(row as PlaceholderCopySource) as T;
 }
 
 export function productStructuredData(input: {

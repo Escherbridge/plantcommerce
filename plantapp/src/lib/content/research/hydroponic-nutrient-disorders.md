@@ -1,6 +1,6 @@
 ---
 title: "Hydroponic nutrient disorders: check pH and EC first"
-seoTitle: "Hydroponic nutrient disorders: check pH and EC first — Guides | Aevani"
+seoTitle: "Hydroponic nutrient disorders: pH and EC — Guides | Aevani"
 metaDescription: "Official pages describe common deficiency patterns, and they also say pH and EC problems can look like a missing nutrient. Start with a meter."
 h1: "Hydroponic nutrient disorders: check pH and EC first"
 eyebrow: "Hydroponic nutrient disorders: check pH and EC first"

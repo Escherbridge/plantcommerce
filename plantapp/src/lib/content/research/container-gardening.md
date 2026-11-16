@@ -1,6 +1,6 @@
 ---
 title: "Container gardening: pot size, media, and watering"
-seoTitle: "Container gardening: pot size, media, and watering — Guides | Aevani"
+seoTitle: "Container gardening: size, media, watering — Guides | Aevani"
 metaDescription: "A container crop fails in predictable official ways: no drainage, garden soil in a bucket, a tomato in too small a pot, and watering that does not keep up."
 h1: "Container gardening: pot size, media, and watering"
 eyebrow: "Container gardening: pot size, media, and watering"

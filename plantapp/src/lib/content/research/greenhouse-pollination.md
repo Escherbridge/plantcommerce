@@ -1,6 +1,6 @@
 ---
 title: "Pollinating tomatoes in greenhouses and high tunnels"
-seoTitle: "Pollinating tomatoes in greenhouses and high tunnels — Guides | Aevani"
+seoTitle: "Pollinating greenhouse and tunnel tomatoes — Guides | Aevani"
 metaDescription: "Tomato flowers under plastic need a jostle that field wind usually provides. Official pages cover tapping, blowers, bumblebees, and temperature limits."
 h1: "Pollinating tomatoes in greenhouses and high tunnels"
 eyebrow: "Pollinating tomatoes in greenhouses and high tunnels"

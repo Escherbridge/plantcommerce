@@ -3,6 +3,7 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { publicShareImage, publicSiteUrl } from '$lib/config/site';
+	import { shortDocumentTitle } from '$lib/content/documentTitles';
 	import { articleBreadcrumbData, articleStructuredData } from '$lib/content/research';
 	import { renderMarkdownBody } from '$lib/utils/renderMarkdown';
 	import type { PageData } from './$types';
@@ -10,7 +11,9 @@
 	let { data }: { data: PageData } = $props();
 	const sector = $derived(data.sector);
 	const page = $derived(data.guide?.page);
-	const title = $derived(sector ? sector.seoTitle : `${page?.title} — Aevani`);
+	const title = $derived(
+		sector ? sector.seoTitle : (shortDocumentTitle(page?.slug) ?? `${page?.title} — Aevani`)
+	);
 	const description = $derived(
 		sector?.description ||
 			page?.metaDescription ||
