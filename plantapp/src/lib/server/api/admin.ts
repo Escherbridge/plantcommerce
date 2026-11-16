@@ -9,7 +9,8 @@ import AffiliateService, { AffiliateNotFoundError } from '../services/affiliate'
 import { db } from '../db';
 import { product, order, user as userTable, affiliate } from '../db/schema';
 import { sql, eq } from 'drizzle-orm';
-import { userRoles } from '$lib/auth/userRole';
+import { inviteRoles, userRoles } from '$lib/auth/userRole';
+import { createManagerInvite } from '../services/managerInvite';
 
 export const adminRouter = router({
 	/**
@@ -351,6 +352,41 @@ export const adminRouter = router({
 					message: 'Failed to reject affiliate'
 				});
 			}
+		}),
+
+	/**
+	 * Create a manager invite. Non-admins are rejected by adminProcedure.
+	 */
+	createManagerInvite: adminProcedure
+		.input(
+			z.object({
+				role: z.string(),
+				label: z.string().max(1000).optional().default(''),
+				expires: z.string().max(40).optional().default(''),
+				useLimit: z.string().max(20).optional().default(''),
+				note: z.string().max(2000).optional().default('')
+			})
+		)
+		.mutation(async ({ ctx, input }) => {
+			if (!inviteRoles.includes(input.role as (typeof inviteRoles)[number])) {
+				throw new TRPCError({ code: 'BAD_REQUEST', message: 'Choose a role for this invite.' });
+			}
+			const result = await createManagerInvite({
+				actor: ctx.user,
+				actorId: ctx.user.id,
+				form: input
+			});
+			if (!result.ok) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: result.fieldErrors[0]?.message ?? 'Invalid invite.'
+				});
+			}
+			return {
+				id: result.invite.id,
+				url: result.invite.url,
+				status: result.invite.displayStatus
+			};
 		})
 });
 
