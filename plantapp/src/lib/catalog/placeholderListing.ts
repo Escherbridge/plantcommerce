@@ -242,6 +242,59 @@ export function presentPlaceholderListing(product: PlaceholderCopySource): Prese
 	};
 }
 
+/**
+ * Page-data copy of a catalogue row. Placeholder rows lose sale fields and
+ * leftover shipping claims before SvelteKit serializes the load result.
+ * A real sale (`comingSoon === false`) is returned unchanged.
+ */
+export function sanitizePlaceholderProduct<T extends PlaceholderCopySource>(product: T): T {
+	if (!isPlaceholderListing(product)) return product;
+	const copy = presentPlaceholderListing(product);
+	const record = product as T & Record<string, unknown>;
+	const metaDescription =
+		typeof record.metaDescription === 'string' ? presentLongText(record.metaDescription) : null;
+	const metaTitle =
+		typeof record.metaTitle === 'string' ? presentLongText(record.metaTitle) : record.metaTitle;
+	const images = Array.isArray(record.images)
+		? record.images.map((image) => {
+				if (!image || typeof image !== 'object') return image;
+				const altText =
+					typeof (image as { altText?: unknown }).altText === 'string'
+						? presentLongText((image as { altText: string }).altText)
+						: (image as { altText?: unknown }).altText;
+				return { ...image, altText };
+			})
+		: record.images;
+
+	return {
+		...product,
+		...copy,
+		metaDescription,
+		metaTitle,
+		images,
+		price: null,
+		comparePrice: null,
+		costPrice: null,
+		stockQuantity: null,
+		reservedQuantity: null,
+		inStock: false,
+		bundleOffer: null
+	} as T;
+}
+
+/** Sanitize a `{ product, category }` list row, or a bare product. */
+export function sanitizePlaceholderRow<T>(row: T): T {
+	if (!row || typeof row !== 'object') return row;
+	const record = row as { product?: PlaceholderCopySource };
+	if (record.product && typeof record.product === 'object') {
+		return {
+			...record,
+			product: sanitizePlaceholderProduct(record.product)
+		} as T;
+	}
+	return sanitizePlaceholderProduct(row as PlaceholderCopySource) as T;
+}
+
 export function productStructuredData(input: {
 	name: string;
 	description?: string | null;

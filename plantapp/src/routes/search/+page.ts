@@ -1,7 +1,6 @@
 import type { PageLoad } from './$types';
 import { essayRedirectTarget } from '$lib/content/essays';
 import { publicAliasRedirect } from '$lib/http/publicRedirects';
-import { isPlaceholderListing, presentPlaceholderListing } from '$lib/catalog/placeholderListing';
 import { createCallerClient } from '$lib/trpc/client';
 
 export const load: PageLoad = async (event) => {
@@ -11,12 +10,11 @@ export const load: PageLoad = async (event) => {
 	}
 
 	const trpc = createCallerClient(event.fetch);
-	const [guides, posts, products, courseList] = await Promise.all([
+	const [guides, posts, courseList] = await Promise.all([
 		trpc.content.getPublishedPages.query({ type: 'guide', search: q, limit: 20 }).catch(() => []),
 		trpc.content.getPublishedPages
 			.query({ type: 'blog_post', search: q, limit: 20 })
 			.catch(() => []),
-		trpc.products.getProducts.query({ search: q, limit: 20 }).catch(() => []),
 		trpc.lms.course.list.query({ search: q, limit: 20 }).catch(() => ({ courses: [], total: 0 }))
 	]);
 
@@ -26,21 +24,7 @@ export const load: PageLoad = async (event) => {
 		posts: (posts ?? []).filter(
 			(post) => !essayRedirectTarget(post.slug) && !publicAliasRedirect(`/blog/${post.slug}`)
 		),
-		products: (products ?? []).map((row) => {
-			const product = row.product ?? row;
-			if (!isPlaceholderListing(product)) return row;
-			const copy = presentPlaceholderListing(product);
-			return {
-				...row,
-				product: {
-					...product,
-					shortDescription: copy.shortDescription,
-					badges: copy.badges,
-					price: '',
-					comparePrice: null
-				}
-			};
-		}),
+		products: event.data.products,
 		courses: courseList?.courses ?? []
 	};
 };

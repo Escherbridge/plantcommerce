@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { demoProducts } from '$lib/server/db/catalogDemo';
+import { normalizeCatalogProduct, buildParentSlugMap } from '../../routes/products/catalog';
+import { normalizeProduct } from '../../routes/products/detail';
 import {
 	FAQ_DEAD_FISH,
 	FAQ_TILAPIA_LEGAL,
@@ -8,6 +10,8 @@ import {
 	isTimingOrPerformanceStat,
 	presentPlaceholderListing,
 	productStructuredData,
+	sanitizePlaceholderProduct,
+	sanitizePlaceholderRow,
 	SHIPPING_SPEC,
 	TILAPIA_TAGLINE,
 	visibleCatalogueBadges
@@ -182,6 +186,64 @@ describe('placeholder catalogue presentation', () => {
 			priceCurrency: 'USD',
 			availability: 'https://schema.org/InStock'
 		});
+	});
+
+	it('strips sale fields from placeholder page data before it is serialized', () => {
+		const raw = {
+			id: 7,
+			name: 'Tilapia Fingerlings Starter Pack',
+			slug: 'tilapia-fingerlings-starter-pack',
+			comingSoon: null,
+			price: '59.99',
+			comparePrice: '79.99',
+			costPrice: '20.00',
+			stockQuantity: 40,
+			reservedQuantity: 2,
+			badges: ['IN STOCK', 'BESTSELLER'],
+			shortDescription: 'Live Nile tilapia with overnight shipping and acclimation guide.',
+			description:
+				'Each order is a live shipment of fingerlings packed with oxygen and shipped overnight. Cycle the tank first.',
+			metaDescription: 'Live Nile tilapia with overnight shipping and an acclimation guide.',
+			keyFeatures: [
+				'Overnight shipping with oxygen packs',
+				'Live-arrival guarantee',
+				'Acclimation guide'
+			],
+			specs: [{ label: 'Shipping', value: 'Overnight, Mon–Wed, oxygen-packed' }],
+			bundleOffer: { title: 'Bundle', price: '70.00', compareAt: '90.00', blurb: 'Save' },
+			images: [{ url: '/fish.png', altText: 'Live Nile tilapia with overnight shipping.' }]
+		};
+
+		const pageProduct = normalizeProduct(raw);
+		const catalogue = normalizeCatalogProduct(
+			{ product: raw, category: { id: 3, name: 'Fish & Supplies', slug: 'fish-supplies' } },
+			buildParentSlugMap([
+				{ id: 1, slug: 'aquaponics', parentId: null },
+				{ id: 3, slug: 'fish-supplies', parentId: 1, name: 'Fish & Supplies' }
+			])
+		);
+		const searchRow = sanitizePlaceholderRow({
+			product: raw,
+			category: { id: 3, slug: 'fish-supplies', name: 'Fish & Supplies' }
+		});
+		const serialized = JSON.stringify({
+			pageProduct,
+			catalogue,
+			searchRow,
+			direct: sanitizePlaceholderProduct(raw)
+		});
+
+		expect(serialized).not.toMatch(/IN STOCK|BESTSELLER/i);
+		expect(serialized).not.toMatch(/overnight/i);
+		expect(serialized).not.toMatch(/59\.99|79\.99|20\.00|70\.00|90\.00/);
+		expect(serialized).not.toMatch(/"stockQuantity":\s*(?!null)/);
+		expect(serialized).not.toMatch(/"reservedQuantity":\s*(?!null)/);
+		expect(pageProduct.shortDescription).toBe(TILAPIA_TAGLINE);
+		expect(pageProduct.keyFeatures).toEqual(['Acclimation guide']);
+		expect(pageProduct.price).toBeNull();
+		expect(pageProduct.bundleOffer).toBeNull();
+		expect(catalogue.price).toBeNull();
+		expect(catalogue.badges).toEqual([]);
 	});
 
 	it('strips leftover sale claims from every demo catalogue row', () => {

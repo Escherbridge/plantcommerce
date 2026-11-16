@@ -112,7 +112,7 @@
 	const galleryCaption = $derived(p.images?.[0]?.altText || p.category?.name || p.name);
 
 	// ---- Buy-box running total (unit price × qty + optional bundle). ----
-	const unitPrice = $derived(parseFloat(p.price) || 0);
+	const unitPrice = $derived(parseFloat(p.price ?? '') || 0);
 	const bundlePrice = $derived(p.bundleOffer ? parseFloat(p.bundleOffer.price) || 0 : 0);
 	const runningTotal = $derived(fmtPrice(unitPrice * quantity + (addBundle ? bundlePrice : 0)));
 
