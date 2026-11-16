@@ -232,7 +232,7 @@
 				</p>
 				<p>
 					Don't have an account?
-					<a href={registerHref} class="link font-semibold link-primary">Create one</a>
+					<a href={registerHref} class="login-target link font-semibold link-primary">Create one</a>
 				</p>
 			</div>
 		</div>
