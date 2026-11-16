@@ -16,6 +16,10 @@ const sellerPayoutMigrationPath = new URL(
 	'../../../../drizzle/0014_seller_payout_account.sql',
 	import.meta.url
 );
+const payoutStatusMigrationPath = new URL(
+	'../../../../drizzle/0015_payout_account_status.sql',
+	import.meta.url
+);
 
 describe('coming soon migration', () => {
 	const source = readFileSync(migrationPath, 'utf8');
@@ -72,6 +76,19 @@ describe('seller and payout account migration', () => {
 		expect(sql).not.toMatch(/\b(DROP|DELETE|UPDATE|TRUNCATE)\b/i);
 		expect(sql).not.toMatch(/\b(bank|ssn|ein|tax_id|address)\b/i);
 		expect(sql).not.toMatch(/^\s*BEGIN\s*;|^\s*COMMIT\s*;/im);
+	});
+});
+
+describe('payout account status migration', () => {
+	const source = readFileSync(payoutStatusMigrationPath, 'utf8');
+	const sql = executableMigrationSql(source);
+
+	it('adds nullable status columns and does not rewrite rows', () => {
+		expect(sql).toContain('ADD COLUMN IF NOT EXISTS "last_payout_status" text');
+		expect(sql).toContain('ADD COLUMN IF NOT EXISTS "external_account_updated_at"');
+		expect(sql).not.toMatch(/\b(DROP|DELETE|UPDATE|TRUNCATE)\b/i);
+		expect(sql).not.toMatch(/\bNOT NULL\b/i);
+		expect(sql).not.toMatch(/\bBEGIN\b|\bCOMMIT\b/i);
 	});
 });
 

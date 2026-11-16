@@ -463,6 +463,12 @@ export const payoutAccount = pgTable(
 		transfersActive: boolean('transfers_active').notNull().default(false),
 		requirementsDue: boolean('requirements_due').notNull().default(false),
 		disabledReason: text('disabled_reason'),
+		lastPayoutStatus: text('last_payout_status'),
+		lastPayoutAt: timestamp('last_payout_at', { withTimezone: true, mode: 'date' }),
+		externalAccountUpdatedAt: timestamp('external_account_updated_at', {
+			withTimezone: true,
+			mode: 'date'
+		}),
 		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 	},
