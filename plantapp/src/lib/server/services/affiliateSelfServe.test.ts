@@ -51,7 +51,7 @@ const activeAffiliate = {
 	status: 'active',
 	isActive: true,
 	affiliateCode: 'GARDEN1',
-	commissionRate: '0.0200',
+	commissionRate: '0.0000',
 	totalEarnings: '0.00',
 	totalClicks: 0,
 	totalConversions: 0
@@ -93,7 +93,8 @@ describe('affiliate self-serve persistence', () => {
 				userId: 'user-1',
 				status: 'active',
 				isActive: true,
-				audience: 'Garden readers'
+				audience: 'Garden readers',
+				commissionRate: '0.0000'
 			})
 		);
 		expect(set).toHaveBeenCalledWith(expect.objectContaining({ role: 'affiliate' }));

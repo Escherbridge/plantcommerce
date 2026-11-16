@@ -323,7 +323,7 @@ export const affiliate = pgTable(
 		affiliateCode: text('affiliate_code').notNull().unique(),
 		commissionRate: decimal('commission_rate', { precision: 5, scale: 4 })
 			.notNull()
-			.default('0.05'), // 5% default
+			.default('0.05'), // Legacy column default only. New application rows write 0.0000.
 		totalEarnings: decimal('total_earnings', { precision: 12, scale: 2 }).notNull().default('0.00'),
 		totalClicks: integer('total_clicks').notNull().default(0),
 		totalConversions: integer('total_conversions').notNull().default(0),
