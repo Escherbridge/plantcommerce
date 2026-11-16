@@ -1,8 +1,9 @@
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeHexLowerCase } from '@oslojs/encoding';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 import {
+	SELLER_APPLICATION_DUPLICATE_WINDOW_MS,
 	allowSellerApplication,
 	sellerApplicationFieldErrors,
 	sellerApplicationSchema
@@ -10,6 +11,7 @@ import {
 import { SellerApplicationService } from '$lib/server/sellerApplication/service';
 
 const honeypotField = 'company_fax';
+const appliedPath = '/sell?applied=1';
 
 function rateSubject(ipAddress: string): string {
 	return encodeHexLowerCase(
@@ -21,6 +23,10 @@ function formValue(data: FormData, key: string): string {
 	const value = data.get(key);
 	return typeof value === 'string' ? value : '';
 }
+
+export const load: PageServerLoad = async ({ url }) => {
+	return { applied: url.searchParams.get('applied') === '1' };
+};
 
 export const actions: Actions = {
 	default: async (event) => {
@@ -50,20 +56,27 @@ export const actions: Actions = {
 		}
 
 		if (formValue(data, honeypotField).trim()) {
-			return { success: true };
+			throw redirect(303, appliedPath);
 		}
 
 		const parsed = sellerApplicationSchema.safeParse(values);
 		if (!parsed.success) {
 			return fail(400, {
-				error: 'Check the highlighted fields and try again.',
 				fieldErrors: sellerApplicationFieldErrors(parsed.error),
 				values
 			});
 		}
 
 		try {
-			await SellerApplicationService.create(parsed.data);
+			const since = new Date(Date.now() - SELLER_APPLICATION_DUPLICATE_WINDOW_MS);
+			const duplicate = await SellerApplicationService.hasRecentDuplicate(
+				parsed.data.email,
+				parsed.data.businessName,
+				since
+			);
+			if (!duplicate) {
+				await SellerApplicationService.create(parsed.data);
+			}
 		} catch (error) {
 			console.error('Unable to store seller application:', error);
 			return fail(500, {
@@ -72,6 +85,6 @@ export const actions: Actions = {
 			});
 		}
 
-		return { success: true };
+		throw redirect(303, appliedPath);
 	}
 };

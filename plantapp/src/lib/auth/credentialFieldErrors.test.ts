@@ -50,7 +50,7 @@ describe('credentialSummaryItems', () => {
 		}
 	});
 
-	it('renders blank register names and confirmation as described invalid fields', () => {
+	it('renders a blank confirmation as invalid and leaves optional names alone', () => {
 		const password = 'super-secret-value';
 		const errors = registrationFieldErrors({
 			firstName: '',
@@ -60,21 +60,20 @@ describe('credentialSummaryItems', () => {
 			password,
 			confirmPassword: ''
 		});
+		expect(errors).toEqual([{ field: 'confirmPassword', message: 'Confirm your password' }]);
 		const { body } = render(RegisterPage, {
 			props: { form: { message: undefined, fieldErrors: errors } }
 		});
 
-		for (const id of ['firstName', 'lastName', 'confirmPassword']) {
-			const tag = body.match(new RegExp(`<input\\b[^>]*\\bid="${id}"[^>]*>`))?.[0] ?? '';
-			expect(tag).toContain('aria-invalid="true"');
-			expect(tag).toMatch(/aria-describedby="credential-error-/);
-		}
-		for (const id of ['username', 'email', 'password']) {
+		const confirm = body.match(/<input\b[^>]*\bid="confirmPassword"[^>]*>/)?.[0] ?? '';
+		expect(confirm).toContain('aria-invalid="true"');
+		expect(confirm).toMatch(/aria-describedby="credential-error-/);
+		for (const id of ['firstName', 'lastName', 'username', 'email', 'password']) {
 			const tag = body.match(new RegExp(`<input\\b[^>]*\\bid="${id}"[^>]*>`))?.[0] ?? '';
 			expect(tag).not.toContain('aria-invalid');
 		}
-		expect(body.match(/Enter your first name/g)).toHaveLength(1);
-		expect(body.match(/Enter your last name/g)).toHaveLength(1);
+		expect(body).not.toContain('Enter your first name');
+		expect(body).not.toContain('Enter your last name');
 		expect(body.match(/Confirm your password/g)).toHaveLength(1);
 		expect(body).not.toContain(password);
 		expect(body).not.toContain('grower@example.com');

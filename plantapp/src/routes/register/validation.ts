@@ -22,8 +22,6 @@ export interface RegisterFieldError {
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export const FIRST_NAME_REQUIRED = 'Enter your first name';
-export const LAST_NAME_REQUIRED = 'Enter your last name';
 export const USERNAME_TOO_SHORT = 'Username must be at least 3 characters';
 export const EMAIL_ADDRESS_ERROR = 'Enter a valid email address';
 export const PASSWORD_TOO_SHORT = 'Password must be at least 8 characters';
@@ -58,18 +56,21 @@ export function firstRegistrationError(input: RegisterInput): RegisterFieldError
 }
 
 /**
+ * `user.first_name` and `user.last_name` are nullable text.
+ * A blank or whitespace-only name is stored as null, not rejected.
+ */
+export function optionalRegisterName(value: string | null | undefined): string | null {
+	const trimmed = (value ?? '').trim();
+	return trimmed.length > 0 ? trimmed : null;
+}
+
+/**
  * Every failing register field on a no-JS post.
  * Username, email, and password keep the JavaScript messages.
- * A blank first name, last name, or confirm password is flagged as well.
+ * First name and last name are optional. A blank confirm password is flagged.
  */
 export function registrationFieldErrors(input: RegisterInput): RegisterFieldError[] {
 	const errors: RegisterFieldError[] = [];
-	if (!(input.firstName ?? '').trim()) {
-		errors.push({ field: 'firstName', message: FIRST_NAME_REQUIRED });
-	}
-	if (!(input.lastName ?? '').trim()) {
-		errors.push({ field: 'lastName', message: LAST_NAME_REQUIRED });
-	}
 	if (input.username.trim().length < 3) {
 		errors.push({ field: 'username', message: USERNAME_TOO_SHORT });
 	}

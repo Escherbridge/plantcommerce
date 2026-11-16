@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
 	firstRegistrationError,
 	focusRegistrationField,
+	optionalRegisterName,
 	registrationFieldErrors
 } from './validation';
 
@@ -88,8 +89,6 @@ describe('registrationFieldErrors', () => {
 				confirmPassword: ''
 			})
 		).toEqual([
-			{ field: 'firstName', message: 'Enter your first name' },
-			{ field: 'lastName', message: 'Enter your last name' },
 			{ field: 'username', message: 'Username must be at least 3 characters' },
 			{ field: 'email', message: 'Enter a valid email address' },
 			{ field: 'password', message: 'Password must be at least 8 characters' },
@@ -97,7 +96,7 @@ describe('registrationFieldErrors', () => {
 		]);
 	});
 
-	it('flags a blank first name, last name, and confirm password', () => {
+	it('leaves a blank first and last name out of the errors', () => {
 		expect(
 			registrationFieldErrors({
 				...valid,
@@ -105,11 +104,7 @@ describe('registrationFieldErrors', () => {
 				lastName: '',
 				confirmPassword: ''
 			})
-		).toEqual([
-			{ field: 'firstName', message: 'Enter your first name' },
-			{ field: 'lastName', message: 'Enter your last name' },
-			{ field: 'confirmPassword', message: 'Confirm your password' }
-		]);
+		).toEqual([{ field: 'confirmPassword', message: 'Confirm your password' }]);
 	});
 
 	it('keeps a mismatch on the password when confirmation is filled', () => {
@@ -131,6 +126,14 @@ describe('registrationFieldErrors', () => {
 				lastName: 'Lovelace'
 			})
 		).toEqual([]);
+	});
+
+	it('stores a blank name as null because first_name and last_name are nullable', () => {
+		expect(optionalRegisterName(undefined)).toBeNull();
+		expect(optionalRegisterName(null)).toBeNull();
+		expect(optionalRegisterName('')).toBeNull();
+		expect(optionalRegisterName('   ')).toBeNull();
+		expect(optionalRegisterName('  Ada  ')).toBe('Ada');
 	});
 });
 

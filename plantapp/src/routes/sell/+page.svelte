@@ -1,8 +1,14 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { Container, Section } from '$lib/components/layout';
-	import type { ActionData } from './$types';
+	import { sellerApplicationSummaryItems } from '$lib/sellerApplication/fields';
+	import type { ActionData, PageData } from './$types';
 
-	let { form }: { form: ActionData } = $props();
+	let { data, form }: { data: PageData; form: ActionData } = $props();
+
+	let submitting = $state(false);
+	let summaryEl = $state<HTMLElement | null>(null);
+	let receivedEl = $state<HTMLElement | null>(null);
 
 	const values = $derived(form && 'values' in form ? form.values : undefined);
 	const fieldErrors = $derived(
@@ -12,7 +18,29 @@
 		>
 	);
 	const errorMessage = $derived(form && 'error' in form ? form.error : undefined);
-	const succeeded = $derived(form && 'success' in form && form.success === true);
+	const succeeded = $derived(data.applied);
+	const summaryItems = $derived(sellerApplicationSummaryItems(fieldErrors));
+
+	$effect(() => {
+		if (summaryItems.length > 0) summaryEl?.focus();
+	});
+
+	$effect(() => {
+		if (succeeded) receivedEl?.focus();
+	});
+
+	function submitApplication() {
+		submitting = true;
+		return async ({ update }: { update: () => Promise<void> }) => {
+			try {
+				await update();
+			} finally {
+				submitting = false;
+			}
+			if (summaryEl?.isConnected) summaryEl.focus();
+			if (receivedEl?.isConnected) receivedEl.focus();
+		};
+	}
 </script>
 
 <Section>
@@ -59,7 +87,15 @@
 			</header>
 
 			{#if succeeded}
-				<div class="rounded-2xl border border-success/30 bg-success/10 p-6" role="status">
+				<!-- svelte-ignore a11y_autofocus -->
+				<div
+					id="application-received"
+					class="rounded-2xl border border-success/30 bg-success/10 p-6"
+					role="status"
+					tabindex="-1"
+					autofocus
+					bind:this={receivedEl}
+				>
 					<h2 class="font-display text-2xl tracking-tight">Application received</h2>
 					<p class="mt-3 text-base-content/80">
 						Thanks. We saved your application and will reply to the email you entered. If we list
@@ -68,7 +104,7 @@
 					</p>
 				</div>
 			{:else}
-				{#if errorMessage}
+				{#if errorMessage && summaryItems.length === 0}
 					<p
 						class="rounded-2xl border border-error/30 bg-error/10 p-4 text-base-content/80"
 						role="alert"
@@ -81,7 +117,7 @@
 					You don't need an Aevani account to apply. We read each application and reply by email.
 				</p>
 
-				<form method="POST" class="space-y-5" novalidate>
+				<form method="POST" class="space-y-5" novalidate use:enhance={submitApplication}>
 					<div class="company-fax" aria-hidden="true">
 						<label for="company_fax">Fax</label>
 						<input
@@ -92,6 +128,27 @@
 							autocomplete="off"
 						/>
 					</div>
+
+					{#if summaryItems.length > 0}
+						<!-- svelte-ignore a11y_autofocus -->
+						<div
+							id="application-error-summary"
+							class="rounded-2xl border border-error/30 bg-error/10 p-4 text-base-content/80"
+							role="alert"
+							tabindex="-1"
+							autofocus
+							bind:this={summaryEl}
+						>
+							<p>Your application didn't go through. Fix these and send it again:</p>
+							<ul class="mt-2 list-disc space-y-1 pl-5">
+								{#each summaryItems as item (item.field)}
+									<li>
+										<a class="underline" href="#{item.field}">{item.label}: {item.message}</a>
+									</li>
+								{/each}
+							</ul>
+						</div>
+					{/if}
 
 					<div class="space-y-2">
 						<h2 class="font-display text-2xl tracking-tight">Application</h2>
@@ -180,10 +237,13 @@
 							class="textarea-bordered textarea w-full"
 							required
 							maxlength="2000"
-							rows="4">{values?.offerings ?? ''}</textarea
+							rows="4"
+							aria-invalid={fieldErrors.offerings ? 'true' : undefined}
+							aria-describedby={fieldErrors.offerings ? 'offerings-error' : undefined}
+							>{values?.offerings ?? ''}</textarea
 						>
 						{#if fieldErrors.offerings}
-							<p class="text-sm text-error">{fieldErrors.offerings}</p>
+							<p id="offerings-error" class="text-sm text-error">{fieldErrors.offerings}</p>
 						{/if}
 					</div>
 
@@ -214,10 +274,13 @@
 							class="textarea-bordered textarea w-full"
 							required
 							maxlength="4000"
-							rows="5">{values?.message ?? ''}</textarea
+							rows="5"
+							aria-invalid={fieldErrors.message ? 'true' : undefined}
+							aria-describedby={fieldErrors.message ? 'message-error' : undefined}
+							>{values?.message ?? ''}</textarea
 						>
 						{#if fieldErrors.message}
-							<p class="text-sm text-error">{fieldErrors.message}</p>
+							<p id="message-error" class="text-sm text-error">{fieldErrors.message}</p>
 						{/if}
 					</div>
 
@@ -229,8 +292,13 @@
 						</p>
 					</div>
 
-					<button class="font-display btn tracking-wider uppercase btn-primary" type="submit">
-						Submit application
+					<button
+						class="font-display btn tracking-wider uppercase btn-primary"
+						type="submit"
+						disabled={submitting}
+						aria-busy={submitting}
+					>
+						{submitting ? 'Sending your application…' : 'Submit application'}
 					</button>
 				</form>
 			{/if}

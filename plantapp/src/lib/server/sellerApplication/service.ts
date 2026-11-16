@@ -1,4 +1,4 @@
-import { and, desc, eq, gt } from 'drizzle-orm';
+import { and, desc, eq, gte, gt } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { EmailService } from '$lib/server/services/email';
@@ -59,6 +59,29 @@ export class SellerApplicationService {
 		return scoped
 			.orderBy(desc(table.sellerApplication.createdAt))
 			.limit(SELLER_APPLICATION_LIST_LIMIT);
+	}
+
+	/**
+	 * Whether this email and business name already have a row created at or after `since`.
+	 * Queries the existing seller_application table; it does not add a column or index.
+	 */
+	static async hasRecentDuplicate(
+		email: string,
+		businessName: string,
+		since: Date
+	): Promise<boolean> {
+		const [row] = await db
+			.select({ id: table.sellerApplication.id })
+			.from(table.sellerApplication)
+			.where(
+				and(
+					eq(table.sellerApplication.email, email),
+					eq(table.sellerApplication.businessName, businessName),
+					gte(table.sellerApplication.createdAt, since)
+				)
+			)
+			.limit(1);
+		return row != null;
 	}
 
 	/** Best-effort notice to active admins when account email is already configured. */

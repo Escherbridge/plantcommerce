@@ -44,7 +44,7 @@
 </script>
 
 <svelte:head>
-	<title>Reset password - Aevani</title>
+	<title>Reset your password — Aevani</title>
 </svelte:head>
 
 <div class="mx-auto flex min-h-screen max-w-md items-center px-4 py-12">

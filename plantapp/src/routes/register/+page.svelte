@@ -64,6 +64,10 @@
 		const ids = [fieldDescribedBy(field), describedByFor(form?.fieldErrors, field)].filter(
 			(id): id is string => Boolean(id)
 		);
+		if (field === 'username') ids.push('username-hint');
+		if (field === 'password' && !(password && passwordErrors().length > 0)) {
+			ids.push('password-hint');
+		}
 		return ids.length > 0 ? ids.join(' ') : undefined;
 	}
 
@@ -145,7 +149,7 @@
 </script>
 
 <svelte:head>
-	<title>Register - Aevani</title>
+	<title>Create an account — Aevani</title>
 </svelte:head>
 
 <div class="register-page">
@@ -240,7 +244,7 @@
 					<div class="register-row">
 						<div class="form-control">
 							<label class="label" for="firstName">
-								<span class="label-text">First name</span>
+								<span class="label-text">First name (optional)</span>
 							</label>
 							<input
 								id="firstName"
@@ -258,7 +262,7 @@
 
 						<div class="form-control">
 							<label class="label" for="lastName">
-								<span class="label-text">Last name</span>
+								<span class="label-text">Last name (optional)</span>
 							</label>
 							<input
 								id="lastName"
@@ -297,7 +301,9 @@
 							minlength="3"
 							maxlength="50"
 						/>
-						<div class="register-hint">Must be 3-50 characters</div>
+						<div id="username-hint" class="register-hint">
+							Your username needs 3 to 50 characters.
+						</div>
 					</div>
 
 					<div class="form-control">
@@ -348,7 +354,9 @@
 								{/each}
 							</div>
 						{:else}
-							<div class="register-hint">Must be at least 8 characters</div>
+							<div id="password-hint" class="register-hint">
+								Your password needs at least 8 characters.
+							</div>
 						{/if}
 					</div>
 

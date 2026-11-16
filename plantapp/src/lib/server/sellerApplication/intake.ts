@@ -3,6 +3,9 @@ import { z } from 'zod';
 const WINDOW_MS = 60 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
 
+/** Same email and business name inside this window is one application. */
+export const SELLER_APPLICATION_DUPLICATE_WINDOW_MS = 10 * 60 * 1000;
+
 const attempts = new Map<string, number[]>();
 
 export const sellerApplicationSchema = z.object({
