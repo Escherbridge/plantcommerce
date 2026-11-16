@@ -67,7 +67,15 @@ function memoryRepo() {
 		},
 		async insertUse() {
 			return 'created';
-		}
+		},
+		async getUse() {
+			return null;
+		},
+		async listUses() {
+			return [];
+		},
+		async setUseStatus() {},
+		async markRoleRemoved() {}
 	};
 	return { repo, rows };
 }

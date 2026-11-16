@@ -161,7 +161,15 @@ describe('invite token pages', () => {
 			},
 			async insertUse() {
 				return 'created';
-			}
+			},
+			async getUse() {
+				return null;
+			},
+			async listUses() {
+				return [];
+			},
+			async setUseStatus() {},
+			async markRoleRemoved() {}
 		};
 		const productCode = 'spring-kit';
 		const missed = await resolveInviteVisit({
@@ -217,7 +225,15 @@ describe('invite token pages', () => {
 					dashboardAvailable: false
 				});
 				return 'created';
-			}
+			},
+			async getUse() {
+				return null;
+			},
+			async listUses() {
+				return [];
+			},
+			async setUseStatus() {},
+			async markRoleRemoved() {}
 		};
 		const ada = { id: 'ada', email: 'ada@example.com', emailVerified: true };
 		const first = await recordInviteUse({ token, viewer: ada, now, repo });

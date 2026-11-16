@@ -1,6 +1,6 @@
 import { timingSafeEqual } from 'node:crypto';
-import { and, desc, eq, sql } from 'drizzle-orm';
-import type { InviteRole } from '$lib/auth/userRole';
+import { and, desc, eq, sql, type SQL } from 'drizzle-orm';
+import type { InviteRole, UserRole } from '$lib/auth/userRole';
 import { db } from '$lib/server/db';
 import {
 	affiliate,
@@ -25,7 +25,11 @@ import {
 	type InviteFieldError,
 	type InviteFormInput
 } from '$lib/invites/validation';
-import { displayName } from '$lib/invites/copy';
+import { displayName, type ReviewState } from '$lib/invites/copy';
+import { invitePath } from '$lib/invites/urls';
+import { accountCapabilitiesEnabled, generateEmailVerificationToken } from '$lib/server/auth';
+import { EmailService } from '$lib/server/services/email';
+import { UserService } from '$lib/server/services/user';
 
 export class InviteForbiddenError extends Error {
 	constructor() {
@@ -71,9 +75,34 @@ export type InviteRepository = {
 	revokeInvite(id: string, now: Date): Promise<boolean>;
 	findByTokenHash(tokenHash: string): Promise<InviteListRecord | null>;
 	findUse(inviteId: string, userId: string): Promise<ViewerUse | null>;
-	insertUse(row: { id: string; inviteId: string; userId: string; createdAt: Date }): Promise<
-		'created' | 'exists'
-	>;
+	insertUse(row: {
+		id: string;
+		inviteId: string;
+		userId: string;
+		createdAt: Date;
+	}): Promise<'created' | 'exists'>;
+	getUse(useId: string): Promise<InviteUseRecord | null>;
+	listUses(inviteId: string): Promise<InviteUseRecord[]>;
+	setUseStatus(useId: string, status: ReviewState, reviewerId: string, now: Date): Promise<void>;
+	markRoleRemoved(useId: string, now: Date): Promise<void>;
+};
+
+export type InviteUseRecord = {
+	id: string;
+	inviteId: string;
+	inviteRole: InviteRole;
+	userId: string;
+	status: ReviewState;
+	roleRemovedAt: Date | null;
+	createdAt: Date;
+	email: string;
+	username: string;
+	firstName: string | null;
+	lastName: string | null;
+	emailVerified: boolean;
+	userRole: UserRole;
+	sellerApplicationReceived: boolean;
+	dashboardAvailable: boolean;
 };
 
 export function inviteHashesMatch(storedHex: string, presentedToken: string): boolean {
@@ -99,6 +128,48 @@ export function toDisplayedInvite(record: InviteListRecord, now: Date) {
 		displayStatus: status,
 		url: inviteAbsoluteUrl(record.token)
 	};
+}
+
+async function listInviteUses(where: SQL): Promise<InviteUseRecord[]> {
+	const rows = await db
+		.select({
+			id: managerInviteUse.id,
+			inviteId: managerInviteUse.inviteId,
+			inviteRole: managerInvite.role,
+			userId: managerInviteUse.userId,
+			status: managerInviteUse.status,
+			roleRemovedAt: managerInviteUse.roleRemovedAt,
+			createdAt: managerInviteUse.createdAt,
+			email: user.email,
+			username: user.username,
+			firstName: user.firstName,
+			lastName: user.lastName,
+			emailVerified: user.emailVerified,
+			userRole: user.role
+		})
+		.from(managerInviteUse)
+		.innerJoin(managerInvite, eq(managerInviteUse.inviteId, managerInvite.id))
+		.innerJoin(user, eq(managerInviteUse.userId, user.id))
+		.where(where);
+	const uses: InviteUseRecord[] = [];
+	for (const row of rows) {
+		const [application] = await db
+			.select({ id: sellerApplication.id })
+			.from(sellerApplication)
+			.where(sql`lower(${sellerApplication.email}) = ${row.email.toLowerCase()}`)
+			.limit(1);
+		const [membership] = await db
+			.select({ status: affiliate.status, isActive: affiliate.isActive })
+			.from(affiliate)
+			.where(eq(affiliate.userId, row.userId))
+			.limit(1);
+		uses.push({
+			...row,
+			sellerApplicationReceived: Boolean(application),
+			dashboardAvailable: membership ? isActiveApprovedAffiliate(membership) : false
+		});
+	}
+	return uses;
 }
 
 const drizzleRepository: InviteRepository = {
@@ -235,6 +306,25 @@ const drizzleRepository: InviteRepository = {
 			}
 			throw error;
 		}
+	},
+	async getUse(useId) {
+		const uses = await listInviteUses(eq(managerInviteUse.id, useId));
+		return uses[0] ?? null;
+	},
+	async listUses(inviteId) {
+		return listInviteUses(eq(managerInviteUse.inviteId, inviteId));
+	},
+	async setUseStatus(useId, status, reviewerId, now) {
+		await db
+			.update(managerInviteUse)
+			.set({ status, reviewedBy: reviewerId, reviewedAt: now })
+			.where(eq(managerInviteUse.id, useId));
+	},
+	async markRoleRemoved(useId, now) {
+		await db
+			.update(managerInviteUse)
+			.set({ roleRemovedAt: now })
+			.where(eq(managerInviteUse.id, useId));
 	}
 };
 
@@ -393,4 +483,99 @@ export async function recordInviteUse(input: {
 		now,
 		repo
 	});
+}
+
+type RoleUpdater = (userId: string, role: UserRole) => Promise<void>;
+
+function defaultRoleUpdate(userId: string, role: UserRole): Promise<void> {
+	return UserService.updateUserRole(userId, role);
+}
+
+export async function reviewInviteUse(input: {
+	actor: { id: string; role: string };
+	useId: string;
+	decision: 'approved' | 'rejected';
+	now?: Date;
+	repo?: InviteRepository;
+	setRole?: RoleUpdater;
+}): Promise<{ ok: true; name: string; role: InviteRole } | { ok: false }> {
+	assertInviteAdmin(input.actor);
+	const repo = input.repo ?? drizzleRepository;
+	const use = await repo.getUse(input.useId);
+	if (!use) return { ok: false };
+	const now = input.now ?? new Date();
+	if (input.decision === 'approved' && use.userRole !== 'admin' && !use.roleRemovedAt) {
+		await (input.setRole ?? defaultRoleUpdate)(use.userId, use.inviteRole);
+	}
+	await repo.setUseStatus(use.id, input.decision, input.actor.id, now);
+	return {
+		ok: true,
+		name: displayName(use),
+		role: use.inviteRole
+	};
+}
+
+export async function removeInvitedRole(input: {
+	actor: { id: string; role: string };
+	useId: string;
+	now?: Date;
+	repo?: InviteRepository;
+	setRole?: RoleUpdater;
+}): Promise<{ ok: true; name: string; role: InviteRole } | { ok: false }> {
+	assertInviteAdmin(input.actor);
+	const repo = input.repo ?? drizzleRepository;
+	const use = await repo.getUse(input.useId);
+	if (!use) return { ok: false };
+	if (use.userRole === 'admin' && input.actor.id === use.userId) {
+		throw new InviteForbiddenError();
+	}
+	if (use.userRole === 'admin') throw new InviteForbiddenError();
+	const now = input.now ?? new Date();
+	if (!use.roleRemovedAt && use.userRole === use.inviteRole) {
+		await (input.setRole ?? defaultRoleUpdate)(use.userId, 'customer');
+	}
+	await repo.markRoleRemoved(use.id, now);
+	return { ok: true, name: displayName(use), role: use.inviteRole };
+}
+
+export async function resendInviteVerification(input: {
+	actor: { id: string; role: string };
+	useId: string;
+	repo?: InviteRepository;
+	send?: (email: string, returnPath: string) => Promise<boolean>;
+}): Promise<{ ok: true; email: string } | { ok: false; email?: string }> {
+	assertInviteAdmin(input.actor);
+	const repo = input.repo ?? drizzleRepository;
+	const use = await repo.getUse(input.useId);
+	if (!use || use.emailVerified) return { ok: false, email: use?.email };
+	const invite = await repo.getInvite(use.inviteId);
+	if (!invite) return { ok: false, email: use.email };
+	const send = input.send ?? sendVerificationEmail;
+	const sent = await send(use.email, invitePath(invite.token));
+	return sent ? { ok: true, email: use.email } : { ok: false, email: use.email };
+}
+
+export async function getManagerInvite(input: {
+	actor: { role: string } | null;
+	id: string;
+	now?: Date;
+	repo?: InviteRepository;
+}) {
+	assertInviteAdmin(input.actor);
+	const repo = input.repo ?? drizzleRepository;
+	const now = input.now ?? new Date();
+	const invite = await repo.getInvite(input.id);
+	if (!invite) return null;
+	const uses = await repo.listUses(invite.id);
+	return { invite: toDisplayedInvite(invite, now), uses };
+}
+
+async function sendVerificationEmail(email: string, returnPath: string): Promise<boolean> {
+	if (!accountCapabilitiesEnabled() || !EmailService.isConfigured()) return false;
+	const account = await UserService.getUserByEmail(email);
+	if (!account) return false;
+	const token = await generateEmailVerificationToken(account.id, account.email);
+	if (!token) return false;
+	await EmailService.sendVerificationEmail(account.email, token, returnPath);
+	return true;
 }
