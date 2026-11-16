@@ -142,8 +142,10 @@
 				<!-- Header -->
 				<div class="register-header">
 					<a href="/" class="register-wordmark">AEVANI</a>
-					<h1 class="register-title">Create Your Account</h1>
-					<p class="register-subtitle">Join our community of sustainable growers.</p>
+					<h1 class="register-title">Create an account</h1>
+					<p class="register-subtitle">
+						An account saves your course progress and, once something is for sale, your orders.
+					</p>
 				</div>
 
 				<!-- Error -->
@@ -159,7 +161,7 @@
 					<div class="register-row">
 						<div class="form-control">
 							<label class="label" for="firstName">
-								<span class="label-text">First Name</span>
+								<span class="label-text">First name</span>
 							</label>
 							<input
 								id="firstName"
@@ -175,7 +177,7 @@
 
 						<div class="form-control">
 							<label class="label" for="lastName">
-								<span class="label-text">Last Name</span>
+								<span class="label-text">Last name</span>
 							</label>
 							<input
 								id="lastName"
@@ -266,7 +268,7 @@
 
 					<div class="form-control">
 						<label class="label" for="confirmPassword">
-							<span class="label-text">Confirm Password</span>
+							<span class="label-text">Confirm password</span>
 						</label>
 						<input
 							id="confirmPassword"
@@ -287,7 +289,7 @@
 					<div class="register-actions">
 						<button
 							type="submit"
-							class="font-display btn w-full tracking-wider uppercase btn-primary"
+							class="font-display btn w-full tracking-wider btn-primary"
 							disabled={isLoading || passwordErrors().length > 0}
 							aria-busy={isLoading}
 						>
@@ -295,7 +297,7 @@
 								<span class="loading loading-sm loading-spinner" aria-hidden="true"></span>
 								Creating account...
 							{:else}
-								Create Account
+								Create account
 							{/if}
 						</button>
 					</div>
@@ -305,7 +307,7 @@
 				<div class="register-footer">
 					<p>
 						Already have an account?
-						<a href="/login" class="link font-semibold link-primary">Login here</a>
+						<a href="/login" class="link font-semibold link-primary">Sign in</a>.
 					</p>
 					<p class="register-legal">
 						By creating an account, you agree to our
@@ -359,7 +361,6 @@
 		font-family: var(--font-display);
 		font-size: 1.5rem;
 		font-weight: 700;
-		text-transform: uppercase;
 		letter-spacing: -0.01em;
 		color: oklch(var(--bc));
 		margin-bottom: 0.5rem;

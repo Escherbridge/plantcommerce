@@ -153,7 +153,7 @@
 		{
 			label: 'Catalog',
 			href: '/products',
-			children: [{ label: 'Catalog Status', href: '/products' }]
+			children: [{ label: 'Catalogue status', href: '/products' }]
 		},
 		{
 			label: 'Learn',
@@ -172,7 +172,7 @@
 			children: [
 				{ label: 'Support Overview', href: '/support' },
 				{ label: 'Contact', href: '/contact' },
-				{ label: 'Help Center', href: '/help' },
+				{ label: 'Help center', href: '/help' },
 				{ label: 'Shipping', href: '/shipping' },
 				{ label: 'Returns', href: '/returns' },
 				{ label: 'Warranty', href: '/warranty' },

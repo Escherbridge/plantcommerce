@@ -1,5 +1,6 @@
 import type { PageLoad } from './$types';
 import { essayRedirectTarget } from '$lib/content/essays';
+import { isPlaceholderListing, presentPlaceholderListing } from '$lib/catalog/placeholderListing';
 import { createCallerClient } from '$lib/trpc/client';
 
 export const load: PageLoad = async (event) => {
@@ -22,7 +23,21 @@ export const load: PageLoad = async (event) => {
 		q,
 		guides: guides ?? [],
 		posts: (posts ?? []).filter((post) => !essayRedirectTarget(post.slug)),
-		products: products ?? [],
+		products: (products ?? []).map((row) => {
+			const product = row.product ?? row;
+			if (!isPlaceholderListing(product)) return row;
+			const copy = presentPlaceholderListing(product);
+			return {
+				...row,
+				product: {
+					...product,
+					shortDescription: copy.shortDescription,
+					badges: copy.badges,
+					price: '',
+					comparePrice: null
+				}
+			};
+		}),
 		courses: courseList?.courses ?? []
 	};
 };

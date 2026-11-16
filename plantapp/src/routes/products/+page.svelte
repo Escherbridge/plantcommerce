@@ -2,6 +2,7 @@
 	// Aevani Shop / catalogue. Header + category chips (client filter, ?category= in URL)
 	// + featured hero row + 4-col product grid. See design-spec.md §6.
 	import { ProductCard } from '$lib/components/cards';
+	import { isSuppressedCatalogueBadge } from '$lib/catalog/placeholderListing';
 	import { replaceState } from '$app/navigation';
 	import { page } from '$app/state';
 	import { catalogChipMatches } from './catalog';
@@ -43,10 +44,19 @@
 	const activeLabel = $derived(CHIPS.find((c) => c.id === selected)?.label ?? 'All products');
 
 	function badgeFor(p: PageData['products'][number]): string | undefined {
-		if (p.badges && p.badges.length > 0) return p.badges[0];
+		const badge = p.badges?.find((item) => !p.placeholder || !isSuppressedCatalogueBadge(item));
+		if (badge) return badge;
+		if (p.placeholder) return undefined;
 		if (p.comparePrice) return 'Sale';
 		if (p.isFeatured) return 'Bestseller';
 		return undefined;
+	}
+
+	function featuredBadge(slug: string, placeholder: boolean): string | undefined {
+		const badge = FEATURED_BADGE[slug];
+		if (!badge) return undefined;
+		if (placeholder && isSuppressedCatalogueBadge(badge)) return undefined;
+		return badge;
 	}
 
 	function selectChip(id: string) {
@@ -99,8 +109,10 @@
 					imageAlt={product.imageAlt}
 					title={product.name}
 					category={product.categoryName}
-					price={product.price}
-					badge={FEATURED_BADGE[product.slug]}
+					description={product.shortDescription ?? undefined}
+					price={product.placeholder ? undefined : product.price}
+					placeholder={product.placeholder}
+					badge={featuredBadge(product.slug, product.placeholder)}
 				/>
 			{/each}
 		</section>
@@ -126,8 +138,9 @@
 						title={product.name}
 						category={product.categoryName}
 						description={product.shortDescription ?? undefined}
-						price={product.price}
-						compareAt={product.comparePrice ?? undefined}
+						price={product.placeholder ? undefined : product.price}
+						compareAt={product.placeholder ? undefined : (product.comparePrice ?? undefined)}
+						placeholder={product.placeholder}
 						badge={badgeFor(product)}
 					/>
 				{/each}

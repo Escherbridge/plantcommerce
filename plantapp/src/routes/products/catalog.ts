@@ -2,6 +2,12 @@
 // category pages. Lives in a plain module (NOT +page.ts) because SvelteKit
 // route modules may only export `load`/`_`-prefixed symbols. See design-spec §6/§7.
 
+import {
+	isPlaceholderListing,
+	isSuppressedCatalogueBadge,
+	presentPlaceholderListing
+} from '$lib/catalog/placeholderListing';
+
 /**
  * Exact product slug -> real `/assets/*.png` image (normalized from each product's
  * DB bucket_path). A real url from tRPC always wins when present. See design-spec §7.
@@ -89,6 +95,8 @@ export type CatalogProduct = {
 	comparePrice: string | null;
 	isFeatured: boolean;
 	badges: string[];
+	/** True when the row is not an actual sale. Prices and stock badges stay off. */
+	placeholder: boolean;
 	/** Top-level growing-system slug (hydroponics, aquaponics, plants-seeds, …). */
 	system: string;
 	categoryName: string;
@@ -120,21 +128,30 @@ export function normalizeCatalogProduct(
 	const system = cat ? (parentSlugMap.get(cat.id) ?? cat.slug) : 'all';
 	const realUrl = Array.isArray(p.images) && p.images[0]?.url ? String(p.images[0].url) : null;
 	const image = realUrl ?? PRODUCT_IMAGE[p.slug] ?? SYSTEM_FALLBACK[system] ?? FALLBACK_IMAGE;
+	const placeholder = isPlaceholderListing(p);
+	const copy = placeholder ? presentPlaceholderListing(p) : null;
 
 	return {
 		id: p.id,
 		name: p.name,
 		slug: p.slug,
-		shortDescription: p.shortDescription ?? null,
-		description: p.description ?? null,
-		price: String(p.price),
-		comparePrice: p.comparePrice ? String(p.comparePrice) : null,
+		shortDescription: copy ? copy.shortDescription : (p.shortDescription ?? null),
+		description: copy ? copy.description : (p.description ?? null),
+		price: placeholder ? '' : String(p.price),
+		comparePrice: placeholder || !p.comparePrice ? null : String(p.comparePrice),
 		isFeatured: Boolean(p.isFeatured),
-		badges: Array.isArray(p.badges) ? p.badges : [],
+		badges: (Array.isArray(p.badges) ? p.badges : []).filter(
+			(badge: string) => !placeholder || !isSuppressedCatalogueBadge(badge)
+		),
+		placeholder,
 		system,
 		categoryName: cat?.name ?? '',
 		image,
-		imageAlt: (Array.isArray(p.images) && p.images[0]?.altText) || p.shortDescription || p.name,
+		imageAlt:
+			(Array.isArray(p.images) && p.images[0]?.altText) ||
+			copy?.shortDescription ||
+			p.shortDescription ||
+			p.name,
 		href: `/products/${system}/${p.slug}`
 	};
 }
