@@ -1,5 +1,6 @@
 import { and, asc, eq, gt } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
+import { presentPlaceholderListing } from '$lib/catalog/placeholderListing';
 import { publicSiteUrl } from '$lib/config/site';
 import { productIsPurchasable } from '$lib/server/commerce/purchasable';
 import { product, productCategory } from '$lib/server/db/schema';
@@ -7,6 +8,7 @@ import {
 	projectPlantGeoCatalog,
 	projectPlantGeoCatalogProduct,
 	type PlantGeoAvailability,
+	type PlantGeoCatalogPrice,
 	type PlantGeoCatalogProjection,
 	type PlantGeoCatalogSource
 } from './contracts';
@@ -108,6 +110,31 @@ function publicSlug(value: string | null): string | null {
 	return publicSlugPattern.test(slug) ? slug : null;
 }
 
+/** A real sale needs a publishable price. A placeholder never gets one. */
+function salePrice(row: Record<string, unknown>): PlantGeoCatalogPrice {
+	const amountMinor = priceToMinorUnits(readString(row, 'price') ?? '');
+	const currency = publicCurrency(readString(row, 'currency'));
+	if (amountMinor === null || currency === null) return null;
+	return { amountMinor, currency };
+}
+
+function catalogSummary(
+	row: Record<string, unknown>,
+	title: string,
+	slug: string,
+	purchasable: boolean
+): string | null {
+	const raw = readString(row, 'shortDescription');
+	if (purchasable) return publicSummary(raw);
+	const presented = presentPlaceholderListing({
+		name: title,
+		slug,
+		shortDescription: raw,
+		comingSoon: readComingSoon(row) ?? null
+	}).shortDescription;
+	return publicSummary(presented);
+}
+
 /**
  * Coming soon (anything other than coming_soon === false) is unavailable.
  * Purchasable rows use stock only to choose in_stock or out_of_stock.
@@ -135,9 +162,10 @@ function toCatalogSource(
 	const categorySlug = publicSlug(readString(row, 'categorySlug'));
 	const categoryName = readString(row, 'categoryName')?.trim() ?? '';
 	const urlSlug = publicSlug(readString(row, 'parentSlug')) ?? categorySlug;
-	const amountMinor = priceToMinorUnits(readString(row, 'price') ?? '');
-	const currency = publicCurrency(readString(row, 'currency'));
 	const updatedAt = readDate(row.updatedAt);
+	const comingSoon = readComingSoon(row);
+	const purchasable = productIsPurchasable({ comingSoon });
+	const price = purchasable ? salePrice(row) : null;
 
 	if (
 		productId === null ||
@@ -149,8 +177,7 @@ function toCatalogSource(
 		!urlSlug ||
 		!categoryName ||
 		categoryName.length > 512 ||
-		amountMinor === null ||
-		currency === null ||
+		(purchasable && price === null) ||
 		updatedAt === null
 	) {
 		return null;
@@ -160,8 +187,8 @@ function toCatalogSource(
 		productId,
 		canonicalUrl: publicSiteUrl(`/products/${urlSlug}/${productSlug}`),
 		title,
-		summary: publicSummary(readString(row, 'shortDescription')),
-		price: { amountMinor, currency },
+		summary: catalogSummary(row, title, productSlug, purchasable),
+		price,
 		availability: catalogAvailability(row),
 		availabilityCheckedAt: checkedAt,
 		category: { id: categoryId, name: categoryName, slug: categorySlug },

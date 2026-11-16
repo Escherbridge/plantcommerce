@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { productIsPurchasable } from '$lib/server/commerce/purchasable';
 import { db } from '$lib/server/db';
 import { GET, OPTIONS } from '../../../routes/api/catalog/products/+server';
+import { TILAPIA_TAGLINE } from '$lib/catalog/placeholderListing';
 import { projectPublicCatalog, publicCatalogPageSize } from './publicCatalog';
 
 vi.mock('$lib/server/db', () => ({
@@ -113,7 +114,11 @@ function assertAllowlist(body: unknown) {
 	);
 	for (const product of record.products) {
 		expect(Object.keys(product).sort()).toEqual([...productKeys].sort());
-		expect(Object.keys(product.price as object).sort()).toEqual(['amountMinor', 'currency']);
+		if (product.price === null) {
+			expect(product.price).toBeNull();
+		} else {
+			expect(Object.keys(product.price as object).sort()).toEqual(['amountMinor', 'currency']);
+		}
 		expect(Object.keys(product.category as object).sort()).toEqual(['id', 'name', 'slug']);
 		expect(Object.keys(product.merchant as object).sort()).toEqual(['fulfillment', 'id']);
 		expect(Object.keys(product.suitability as object).sort()).toEqual([
@@ -176,7 +181,7 @@ describe('public PlantGeo catalog projection', () => {
 				canonicalUrl: 'https://aevani.com/products/hydroponics/soil-mix',
 				title: 'Soil Mix',
 				summary: 'A publishable summary.',
-				price: { amountMinor: 2450, currency: 'USD' },
+				price: null,
 				availability: 'unavailable',
 				availabilityCheckedAt: generatedAt.toISOString(),
 				category: { id: 'category_3', name: 'Soil', slug: 'soil' },
@@ -231,12 +236,43 @@ describe('public PlantGeo catalog projection', () => {
 			catalogRow({ shortDescription: '   ' }),
 			catalogRow({ id: 13, price: '24.999', sku: forbidden.sku }),
 			catalogRow({ id: 14, isActive: false }),
-			catalogRow({ id: 15, description: forbidden.description, shortDescription: null })
+			catalogRow({ id: 15, description: forbidden.description, shortDescription: null }),
+			catalogRow({ id: 16, comingSoon: false, price: '24.999' })
 		]);
 
-		expect(body.products.map((product) => product.id)).toEqual(['product_12', 'product_15']);
+		expect(body.products.map((product) => product.id)).toEqual([
+			'product_12',
+			'product_13',
+			'product_15'
+		]);
 		expect(body.products[0]?.summary).toBeNull();
-		expect(body.products[1]?.summary).toBeNull();
+		expect(body.products[1]?.price).toBeNull();
+		expect(body.products[2]?.summary).toBeNull();
+		assertAllowlist(body);
+	});
+
+	it('hides placeholder prices and the tilapia shipping summary, and keeps a real sale price', () => {
+		const body = project([
+			catalogRow({
+				id: 21,
+				name: 'Tilapia Fingerlings (25)',
+				slug: 'tilapia-fingerlings-starter-pack',
+				shortDescription: 'Live Nile tilapia with overnight shipping and acclimation guide.',
+				price: '59.99',
+				comingSoon: null
+			}),
+			catalogRow({ id: 22, comingSoon: false, price: '24.50' })
+		]);
+
+		expect(body.products[0]).toMatchObject({
+			id: 'product_21',
+			summary: TILAPIA_TAGLINE,
+			price: null,
+			availability: 'unavailable'
+		});
+		expect(body.products[1]?.price).toEqual({ amountMinor: 2450, currency: 'USD' });
+		const placeholder = JSON.stringify(body.products[0]);
+		expect(placeholder).not.toMatch(/overnight|59\.99|5999|amountMinor/i);
 		assertAllowlist(body);
 	});
 

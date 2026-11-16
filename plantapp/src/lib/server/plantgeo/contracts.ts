@@ -27,12 +27,19 @@ export type PlantGeoCatalogImage = Readonly<{
 	rightsEvidence: readonly PlantGeoEvidence[];
 }>;
 
+/**
+ * A sale price, or null when the row is not for sale.
+ * The key stays on every product so v1 readers can keep checking `price`.
+ * A real sale is still `{ amountMinor, currency }`.
+ */
+export type PlantGeoCatalogPrice = Readonly<{ amountMinor: number; currency: string }> | null;
+
 export type PlantGeoCatalogProduct = Readonly<{
 	id: PlantGeoProductId;
 	canonicalUrl: string;
 	title: string;
 	summary: string | null;
-	price: Readonly<{ amountMinor: number; currency: string }>;
+	price: PlantGeoCatalogPrice;
 	availability: PlantGeoAvailability;
 	availabilityCheckedAt: string;
 	category: Readonly<{ id: string; name: string; slug: string }>;
@@ -52,7 +59,7 @@ export type PlantGeoCatalogSource = Readonly<{
 	canonicalUrl: string;
 	title: string;
 	summary: string | null;
-	price: Readonly<{ amountMinor: number; currency: string }>;
+	price: PlantGeoCatalogPrice;
 	availability: PlantGeoAvailability;
 	availabilityCheckedAt: Date;
 	category: Readonly<{ id: number; name: string; slug: string }>;
@@ -264,10 +271,13 @@ export function projectPlantGeoCatalogProduct(
 		canonicalUrl: publicHttpsUrl(source.canonicalUrl, 'canonical URL'),
 		title: requiredText(source.title, 'catalog title'),
 		summary: source.summary === null ? null : requiredText(source.summary, 'catalog summary'),
-		price: {
-			amountMinor: minorAmount(source.price.amountMinor, 'price'),
-			currency: currency(source.price.currency)
-		},
+		price:
+			source.price === null
+				? null
+				: {
+						amountMinor: minorAmount(source.price.amountMinor, 'price'),
+						currency: currency(source.price.currency)
+					},
 		availability: source.availability,
 		availabilityCheckedAt: isoDate(source.availabilityCheckedAt, 'availability freshness'),
 		category: {
