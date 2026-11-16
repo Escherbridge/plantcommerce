@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { trpc } from '$lib/trpc/client';
 	import { page } from '$app/stores';
 	import { toasts } from '$lib/stores/toast';
@@ -7,7 +7,7 @@
 	import type { ActionData } from './$types';
 	import CredentialErrorSummary from '$lib/components/forms/CredentialErrorSummary.svelte';
 	import { describedByFor } from '$lib/auth/credentialFieldErrors';
-	import { safeRedirectPath } from '$lib/auth/safeRedirect';
+	import { authHandoffHref, safeRedirectPath } from '$lib/auth/safeRedirect';
 	import { LOGIN_MISSING_CREDENTIALS, firstEmptyLoginField } from './validation';
 
 	export let form: ActionData = null;
@@ -60,6 +60,16 @@
 	function getRedirectUrl(): string {
 		return safeRedirectPath($page.url.searchParams.get('redirect'), $page.url.origin);
 	}
+
+	// Read the return path after mount so server-side unit renders do not touch the request store.
+	let registerHref = '/register';
+	onMount(() => {
+		registerHref = authHandoffHref(
+			'register',
+			new URLSearchParams(window.location.search).get('redirect'),
+			window.location.origin
+		);
+	});
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
@@ -206,7 +216,7 @@
 				</p>
 				<p>
 					Don't have an account?
-					<a href="/register" class="link font-semibold link-primary">Create one</a>
+					<a href={registerHref} class="link font-semibold link-primary">Create one</a>
 				</p>
 			</div>
 		</div>

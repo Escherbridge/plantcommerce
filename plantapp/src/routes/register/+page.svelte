@@ -2,8 +2,9 @@
 	import Icon from '$lib/components/icons/Icon.svelte';
 	import CredentialErrorSummary from '$lib/components/forms/CredentialErrorSummary.svelte';
 	import { describedByFor } from '$lib/auth/credentialFieldErrors';
+	import { authHandoffHref, safeRedirectPath } from '$lib/auth/safeRedirect';
 	import { trpc } from '$lib/trpc/client';
-	import { tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import type { ActionData } from './$types';
 	import {
 		PASSWORD_TOO_SHORT,
@@ -14,6 +15,18 @@
 	} from './validation';
 
 	let { form }: { form: ActionData } = $props();
+
+	// Defaults match a direct visit. A return path is applied after mount, which is also when
+	// account creation itself runs, so the success link is ready before it is shown.
+	let continuePath = $state('/account/profile');
+	let signInHref = $state('/login');
+	onMount(() => {
+		continuePath = safeRedirectPath(
+			new URLSearchParams(window.location.search).get('redirect'),
+			window.location.origin
+		);
+		signInHref = authHandoffHref('login', continuePath, window.location.origin);
+	});
 
 	let username = $state('');
 	let email = $state('');
@@ -181,10 +194,10 @@
 					{/if}
 					<div class="register-success-actions">
 						<a
-							href="/account/profile"
+							href={continuePath}
 							class="font-display btn w-full tracking-wider uppercase btn-primary"
 						>
-							Go to My Account
+							{continuePath === '/account/profile' ? 'Go to My Account' : 'Continue'}
 						</a>
 						<a
 							href="/products"
@@ -402,7 +415,7 @@
 				<div class="register-footer">
 					<p>
 						Already have an account?
-						<a href="/login" class="link font-semibold link-primary">Sign in</a>.
+						<a href={signInHref} class="link font-semibold link-primary">Sign in</a>.
 					</p>
 					<p class="register-legal">
 						By creating an account, you agree to our

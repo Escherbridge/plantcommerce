@@ -111,7 +111,12 @@ function readSignedCookie(
 }
 
 function newCapability(): string {
-	return encodeBase64url(crypto.getRandomValues(new Uint8Array(CAPABILITY_BYTES)));
+	// Oslo's encoder keeps base64 padding. The signed-cookie reader accepts only the
+	// unpadded 43-character form, so a padded value could be set and never resolved.
+	return encodeBase64url(crypto.getRandomValues(new Uint8Array(CAPABILITY_BYTES))).replace(
+		/=+$/u,
+		''
+	);
 }
 
 function newAttributionId(): string {

@@ -6,6 +6,46 @@ import AffiliateService, {
 	isActiveApprovedAffiliate
 } from '../services/affiliate';
 import { getPublicCatalogAvailability } from '../catalogTruth/publicCatalog';
+import {
+	affiliatePromotionMethods,
+	affiliateTrafficBands,
+	type AffiliatePromotionMethod,
+	type AffiliateTrafficBand
+} from '$lib/affiliate/application';
+import { affiliateShareUrl } from '$lib/affiliate/linkCode';
+
+const promotionMethodValues = affiliatePromotionMethods.map((method) => method.value) as [
+	AffiliatePromotionMethod,
+	...AffiliatePromotionMethod[]
+];
+const trafficBandValues = affiliateTrafficBands.map((band) => band.value) as [
+	AffiliateTrafficBand,
+	...AffiliateTrafficBand[]
+];
+
+const optionalProfileText = z
+	.string()
+	.trim()
+	.max(200)
+	.optional()
+	.transform((value) => (value ? value : undefined));
+
+const applicationInput = z.object({
+	website: optionalProfileText,
+	socialMedia: optionalProfileText,
+	audience: z.string().trim().min(1).max(2000),
+	promotionMethod: z.enum(promotionMethodValues),
+	monthlyTraffic: z.enum(trafficBandValues),
+	whyJoin: z.string().trim().min(1).max(2000),
+	agreeTerms: z.literal(true)
+});
+
+function shareableLink<T extends { linkCode: string }>(origin: string, link: T) {
+	return {
+		...link,
+		affiliateUrl: affiliateShareUrl(origin, link.linkCode)
+	};
+}
 
 const activeAffiliateRequiredMessage = 'Your affiliate application must be active and approved';
 
@@ -76,56 +116,45 @@ export const affiliateRouter = router({
 	/**
 	 * Apply to become an affiliate (public-facing onboarding endpoint)
 	 */
-	submitApplication: protectedProcedure
-		.input(
-			z.object({
-				website: z.string().optional(),
-				socialMedia: z.string().optional(),
-				audience: z.string(),
-				promotionMethod: z.string(),
-				monthlyTraffic: z.string(),
-				whyJoin: z.string()
-			})
-		)
-		.mutation(async ({ ctx, input }) => {
-			try {
-				const result = await AffiliateService.createOrGetAffiliate(ctx.user.id, undefined, {
+	submitApplication: protectedProcedure.input(applicationInput).mutation(async ({ ctx, input }) => {
+		try {
+			const result = await AffiliateService.createOrGetAffiliate(ctx.user.id, undefined, {
+				website: input.website,
+				socialMedia: input.socialMedia,
+				audience: input.audience,
+				promotionMethod: input.promotionMethod,
+				monthlyTraffic: input.monthlyTraffic,
+				whyJoin: input.whyJoin
+			});
+			if (!result.created) {
+				throw new TRPCError({
+					code: 'CONFLICT',
+					message: 'You already have an affiliate account.'
+				});
+			}
+			const affiliate = result.affiliate;
+
+			return {
+				...(ctx.user.role === 'admin' || isActiveApprovedAffiliate(affiliate)
+					? affiliate
+					: withoutAffiliateOperations(affiliate)),
+				applicationDetails: {
 					website: input.website,
 					socialMedia: input.socialMedia,
 					audience: input.audience,
 					promotionMethod: input.promotionMethod,
 					monthlyTraffic: input.monthlyTraffic,
 					whyJoin: input.whyJoin
-				});
-				if (!result.created) {
-					throw new TRPCError({
-						code: 'CONFLICT',
-						message: 'You already have an affiliate account.'
-					});
 				}
-				const affiliate = result.affiliate;
-
-				return {
-					...(ctx.user.role === 'admin' || isActiveApprovedAffiliate(affiliate)
-						? affiliate
-						: withoutAffiliateOperations(affiliate)),
-					applicationDetails: {
-						website: input.website,
-						socialMedia: input.socialMedia,
-						audience: input.audience,
-						promotionMethod: input.promotionMethod,
-						monthlyTraffic: input.monthlyTraffic,
-						whyJoin: input.whyJoin
-					}
-				};
-			} catch (error) {
-				if (error instanceof TRPCError) throw error;
-				throw new TRPCError({
-					code: 'BAD_REQUEST',
-					message: error instanceof Error ? error.message : 'Failed to submit application'
-				});
-			}
-		}),
+			};
+		} catch (error) {
+			if (error instanceof TRPCError) throw error;
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: error instanceof Error ? error.message : 'Failed to submit application'
+			});
+		}
+	}),
 
 	/**
 	 * Get current user's affiliate account
@@ -247,12 +276,7 @@ export const affiliateRouter = router({
 			if (!affiliate) return [];
 
 			const links = await AffiliateService.getAffiliateLinks(ctx.user.id);
-			const baseUrl = ctx.event.url.origin;
-			// Return links with full shareable URLs
-			return links.map((link: any) => ({
-				...link,
-				affiliateUrl: `${baseUrl}/aff/${link.linkCode}`
-			}));
+			return links.map((link) => shareableLink(ctx.event.url.origin, link));
 		} catch (error) {
 			if (error instanceof TRPCError) throw error;
 			if (error instanceof AffiliateAccessError) {
@@ -272,7 +296,11 @@ export const affiliateRouter = router({
 		.input(
 			z.object({
 				productId: z.number(),
-				customCode: z.string().optional(),
+				customCode: z
+					.string()
+					.trim()
+					.regex(/^[A-Za-z0-9_-]{4,64}$/)
+					.optional(),
 				affiliateId: z.number().optional()
 			})
 		)
@@ -300,12 +328,7 @@ export const affiliateRouter = router({
 					customCode: input.customCode
 				});
 
-				// Return the link with a full shareable URL
-				const baseUrl = ctx.event.url.origin;
-				return {
-					...link,
-					affiliateUrl: `${baseUrl}/aff/${link.linkCode}`
-				};
+				return shareableLink(ctx.event.url.origin, link);
 			} catch (error) {
 				if (error instanceof TRPCError) {
 					throw error;
@@ -329,11 +352,7 @@ export const affiliateRouter = router({
 			if (!affiliate) return [];
 
 			const links = await AffiliateService.getAffiliateLinks(ctx.user.id);
-			const baseUrl = ctx.event.url.origin;
-			return links.map((link: any) => ({
-				...link,
-				affiliateUrl: `${baseUrl}/aff/${link.linkCode}`
-			}));
+			return links.map((link) => shareableLink(ctx.event.url.origin, link));
 		} catch (error) {
 			if (error instanceof TRPCError) throw error;
 			if (error instanceof AffiliateAccessError) {

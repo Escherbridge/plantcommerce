@@ -34,3 +34,14 @@ export function safeRedirectPath(
 	if (again.origin !== base.origin) return fallback;
 	return path;
 }
+
+/** Login and registration keep a same-origin return path. The default account path adds no query. */
+export function authHandoffHref(
+	kind: 'login' | 'register',
+	redirectTo: string | null | undefined,
+	origin: string
+): string {
+	const path = safeRedirectPath(redirectTo, origin);
+	if (path === FALLBACK_PATH) return `/${kind}`;
+	return `/${kind}?redirect=${encodeURIComponent(path)}`;
+}
