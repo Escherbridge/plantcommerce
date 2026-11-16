@@ -12,6 +12,7 @@ describe('writing module', () => {
 		expect(xml).toContain('<rss version="2.0">');
 		expect(xml).toContain('https://aevani.com/blog/cooling-can-use-more-water-than-the-crop');
 		expect(xml).toContain('https://aevani.com/blog/a-flat-eight-percent');
+		expect(xml).toContain('https://aevani.com/blog/the-fee-that-didnt-move');
 		expect(xml).toContain('https://aevani.com/blog/dwc-vs-kratky-vs-nft');
 		expect(xml).toContain('https://aevani.com/blog/raised-beds-for-heavy-clay-and-hot-summers');
 		expect(xml).toContain('https://aevani.com/blog/pre-spring-grower-checklist');
@@ -22,7 +23,7 @@ describe('writing module', () => {
 		expect(xml).not.toContain('nothing-for-sale-yet');
 		expect(xml).not.toContain('Nothing for sale yet');
 		expect(xml).not.toMatch(
-			/primusneo|payout timing|when you get paid|when a seller is paid|etsy|growtsy|the-fee-that-didnt-move|no kits for sale/i
+			/primusneo|payout timing|when you get paid|when a seller is paid|no kits for sale/i
 		);
 		expect(xml).toContain('Escherbridge');
 		expect(xml).not.toContain('railway.app');

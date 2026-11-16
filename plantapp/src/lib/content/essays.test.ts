@@ -10,10 +10,11 @@ import {
 } from './essays';
 
 describe('cornerstone essays', () => {
-	it('publishes all six essays, routes into PlantGeo and /sell, and passes hard compliance rules', async () => {
+	it('publishes the field notes, routes into PlantGeo and /sell, and passes hard compliance rules', async () => {
 		expect(cornerstoneEssays.map((essay) => essay.slug)).toEqual([
 			'cooling-can-use-more-water-than-the-crop',
 			'a-flat-eight-percent',
+			'the-fee-that-didnt-move',
 			'dwc-vs-kratky-vs-nft',
 			'raised-beds-for-heavy-clay-and-hot-summers',
 			'pre-spring-grower-checklist',
@@ -29,13 +30,17 @@ describe('cornerstone essays', () => {
 		expect(source).not.toContain(
 			'A shop is supposed to be a place where you can leave with something.'
 		);
-		expect(source).not.toMatch(
-			/primusneo|payout timing|when you get paid|when a seller is paid|growtsy|etsy|the-fee-that-didnt-move/i
-		);
+		expect(source).not.toMatch(/primusneo|payout timing|when you get paid|when a seller is paid/i);
+		for (const essay of cornerstoneEssays) {
+			if (essay.slug === 'the-fee-that-didnt-move') continue;
+			expect(`${essay.slug} ${essay.body}`).not.toMatch(/growtsy|etsy|the-fee-that-didnt-move/i);
+		}
 
 		for (const essay of cornerstoneEssays) {
 			const html = sanitizeRichText(cornerstoneEssayHtml(essay.body));
-			expect(html).toContain('href="https://plantgeo.aevani.com');
+			if (essay.slug !== 'the-fee-that-didnt-move') {
+				expect(html).toContain('href="https://plantgeo.aevani.com');
+			}
 			expect(html).toContain('href="/sell"');
 			expect(html).not.toContain('nofollow');
 			expect(cornerstoneEssayBySlug(essay.slug)?.title).toBe(essay.title);

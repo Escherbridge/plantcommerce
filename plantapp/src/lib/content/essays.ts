@@ -122,6 +122,81 @@ Growing supplies do not behave like phone cases. Bare-root perennials, live star
 While growers read free [field guides](/guides) and sketch beds, greenhouses, and windbreaks on [PlantGeo](https://plantgeo.aevani.com/), independent sellers remain the center of Aevani. Whether you breed regional seeds, forge hand tools, assemble solar drip kits, or fabricate aquaponic and hydroponic hardware, our [seller application](/sell) takes just a few minutes. Tell us what you grow or build, and we follow up directly by email.`
 	},
 	{
+		slug: 'the-fee-that-didnt-move',
+		title: "The fee that didn't move: what a small grower actually pays to sell online",
+		excerpt:
+			"Etsy's headline seller fees didn't change in 2026. On a $40 seed order, listing, processing, and sometimes an ad line still show up. Here is the arithmetic, including Aevani's flat 8%.",
+		metaDescription:
+			"Etsy's headline seller fees didn't change in 2026. On a $40 seed order, listing, processing, and sometimes an ad line still show up. Here is the arithmetic.",
+		publishedAt: '2026-11-10T00:00:00.000Z',
+		tags: ['Aevani', 'seller fees', 'marketplace'],
+		sources: [
+			{
+				label: 'Etsy Help: What are the Fees and Taxes for Selling on Etsy',
+				href: 'https://help.etsy.com/hc/en-us/articles/115014483627-What-are-the-Fees-and-Taxes-for-Selling-on-Etsy'
+			},
+			{
+				label: 'Etsy Help: What are Payment Processing Fees for Selling on Etsy',
+				href: 'https://help.etsy.com/hc/en-us/articles/115015628847-What-are-Payment-Processing-Fees-for-Selling-on-Etsy'
+			},
+			{
+				label: 'eBay Seller Center: seller fees',
+				href: 'https://www.ebay.com/sellercenter/selling/start-selling-on-ebay/seller-fees'
+			},
+			{
+				label: 'Growtsy, Etsy changes changelog (Oct. 5 and June 22 dates)',
+				href: 'https://www.growtsy.com/etsy-changes'
+			},
+			{ label: 'Sell on Aevani', href: 'https://aevani.com/sell' }
+		],
+		body: `A $40 order of seed packets, shipping included, no sales tax, from a U.S. seller with a U.S. bank account. That is a small, ordinary sale. What the seller keeps is not the headline rate someone checked in the spring. It is the total of every line that still prints on the statement.
+
+Etsy's headline seller fees did not change in 2026 for a U.S. shop. Growtsy's changelog, which compared the February 13 and October 5 versions of the fees policy, is the source for that October 5 revision date. Etsy's own legal fees page blocked a fetch for this piece, so the date is treated as secondary. The number people watch held still. The other lines did what they always do.
+
+## What Etsy actually charges
+
+Etsy's help page on fees and taxes, opened 10 November 2026, still lists a $0.20 listing fee, paid "regardless of resulting sales." A listing expires after four months, and auto-renew is another $0.20. The transaction fee is 6.5% of the total order amount, including shipping and gift wrap. Offsite Ads, if the order came from one, are 15% of the order total when the shop made under $10,000 on Etsy in the past 365 days, or 12% at or above that, and never more than $100 per order.
+
+Payment processing, for a U.S. seller, is 3% + $0.25 USD, taken from the total sale price including shipping and any sales tax, and charged "in addition to the 6.5% transaction fee," according to Etsy's processing-fees help page. A one-time shop set-up fee also applies, and the cost "varies by location." This page does not invent a U.S. dollar figure for that set-up fee.
+
+The 2026 changes that did land were at the edges. Regulatory Operating Fees changed in seven non-U.S. markets on June 22, 2026, a date taken from Growtsy's changelog. An Etsy Community announcement on that change appeared in search results; the announcement itself was not opened for this piece. None of those apply to U.S. sellers.
+
+## What eBay charges, without a Store subscription
+
+eBay's Seller Center fees page, also opened 10 November 2026, is free to list for most casual sellers, then $0.35 per listing after 250 in a month. In most categories the final value fee is 13.6% of the total sale — item, shipping, sales tax, and other fees — up to $7,500, plus $0.30 per order at $10 or less, or $0.40 above. Promoted Listings and optional upgrades cost extra.
+
+## One $40 order, four outcomes
+
+The table below is our arithmetic from each platform's published fees, 10 November 2026, rounded to the cent. It is not a platform statement, and it is not a savings guarantee.
+
+| Platform | What gets charged | Fees | Seller keeps |
+|---|---|---|---|
+| Etsy, no Offsite Ad | $0.20 listing + 6.5% ($2.60) + 3% + $0.25 ($1.45) | $4.25 (10.6%) | $35.75 |
+| Etsy, order came from an Offsite Ad (shop under $10k) | the above + 15% ($6.00) | $10.25 (25.6%) | $29.75 |
+| eBay, most categories | 13.6% ($5.44) + $0.40 | $5.84 (14.6%) | $34.16 |
+| Aevani | 8% ($3.20), processing included | $3.20 (8%) | $36.80 |
+
+A few limits belong next to those numbers. The Etsy listing fee is per listing, not per order, so a multi-item listing that sells many times spreads the $0.20 out — but each extra quantity sold is another $0.20. Sales tax raises the base for Etsy processing and for the eBay fee. Shipping labels and ads are extra everywhere.
+
+Selling on Aevani is one line: a flat 8% on each sale, with card processing included and absorbed by Aevani, and no listing, monthly, or ad fees. That is the whole published rate. Etsy and eBay bring a buyer audience that Aevani does not have yet. That is the honest trade, and it is the part of the comparison that a headline rate will not tell you.
+
+This is not a claim that Etsy or eBay are a bad deal. They are large markets with real buyers. The useful critique is of a fee bill with many lines, not of the companies. It is also not a pitch to buyers. If you grow or make tools that belong here, [applications to sell](https://aevani.com/sell) are open.
+
+## Sources
+
+1. Etsy Help, “What are the Fees and Taxes for Selling on Etsy,” opened 10 November 2026. https://help.etsy.com/hc/en-us/articles/115014483627-What-are-the-Fees-and-Taxes-for-Selling-on-Etsy
+2. Etsy Help, “What are Payment Processing Fees for Selling on Etsy,” opened 10 November 2026. https://help.etsy.com/hc/en-us/articles/115015628847-What-are-Payment-Processing-Fees-for-Selling-on-Etsy
+3. eBay Seller Center, “Seller fees,” opened 10 November 2026. https://www.ebay.com/sellercenter/selling/start-selling-on-ebay/seller-fees
+4. Growtsy, Etsy changes changelog, opened 10 November 2026. Used only for the October 5 revision date and the June 22 non-U.S. Regulatory Operating Fee date. https://www.growtsy.com/etsy-changes
+5. Sell on Aevani, flat 8% with card processing included and no other fees. https://aevani.com/sell
+
+## Related
+
+- [The seller fee is a flat 8%](/blog/a-flat-eight-percent) — the published Aevani rate, in one place.
+- [In a dry climate, cooling can use more water than the plants](/blog/cooling-can-use-more-water-than-the-crop)
+- [Sell on Aevani](/sell)`
+	},
+	{
 		slug: 'dwc-vs-kratky-vs-nft',
 		title: 'DWC vs. Kratky vs. NFT: Which First Hydroponic Setup Fits Your Kitchen or Spare Room?',
 		seoTitle: 'DWC vs. Kratky vs. NFT for a first setup — Aevani',
@@ -393,6 +468,21 @@ export function cornerstoneEssayHtml(body: string): string {
 					.map((line) => `<li>${formatEssayInline(line.replace(/^\d+\.\s+/, ''))}</li>`)
 					.join('');
 				return `<ol>${items}</ol>`;
+			}
+			if (lines.length >= 2 && lines.every((line) => line.startsWith('|') && line.endsWith('|'))) {
+				return lines
+					.filter((line) => {
+						const cells = line.split('|').slice(1, -1);
+						return !cells.every((cell) => /^:?-+:?$/.test(cell.trim()));
+					})
+					.map((line) => {
+						const cells = line
+							.split('|')
+							.slice(1, -1)
+							.map((cell) => formatEssayInline(cell.trim()));
+						return `<p>${cells.join(' ')}</p>`;
+					})
+					.join('');
 			}
 			return `<p>${formatEssayInline(trimmed)}</p>`;
 		})
