@@ -64,7 +64,8 @@ describe('public crawler discovery', () => {
 		expect(fullXml).toContain('<loc>https://aevani.com/blog/dwc-vs-kratky-vs-nft</loc>');
 		expect(source).not.toContain('nothing-for-sale-yet');
 		expect(fullXml).not.toContain('nothing-for-sale-yet');
-		expect(fullXml).not.toContain('the-fee-that-didnt-move');
+		expect(fullXml).toContain('<loc>https://aevani.com/blog/the-fee-that-didnt-move</loc>');
+		expect(contentPaths).toContain('/blog/the-fee-that-didnt-move');
 
 		for (const indexableRoute of [
 			'/contact',
