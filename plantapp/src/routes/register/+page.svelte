@@ -36,15 +36,11 @@
 
 	const continuePath = $derived.by(() => {
 		const current = pageRedirect();
-		return current
-			? safeRedirectPath(current.redirect, current.origin)
-			: '/account/profile';
+		return current ? safeRedirectPath(current.redirect, current.origin) : '/account/profile';
 	});
 	const signInHref = $derived.by(() => {
 		const current = pageRedirect();
-		return current
-			? authHandoffHref('login', continuePath, current.origin)
-			: '/login';
+		return current ? authHandoffHref('login', continuePath, current.origin) : '/login';
 	});
 
 	let username = $state('');
