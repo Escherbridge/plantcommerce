@@ -59,10 +59,10 @@
 	}
 </script>
 
-<main class="catalogue">
+<section class="catalogue" aria-labelledby="catalogue-title">
 	<header class="cat-head">
 		<span class="eyebrow">The catalogue</span>
-		<h1 class="cat-title">Every tool here earned its place.</h1>
+		<h1 id="catalogue-title" class="cat-title">Every tool here earned its place.</h1>
 		<p class="cat-lead">
 			Growing systems, soil tools, water-testing kits, and supplies matched to our field guides.
 			Grow or build equipment that lasts? <a
@@ -151,7 +151,7 @@
 			</div>
 		{/if}
 	</section>
-</main>
+</section>
 
 <style>
 	.catalogue {

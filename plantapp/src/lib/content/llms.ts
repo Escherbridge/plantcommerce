@@ -72,6 +72,7 @@ export function renderLlmsTxt(): string {
 		'',
 		'## Site',
 		...siteLinks,
+		'- Apply to sell: a short web form at https://aevani.com/sell. There is no public API, and applications are read by a person.',
 		link('/feed.xml', 'RSS'),
 		link('/sitemap.xml', 'Sitemap'),
 		'',

@@ -138,7 +138,7 @@
 
 <svelte:window onkeydown={handleUserMenuKeydown} />
 
-<header class="aevani-header" class:scrolled>
+<header class="aevani-header" class:scrolled aria-label="Site">
 	<div class="header-inner">
 		<div class="glass-bar">
 			<!-- Left: mobile hamburger + brand -->

@@ -29,10 +29,10 @@
 	}
 </script>
 
-<main class="catalogue">
+<section class="catalogue" aria-labelledby="catalogue-title">
 	<header class="cat-head">
 		<span class="eyebrow">Growing systems</span>
-		<h1 class="cat-title">{TITLE}</h1>
+		<h1 id="catalogue-title" class="cat-title">{TITLE}</h1>
 		<p class="cat-lead">{LEAD}</p>
 	</header>
 
@@ -76,7 +76,7 @@
 			</div>
 		{/if}
 	</section>
-</main>
+</section>
 
 <style>
 	.catalogue {
