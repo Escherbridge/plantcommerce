@@ -12,6 +12,24 @@ describe('public alias redirects', () => {
 		expect(publicAliasRedirect('/signup/')).toBe('/register');
 	});
 
+	it('308s the retired beginner notes onto the live pages', () => {
+		expect(publicAliasRedirect('/blog/hydroponics-for-beginners')).toBe(
+			'/blog/dwc-vs-kratky-vs-nft'
+		);
+		expect(publicAliasRedirect('/blog/introduction-to-aquaponics')).toBe(
+			'/guides/small-scale-aquaponics'
+		);
+		expect(publicAliasRedirect('/blog/what-is-silvopasture')).toBe(
+			'/guides/temperate-silvopasture'
+		);
+		expect(publicAliasRedirect('/blog/hydroponics-for-beginners/')).toBe(
+			'/blog/dwc-vs-kratky-vs-nft'
+		);
+		expect(publicAliasRedirect('/blog/dwc-vs-kratky-vs-nft')).toBeNull();
+		expect(publicAliasRedirect('/guides/small-scale-aquaponics')).toBeNull();
+		expect(publicAliasRedirect('/blog/monoculture-to-polyculture')).toBeNull();
+	});
+
 	it('leaves the real pages alone', () => {
 		expect(publicAliasRedirect('/register')).toBeNull();
 		expect(publicAliasRedirect('/sell')).toBeNull();

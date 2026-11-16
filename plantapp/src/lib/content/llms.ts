@@ -20,18 +20,6 @@ const legacyPages = [
 		title: 'Understanding Soil Health: The Foundation of Every Garden'
 	},
 	{
-		path: '/blog/hydroponics-for-beginners',
-		title: 'Hydroponics for Beginners: Growing Without Soil'
-	},
-	{
-		path: '/blog/introduction-to-aquaponics',
-		title: 'Introduction to Aquaponics: Fish Meet Plants'
-	},
-	{
-		path: '/blog/what-is-silvopasture',
-		title: 'What is Silvopasture? Integrating Trees, Forage, and Livestock'
-	},
-	{
 		path: '/blog/monoculture-to-polyculture',
 		title: 'From Monoculture to Polyculture: Why Diversity Matters'
 	}

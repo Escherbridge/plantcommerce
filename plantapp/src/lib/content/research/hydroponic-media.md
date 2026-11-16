@@ -1,6 +1,6 @@
 ---
 title: "Soilless hydroponic media: perlite, rockwool, and coir"
-seoTitle: "Soilless hydroponic media: perlite, rockwool, and coir — Guides | Aevani"
+seoTitle: "Hydroponic media: perlite, rockwool, coir — Guides | Aevani"
 metaDescription: "Official pages rank coconut fiber, pine bark, and perlite by water-holding and tell the grower to test the bag. They do not print a coco-versus-rockwool number."
 h1: "Soilless hydroponic media: perlite, rockwool, and coir"
 eyebrow: "Soilless hydroponic media: perlite, rockwool, and coir"

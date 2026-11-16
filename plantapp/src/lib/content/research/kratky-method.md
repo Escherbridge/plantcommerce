@@ -1,6 +1,6 @@
 ---
 title: "The Kratky method: non-circulating hydroponics"
-seoTitle: "The Kratky method: non-circulating hydroponics — Guides | Aevani"
+seoTitle: "Kratky method: non-circulating hydroponics — Guides | Aevani"
 metaDescription: "Kratky’s method runs without a pump because the crop finishes before the tank is empty, and an air gap feeds the oxygen roots. Not a general-purpose system."
 h1: "The Kratky method: non-circulating hydroponics"
 eyebrow: "Kratky (non-circulating) hydroponics and its limits"

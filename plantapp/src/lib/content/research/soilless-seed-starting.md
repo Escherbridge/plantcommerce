@@ -1,6 +1,6 @@
 ---
 title: "Starting seeds and transplants for soilless systems"
-seoTitle: "Starting seeds and transplants for soilless systems — Guides | Aevani"
+seoTitle: "Seeds and transplants for soilless systems — Guides | Aevani"
 metaDescription: "Official lettuce handbooks already specify how to start a soilless plug. Cornell’s and Kentucky’s nursery EC targets are printed side by side, not averaged."
 h1: "Starting seeds and transplants for soilless systems"
 eyebrow: "Starting seeds and transplants for soilless systems"

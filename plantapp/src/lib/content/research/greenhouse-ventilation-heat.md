@@ -1,6 +1,6 @@
 ---
 title: "Greenhouse and high-tunnel ventilation and heat"
-seoTitle: "Greenhouse and high-tunnel ventilation and heat — Guides | Aevani"
+seoTitle: "Greenhouse and tunnel ventilation and heat — Guides | Aevani"
 metaDescription: "Plastic collects heat faster than most people plan for. Official guides treat ventilation as a daily job; in a dry climate, cooling water can rival irrigation."
 h1: "Greenhouse and high-tunnel ventilation and heat"
 eyebrow: "Greenhouse and high-tunnel ventilation and heat"

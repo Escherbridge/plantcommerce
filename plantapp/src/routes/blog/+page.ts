@@ -1,5 +1,6 @@
 import type { PageLoad } from './$types';
 import { cornerstoneEssays, essayRedirectTarget } from '$lib/content/essays';
+import { publicAliasRedirect } from '$lib/http/publicRedirects';
 import { createCallerClient } from '$lib/trpc/client';
 
 const unsourcedCornerstoneSlugs = new Set([
@@ -32,7 +33,10 @@ export const load: PageLoad = async (event) => {
 			posts: [
 				...essays,
 				...(posts || []).filter(
-					(post) => !unsourcedCornerstoneSlugs.has(post.slug) && !essayRedirectTarget(post.slug)
+					(post) =>
+						!unsourcedCornerstoneSlugs.has(post.slug) &&
+						!essayRedirectTarget(post.slug) &&
+						!publicAliasRedirect(`/blog/${post.slug}`)
 				)
 			],
 			selectedCategory: category

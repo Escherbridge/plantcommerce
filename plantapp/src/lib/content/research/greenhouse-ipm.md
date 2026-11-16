@@ -1,6 +1,6 @@
 ---
 title: "Integrated pest management in greenhouses and tunnels"
-seoTitle: "Integrated pest management in greenhouses and tunnels — Guides | Aevani"
+seoTitle: "Greenhouse and tunnel pest management — Guides | Aevani"
 metaDescription: "A tunnel has its own pest complex. Official high-tunnel guides say IPM starts with scouting, sanitation, and clean transplants, not with a default spray."
 h1: "Integrated pest management in greenhouses and tunnels"
 eyebrow: "Integrated pest management in greenhouses and tunnels"

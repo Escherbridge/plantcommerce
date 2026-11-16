@@ -146,6 +146,11 @@ describe('public crawler discovery', () => {
 			expect(published).toContain(`<loc>https://aevani.com/guides/${slug}</loc>`);
 		}
 		expect(published).toContain('<loc>https://aevani.com/guides/understanding-soil-health</loc>');
+		expect(published).not.toContain('<loc>https://aevani.com/blog/hydroponics-for-beginners</loc>');
+		expect(published).not.toContain(
+			'<loc>https://aevani.com/blog/introduction-to-aquaponics</loc>'
+		);
+		expect(published).not.toContain('<loc>https://aevani.com/blog/what-is-silvopasture</loc>');
 		expect(published).toContain(
 			'<loc>https://aevani.com/guides/getting-started-companion-planting</loc>'
 		);

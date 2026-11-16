@@ -1,6 +1,6 @@
 ---
 title: "Drip irrigation for raised beds and high tunnels"
-seoTitle: "Drip irrigation for raised beds and high tunnels — Guides | Aevani"
+seoTitle: "Drip irrigation for beds and high tunnels — Guides | Aevani"
 metaDescription: "Official pages treat drip or soaker lines as the default for boxes and tunnels. Schedule from soil moisture under the plastic, not from a Boise ET calendar."
 h1: "Drip irrigation for raised beds and high tunnels"
 eyebrow: "Drip irrigation for raised beds and high tunnels"

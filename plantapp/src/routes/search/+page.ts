@@ -1,5 +1,6 @@
 import type { PageLoad } from './$types';
 import { essayRedirectTarget } from '$lib/content/essays';
+import { publicAliasRedirect } from '$lib/http/publicRedirects';
 import { isPlaceholderListing, presentPlaceholderListing } from '$lib/catalog/placeholderListing';
 import { createCallerClient } from '$lib/trpc/client';
 
@@ -22,7 +23,9 @@ export const load: PageLoad = async (event) => {
 	return {
 		q,
 		guides: guides ?? [],
-		posts: (posts ?? []).filter((post) => !essayRedirectTarget(post.slug)),
+		posts: (posts ?? []).filter(
+			(post) => !essayRedirectTarget(post.slug) && !publicAliasRedirect(`/blog/${post.slug}`)
+		),
 		products: (products ?? []).map((row) => {
 			const product = row.product ?? row;
 			if (!isPlaceholderListing(product)) return row;

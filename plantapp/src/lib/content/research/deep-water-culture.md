@@ -1,6 +1,6 @@
 ---
 title: "Deep water culture: aeration and dissolved oxygen"
-seoTitle: "Deep water culture: aeration and dissolved oxygen — Guides | Aevani"
+seoTitle: "Deep water culture: aeration and oxygen — Guides | Aevani"
 metaDescription: "Deep water culture is simple in layout and strict about oxygen. Official lettuce guides already print the floors; a warm, stagnant reservoir is how it fails."
 h1: "Deep water culture: aeration and dissolved oxygen"
 eyebrow: "Deep water culture: aeration and dissolved oxygen"

@@ -1,6 +1,6 @@
 ---
 title: "Winterizing high tunnels, irrigation, and containers"
-seoTitle: "Winterizing high tunnels, irrigation, and containers — Guides | Aevani"
+seoTitle: "Winterizing tunnels, irrigation, and pots — Guides | Aevani"
 metaDescription: "Official pages split the job: vent a tunnel, drain or blow out irrigation, and bring clay pots inside. They do not give a hydroponic-tank antifreeze recipe."
 h1: "Winterizing high tunnels, irrigation, and containers"
 eyebrow: "Winterizing high tunnels, irrigation, and containers"

@@ -1,6 +1,6 @@
 ---
 title: "Testing source water for hydroponics and high tunnels"
-seoTitle: "Testing source water for hydroponics and high tunnels — Guides | Aevani"
+seoTitle: "Testing source water for hydroponics — Guides | Aevani"
 metaDescription: "Official pages already say to test pH, EC, and alkalinity first. Florida and Kentucky well-water figures are real, and they are not a Treasure Valley report."
 h1: "Testing source water for hydroponics and high tunnels"
 eyebrow: "Testing source water for hydroponics and high tunnels"

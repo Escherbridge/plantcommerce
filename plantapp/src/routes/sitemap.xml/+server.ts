@@ -23,9 +23,6 @@ const lastmodByPath = new Map<string, string>(
 const publishedEditorialPaths = [
 	'/guides/getting-started-companion-planting',
 	'/guides/understanding-soil-health',
-	'/blog/hydroponics-for-beginners',
-	'/blog/introduction-to-aquaponics',
-	'/blog/what-is-silvopasture',
 	'/blog/monoculture-to-polyculture',
 	...cornerstoneEssays.map((essay) => `/blog/${essay.slug}`)
 ] as const;
