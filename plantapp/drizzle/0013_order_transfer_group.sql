@@ -1,4 +1,5 @@
 -- Additive charge id and transfer group on order. No changes to existing rows.
+-- Numbered 0013 so it does not collide with 0012_manager_invites.sql on PR #49.
 -- Applied on server startup by ensureAdditiveMigrations(). Not journaled.
 -- See drizzle/AGENTS.md.
 

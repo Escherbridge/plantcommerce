@@ -1,4 +1,4 @@
--- Read-only target inspection for 0012_order_transfer_group.sql. Do not mutate the target database.
+-- Read-only target inspection for 0013_order_transfer_group.sql. Do not mutate the target database.
 BEGIN READ ONLY;
 
 SELECT current_database() AS database_name, current_user AS database_user, now() AS inspected_at;

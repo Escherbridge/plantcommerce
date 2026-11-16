@@ -8,7 +8,7 @@ const sellerMigrationPath = new URL(
 	import.meta.url
 );
 const transferGroupMigrationPath = new URL(
-	'../../../../drizzle/0012_order_transfer_group.sql',
+	'../../../../drizzle/0013_order_transfer_group.sql',
 	import.meta.url
 );
 
