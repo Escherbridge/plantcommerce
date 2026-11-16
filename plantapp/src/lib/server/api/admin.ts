@@ -9,6 +9,7 @@ import AffiliateService, { AffiliateNotFoundError } from '../services/affiliate'
 import { db } from '../db';
 import { product, order, user as userTable, affiliate } from '../db/schema';
 import { sql, eq } from 'drizzle-orm';
+import { userRoles } from '$lib/auth/userRole';
 
 export const adminRouter = router({
 	/**
@@ -137,7 +138,7 @@ export const adminRouter = router({
 			z.object({
 				limit: z.number().min(1).max(100).default(50),
 				offset: z.number().min(0).default(0),
-				role: z.enum(['admin', 'customer', 'affiliate', 'instructor']).optional()
+				role: z.enum(userRoles).optional()
 			})
 		)
 		.query(async ({ input }) => {
