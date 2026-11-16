@@ -58,7 +58,8 @@ describe('focus and sticky-header targets', () => {
 		expect(appCss).toContain(`
 .register-page input.input:focus,
 .login-page input.input:focus,
-.sell-page input.input:focus {
+.sell-page input.input:focus,
+.sell-page textarea.textarea:focus {
 	outline: 2px solid var(--aevani-focus) !important;
 	outline-offset: 2px !important;
 }`);
@@ -74,6 +75,7 @@ describe('focus and sticky-header targets', () => {
 		expect(sell).toContain('sell-page');
 		expect(login).toContain('class="input-bordered input w-full"');
 		expect(sell).toContain('class="input-bordered input w-full"');
+		expect(sell).toContain('class="textarea-bordered textarea w-full"');
 	});
 
 	it('sets scroll-padding-top to the sticky header height', () => {
@@ -116,5 +118,14 @@ describe('focus and sticky-header targets', () => {
 			expect(register).toContain(`aria-describedby={fieldDescribedBy('${field}')}`);
 		}
 		expect(register).toContain('Password must be at least 8 characters');
+	});
+
+	it('moves an empty login submit to the first missing credential', () => {
+		expect(login).toContain('firstEmptyLoginField');
+		expect(login).toContain('aria-invalid={emailInvalid}');
+		expect(login).toContain('aria-describedby={emailDescribedBy}');
+		expect(login).toContain('passwordInput)?.focus()');
+		expect(login).toContain('Please enter your email and password.');
+		expect(login).toContain('method="post"');
 	});
 });
