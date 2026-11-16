@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import SEO from '$lib/components/SEO.svelte';
 import ReferralHold from '$lib/components/content/ReferralHold.svelte';
 import { layoutOwnsDocumentMeta, publicRouteMetadata } from '$lib/config/site';
+import SellPage from './sell/+page.svelte';
 import VerifyEmailPage from './verify-email/+page.svelte';
 
 const routesDir = dirname(fileURLToPath(import.meta.url));
@@ -99,6 +100,30 @@ describe('document title', () => {
 
 		expect(publicRouteMetadata('/verify-email').title).toBe('Aevani');
 		expect(layoutOwnsDocumentMeta('/verify-email')).toBe(false);
+	});
+
+	it('prints one sell title on the open form, a 400, and the confirmation', () => {
+		const sellTitle = '<title>Sell on Aevani — a flat 8%</title>';
+		const states = [
+			{ data: { applied: false }, form: null },
+			{
+				data: { applied: false },
+				form: {
+					fieldErrors: { offerings: 'Tell us what you grow or make.' },
+					values: { name: 'Ada Grower', offerings: '   ' }
+				}
+			},
+			{ data: { applied: true }, form: null }
+		];
+
+		for (const props of states) {
+			const pageHead = render(SellPage, { props: props as never }).head;
+			expect(titles(serverHead('/sell', pageHead, 200))).toEqual([sellTitle]);
+			expect(titles(serverHead('/sell', pageHead, 400))).toEqual([sellTitle]);
+		}
+
+		expect(publicRouteMetadata('/sell').title).toBe('Sell on Aevani — a flat 8%');
+		expect(layoutOwnsDocumentMeta('/sell')).toBe(false);
 	});
 
 	it('does not add a layout title on routes that already print one', () => {

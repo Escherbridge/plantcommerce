@@ -251,6 +251,7 @@ const pageOwnedDocumentTitles = new Set([
 	'/resend-verification',
 	'/reset-password',
 	'/search',
+	'/sell',
 	'/verify-email'
 ]);
 

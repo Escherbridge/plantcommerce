@@ -37,7 +37,9 @@
 	<section class="card w-full bg-base-100 shadow-xl">
 		<div class="card-body">
 			<h1 id="resend-title" class="card-title text-2xl">Verify your email</h1>
-			<p>Request a new verification email for the address on your signed-in account.</p>
+			{#if signedIn}
+				<p>Request a new verification email for the address on your signed-in account.</p>
+			{/if}
 			{#if message}
 				<p class={unavailable ? 'text-warning' : ''} role="status">{message}</p>
 			{/if}

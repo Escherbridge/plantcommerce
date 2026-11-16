@@ -1,16 +1,29 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import SEO from '$lib/components/SEO.svelte';
+	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { Container, Section } from '$lib/components/layout';
+	import { documentCrumbLabel, publicRouteMetadata, publicSiteUrl } from '$lib/config/site';
 	import { sellerApplicationSummaryItems } from '$lib/sellerApplication/fields';
-	import type { ActionData, PageData } from './$types';
+	import {
+		applySellEnhanceResult,
+		SELL_TRANSPORT_ERROR,
+		sellDraftFromFormData,
+		type SellDraft
+	} from './enhance';
+	import type { ActionData, PageData, SubmitFunction } from './$types';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
 	let submitting = $state(false);
+	let transportError = $state(false);
+	let keptDraft = $state<SellDraft | null>(null);
 	let summaryEl = $state<HTMLElement | null>(null);
 	let receivedEl = $state<HTMLElement | null>(null);
 
-	const values = $derived(form && 'values' in form ? form.values : undefined);
+	const sellMeta = publicRouteMetadata('/sell');
+	const serverValues = $derived(form && 'values' in form ? form.values : undefined);
+	const values = $derived(keptDraft ?? serverValues);
 	const fieldErrors = $derived(
 		(form && 'fieldErrors' in form && form.fieldErrors ? form.fieldErrors : {}) as Record<
 			string,
@@ -29,19 +42,61 @@
 		if (succeeded) receivedEl?.focus();
 	});
 
-	function submitApplication() {
+	const submitApplication: SubmitFunction = ({ formData, formElement, controller }) => {
+		keptDraft = sellDraftFromFormData(formData);
+		transportError = false;
 		submitting = true;
-		return async ({ update }: { update: () => Promise<void> }) => {
+		controller.signal.addEventListener(
+			'abort',
+			() => {
+				keptDraft = sellDraftFromFormData(new FormData(formElement));
+				transportError = true;
+				submitting = false;
+			},
+			{ once: true }
+		);
+
+		return async ({ result, formElement, update }) => {
 			try {
-				await update();
+				const outcome = await applySellEnhanceResult(result, () => update());
+				if (outcome === 'kept') {
+					keptDraft = sellDraftFromFormData(new FormData(formElement));
+					transportError = true;
+					return;
+				}
+				keptDraft = null;
 			} finally {
 				submitting = false;
 			}
 			if (summaryEl?.isConnected) summaryEl.focus();
 			if (receivedEl?.isConnected) receivedEl.focus();
 		};
-	}
+	};
 </script>
+
+<svelte:head>
+	<SEO
+		title={sellMeta.title}
+		description={sellMeta.description}
+		url={publicSiteUrl('/sell')}
+		author="Escherbridge"
+		type="website"
+	/>
+</svelte:head>
+<StructuredData
+	type="breadcrumb"
+	data={{
+		itemListElement: [
+			{ '@type': 'ListItem', position: 1, name: 'Home', item: publicSiteUrl('/') },
+			{
+				'@type': 'ListItem',
+				position: 2,
+				name: documentCrumbLabel('/sell'),
+				item: publicSiteUrl('/sell')
+			}
+		]
+	}}
+/>
 
 <Section>
 	<Container>
@@ -104,7 +159,14 @@
 					</p>
 				</div>
 			{:else}
-				{#if errorMessage && summaryItems.length === 0}
+				{#if transportError}
+					<p
+						class="rounded-2xl border border-error/30 bg-error/10 p-4 text-base-content/80"
+						role="alert"
+					>
+						{SELL_TRANSPORT_ERROR}
+					</p>
+				{:else if errorMessage && summaryItems.length === 0}
 					<p
 						class="rounded-2xl border border-error/30 bg-error/10 p-4 text-base-content/80"
 						role="alert"
