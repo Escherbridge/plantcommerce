@@ -13,6 +13,7 @@ import { AffiliateCommissionService } from './affiliateCommission';
 import { connectAccountSnapshot } from './connectAccountStatus';
 import { PayoutAccountService } from './payoutAccount';
 import { recordSellerEarnings } from './sellerEarningLedger';
+import { applyMoneyEvent, type ReversalClient } from './refundApply';
 import { orderProviderChargeFields } from './stripeCharge';
 import { StripeCheckoutService } from './stripeCheckout';
 
@@ -140,7 +141,8 @@ export class StripeWebhookService {
 	/** Process a signature-verified raw Stripe event through a durable idempotency record. */
 	static async processVerifiedEvent(
 		event: Stripe.Event,
-		rawPayload: Buffer
+		rawPayload: Buffer,
+		reversalClient: ReversalClient | null = null
 	): Promise<StripeWebhookProcessResult> {
 		const claim = await this.claimEvent(event.id, event.type, payloadDigest(rawPayload));
 		if (claim.kind === 'complete') {
@@ -151,6 +153,16 @@ export class StripeWebhookService {
 		}
 
 		try {
+			const eventType = event.type as string;
+			if (
+				eventType === 'charge.refunded' ||
+				eventType.startsWith('refund.') ||
+				eventType.startsWith('charge.dispute.')
+			) {
+				const outcome = await applyMoneyEvent(eventType, event.data.object, reversalClient);
+				await this.finishEvent(event.id, outcome);
+				return outcome === 'processed' ? 'processed' : 'ignored';
+			}
 			if (
 				event.type !== 'checkout.session.completed' &&
 				event.type !== 'checkout.session.async_payment_succeeded' &&
