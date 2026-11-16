@@ -5,7 +5,6 @@
 </script>
 
 <svelte:head>
-	<title>Affiliate referrals — not open yet</title>
 	<meta
 		name="description"
 		content="The Aevani referral program is not open. The referral share has not been set, and applications are not being accepted."

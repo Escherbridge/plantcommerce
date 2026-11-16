@@ -242,6 +242,7 @@ const pageOwnedDocumentTitles = new Set([
 	'/cart',
 	'/checkout',
 	'/checkout/success',
+	'/component-demo',
 	'/forgot-password',
 	'/learn/certificates',
 	'/learn/my-courses',
@@ -249,7 +250,8 @@ const pageOwnedDocumentTitles = new Set([
 	'/register',
 	'/resend-verification',
 	'/reset-password',
-	'/search'
+	'/search',
+	'/verify-email'
 ]);
 
 export function layoutOwnsDocumentMeta(pathname: string): boolean {
@@ -257,6 +259,7 @@ export function layoutOwnsDocumentMeta(pathname: string): boolean {
 	if (/^\/(blog|guides|news|courses)\/[^/]+$/.test(path)) return false;
 	if (/^\/products\/[^/]+\/[^/]+$/.test(path)) return false;
 	if (path.startsWith('/certificates/verify/')) return false;
+	if (path === '/learn/course' || path.startsWith('/learn/course/')) return false;
 	if (pageOwnedDocumentTitles.has(path)) return false;
 	return true;
 }
