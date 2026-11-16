@@ -7,17 +7,21 @@
 
 	let {
 		errors,
-		fieldIds
+		fieldIds,
+		heading = CREDENTIAL_ERROR_SUMMARY_HEADING,
+		id
 	}: {
 		errors: CredentialFieldError[];
 		fieldIds: Record<string, string>;
+		heading?: string;
+		id?: string;
 	} = $props();
 </script>
 
 <!-- Autofocus is the no-JS way to move focus to the error summary after a failed post. -->
 <!-- svelte-ignore a11y_autofocus -->
-<div class="credential-error-summary" role="alert" tabindex="-1" autofocus>
-	<h2>{CREDENTIAL_ERROR_SUMMARY_HEADING}</h2>
+<div class="credential-error-summary" role="alert" tabindex="-1" autofocus {id}>
+	<h2>{heading}</h2>
 	<ul>
 		{#each credentialSummaryItems(errors) as item (item.id)}
 			<li id={item.id}>
