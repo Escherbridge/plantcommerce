@@ -258,6 +258,8 @@ export function layoutOwnsDocumentMeta(pathname: string): boolean {
 	if (/^\/(blog|guides|news|courses)\/[^/]+$/.test(path)) return false;
 	if (/^\/products\/[^/]+\/[^/]+$/.test(path)) return false;
 	if (path.startsWith('/certificates/verify/')) return false;
+	if (path === '/admin/invites' || path.startsWith('/admin/invites/')) return false;
+	if (path.startsWith('/invite/')) return false;
 	if (path === '/learn/course' || path.startsWith('/learn/course/')) return false;
 	if (pageOwnedDocumentTitles.has(path)) return false;
 	return true;

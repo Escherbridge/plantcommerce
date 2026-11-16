@@ -17,6 +17,7 @@ import {
 	type AnyPgColumn
 } from 'drizzle-orm/pg-core';
 import { relations, sql } from 'drizzle-orm';
+import { inviteRoles, userRoles } from '$lib/auth/userRole';
 
 // ======= USER MANAGEMENT =======
 export const user = pgTable(
@@ -29,9 +30,7 @@ export const user = pgTable(
 		firstName: text('first_name'),
 		lastName: text('last_name'),
 		avatarFileId: text('avatar_file_id'), // Reference to file table
-		role: text('role', { enum: ['admin', 'customer', 'affiliate', 'instructor'] })
-			.notNull()
-			.default('customer'),
+		role: text('role', { enum: userRoles }).notNull().default('customer'),
 		isActive: boolean('is_active').notNull().default(true),
 		emailVerified: boolean('email_verified').notNull().default(false),
 		pendingEmail: text('pending_email'),
@@ -195,6 +194,27 @@ export const productCategory = pgTable('product_category', {
 	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 });
 
+/** A seller is a user with the seller role. Aevani-owned products have no seller row. */
+export const seller = pgTable(
+	'seller',
+	{
+		id: serial('id').primaryKey(),
+		userId: text('user_id')
+			.notNull()
+			.references(() => user.id),
+		displayName: text('display_name').notNull(),
+		status: text('status', { enum: ['pending', 'active', 'suspended'] })
+			.notNull()
+			.default('pending'),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		userIdx: uniqueIndex('seller_user_idx').on(table.userId),
+		statusIdx: index('seller_status_idx').on(table.status)
+	})
+);
+
 export const product = pgTable(
 	'product',
 	{
@@ -220,6 +240,8 @@ export const product = pgTable(
 		// NULL and true are coming soon (not purchasable). false is explicitly sellable.
 		// Existing rows stay NULL so placeholder products are gated without rewriting them.
 		comingSoon: boolean('coming_soon'),
+		// Null means Aevani owns the product and no seller transfer is created.
+		sellerId: integer('seller_id').references(() => seller.id),
 		tags: text('tags'), // JSON array of tags
 		metaTitle: text('meta_title'),
 		metaDescription: text('meta_description'),
@@ -253,6 +275,7 @@ export const product = pgTable(
 		categoryIdx: index('product_category_idx').on(table.categoryId),
 		activeIdx: index('product_active_idx').on(table.isActive),
 		featuredIdx: index('product_featured_idx').on(table.isFeatured),
+		sellerIdx: index('product_seller_idx').on(table.sellerId),
 		reservedQuantityNonnegative: check(
 			'product_reserved_quantity_nonnegative_check',
 			sql`${table.reservedQuantity} >= 0`
@@ -312,6 +335,83 @@ export const sellerApplication = pgTable(
 	})
 );
 
+/**
+ * Staff invite link. Lookup uses `token_hash` only.
+ * `token` is kept so a manager can copy the link again; it is never the lookup key.
+ * No payout or commission columns.
+ */
+export const managerInvite = pgTable(
+	'manager_invite',
+	{
+		id: text('id').primaryKey(),
+		tokenHash: text('token_hash').notNull(),
+		token: text('token').notNull(),
+		role: text('role', { enum: inviteRoles }).notNull(),
+		label: text('label'),
+		expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }),
+		useLimit: integer('use_limit'),
+		note: text('note'),
+		status: text('status', { enum: ['active', 'revoked'] })
+			.notNull()
+			.default('active'),
+		revokedAt: timestamp('revoked_at', { withTimezone: true, mode: 'date' }),
+		createdBy: text('created_by')
+			.notNull()
+			.references(() => user.id),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		tokenHashIdx: uniqueIndex('manager_invite_token_hash_idx').on(table.tokenHash),
+		tokenIdx: uniqueIndex('manager_invite_token_idx').on(table.token),
+		createdByIdx: index('manager_invite_created_by_idx').on(table.createdBy),
+		roleCheck: check(
+			'manager_invite_role_check',
+			sql`${table.role} in ('affiliate', 'seller', 'instructor')`
+		),
+		statusCheck: check(
+			'manager_invite_status_check',
+			sql`${table.status} in ('active', 'revoked')`
+		),
+		useLimitCheck: check(
+			'manager_invite_use_limit_check',
+			sql`${table.useLimit} is null or ${table.useLimit} >= 1`
+		)
+	})
+);
+
+/** One person completing one invite. The role is granted only after a manager approves. */
+export const managerInviteUse = pgTable(
+	'manager_invite_use',
+	{
+		id: text('id').primaryKey(),
+		inviteId: text('invite_id')
+			.notNull()
+			.references(() => managerInvite.id),
+		userId: text('user_id')
+			.notNull()
+			.references(() => user.id),
+		status: text('status', { enum: ['pending', 'approved', 'declined'] })
+			.notNull()
+			.default('pending'),
+		roleRemovedAt: timestamp('role_removed_at', { withTimezone: true, mode: 'date' }),
+		reviewedAt: timestamp('reviewed_at', { withTimezone: true, mode: 'date' }),
+		reviewedBy: text('reviewed_by').references(() => user.id),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		inviteUserIdx: uniqueIndex('manager_invite_use_invite_user_idx').on(
+			table.inviteId,
+			table.userId
+		),
+		inviteIdx: index('manager_invite_use_invite_idx').on(table.inviteId),
+		userIdx: index('manager_invite_use_user_idx').on(table.userId),
+		statusCheck: check(
+			'manager_invite_use_status_check',
+			sql`${table.status} in ('pending', 'approved', 'declined')`
+		)
+	})
+);
+
 // ======= AFFILIATE SYSTEM =======
 export const affiliate = pgTable(
 	'affiliate',
@@ -344,6 +444,46 @@ export const affiliate = pgTable(
 		codeIdx: uniqueIndex('affiliate_code_idx').on(table.affiliateCode),
 		userIdx: uniqueIndex('affiliate_user_idx').on(table.userId),
 		statusIdx: index('affiliate_status_idx').on(table.status)
+	})
+);
+
+/**
+ * Stripe Connect account record. Stores the account id and status flags only.
+ * Bank numbers, tax ids, and addresses stay at Stripe.
+ */
+export const payoutAccount = pgTable(
+	'payout_account',
+	{
+		id: text('id').primaryKey(),
+		ownerType: text('owner_type', { enum: ['seller', 'affiliate'] }).notNull(),
+		sellerId: integer('seller_id').references(() => seller.id),
+		affiliateId: integer('affiliate_id').references(() => affiliate.id),
+		stripeAccountId: text('stripe_account_id'),
+		country: varchar('country', { length: 2 }),
+		transfersActive: boolean('transfers_active').notNull().default(false),
+		requirementsDue: boolean('requirements_due').notNull().default(false),
+		disabledReason: text('disabled_reason'),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		sellerIdx: uniqueIndex('payout_account_seller_idx')
+			.on(table.sellerId)
+			.where(sql`${table.sellerId} IS NOT NULL`),
+		affiliateIdx: uniqueIndex('payout_account_affiliate_idx')
+			.on(table.affiliateId)
+			.where(sql`${table.affiliateId} IS NOT NULL`),
+		stripeIdx: uniqueIndex('payout_account_stripe_account_idx')
+			.on(table.stripeAccountId)
+			.where(sql`${table.stripeAccountId} IS NOT NULL`),
+		ownerCheck: check(
+			'payout_account_owner_check',
+			sql`(${table.ownerType} = 'seller' AND ${table.sellerId} IS NOT NULL AND ${table.affiliateId} IS NULL) OR (${table.ownerType} = 'affiliate' AND ${table.affiliateId} IS NOT NULL AND ${table.sellerId} IS NULL)`
+		),
+		countryCheck: check(
+			'payout_account_country_check',
+			sql`${table.country} IS NULL OR ${table.country} = 'US'`
+		)
 	})
 );
 
@@ -742,6 +882,7 @@ export const checkoutDraftItem = pgTable(
 		unitPriceMinor: bigint('unit_price_minor', { mode: 'number' }).notNull(),
 		totalPriceMinor: bigint('total_price_minor', { mode: 'number' }).notNull(),
 		trackInventory: boolean('track_inventory').notNull(),
+		sellerId: integer('seller_id').references(() => seller.id),
 		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 	},
 	(table) => ({
@@ -875,6 +1016,7 @@ export const orderItem = pgTable('order_item', {
 	quantity: integer('quantity').notNull(),
 	unitPrice: decimal('unit_price', { precision: 10, scale: 2 }).notNull(),
 	totalPrice: decimal('total_price', { precision: 10, scale: 2 }).notNull(),
+	sellerId: integer('seller_id').references(() => seller.id),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 });
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Icon, type IconName } from '$lib/components/icons';
+	import type { UserRole } from '$lib/auth/userRole';
 
 	interface Portal {
 		label: string;
@@ -9,7 +10,7 @@
 	}
 
 	interface Props {
-		role: 'admin' | 'customer' | 'affiliate' | 'instructor';
+		role: UserRole;
 		currentPath: string;
 		collapsed?: boolean;
 	}
@@ -21,7 +22,7 @@
 			label: 'Account',
 			href: '/account',
 			icon: 'user',
-			roles: ['admin', 'customer', 'affiliate', 'instructor']
+			roles: ['admin', 'customer', 'affiliate', 'instructor', 'seller']
 		},
 		{
 			label: 'Affiliate',

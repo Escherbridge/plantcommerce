@@ -1,10 +1,18 @@
 import { sqlClient } from '$lib/server/db';
 import comingSoonSql from '../../../../drizzle/0010_product_coming_soon.sql?raw';
 import sellerApplicationSql from '../../../../drizzle/0011_seller_application.sql?raw';
+import managerInviteSql from '../../../../drizzle/0012_manager_invites.sql?raw';
 import orderTransferGroupSql from '../../../../drizzle/0013_order_transfer_group.sql?raw';
+import sellerPayoutAccountSql from '../../../../drizzle/0014_seller_payout_account.sql?raw';
 import { executableMigrationSql } from './additiveMigration';
 
-const migrations = [comingSoonSql, sellerApplicationSql, orderTransferGroupSql];
+const migrations = [
+	comingSoonSql,
+	sellerApplicationSql,
+	managerInviteSql,
+	orderTransferGroupSql,
+	sellerPayoutAccountSql
+];
 
 let pending: Promise<void> | null = null;
 

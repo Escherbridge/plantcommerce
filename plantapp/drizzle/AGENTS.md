@@ -176,15 +176,36 @@ by the same startup helper, in the same transaction, after `0010`. It is not
 journaled. Do not use `db:migrate` or `db:push` to apply it. The statements are
 `CREATE TABLE IF NOT EXISTS` and `CREATE INDEX IF NOT EXISTS` only.
 
+## `0012_manager_invites.sql`
+
+This additive file creates `manager_invite` and `manager_invite_use` only. It is
+applied by the same startup helper, after `0011`. It is not journaled. Do not
+use `db:migrate` or `db:push` to apply it.
+
+`user.role` is unconstrained text. The application enum adds `seller` in
+`src/lib/auth/userRole.ts`. This file does not alter `user` and does not rewrite
+existing rows. Invite lookup uses `token_hash`. The raw `token` column exists so
+staff can copy the link again; public resolution never compares that column.
+There are no payout, commission, or earnings columns. Revoking an invite sets
+`status` and `revoked_at` and leaves use rows in place.
+
 ## `0013_order_transfer_group.sql`
 
 This additive file adds nullable `order.stripe_charge_id` and
 `order.transfer_group`, plus a unique index on non-null charge ids. It is
-applied by the same startup helper, after `0011` on this branch. The `0012`
-number is left for `0012_manager_invites.sql` on the Seller-role branch. It is
-not journaled. Do not
+applied by the same startup helper, after `0012`. It is not journaled. Do not
 use `db:migrate` or `db:push` to apply it. Run
 `preflight_order_transfer_group.sql` read-only before a production apply. The
 file does not update or delete order rows. Fulfilment writes the charge id and
 the checkout draft reference (the PaymentIntent `transfer_group`) when an order
 is created.
+
+## `0014_seller_payout_account.sql`
+
+This additive file creates `seller` and `payout_account`, and adds nullable
+`seller_id` on `product`, `checkout_draft_item`, and `order_item`. A null
+seller means the product stays with Aevani. `payout_account` stores a Stripe
+account id and status flags only. It is applied by the same startup helper,
+after `0013`. It is not journaled. Do not use `db:migrate` or `db:push`. Run
+`preflight_seller_payout_account.sql` read-only before a production apply. The
+file does not update or delete existing rows.

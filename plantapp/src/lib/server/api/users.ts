@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
+import { userRoles } from '$lib/auth/userRole';
 import { protectedProcedure, adminProcedure, router } from './trpc';
 import {
 	isEmailLoginIdentifier,
@@ -230,7 +231,7 @@ export const usersRouter = router({
 			z.object({
 				limit: z.number().min(1).max(100).default(50),
 				offset: z.number().min(0).default(0),
-				role: z.enum(['admin', 'customer', 'affiliate', 'instructor']).optional(),
+				role: z.enum(userRoles).optional(),
 				search: z.string().optional(),
 				isActive: z.boolean().optional()
 			})
@@ -308,7 +309,7 @@ export const usersRouter = router({
 		.input(
 			z.object({
 				userId: z.string(),
-				role: z.enum(['admin', 'customer', 'affiliate', 'instructor'])
+				role: z.enum(userRoles)
 			})
 		)
 		.mutation(async ({ input }) => {
