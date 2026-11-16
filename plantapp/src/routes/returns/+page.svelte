@@ -14,17 +14,16 @@
 				</p>
 				<h1 class="font-display text-4xl tracking-tight md:text-5xl">Returns</h1>
 				<p class="max-w-3xl text-lg text-base-content/70">
-					Return eligibility depends on what you are buying—spare emitters and pumps have very
-					different handling needs than open seed packets or perishables. Every seller publishes
-					their return window and restocking rules directly on their product listing.
+					When sellers join, return terms will depend on the item. Each seller will write those
+					terms on the listing.
 				</p>
 			</header>
 
 			<section class="rounded-2xl border border-base-200 bg-base-100 p-6 shadow-sm md:p-8">
 				<h2 class="font-display text-2xl tracking-tight">Set per seller</h2>
 				<p class="mt-3 text-base-content/80">
-					Return terms are set by the individual seller and shown clearly before checkout, rather
-					than imposed as a blanket rule across perishable and durable growing gear alike.
+					Return terms will be shown on each listing when sellers join, rather than as one rule for
+					every item.
 				</p>
 			</section>
 

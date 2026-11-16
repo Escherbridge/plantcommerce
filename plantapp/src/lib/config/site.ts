@@ -172,12 +172,11 @@ const routeMetadata: Record<string, { title: string; description: string }> = {
 	'/shipping': {
 		title: 'Shipping — Aevani',
 		description:
-			'Shipping rates and handling windows on Aevani are set directly by each independent seller on the listing.'
+			'When sellers join, each listing will show its own shipping rates, carriers and handling terms before checkout.'
 	},
 	'/returns': {
 		title: 'Returns — Aevani',
-		description:
-			'Return policies on Aevani are set per listing by each independent seed house, nursery, or maker.'
+		description: 'When sellers join, return terms will be shown on each listing.'
 	},
 	'/cookies': {
 		title: 'Cookies — Aevani',
@@ -194,8 +193,7 @@ const routeMetadata: Record<string, { title: string; description: string }> = {
 	},
 	'/warranty': {
 		title: 'Warranty — Aevani',
-		description:
-			'Warranty coverage on equipment is set by each independent maker or seller and shown on the listing.'
+		description: 'When sellers join, warranty terms will be shown on each listing.'
 	},
 	'/help': {
 		title: 'Help — Aevani',

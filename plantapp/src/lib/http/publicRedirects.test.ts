@@ -46,9 +46,36 @@ describe('public alias redirects', () => {
 			'/search?q=mint'
 		);
 		expect(catalogueSearchRedirect(new URL('https://aevani.com/products?q='))).toBe('/search?q=');
-		expect(catalogueSearchRedirect(new URL('https://aevani.com/products?search=basil'))).toBeNull();
 		expect(catalogueSearchRedirect(new URL('https://aevani.com/products'))).toBeNull();
 		expect(catalogueSearchRedirect(new URL('https://aevani.com/search?q=basil'))).toBeNull();
+		expect(
+			catalogueSearchRedirect(new URL('https://aevani.com/products?category=hydroponics'))
+		).toBeNull();
+	});
+
+	it('308s /products?search=... to /search?q= and keeps the other params', () => {
+		expect(catalogueSearchRedirect(new URL('https://aevani.com/products?search=basil'))).toBe(
+			'/search?q=basil'
+		);
+		expect(
+			catalogueSearchRedirect(
+				new URL('https://aevani.com/products?search=red+basil&category=hydroponics')
+			)
+		).toBe('/search?q=red+basil&category=hydroponics');
+		expect(catalogueSearchRedirect(new URL('https://aevani.com/products/?search=mint'))).toBe(
+			'/search?q=mint'
+		);
+		expect(catalogueSearchRedirect(new URL('https://aevani.com/products?search='))).toBe(
+			'/search?q='
+		);
+		expect(
+			catalogueSearchRedirect(
+				new URL('https://aevani.com/products?category=hydroponics&search=basil')
+			)
+		).toBe('/search?category=hydroponics&q=basil');
+		expect(
+			catalogueSearchRedirect(new URL('https://aevani.com/products/hydroponics?search=basil'))
+		).toBeNull();
 
 		const hooks = readFileSync(
 			join(dirname(fileURLToPath(import.meta.url)), '../../hooks.server.ts'),

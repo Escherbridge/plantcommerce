@@ -58,4 +58,21 @@ describe('catalogue text contrast', () => {
 		expect(contrast('#587364', page)).toBeGreaterThanOrEqual(4.5);
 		expect(contrast('#5c665d', page)).toBeGreaterThanOrEqual(4.5);
 	});
+
+	it('gives the home system number at least 4.5:1 on #fcfbf9', () => {
+		const systemCard = readFileSync(join(srcDir, 'lib/components/cards/SystemCard.svelte'), 'utf8');
+		const home = '#fcfbf9';
+
+		expect(systemCard).toMatch(/\.system-card__number \{[^}]*color:\s*#587364;/s);
+		expect(contrast('#7c9585', home)).toBeLessThan(4.5);
+		expect(contrast('#587364', home)).toBeGreaterThanOrEqual(4.5);
+	});
+
+	it('gives unselected FAQ tabs at least 4.5:1 on #f4f1ea', () => {
+		const faq = readFileSync(join(srcDir, 'routes/faq/+page.svelte'), 'utf8');
+
+		expect(faq).toContain('color: #5c665d');
+		expect(contrast('#8b938a', '#f4f1ea')).toBeLessThan(4.5);
+		expect(contrast('#5c665d', '#f4f1ea')).toBeGreaterThanOrEqual(4.5);
+	});
 });

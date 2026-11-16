@@ -47,12 +47,3 @@ export function guideForCategory(slug: string | null | undefined): CategoryGuide
 	if (!slug) return null;
 	return categoryGuides[slug] ?? null;
 }
-
-const HYDROPONICS_FIELD_GUIDE = '<a href="/learn">hydroponics field guide</a>';
-const HYDROPONICS_FIELD_GUIDE_TARGET =
-	'<a href="/guides/choosing-hydroponic-system">hydroponics field guide</a>';
-
-/** The long-read link. Specs and FAQ text are not passed through here. */
-export function retargetHydroponicsFieldGuide(html: string): string {
-	return html.replaceAll(HYDROPONICS_FIELD_GUIDE, HYDROPONICS_FIELD_GUIDE_TARGET);
-}

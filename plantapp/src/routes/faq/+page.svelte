@@ -27,7 +27,7 @@
 		</div>
 
 		<!-- Category Tabs -->
-		<div role="tablist" class="tabs-boxed mb-8 tabs">
+		<div role="tablist" class="faq-tabs tabs-boxed mb-8 tabs">
 			<a
 				href="/faq"
 				role="tab"
@@ -70,17 +70,19 @@
 			</div>
 		{/if}
 
-		<!-- Contact CTA -->
 		<div class="mt-12 rounded-3xl border border-base-200/30 bg-base-200 p-8 text-center shadow-md">
-			<h2 class="font-display mb-4 text-2xl tracking-tight uppercase">Still have questions?</h2>
-			<p class="mb-6 text-base-content/70">
+			<p class="text-base-content/70">
 				Still stuck? Write to <a class="link link-primary" href="mailto:contact@escherbridge.com"
 					>contact@escherbridge.com</a
 				> and a person will get back to you.
 			</p>
-			<a href="/contact" class="font-display btn tracking-wider uppercase btn-primary"
-				>Contact Support</a
-			>
 		</div>
 	</Container>
 </Section>
+
+<style>
+	/* Unselected tabs were #8b938a on #f4f1ea (2.8:1). #5c665d is 5.3:1. */
+	.faq-tabs :global(.tab:not(.tab-active)) {
+		color: #5c665d;
+	}
+</style>

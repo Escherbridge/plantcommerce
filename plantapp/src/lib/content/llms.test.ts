@@ -32,7 +32,11 @@ describe('llms.txt', () => {
 			'utf8'
 		);
 		expect(sellPage).toMatch(/<form\b[^>]*method="POST"/);
-		expect(text).toContain('Search the catalogue at https://aevani.com/search?q=...');
+		expect(text).toContain(
+			'- [Search](https://aevani.com/search?q=): finds guides, notes and products. Put your terms in q.'
+		);
+		expect(text).not.toContain('Search the catalogue at https://aevani.com/search?q=...');
+		expect(text.match(/https:\/\/aevani\.com\/search/g)).toHaveLength(1);
 		expect(text).toContain('https://aevani.com/guides');
 		expect(text).toContain('https://aevani.com/blog/cooling-can-use-more-water-than-the-crop');
 		expect(text).toContain('https://plantgeo.aevani.com');
@@ -66,6 +70,9 @@ describe('llms.txt', () => {
 		expect(wellKnownResponse.headers.get('content-type')).toBe(
 			rootResponse.headers.get('content-type')
 		);
-		expect(wellKnownBody).toContain('Search the catalogue at https://aevani.com/search?q=...');
+		expect(wellKnownBody).toContain(
+			'- [Search](https://aevani.com/search?q=): finds guides, notes and products. Put your terms in q.'
+		);
+		expect(wellKnownBody).not.toContain('Search the catalogue at https://aevani.com/search?q=...');
 	});
 });
