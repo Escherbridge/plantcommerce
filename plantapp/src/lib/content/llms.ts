@@ -8,6 +8,7 @@ import {
 } from '$lib/config/site';
 import { cornerstoneEssays } from './essays';
 import { publishedGuideSectors } from './research';
+import { whitePaperLlmsEntries } from './white-papers';
 
 /** Published CMS pages that are not in the typed guide or essay arrays. */
 const legacyPages = [
@@ -50,6 +51,7 @@ export function renderLlmsTxt(): string {
 			.map((page) => link(page.path, page.title))
 	];
 	const sisters = escherbridgeProjects.map((site) => `- [${site.label}](${site.href})`);
+	const paperEntries = whitePaperLlmsEntries();
 
 	return [
 		'# Aevani',
@@ -79,6 +81,9 @@ export function renderLlmsTxt(): string {
 		link('/products/silvopasture', 'Silvopasture'),
 		link('/products/agroforestry', 'Agroforestry'),
 		'',
+		...(paperEntries.length > 0
+			? ['## White papers', ...paperEntries.map((entry) => link(entry.path, entry.title)), '']
+			: []),
 		'## Elsewhere',
 		...sisters,
 		''

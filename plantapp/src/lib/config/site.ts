@@ -1,3 +1,5 @@
+import { isPublishedWhitePaperPath } from '$lib/content/white-papers';
+
 /**
  * Canonical origin for public metadata.
  *
@@ -187,6 +189,10 @@ const routeMetadata: Record<string, { title: string; description: string }> = {
 		title: 'Accessibility — Aevani',
 		description: 'Accessibility notes for Aevani, operated by Escherbridge, LLC.'
 	},
+	'/white-papers': {
+		title: 'White papers — Aevani',
+		description: 'Published Aevani white papers. Each paper has a short summary and a PDF file.'
+	},
 	'/size-guide': {
 		title: 'Size guide — Aevani',
 		description:
@@ -258,6 +264,7 @@ const pageOwnedDocumentTitles = new Set([
 export function layoutOwnsDocumentMeta(pathname: string): boolean {
 	const path = pathname === '/' ? pathname : pathname.replace(/\/+$/, '') || '/';
 	if (/^\/(blog|guides|news|courses)\/[^/]+$/.test(path)) return false;
+	if (/^\/white-papers\/[^/]+$/.test(path)) return false;
 	if (/^\/products\/[^/]+\/[^/]+$/.test(path)) return false;
 	if (path.startsWith('/certificates/verify/')) return false;
 	if (path === '/learn/course' || path.startsWith('/learn/course/')) return false;
@@ -329,6 +336,7 @@ export function publicSiteUrl(pathname = '/'): string {
 export function isPublicIndexablePath(pathname: string): boolean {
 	const normalized = pathname === '/' ? pathname : pathname.replace(/\/+$/, '') || '/';
 	if (unindexedPaths.has(normalized)) return false;
+	if (isPublishedWhitePaperPath(normalized)) return true;
 	if (publicIndexablePaths.some((path) => path === normalized)) return true;
 	return publicIndexablePrefixes.some((prefix) => normalized.startsWith(prefix));
 }
