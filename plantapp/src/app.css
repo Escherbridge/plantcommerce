@@ -399,10 +399,11 @@ textarea.textarea-bordered {
 	background: var(--glass-bg-strong) !important;
 }
 
-/* Text fields on register, login, and sell. Brand green stays at least 3:1 on the cream page and the white field. */
+/* Text fields on register, login, and sell, plus sell textareas. Brand green stays at least 3:1 on the cream page and the white field. */
 .register-page input.input:focus,
 .login-page input.input:focus,
-.sell-page input.input:focus {
+.sell-page input.input:focus,
+.sell-page textarea.textarea:focus {
 	outline: 2px solid var(--aevani-focus) !important;
 	outline-offset: 2px !important;
 }

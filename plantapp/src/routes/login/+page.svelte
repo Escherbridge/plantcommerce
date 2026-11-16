@@ -1,13 +1,44 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import { trpc } from '$lib/trpc/client';
 	import { page } from '$app/stores';
 	import { toasts } from '$lib/stores/toast';
 	import { Icon } from '$lib/components/icons';
+	import type { ActionData } from './$types';
+	import { firstEmptyLoginField } from './validation';
+
+	export let form: ActionData = null;
 
 	let email = '';
 	let password = '';
 	let loading = false;
 	let error = '';
+	let emailInput: HTMLInputElement | undefined;
+	let passwordInput: HTMLInputElement | undefined;
+
+	// These read the fields directly. A helper call in the template is not tracked.
+	let emailInvalid: 'true' | undefined = undefined;
+	let passwordInvalid: 'true' | undefined = undefined;
+	$: emailInvalid = (
+		error === 'Please enter your email and password.'
+			? email.trim()
+				? undefined
+				: 'true'
+			: error || form?.message
+				? 'true'
+				: undefined
+	) as 'true' | undefined;
+	$: passwordInvalid = (
+		error === 'Please enter your email and password.'
+			? password
+				? undefined
+				: 'true'
+			: error || form?.message
+				? 'true'
+				: undefined
+	) as 'true' | undefined;
+	$: emailDescribedBy = emailInvalid ? 'login-form-error' : undefined;
+	$: passwordDescribedBy = passwordInvalid ? 'login-form-error' : undefined;
 
 	function getRedirectUrl(): string {
 		const redirect = $page.url.searchParams.get('redirect');
@@ -30,9 +61,12 @@
 		error = '';
 
 		const usernameOrEmail = email.trim();
-		if (!usernameOrEmail || !password) {
+		const emptyField = firstEmptyLoginField({ usernameOrEmail, password });
+		if (emptyField) {
 			error = 'Please enter your email and password.';
 			loading = false;
+			await tick();
+			(emptyField === 'usernameOrEmail' ? emailInput : passwordInput)?.focus();
 			return;
 		}
 
@@ -80,15 +114,15 @@
 			</div>
 
 			<!-- Error -->
-			{#if error}
+			{#if error || form?.message}
 				<div id="login-form-error" class="login-error" role="alert" aria-live="assertive">
 					<Icon name="alert-circle" size={16} class="shrink-0" />
-					<span>{error}</span>
+					<span>{error || form?.message}</span>
 				</div>
 			{/if}
 
 			<!-- Form -->
-			<form class="login-form" onsubmit={handleSubmit} novalidate aria-busy={loading}>
+			<form method="post" class="login-form" onsubmit={handleSubmit} novalidate aria-busy={loading}>
 				<div class="form-control">
 					<label class="label" for="email-address">
 						<span class="label-text">Email address or username</span>
@@ -100,11 +134,12 @@
 						autocomplete="username"
 						required
 						bind:value={email}
+						bind:this={emailInput}
 						class="input-bordered input w-full"
 						placeholder="you@example.com or username"
 						disabled={loading}
-						aria-invalid={Boolean(error)}
-						aria-describedby={error ? 'login-form-error' : undefined}
+						aria-invalid={emailInvalid}
+						aria-describedby={emailDescribedBy}
 					/>
 				</div>
 
@@ -119,11 +154,12 @@
 						autocomplete="current-password"
 						required
 						bind:value={password}
+						bind:this={passwordInput}
 						class="input-bordered input w-full"
 						placeholder="Enter your password"
 						disabled={loading}
-						aria-invalid={Boolean(error)}
-						aria-describedby={error ? 'login-form-error' : undefined}
+						aria-invalid={passwordInvalid}
+						aria-describedby={passwordDescribedBy}
 					/>
 				</div>
 

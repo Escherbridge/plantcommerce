@@ -2,7 +2,10 @@
 	import Icon from '$lib/components/icons/Icon.svelte';
 	import { trpc } from '$lib/trpc/client';
 	import { tick } from 'svelte';
+	import type { ActionData } from './$types';
 	import { firstRegistrationError, focusRegistrationField, type RegisterField } from './validation';
+
+	let { form }: { form: ActionData } = $props();
 
 	let username = $state('');
 	let email = $state('');
@@ -164,15 +167,21 @@
 				</div>
 
 				<!-- Error -->
-				{#if errorMessage}
+				{#if errorMessage || form?.message}
 					<div id="register-form-error" class="register-error" role="alert" aria-live="assertive">
 						<Icon name="alert-circle" size={16} class="h-4 w-4 shrink-0" />
-						<span>{errorMessage}</span>
+						<span>{errorMessage || form?.message}</span>
 					</div>
 				{/if}
 
 				<!-- Form -->
-				<form onsubmit={handleSubmit} class="register-form" novalidate aria-busy={isLoading}>
+				<form
+					method="post"
+					onsubmit={handleSubmit}
+					class="register-form"
+					novalidate
+					aria-busy={isLoading}
+				>
 					<div class="register-row">
 						<div class="form-control">
 							<label class="label" for="firstName">
