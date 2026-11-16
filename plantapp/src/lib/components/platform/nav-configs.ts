@@ -96,6 +96,11 @@ export const adminNavigation: NavigationConfig = [
 				icon: 'link'
 			},
 			{
+				label: 'Payouts',
+				href: '/admin/payouts',
+				icon: 'clipboard-list'
+			},
+			{
 				label: 'Invites',
 				href: '/admin/invites',
 				icon: 'mail'

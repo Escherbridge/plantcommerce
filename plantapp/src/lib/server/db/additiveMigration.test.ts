@@ -20,6 +20,10 @@ const payoutStatusMigrationPath = new URL(
 	'../../../../drizzle/0015_payout_account_status.sql',
 	import.meta.url
 );
+const sellerEarningMigrationPath = new URL(
+	'../../../../drizzle/0016_seller_earning.sql',
+	import.meta.url
+);
 
 describe('coming soon migration', () => {
 	const source = readFileSync(migrationPath, 'utf8');
@@ -118,5 +122,18 @@ describe('manager invite migration', () => {
 		expect(schemaSource).not.toMatch(/ALTER TABLE/);
 		expect(sql).not.toMatch(/ALTER TABLE\s+"public"\."user"/i);
 		expect(source).toMatch(/does not ALTER "user"/);
+	});
+});
+
+describe('seller earning migration', () => {
+	const source = readFileSync(sellerEarningMigrationPath, 'utf8');
+	const sql = executableMigrationSql(source);
+
+	it('adds the ledger and delivery timestamps without rewriting rows', () => {
+		expect(sql).toContain('CREATE TABLE IF NOT EXISTS "public"."seller_earning"');
+		expect(sql).toContain('ADD COLUMN IF NOT EXISTS "delivered_at"');
+		expect(sql).toContain('"fee_bps" = 800');
+		expect(sql).not.toMatch(/\b(DROP|DELETE|UPDATE|TRUNCATE)\b/i);
+		expect(sql).not.toMatch(/^\s*BEGIN\s*;|^\s*COMMIT\s*;/im);
 	});
 });
