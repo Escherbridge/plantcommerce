@@ -73,9 +73,10 @@ export interface ProductGuideLink {
 }
 
 /**
- * In-body field-guide anchors. Product pages render `descriptionHtml` from
- * the database. That copy was loaded before the seed hrefs changed, so these
- * anchors still point at `/learn`. The seed file is left as it is.
+ * In-body guide anchors. Product pages render `descriptionHtml` from the
+ * database, which still points these anchors at `/learn`. A rule matches the
+ * stored anchor text and that old href. The seed file is left as it is.
+ * "Aevani learning hub" stays on `/learn`.
  */
 export const productGuideLinks: readonly ProductGuideLink[] = [
 	{
@@ -87,6 +88,22 @@ export const productGuideLinks: readonly ProductGuideLink[] = [
 		text: 'aquaponics field guide',
 		from: '/learn',
 		href: '/guides/small-scale-aquaponics'
+	},
+	{
+		text: 'silvopasture guide',
+		from: '/learn',
+		href: '/guides/temperate-silvopasture'
+	},
+	{
+		text: 'soil-health guide',
+		from: '/learn',
+		href: '/guides/understanding-soil-health'
+	},
+	{
+		// The chestnut seedlings row stores the ampersand escaped. anchorText does not decode it.
+		text: 'silvopasture &amp; agroforestry guide',
+		from: '/learn',
+		href: '/guides/temperate-food-forest'
 	}
 ];
 
