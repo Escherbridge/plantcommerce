@@ -35,7 +35,10 @@ describe('credentialSummaryItems', () => {
 
 		const login = render(LoginPage, {
 			props: {
-				form: { fieldErrors: loginFieldErrors({ usernameOrEmail: '', password: '' }) }
+				form: {
+					message: undefined,
+					fieldErrors: loginFieldErrors({ usernameOrEmail: '', password: '' })
+				}
 			}
 		}).body;
 		expect(login.match(/Please enter your email and password\./g)).toHaveLength(1);
@@ -57,7 +60,9 @@ describe('credentialSummaryItems', () => {
 			password,
 			confirmPassword: ''
 		});
-		const { body } = render(RegisterPage, { props: { form: { fieldErrors: errors } } });
+		const { body } = render(RegisterPage, {
+			props: { form: { message: undefined, fieldErrors: errors } }
+		});
 
 		for (const id of ['firstName', 'lastName', 'confirmPassword']) {
 			const tag = body.match(new RegExp(`<input\\b[^>]*\\bid="${id}"[^>]*>`))?.[0] ?? '';
