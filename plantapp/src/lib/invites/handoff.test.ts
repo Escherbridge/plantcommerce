@@ -66,7 +66,13 @@ describe('invite token handoff', () => {
 
 		const verified = render(VerifyEmailPage, {
 			props: {
-				data: { token: 'D'.repeat(43), redirectTo: inviteUrl },
+				data: {
+					user: null,
+					session: null,
+					commerceMode: 'database',
+					token: 'D'.repeat(43),
+					redirectTo: inviteUrl
+				},
 				form: {
 					success: true,
 					redirectTo: inviteUrl,
