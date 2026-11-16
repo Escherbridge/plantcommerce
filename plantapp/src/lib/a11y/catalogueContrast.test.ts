@@ -75,4 +75,14 @@ describe('catalogue text contrast', () => {
 		expect(contrast('#8b938a', '#f4f1ea')).toBeLessThan(4.5);
 		expect(contrast('#5c665d', '#f4f1ea')).toBeGreaterThanOrEqual(4.5);
 	});
+
+	it('gives search result blurbs at least 4.5:1 on #f4f1ea', () => {
+		const search = readFileSync(join(srcDir, 'routes/search/+page.svelte'), 'utf8');
+
+		expect(search).toContain('class="search-blurb text-sm">{course.description}');
+		expect(search).toContain('color: #5c665d');
+		expect(search).not.toMatch(/class="[^"]*text-base-content\/60/);
+		expect(contrast('#768177', '#f4f1ea')).toBeLessThan(4.5);
+		expect(contrast('#5c665d', '#f4f1ea')).toBeGreaterThanOrEqual(4.5);
+	});
 });

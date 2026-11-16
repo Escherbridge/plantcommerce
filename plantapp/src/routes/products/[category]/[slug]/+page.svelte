@@ -5,7 +5,11 @@
 	import { StatTile, SectionHeader, Badge, Button, GlassCard } from '$lib/components/ui';
 	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
 	import { productCategoryHref } from '../../catalog';
-	import { guideForCategory } from '$lib/catalog/categoryGuides';
+	import {
+		guideForCategory,
+		guideForProduct,
+		rewriteProductGuideLinks
+	} from '$lib/catalog/categoryGuides';
 	import { productStructuredData } from '$lib/catalog/placeholderListing';
 	import { cart } from '$lib/stores/cart';
 	import type { PageData } from './$types';
@@ -22,7 +26,9 @@
 	const categoryHref = $derived(productCategoryHref(data.categorySlug));
 	const categoryName = $derived(p.category?.name || data.categorySlug);
 	const nextGuide = $derived(
-		guideForCategory(p.category?.slug) ?? guideForCategory(data.categorySlug)
+		guideForProduct(p.slug) ??
+			guideForCategory(p.category?.slug) ??
+			guideForCategory(data.categorySlug)
 	);
 
 	// ---- Currency-aware price formatting (currency from the model; default USD → $). ----
@@ -106,7 +112,10 @@
 	);
 
 	// ---- The long read: the ONLY @html on the page, always sanitized. ----
-	const longReadHtml = $derived(sanitizeRichText(p.descriptionHtml || p.description || ''));
+	// Stored descriptions still carry the old /learn field-guide hrefs.
+	const longReadHtml = $derived(
+		sanitizeRichText(rewriteProductGuideLinks(p.descriptionHtml || p.description || ''))
+	);
 	const hasLongRead = $derived(stripHtml(p.descriptionHtml || p.description || '').length > 0);
 
 	// ---- Gallery images mapped to ProductGallery's {url, alt} contract. ----
