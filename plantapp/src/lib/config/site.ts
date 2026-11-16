@@ -1,8 +1,10 @@
 /**
  * Canonical origin for public metadata.
  *
- * Railway injects the service host into the CSRF origin and into the email
- * and checkout base URL. Those stay as they are. This constant is the only
+ * Railway's ORIGIN env var is the service host. Adapter-node uses it as the
+ * request origin for CSRF, email, and checkout URLs; this app does not change
+ * that variable. No-JS form posts from the public hosts are allowed through
+ * kit.csrf.trustedOrigins in svelte.config.js. This constant is the only
  * origin used for canonical links, Open Graph, the sitemap, and robots.txt.
  */
 export const SITE_URL = 'https://aevani.com' as const;

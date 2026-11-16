@@ -15,6 +15,12 @@ const config = {
 			handleMissingId: 'warn',
 			handleHttpError: 'warn'
 		},
+		csrf: {
+			// Railway's ORIGIN is the service host, so adapter-node's request
+			// origin does not match a browser post from the public site.
+			// https://svelte.dev/docs/kit/configuration#csrf
+			trustedOrigins: ['https://aevani.com', 'https://www.aevani.com']
+		},
 		csp: {
 			mode: 'auto',
 			directives: {
