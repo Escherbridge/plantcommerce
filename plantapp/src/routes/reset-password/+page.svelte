@@ -66,7 +66,7 @@
 </script>
 
 <svelte:head>
-	<title>Choose a new password - Aevani</title>
+	<title>Choose a new password — Aevani</title>
 </svelte:head>
 
 <div class="mx-auto flex min-h-screen max-w-md items-center px-4 py-12">

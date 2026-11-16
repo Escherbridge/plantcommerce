@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { trpc } from '$lib/trpc/client';
+	import type { PageData } from './$types';
 
-	let loading = false;
-	let message = '';
-	let unavailable = false;
+	let { data }: { data: PageData } = $props();
+
+	let loading = $state(false);
+	let message = $state('');
+	let unavailable = $state(false);
+	const signedIn = $derived(Boolean(data.user));
 
 	async function requestVerification() {
 		loading = true;
@@ -23,7 +27,7 @@
 </script>
 
 <svelte:head>
-	<title>Resend verification email - Aevani</title>
+	<title>Verify your email — Aevani</title>
 </svelte:head>
 
 <section
@@ -37,14 +41,19 @@
 			{#if message}
 				<p class={unavailable ? 'text-warning' : ''} role="status">{message}</p>
 			{/if}
-			<button
-				class="btn mt-4 btn-primary"
-				type="button"
-				onclick={requestVerification}
-				disabled={loading}
-			>
-				{loading ? 'Sending…' : 'Send verification email'}
-			</button>
+			{#if signedIn}
+				<button
+					class="btn mt-4 btn-primary"
+					type="button"
+					onclick={requestVerification}
+					disabled={loading}
+				>
+					{loading ? 'Sending…' : 'Send verification email'}
+				</button>
+			{:else}
+				<p>Sign in first, then come back here for a new link.</p>
+				<a class="btn mt-4 btn-primary" href="/login?redirect=/resend-verification">Sign in</a>
+			{/if}
 			<a class="btn mt-2 btn-ghost" href="/login">Back to login</a>
 		</div>
 	</section>

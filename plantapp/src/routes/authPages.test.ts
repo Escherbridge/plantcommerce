@@ -1,0 +1,101 @@
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { render } from 'svelte/server';
+import { describe, expect, it } from 'vitest';
+import { registrationFieldErrors } from './register/validation';
+import LoginPage from './login/+page.svelte';
+import RegisterPage from './register/+page.svelte';
+import ForgotPasswordPage from './forgot-password/+page.svelte';
+import ResendPage from './resend-verification/+page.svelte';
+import VerifyEmailPage from './verify-email/+page.svelte';
+
+const routesDir = dirname(fileURLToPath(import.meta.url));
+
+const titles = [
+	['login/+page.svelte', 'Sign in — Aevani'],
+	['register/+page.svelte', 'Create an account — Aevani'],
+	['forgot-password/+page.svelte', 'Reset your password — Aevani'],
+	['reset-password/+page.svelte', 'Choose a new password — Aevani'],
+	['resend-verification/+page.svelte', 'Verify your email — Aevani'],
+	['verify-email/+page.svelte', 'Verify your email — Aevani']
+] as const;
+
+function inputTag(html: string, id: string): string {
+	return html.match(new RegExp(`<input\\b[^>]*\\bid="${id}"[^>]*>`))?.[0] ?? '';
+}
+
+describe('auth page titles and register hints', () => {
+	it('uses the Aevani titles', () => {
+		const rendered = [
+			[LoginPage, { form: null }, 'Sign in — Aevani'],
+			[RegisterPage, { form: null }, 'Create an account — Aevani'],
+			[ForgotPasswordPage, { form: null }, 'Reset your password — Aevani'],
+			[ResendPage, { data: { user: null } }, 'Verify your email — Aevani'],
+			[VerifyEmailPage, { data: { token: null }, form: null }, 'Verify your email — Aevani']
+		] as const;
+
+		for (const [component, props, title] of rendered) {
+			expect(render(component as never, { props: props as never }).head).toContain(
+				`<title>${title}</title>`
+			);
+		}
+
+		for (const [file, title] of titles) {
+			expect(readFileSync(join(routesDir, file), 'utf8')).toContain(`<title>${title}</title>`);
+		}
+	});
+
+	it('describes the username and password hints and marks names optional', () => {
+		const { body } = render(RegisterPage, { props: { form: null } });
+		expect(inputTag(body, 'username')).toContain('aria-describedby="username-hint"');
+		expect(inputTag(body, 'password')).toContain('aria-describedby="password-hint"');
+		expect(body).toContain('id="username-hint"');
+		expect(body).toContain('Your username needs 3 to 50 characters.');
+		expect(body).toContain('id="password-hint"');
+		expect(body).toContain('Your password needs at least 8 characters.');
+		expect(body).toContain('First name (optional)');
+		expect(body).toContain('Last name (optional)');
+	});
+
+	it('keeps the hints on the fields when the server also reports errors', () => {
+		const errors = registrationFieldErrors({
+			firstName: 'Ada',
+			lastName: 'Grower',
+			username: 'ab',
+			email: 'ada@example.com',
+			password: 'short',
+			confirmPassword: 'short'
+		});
+		const body = render(RegisterPage, {
+			props: { form: { message: undefined, fieldErrors: errors } }
+		}).body;
+
+		expect(inputTag(body, 'username')).toContain('username-hint');
+		expect(inputTag(body, 'username')).toMatch(/aria-describedby="[^"]*credential-error-username-/);
+		expect(inputTag(body, 'password')).toContain('password-hint');
+		expect(inputTag(body, 'password')).toMatch(/aria-describedby="[^"]*credential-error-password-/);
+	});
+
+	it('asks a signed-out visitor to sign in before resending verification', () => {
+		const signedOut = render(ResendPage, { props: { data: { user: null } as never } }).body;
+		expect(signedOut).toContain('Sign in first, then come back here for a new link.');
+		expect(signedOut).toContain('href="/login?redirect=/resend-verification"');
+		expect(signedOut).toContain('>Sign in<');
+		expect(signedOut).not.toContain('Send verification email');
+
+		const signedIn = render(ResendPage, {
+			props: { data: { user: { id: 'user_1' } } as never }
+		}).body;
+		expect(signedIn).toContain('Send verification email');
+		expect(signedIn).not.toContain('Sign in first, then come back here for a new link.');
+	});
+
+	it('sends login through the same-origin redirect helper', () => {
+		const source = readFileSync(join(routesDir, 'login/+page.svelte'), 'utf8');
+		expect(source).toContain('safeRedirectPath');
+		expect(source).toContain(
+			"safeRedirectPath($page.url.searchParams.get('redirect'), $page.url.origin)"
+		);
+	});
+});

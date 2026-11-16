@@ -6,6 +6,10 @@
 	export let form: ActionData;
 </script>
 
+<svelte:head>
+	<title>Verify your email — Aevani</title>
+</svelte:head>
+
 <Section>
 	<Container>
 		<div class="mx-auto max-w-md text-center">

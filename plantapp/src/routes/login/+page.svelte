@@ -7,6 +7,7 @@
 	import type { ActionData } from './$types';
 	import CredentialErrorSummary from '$lib/components/forms/CredentialErrorSummary.svelte';
 	import { describedByFor } from '$lib/auth/credentialFieldErrors';
+	import { safeRedirectPath } from '$lib/auth/safeRedirect';
 	import { LOGIN_MISSING_CREDENTIALS, firstEmptyLoginField } from './validation';
 
 	export let form: ActionData = null;
@@ -57,18 +58,7 @@
 			.join(' ') || undefined;
 
 	function getRedirectUrl(): string {
-		const redirect = $page.url.searchParams.get('redirect');
-		if (redirect?.startsWith('/')) {
-			try {
-				const destination = new URL(redirect, $page.url.origin);
-				if (destination.origin === $page.url.origin) {
-					return `${destination.pathname}${destination.search}${destination.hash}`;
-				}
-			} catch {
-				// Fall through to the safe account landing page.
-			}
-		}
-		return '/account/profile';
+		return safeRedirectPath($page.url.searchParams.get('redirect'), $page.url.origin);
 	}
 
 	async function handleSubmit(e: Event) {
@@ -116,7 +106,7 @@
 </script>
 
 <svelte:head>
-	<title>Sign In - Aevani</title>
+	<title>Sign in — Aevani</title>
 </svelte:head>
 
 <div class="login-page">
