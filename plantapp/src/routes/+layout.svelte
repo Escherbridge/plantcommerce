@@ -161,6 +161,10 @@
 			children: [{ label: 'Catalogue status', href: '/products' }]
 		},
 		{
+			label: 'Search',
+			href: '/search'
+		},
+		{
 			label: 'Learn',
 			href: '/learn',
 			children: [

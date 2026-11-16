@@ -1,6 +1,6 @@
 import { redirect, type Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { publicAliasRedirect } from '$lib/http/publicRedirects';
+import { catalogueSearchRedirect, publicAliasRedirect } from '$lib/http/publicRedirects';
 import * as auth from '$lib/server/auth';
 import { ensureAdditiveMigrations } from '$lib/server/db/applyAdditiveMigrations';
 import { readGuestCartSessionId } from '$lib/server/guestCart';
@@ -11,7 +11,7 @@ import { handleError } from '$lib/utils/errorHandler';
 installStaticIconContentTypes();
 
 const handlePublicAliases: Handle = async ({ event, resolve }) => {
-	const target = publicAliasRedirect(event.url.pathname);
+	const target = publicAliasRedirect(event.url.pathname) ?? catalogueSearchRedirect(event.url);
 	if (target) redirect(308, target);
 	return resolve(event);
 };

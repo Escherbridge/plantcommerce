@@ -78,9 +78,19 @@ export function renderLlmsTxt(): string {
 		link('/products/aquaponics', 'Aquaponics'),
 		link('/products/silvopasture', 'Silvopasture'),
 		link('/products/agroforestry', 'Agroforestry'),
+		'Search the catalogue at https://aevani.com/search?q=...',
 		'',
 		'## Elsewhere',
 		...sisters,
 		''
 	].join('\n');
+}
+
+export function llmsTxtResponse(): Response {
+	return new Response(renderLlmsTxt(), {
+		headers: {
+			'Content-Type': 'text/plain; charset=utf-8',
+			'Cache-Control': 'public, max-age=3600, s-maxage=86400'
+		}
+	});
 }

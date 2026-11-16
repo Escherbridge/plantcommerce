@@ -2,6 +2,8 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { publicIndexablePaths } from '$lib/config/site';
 import { _publishedContentPaths } from '../../routes/sitemap.xml/+server';
+import { GET as rootLlms } from '../../routes/llms.txt/+server';
+import { GET as wellKnownLlms } from '../../routes/.well-known/llms.txt/+server';
 import { renderLlmsTxt } from './llms';
 
 const applyLine =
@@ -14,7 +16,8 @@ describe('llms.txt', () => {
 			...publicIndexablePaths,
 			..._publishedContentPaths(),
 			'/feed.xml',
-			'/sitemap.xml'
+			'/sitemap.xml',
+			'/search'
 		]);
 
 		expect(text).toContain('Author: Escherbridge');
@@ -29,6 +32,7 @@ describe('llms.txt', () => {
 			'utf8'
 		);
 		expect(sellPage).toMatch(/<form\b[^>]*method="POST"/);
+		expect(text).toContain('Search the catalogue at https://aevani.com/search?q=...');
 		expect(text).toContain('https://aevani.com/guides');
 		expect(text).toContain('https://aevani.com/blog/cooling-can-use-more-water-than-the-crop');
 		expect(text).toContain('https://plantgeo.aevani.com');
@@ -39,9 +43,29 @@ describe('llms.txt', () => {
 		expect(text).not.toMatch(/\b(?:Street|Avenue|Boulevard|Road|Drive|Lane)\b/);
 
 		for (const match of text.matchAll(/https:\/\/aevani\.com(\/[^\s)]*)?/g)) {
+			const raw = match[1] && match[1] !== '/' ? match[1] : '/';
 			const path =
-				match[1] && match[1] !== '/' ? match[1].replace(/[.,;:]+$/, '').replace(/\/+$/, '') : '/';
+				raw
+					.split(/[?#]/)[0]
+					.replace(/[.,;:]+$/, '')
+					.replace(/\/+$/, '') || '/';
 			expect(allowed.has(path), path).toBe(true);
 		}
+	});
+
+	it('serves the same llms.txt at /.well-known/llms.txt', async () => {
+		const root = rootLlms({} as Parameters<typeof rootLlms>[0]);
+		const wellKnown = wellKnownLlms({} as Parameters<typeof wellKnownLlms>[0]);
+		const rootResponse = root instanceof Promise ? await root : root;
+		const wellKnownResponse = wellKnown instanceof Promise ? await wellKnown : wellKnown;
+		const rootBody = await rootResponse.text();
+		const wellKnownBody = await wellKnownResponse.text();
+
+		expect(wellKnownBody).toBe(rootBody);
+		expect(wellKnownBody).toBe(renderLlmsTxt());
+		expect(wellKnownResponse.headers.get('content-type')).toBe(
+			rootResponse.headers.get('content-type')
+		);
+		expect(wellKnownBody).toContain('Search the catalogue at https://aevani.com/search?q=...');
 	});
 });

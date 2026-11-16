@@ -74,6 +74,7 @@
 	const mainNavigation = [
 		{ label: 'Sell on Aevani', href: '/sell', primary: true },
 		{ label: 'Catalogue', href: '/products' },
+		{ label: 'Search', href: '/search' },
 		{ label: 'Learn', href: '/learn' },
 		{ label: 'Growing systems', href: '/products' },
 		{ label: 'About', href: '/about' }
