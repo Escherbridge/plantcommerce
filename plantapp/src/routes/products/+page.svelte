@@ -6,6 +6,7 @@
 	import { replaceState } from '$app/navigation';
 	import { page } from '$app/state';
 	import { catalogChipMatches } from './catalog';
+	import { catalogueFilterAnnouncement } from './filterAnnouncement';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -42,6 +43,20 @@
 	);
 
 	const activeLabel = $derived(CHIPS.find((c) => c.id === selected)?.label ?? 'All products');
+	const showFeatured = $derived(data.featured.length > 0 && selected === 'all' && !searchQuery);
+	const featuredSlugs = $derived(new Set(data.featured.map((product) => product.slug)));
+	const gridProducts = $derived(
+		showFeatured ? filtered.filter((product) => !featuredSlugs.has(product.slug)) : filtered
+	);
+
+	let filterAnnouncement = $state('');
+	let announcedFilter = '';
+
+	$effect(() => {
+		const message = catalogueFilterAnnouncement(filtered.length, activeLabel);
+		if (announcedFilter && announcedFilter !== message) filterAnnouncement = message;
+		announcedFilter = message;
+	});
 
 	function badgeFor(p: PageData['products'][number]): string | undefined {
 		const badge = p.badges?.find((item) => !p.placeholder || !isSuppressedCatalogueBadge(item));
@@ -98,9 +113,12 @@
 		{/each}
 	</nav>
 
+	<p class="visually-hidden" aria-live="polite" aria-atomic="true">{filterAnnouncement}</p>
+
 	<!-- Featured hero row -->
-	{#if data.featured.length > 0 && selected === 'all' && !searchQuery}
-		<section class="featured" aria-label="Featured products">
+	{#if showFeatured}
+		<section class="featured" aria-labelledby="good-places-to-start">
+			<h2 id="good-places-to-start" class="featured-title">Good places to start</h2>
 			{#each data.featured as product}
 				<ProductCard
 					variant="featured"
@@ -128,9 +146,9 @@
 			<span class="grid-sort">Sorted by our honest recommendation</span>
 		</div>
 
-		{#if filtered.length > 0}
+		{#if gridProducts.length > 0}
 			<div class="product-grid">
-				{#each filtered as product}
+				{#each gridProducts as product}
 					<ProductCard
 						href={product.href}
 						image={product.image}
@@ -145,7 +163,7 @@
 					/>
 				{/each}
 			</div>
-		{:else}
+		{:else if filtered.length === 0}
 			<div class="empty">
 				<p class="empty-lead">
 					{#if data.products.length === 0}
@@ -256,6 +274,16 @@
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
 		gap: 22px;
+	}
+
+	.featured-title {
+		grid-column: 1 / -1;
+		margin: 0;
+		font-family: var(--font-display);
+		font-size: 26px;
+		font-weight: 600;
+		letter-spacing: -0.015em;
+		color: #1c3527;
 	}
 
 	/* ---- Grid section ---- */

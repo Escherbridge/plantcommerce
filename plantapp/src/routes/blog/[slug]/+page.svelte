@@ -104,7 +104,7 @@
 			<p class="mt-5 text-xl leading-relaxed text-base-content/70">{page.excerpt}</p>
 		{/if}
 		{#if authorName || publishedIso}
-			<p class="mt-4 font-mono text-xs tracking-wider text-base-content/50 uppercase">
+			<p class="blog-date mt-4 font-mono text-xs tracking-wider uppercase">
 				{#if authorName}{authorName}{/if}
 				{#if authorName && publishedIso}
 					<span aria-hidden="true"> · </span>
@@ -178,3 +178,9 @@
 		</p>
 	</article>
 </section>
+
+<style>
+	.blog-date {
+		color: #5c665d;
+	}
+</style>

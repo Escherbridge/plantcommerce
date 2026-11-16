@@ -8,7 +8,10 @@ test('2. shop renders the seeded catalogue, featured tiles, filtering, and categ
 		page.getByRole('heading', { level: 1, name: 'Every tool here earned its place.' })
 	).toBeVisible();
 
-	const featured = page.locator('section[aria-label="Featured products"]');
+	await expect(page.getByRole('heading', { level: 2, name: 'Good places to start' })).toBeVisible();
+	const featured = page.locator('section').filter({
+		has: page.getByRole('heading', { name: 'Good places to start' })
+	});
 	await expect(featured).toBeVisible();
 	await expect(featured.locator('a.pc--featured')).toHaveCount(3);
 
@@ -19,6 +22,12 @@ test('2. shop renders the seeded catalogue, featured tiles, filtering, and categ
 	// valid price on every card rather than pinning a brittle exact number.
 	const cardCount = await cards.count();
 	expect(cardCount).toBeGreaterThan(0);
+	const featuredHrefs = await featured
+		.locator('a.pc--featured')
+		.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('href')));
+	for (const href of featuredHrefs) {
+		await expect(productGrid.locator(`a.pc[href="${href}"]`)).toHaveCount(0);
+	}
 	await expect(cards.locator('.pc__price')).toHaveCount(0);
 	await expect(featured.locator('.pc__price')).toHaveCount(0);
 	const badges = await page.locator('.pc__badge').allInnerTexts();

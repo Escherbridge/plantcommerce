@@ -181,7 +181,7 @@
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
-		color: #7c9585;
+		color: #587364;
 	}
 
 	.pc__title {

@@ -22,6 +22,7 @@
 		publicSite,
 		publicSiteUrl
 	} from '$lib/config/site';
+	import { navLinkIsCurrent } from '$lib/navigation/currentNav';
 	import { tick } from 'svelte';
 
 	const currentYear = new Date().getFullYear();
@@ -145,7 +146,11 @@
 	});
 
 	// Mobile navigation structure
-	const mobileNavigation = [
+	const mobileNavigation: {
+		label: string;
+		href: string;
+		children?: { label: string; href: string }[];
+	}[] = [
 		{
 			label: 'Sell on Aevani',
 			href: '/sell'
@@ -210,6 +215,19 @@
 			{ label: 'Warranty', href: '/warranty' }
 		]
 	};
+
+	const drawerHrefs = mobileNavigation.flatMap((item) =>
+		item.children?.length ? item.children.map((child) => child.href) : [item.href]
+	);
+
+	function drawerLinkIndex(itemIndex: number, childIndex: number): number {
+		let index = 0;
+		for (let i = 0; i < itemIndex; i += 1) {
+			const item = mobileNavigation[i];
+			index += item.children?.length ? item.children.length : 1;
+		}
+		return index + childIndex;
+	}
 
 	function scrollToTop() {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -555,6 +573,9 @@
 										href={child.href}
 										class="drawer-sub-link"
 										style="transition-delay: {drawerOpen ? i * 50 + j * 30 : 0}ms"
+										aria-current={navLinkIsCurrent(currentUrl, drawerHrefs, drawerLinkIndex(i, j))
+											? 'page'
+											: undefined}
 										onclick={() => void closeDrawer()}
 									>
 										{child.label}
@@ -563,8 +584,13 @@
 							</div>
 						</details>
 					{:else}
-						<a href={item.href} class="drawer-nav-link" onclick={() => void closeDrawer()}
-							>{item.label}</a
+						<a
+							href={item.href}
+							class="drawer-nav-link"
+							aria-current={navLinkIsCurrent(currentUrl, drawerHrefs, drawerLinkIndex(i, 0))
+								? 'page'
+								: undefined}
+							onclick={() => void closeDrawer()}>{item.label}</a
 						>
 					{/if}
 				</div>
