@@ -5,6 +5,7 @@
 	import { StatTile, SectionHeader, Badge, Button, GlassCard } from '$lib/components/ui';
 	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
 	import { productCategoryHref } from '../../catalog';
+	import { guideForCategory, retargetHydroponicsFieldGuide } from '$lib/catalog/categoryGuides';
 	import { productStructuredData } from '$lib/catalog/placeholderListing';
 	import { cart } from '$lib/stores/cart';
 	import type { PageData } from './$types';
@@ -20,6 +21,9 @@
 	const productUrl = $derived(`/products/${data.categorySlug}/${p.slug}`);
 	const categoryHref = $derived(productCategoryHref(data.categorySlug));
 	const categoryName = $derived(p.category?.name || data.categorySlug);
+	const nextGuide = $derived(
+		guideForCategory(p.category?.slug) ?? guideForCategory(data.categorySlug)
+	);
 
 	// ---- Currency-aware price formatting (currency from the model; default USD → $). ----
 	const currencyCode = $derived((p.currency || 'USD').toUpperCase());
@@ -102,7 +106,9 @@
 	);
 
 	// ---- The long read: the ONLY @html on the page, always sanitized. ----
-	const longReadHtml = $derived(sanitizeRichText(p.descriptionHtml || p.description || ''));
+	const longReadHtml = $derived(
+		sanitizeRichText(retargetHydroponicsFieldGuide(p.descriptionHtml || p.description || ''))
+	);
 	const hasLongRead = $derived(stripHtml(p.descriptionHtml || p.description || '').length > 0);
 
 	// ---- Gallery images mapped to ProductGallery's {url, alt} contract. ----
@@ -236,6 +242,14 @@
 						<p class="buy__coming-soon">
 							This listing is a preview. We're onboarding growers and makers, so it isn't available
 							to purchase yet.
+						</p>
+						{#if nextGuide}
+							<p class="buy__next">
+								<a href={nextGuide.href}>{nextGuide.label}</a>
+							</p>
+						{/if}
+						<p class="buy__next">
+							Make something like this? <a href="/sell">Apply to sell it on Aevani.</a>
 						</p>
 					{:else}
 						<div class="buy__actions">
@@ -555,6 +569,17 @@
 		font-size: 15px;
 		line-height: 1.5;
 		color: #3d5346;
+	}
+	.buy__next {
+		margin: 0;
+		font-family: var(--font-body);
+		font-size: 15px;
+		line-height: 1.5;
+		color: #3d5346;
+	}
+	.buy__next a {
+		color: #2e6b4f;
+		font-weight: 600;
 	}
 
 	.buy__features {
