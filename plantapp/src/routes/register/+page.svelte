@@ -1,9 +1,17 @@
 <script lang="ts">
 	import Icon from '$lib/components/icons/Icon.svelte';
+	import CredentialErrorSummary from '$lib/components/forms/CredentialErrorSummary.svelte';
+	import { describedByFor } from '$lib/auth/credentialFieldErrors';
 	import { trpc } from '$lib/trpc/client';
 	import { tick } from 'svelte';
 	import type { ActionData } from './$types';
-	import { firstRegistrationError, focusRegistrationField, type RegisterField } from './validation';
+	import {
+		PASSWORD_TOO_SHORT,
+		PASSWORDS_DO_NOT_MATCH,
+		firstRegistrationError,
+		focusRegistrationField,
+		type RegisterField
+	} from './validation';
 
 	let { form }: { form: ActionData } = $props();
 
@@ -28,10 +36,10 @@
 		const errors: string[] = [];
 		if (password) {
 			if (password.length < 8) {
-				errors.push('Password must be at least 8 characters');
+				errors.push(PASSWORD_TOO_SHORT);
 			}
 			if (confirmPassword && password !== confirmPassword) {
-				errors.push('Passwords do not match');
+				errors.push(PASSWORDS_DO_NOT_MATCH);
 			}
 		}
 		return errors;
@@ -51,6 +59,32 @@
 		}
 		return ids.length > 0 ? ids.join(' ') : undefined;
 	}
+
+	function described(field: RegisterField): string | undefined {
+		const ids = [fieldDescribedBy(field), describedByFor(form?.fieldErrors, field)].filter(
+			(id): id is string => Boolean(id)
+		);
+		return ids.length > 0 ? ids.join(' ') : undefined;
+	}
+
+	const usernameInvalid = $derived(
+		describedByFor(form?.fieldErrors, 'username') || fieldInvalid('username') ? 'true' : undefined
+	);
+	const emailInvalid = $derived(
+		describedByFor(form?.fieldErrors, 'email') || fieldInvalid('email') ? 'true' : undefined
+	);
+	const passwordInvalid = $derived(
+		describedByFor(form?.fieldErrors, 'password') || fieldInvalid('password') ? 'true' : undefined
+	);
+	const confirmInvalid = $derived(
+		describedByFor(form?.fieldErrors, 'confirmPassword') || fieldInvalid('confirmPassword')
+			? 'true'
+			: undefined
+	);
+	const usernameDescribedBy = $derived(described('username'));
+	const emailDescribedBy = $derived(described('email'));
+	const passwordDescribedBy = $derived(described('password'));
+	const confirmDescribedBy = $derived(described('confirmPassword'));
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
@@ -182,6 +216,17 @@
 					novalidate
 					aria-busy={isLoading}
 				>
+					{#if form?.fieldErrors?.length}
+						<CredentialErrorSummary
+							errors={form.fieldErrors}
+							fieldIds={{
+								username: 'username',
+								email: 'email',
+								password: 'password',
+								confirmPassword: 'confirmPassword'
+							}}
+						/>
+					{/if}
 					<div class="register-row">
 						<div class="form-control">
 							<label class="label" for="firstName">
@@ -233,8 +278,8 @@
 							bind:this={usernameInput}
 							required
 							disabled={isLoading}
-							aria-invalid={fieldInvalid('username')}
-							aria-describedby={fieldDescribedBy('username')}
+							aria-invalid={usernameInvalid}
+							aria-describedby={usernameDescribedBy}
 							minlength="3"
 							maxlength="50"
 						/>
@@ -258,8 +303,8 @@
 							bind:this={emailInput}
 							required
 							disabled={isLoading}
-							aria-invalid={fieldInvalid('email')}
-							aria-describedby={fieldDescribedBy('email')}
+							aria-invalid={emailInvalid}
+							aria-describedby={emailDescribedBy}
 						/>
 					</div>
 
@@ -278,8 +323,8 @@
 							bind:this={passwordInput}
 							required
 							disabled={isLoading}
-							aria-invalid={fieldInvalid('password')}
-							aria-describedby={fieldDescribedBy('password')}
+							aria-invalid={passwordInvalid}
+							aria-describedby={passwordDescribedBy}
 							minlength="8"
 						/>
 						{#if passwordErrors().length > 0 && password}
@@ -308,8 +353,8 @@
 							bind:this={confirmPasswordInput}
 							required
 							disabled={isLoading}
-							aria-invalid={fieldInvalid('confirmPassword')}
-							aria-describedby={fieldDescribedBy('confirmPassword')}
+							aria-invalid={confirmInvalid}
+							aria-describedby={confirmDescribedBy}
 							minlength="8"
 						/>
 					</div>

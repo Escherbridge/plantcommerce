@@ -105,25 +105,36 @@ describe('credential forms', () => {
 		}
 	});
 
-	it('answers a no-JS post with the form and does not redirect the secret', async () => {
+	it('answers a complete no-JS post without echoing the secret or redirecting', async () => {
 		const pages = [
-			['https://aevani.com/login', loginActions],
-			['https://aevani.com/register', registerActions],
-			['https://aevani.com/reset-password?token=opaque', resetPasswordActions],
-			['https://aevani.com/forgot-password', forgotPasswordActions]
+			[
+				'https://aevani.com/login',
+				loginActions,
+				{ usernameOrEmail: 'ada@example.com', password: secret }
+			],
+			[
+				'https://aevani.com/register',
+				registerActions,
+				{
+					username: 'grower',
+					email: 'ada@example.com',
+					password: secret,
+					confirmPassword: secret
+				}
+			],
+			[
+				'https://aevani.com/reset-password?token=opaque',
+				resetPasswordActions,
+				{ password: secret, confirmation: secret }
+			],
+			['https://aevani.com/forgot-password', forgotPasswordActions, { email: 'ada@example.com' }]
 		] as const;
 
-		for (const [href, actions] of pages) {
+		for (const [href, actions, fields] of pages) {
 			const request = new Request(href, {
 				method: 'POST',
 				headers: { 'content-type': 'application/x-www-form-urlencoded' },
-				body: new URLSearchParams({
-					usernameOrEmail: 'ada@example.com',
-					email: 'ada@example.com',
-					password: secret,
-					confirmPassword: secret,
-					confirmation: secret
-				})
+				body: new URLSearchParams(fields)
 			});
 			const result = await actions.default({
 				request,
@@ -133,9 +144,99 @@ describe('credential forms', () => {
 			const serialized = JSON.stringify(result);
 			expect(serialized).not.toContain(secret);
 			expect(serialized).not.toContain('ada@example.com');
+			expect(serialized).not.toContain('grower');
 			expect(serialized).not.toMatch(/location|redirect/i);
 		}
 
 		expect(noJsCredentialPost().data.message).toBe('Please try again.');
+	});
+
+	it('returns the existing per-field errors and never the password', async () => {
+		const password = 'super-secret-value';
+		const cases = [
+			{
+				href: 'https://aevani.com/login',
+				actions: loginActions,
+				body: { usernameOrEmail: '', password: '' },
+				errors: [
+					{ field: 'usernameOrEmail', message: 'Please enter your email and password.' },
+					{ field: 'password', message: 'Please enter your email and password.' }
+				]
+			},
+			{
+				href: 'https://aevani.com/register',
+				actions: registerActions,
+				body: {
+					username: 'ab',
+					email: 'not-an-email',
+					password: 'short',
+					confirmPassword: 'other'
+				},
+				errors: [
+					{ field: 'username', message: 'Username must be at least 3 characters' },
+					{ field: 'email', message: 'Enter a valid email address' },
+					{ field: 'password', message: 'Password must be at least 8 characters' },
+					{ field: 'password', message: 'Passwords do not match' }
+				]
+			},
+			{
+				href: 'https://aevani.com/forgot-password',
+				actions: forgotPasswordActions,
+				body: { email: 'not-an-email' },
+				errors: [{ field: 'email', message: 'Enter a valid email address' }]
+			},
+			{
+				href: 'https://aevani.com/reset-password?token=opaque',
+				actions: resetPasswordActions,
+				body: { password: 'short', confirmation: 'other' },
+				errors: [
+					{ field: 'password', message: 'Password must be at least 8 characters.' },
+					{ field: 'confirmation', message: 'Passwords do not match.' }
+				]
+			},
+			{
+				href: 'https://aevani.com/reset-password',
+				actions: resetPasswordActions,
+				body: { password, confirmation: password },
+				errors: [{ field: 'token', message: 'This password reset link is invalid or expired.' }]
+			}
+		] as const;
+
+		const summary = readFileSync(
+			join(srcDir, 'lib/components/forms/CredentialErrorSummary.svelte'),
+			'utf8'
+		);
+		expect(summary).toContain('role="alert"');
+		expect(summary).toContain('autofocus');
+		expect(summary).toContain('tabindex="-1"');
+		expect(readFileSync(join(srcDir, 'lib/auth/credentialFieldErrors.ts'), 'utf8')).toContain(
+			'Please review the following'
+		);
+
+		for (const page of ['login', 'register', 'forgot-password', 'reset-password']) {
+			const source = readFileSync(join(routesDir, page, '+page.svelte'), 'utf8');
+			const form = formBlocks(source)[0]?.body ?? '';
+			expect(form.indexOf('CredentialErrorSummary')).toBeGreaterThanOrEqual(0);
+			expect(form.indexOf('CredentialErrorSummary')).toBeLessThan(form.indexOf('<input'));
+			expect(source).toContain('aria-invalid=');
+			expect(source).toContain('aria-describedby=');
+		}
+
+		for (const item of cases) {
+			const result = await item.actions.default({
+				request: new Request(item.href, {
+					method: 'POST',
+					headers: { 'content-type': 'application/x-www-form-urlencoded' },
+					body: new URLSearchParams(item.body)
+				}),
+				url: new URL(item.href)
+			} as never);
+			expect(result).toMatchObject({ status: 400, data: { fieldErrors: item.errors } });
+			const serialized = JSON.stringify(result);
+			for (const value of Object.values(item.body)) {
+				if (value) expect(serialized).not.toContain(value);
+			}
+			expect(serialized).not.toMatch(/location|redirect/i);
+		}
 	});
 });

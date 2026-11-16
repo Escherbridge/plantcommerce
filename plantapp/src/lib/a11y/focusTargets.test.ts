@@ -3,6 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { colors } from '$lib/styles/colors';
+import { PASSWORD_TOO_SHORT } from '../../routes/register/validation';
 
 const srcDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
@@ -113,11 +114,14 @@ describe('focus and sticky-header targets', () => {
 		expect(register).toContain('focusRegistrationField');
 		expect(register).toContain('id="register-form-error"');
 		expect(register).toContain('id="register-password-errors"');
-		for (const field of ['username', 'email', 'password', 'confirmPassword']) {
-			expect(register).toContain(`aria-invalid={fieldInvalid('${field}')}`);
-			expect(register).toContain(`aria-describedby={fieldDescribedBy('${field}')}`);
+		for (const field of ['username', 'email', 'password']) {
+			expect(register).toContain(`aria-invalid={${field}Invalid}`);
+			expect(register).toContain(`aria-describedby={${field}DescribedBy}`);
 		}
-		expect(register).toContain('Password must be at least 8 characters');
+		expect(register).toContain('aria-invalid={confirmInvalid}');
+		expect(register).toContain('aria-describedby={confirmDescribedBy}');
+		expect(PASSWORD_TOO_SHORT).toBe('Password must be at least 8 characters');
+		expect(register).toContain('PASSWORD_TOO_SHORT');
 	});
 
 	it('moves an empty login submit to the first missing credential', () => {
@@ -125,7 +129,7 @@ describe('focus and sticky-header targets', () => {
 		expect(login).toContain('aria-invalid={emailInvalid}');
 		expect(login).toContain('aria-describedby={emailDescribedBy}');
 		expect(login).toContain('passwordInput)?.focus()');
-		expect(login).toContain('Please enter your email and password.');
+		expect(login).toContain('LOGIN_MISSING_CREDENTIALS');
 		expect(login).toContain('method="post"');
 	});
 });
