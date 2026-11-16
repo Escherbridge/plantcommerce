@@ -10,6 +10,7 @@ import {
 	minorUnitsToDecimal
 } from './checkoutDraft';
 import { AffiliateCommissionService } from './affiliateCommission';
+import { orderProviderChargeFields } from './stripeCharge';
 import { StripeCheckoutService } from './stripeCheckout';
 
 const STALE_WEBHOOK_PROCESSING_MS = 5 * 60 * 1000;
@@ -349,9 +350,29 @@ export class StripeWebhookService {
 				.from(table.order)
 				.where(eq(table.order.checkoutDraftId, draft.id))
 				.for('update');
+			const chargeFields = orderProviderChargeFields(session, draft.reference);
 			if (existingOrder) {
 				if (attempt.status !== 'paid' || draft.status !== 'fulfilled') {
 					throw new Error('Existing order does not match the payment attempt lifecycle');
+				}
+				if (
+					(existingOrder.stripeChargeId &&
+						chargeFields.stripeChargeId &&
+						existingOrder.stripeChargeId !== chargeFields.stripeChargeId) ||
+					(existingOrder.transferGroup &&
+						existingOrder.transferGroup !== chargeFields.transferGroup)
+				) {
+					throw new Error('Paid order charge reference does not match the Checkout Session');
+				}
+				if (!existingOrder.stripeChargeId || !existingOrder.transferGroup) {
+					await tx
+						.update(table.order)
+						.set({
+							stripeChargeId: existingOrder.stripeChargeId ?? chargeFields.stripeChargeId,
+							transferGroup: existingOrder.transferGroup ?? chargeFields.transferGroup,
+							updatedAt: new Date()
+						})
+						.where(eq(table.order.id, existingOrder.id));
 				}
 				await AffiliateCommissionService.recordPaidCommission(tx, {
 					draft,
@@ -464,6 +485,8 @@ export class StripeWebhookService {
 					customerPhone: customer.phone,
 					stripeSessionId: session.id,
 					stripePaymentIntentId: intentId,
+					stripeChargeId: chargeFields.stripeChargeId,
+					transferGroup: chargeFields.transferGroup,
 					createdAt: now,
 					updatedAt: now
 				})
