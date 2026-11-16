@@ -3,6 +3,9 @@
 	import { page } from '$app/stores';
 	import { toasts } from '$lib/stores/toast';
 	import { Icon } from '$lib/components/icons';
+	import type { ActionData } from './$types';
+
+	export let form: ActionData = null;
 
 	let email = '';
 	let password = '';
@@ -80,15 +83,15 @@
 			</div>
 
 			<!-- Error -->
-			{#if error}
+			{#if error || form?.message}
 				<div id="login-form-error" class="login-error" role="alert" aria-live="assertive">
 					<Icon name="alert-circle" size={16} class="shrink-0" />
-					<span>{error}</span>
+					<span>{error || form?.message}</span>
 				</div>
 			{/if}
 
 			<!-- Form -->
-			<form class="login-form" onsubmit={handleSubmit} novalidate aria-busy={loading}>
+			<form method="post" class="login-form" onsubmit={handleSubmit} novalidate aria-busy={loading}>
 				<div class="form-control">
 					<label class="label" for="email-address">
 						<span class="label-text">Email address or username</span>
@@ -103,8 +106,8 @@
 						class="input-bordered input w-full"
 						placeholder="you@example.com or username"
 						disabled={loading}
-						aria-invalid={Boolean(error)}
-						aria-describedby={error ? 'login-form-error' : undefined}
+						aria-invalid={Boolean(error || form?.message)}
+						aria-describedby={error || form?.message ? 'login-form-error' : undefined}
 					/>
 				</div>
 
@@ -122,8 +125,8 @@
 						class="input-bordered input w-full"
 						placeholder="Enter your password"
 						disabled={loading}
-						aria-invalid={Boolean(error)}
-						aria-describedby={error ? 'login-form-error' : undefined}
+						aria-invalid={Boolean(error || form?.message)}
+						aria-describedby={error || form?.message ? 'login-form-error' : undefined}
 					/>
 				</div>
 

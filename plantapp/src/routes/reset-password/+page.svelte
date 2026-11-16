@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/trpc/client';
+	import type { ActionData } from './$types';
+
+	export let form: ActionData = null;
 
 	let password = '';
 	let confirmation = '';
@@ -52,7 +55,7 @@
 				<p class="text-error" role="alert">This password reset link is invalid or expired.</p>
 				<a class="btn mt-4 btn-outline" href="/forgot-password">Request a new link</a>
 			{:else}
-				<form class="mt-4 space-y-4" onsubmit={submit}>
+				<form method="post" class="mt-4 space-y-4" onsubmit={submit}>
 					<label class="form-control" for="password">
 						<span class="label-text">New password</span>
 						<input
@@ -79,7 +82,9 @@
 							disabled={loading}
 						/>
 					</label>
-					{#if error}<p class="text-error" role="alert">{error}</p>{/if}
+					{#if error || form?.message}<p class="text-error" role="alert">
+							{error || form?.message}
+						</p>{/if}
 					<button class="btn w-full btn-primary" type="submit" disabled={loading}>
 						{loading ? 'Resetting…' : 'Reset password'}
 					</button>

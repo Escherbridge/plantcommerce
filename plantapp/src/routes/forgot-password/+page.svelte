@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { trpc } from '$lib/trpc/client';
+	import type { ActionData } from './$types';
+
+	export let form: ActionData = null;
 
 	let email = '';
 	let loading = false;
@@ -47,7 +50,7 @@
 					Enter your account email address. For security, this confirmation is the same whether or
 					not an account exists.
 				</p>
-				<form class="mt-4 space-y-4" onsubmit={submit}>
+				<form method="post" class="mt-4 space-y-4" onsubmit={submit}>
 					<label class="form-control" for="email">
 						<span class="label-text">Email address</span>
 						<input
@@ -60,7 +63,9 @@
 							disabled={loading}
 						/>
 					</label>
-					{#if error}<p class="text-error" role="alert">{error}</p>{/if}
+					{#if error || form?.message}<p class="text-error" role="alert">
+							{error || form?.message}
+						</p>{/if}
 					<button class="btn w-full btn-primary" type="submit" disabled={loading}>
 						{loading ? 'Sending…' : 'Send reset instructions'}
 					</button>
