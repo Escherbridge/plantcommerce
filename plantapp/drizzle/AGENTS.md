@@ -175,3 +175,16 @@ This additive file creates `seller_application` and its indexes. It is applied
 by the same startup helper, in the same transaction, after `0010`. It is not
 journaled. Do not use `db:migrate` or `db:push` to apply it. The statements are
 `CREATE TABLE IF NOT EXISTS` and `CREATE INDEX IF NOT EXISTS` only.
+
+## `0013_order_transfer_group.sql`
+
+This additive file adds nullable `order.stripe_charge_id` and
+`order.transfer_group`, plus a unique index on non-null charge ids. It is
+applied by the same startup helper, after `0011` on this branch. The `0012`
+number is left for `0012_manager_invites.sql` on the Seller-role branch. It is
+not journaled. Do not
+use `db:migrate` or `db:push` to apply it. Run
+`preflight_order_transfer_group.sql` read-only before a production apply. The
+file does not update or delete order rows. Fulfilment writes the charge id and
+the checkout draft reference (the PaymentIntent `transfer_group`) when an order
+is created.
