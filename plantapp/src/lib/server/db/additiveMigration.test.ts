@@ -12,6 +12,10 @@ const transferGroupMigrationPath = new URL(
 	'../../../../drizzle/0013_order_transfer_group.sql',
 	import.meta.url
 );
+const sellerPayoutMigrationPath = new URL(
+	'../../../../drizzle/0014_seller_payout_account.sql',
+	import.meta.url
+);
 
 describe('coming soon migration', () => {
 	const source = readFileSync(migrationPath, 'utf8');
@@ -54,6 +58,20 @@ describe('order transfer group migration', () => {
 		expect(sql).not.toMatch(/\b(DROP|DELETE|UPDATE|TRUNCATE|ALTER COLUMN)\b/i);
 		expect(sql.replace(/\bIS NOT NULL\b/gi, '')).not.toMatch(/\bNOT NULL\b/i);
 		expect(sql).not.toMatch(/\bBEGIN\b|\bCOMMIT\b/i);
+	});
+});
+
+describe('seller and payout account migration', () => {
+	const source = readFileSync(sellerPayoutMigrationPath, 'utf8');
+	const sql = executableMigrationSql(source);
+
+	it('adds seller ownership and a Connect record without rewriting rows', () => {
+		expect(sql).toContain('CREATE TABLE IF NOT EXISTS "public"."seller"');
+		expect(sql).toContain('CREATE TABLE IF NOT EXISTS "public"."payout_account"');
+		expect(sql).toContain('ADD COLUMN IF NOT EXISTS "seller_id" integer');
+		expect(sql).not.toMatch(/\b(DROP|DELETE|UPDATE|TRUNCATE)\b/i);
+		expect(sql).not.toMatch(/\b(bank|ssn|ein|tax_id|address)\b/i);
+		expect(sql).not.toMatch(/^\s*BEGIN\s*;|^\s*COMMIT\s*;/im);
 	});
 });
 

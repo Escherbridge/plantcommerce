@@ -199,3 +199,13 @@ use `db:migrate` or `db:push` to apply it. Run
 file does not update or delete order rows. Fulfilment writes the charge id and
 the checkout draft reference (the PaymentIntent `transfer_group`) when an order
 is created.
+
+## `0014_seller_payout_account.sql`
+
+This additive file creates `seller` and `payout_account`, and adds nullable
+`seller_id` on `product`, `checkout_draft_item`, and `order_item`. A null
+seller means the product stays with Aevani. `payout_account` stores a Stripe
+account id and status flags only. It is applied by the same startup helper,
+after `0013`. It is not journaled. Do not use `db:migrate` or `db:push`. Run
+`preflight_seller_payout_account.sql` read-only before a production apply. The
+file does not update or delete existing rows.

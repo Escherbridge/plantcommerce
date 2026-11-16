@@ -506,6 +506,7 @@ export class StripeWebhookService {
 					quantity: item.quantity,
 					unitPrice: minorUnitsToDecimal(item.unitPriceMinor),
 					totalPrice: minorUnitsToDecimal(item.totalPriceMinor),
+					sellerId: item.sellerId,
 					createdAt: now
 				}))
 			);
