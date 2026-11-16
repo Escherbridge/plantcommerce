@@ -8,7 +8,8 @@ const srcDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 /** Signed-in shells keep their own main. Public pages use the layout's single main. */
 function isPrivateShell(rel: string): boolean {
 	if (rel.startsWith('lib/components/platform/')) return true;
-	if (/^routes\/(?:account|admin|instructor|component-demo|certificates)\//.test(rel)) return true;
+	if (/^routes\/(?:account|admin|instructor|component-demo|certificates|seller)\//.test(rel))
+		return true;
 	if (/^routes\/learn\/(?:course|my-courses|certificates)\//.test(rel)) return true;
 	if (
 		rel.startsWith('routes/affiliate/') &&

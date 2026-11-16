@@ -1,5 +1,8 @@
 <script lang="ts">
 	import '$lib/components/platform/platform.css';
+	import PayoutSetup from '$lib/components/payouts/PayoutSetup.svelte';
+
+	let { form } = $props();
 </script>
 
 <svelte:head>
@@ -21,4 +24,5 @@
 			<a href="/affiliate/earnings" class="platform-action-btn">View earnings</a>
 		</div>
 	</div>
+	<PayoutSetup notice={form?.notice ?? null} />
 </div>
