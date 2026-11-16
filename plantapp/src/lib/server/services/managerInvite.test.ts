@@ -58,6 +58,12 @@ function memoryRepo() {
 			row.status = 'revoked';
 			row.revokedAt = now;
 			return true;
+		},
+		async findByTokenHash(tokenHash) {
+			return rows.find((row) => row.tokenHash === tokenHash) ?? null;
+		},
+		async findUse() {
+			return null;
 		}
 	};
 	return { repo, rows };

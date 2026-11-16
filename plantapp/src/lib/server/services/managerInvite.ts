@@ -1,8 +1,21 @@
 import { timingSafeEqual } from 'node:crypto';
-import { desc, eq } from 'drizzle-orm';
+import { and, desc, eq, sql } from 'drizzle-orm';
 import type { InviteRole } from '$lib/auth/userRole';
 import { db } from '$lib/server/db';
-import { managerInvite, managerInviteUse, user } from '$lib/server/db/schema';
+import {
+	affiliate,
+	managerInvite,
+	managerInviteUse,
+	sellerApplication,
+	user
+} from '$lib/server/db/schema';
+import { isActiveApprovedAffiliate } from '$lib/server/services/affiliate';
+import {
+	describeInviteVisit,
+	type TokenVisit,
+	type Viewer,
+	type ViewerUse
+} from '$lib/invites/view';
 import { displayStatus, type InviteDisplayStatus } from '$lib/invites/status';
 import { generateInviteToken, hashInviteToken, isInviteToken } from '$lib/invites/token';
 import { inviteAbsoluteUrl } from '$lib/invites/urls';
@@ -56,6 +69,8 @@ export type InviteRepository = {
 	listInvites(): Promise<InviteListRecord[]>;
 	getInvite(id: string): Promise<InviteListRecord | null>;
 	revokeInvite(id: string, now: Date): Promise<boolean>;
+	findByTokenHash(tokenHash: string): Promise<InviteListRecord | null>;
+	findUse(inviteId: string, userId: string): Promise<ViewerUse | null>;
 };
 
 export function inviteHashesMatch(storedHex: string, presentedToken: string): boolean {
@@ -167,6 +182,39 @@ const drizzleRepository: InviteRepository = {
 			.returning({ id: managerInvite.id, status: managerInvite.status });
 		if (updated.length === 0) return false;
 		return true;
+	},
+	async findByTokenHash(tokenHash) {
+		const invites = await this.listInvites();
+		return invites.find((invite) => invite.tokenHash === tokenHash) ?? null;
+	},
+	async findUse(inviteId, userId) {
+		const [row] = await db
+			.select({
+				status: managerInviteUse.status,
+				roleRemovedAt: managerInviteUse.roleRemovedAt,
+				email: user.email
+			})
+			.from(managerInviteUse)
+			.innerJoin(user, eq(managerInviteUse.userId, user.id))
+			.where(and(eq(managerInviteUse.inviteId, inviteId), eq(managerInviteUse.userId, userId)))
+			.limit(1);
+		if (!row) return null;
+		const [application] = await db
+			.select({ id: sellerApplication.id })
+			.from(sellerApplication)
+			.where(sql`lower(${sellerApplication.email}) = ${row.email.toLowerCase()}`)
+			.limit(1);
+		const [membership] = await db
+			.select({ status: affiliate.status, isActive: affiliate.isActive })
+			.from(affiliate)
+			.where(eq(affiliate.userId, userId))
+			.limit(1);
+		return {
+			status: row.status,
+			roleRemovedAt: row.roleRemovedAt,
+			sellerApplicationReceived: Boolean(application),
+			dashboardAvailable: membership ? isActiveApprovedAffiliate(membership) : false
+		};
 	}
 };
 
@@ -271,4 +319,25 @@ export async function revokeManagerInvite(input: {
 export function lookupHashForToken(token: string): string | null {
 	if (!isInviteToken(token)) return null;
 	return hashInviteToken(token);
+}
+
+export async function resolveInviteVisit(input: {
+	token: string;
+	viewer: Viewer | null;
+	now?: Date;
+	repo?: InviteRepository;
+}): Promise<TokenVisit> {
+	const now = input.now ?? new Date();
+	const repo = input.repo ?? drizzleRepository;
+	const tokenHash = lookupHashForToken(input.token);
+	if (!tokenHash) return { kind: 'not_found' };
+	const invite = await repo.findByTokenHash(tokenHash);
+	if (!invite || !inviteHashesMatch(invite.tokenHash, input.token)) return { kind: 'not_found' };
+	const viewerUse = input.viewer ? await repo.findUse(invite.id, input.viewer.id) : null;
+	return describeInviteVisit({
+		invite,
+		viewer: input.viewer,
+		viewerUse,
+		now
+	});
 }
