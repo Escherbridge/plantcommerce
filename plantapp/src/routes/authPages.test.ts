@@ -106,8 +106,9 @@ describe('auth page titles and register hints', () => {
 	it('sends login through the same-origin redirect helper', () => {
 		const source = readFileSync(join(routesDir, 'login/+page.svelte'), 'utf8');
 		expect(source).toContain('safeRedirectPath');
-		expect(source).toContain(
-			"safeRedirectPath($page.url.searchParams.get('redirect'), $page.url.origin)"
-		);
+		expect(source).toContain('authHandoffHref');
+		expect(source).toContain('class="login-target link font-semibold link-primary"');
+		expect(source).toContain('min-height: 24px');
+		expect(source).toContain('min-width: 24px');
 	});
 });

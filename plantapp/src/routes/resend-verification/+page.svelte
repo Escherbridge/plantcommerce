@@ -13,8 +13,9 @@
 		loading = true;
 		message = '';
 		unavailable = false;
+		const returnPath = new URLSearchParams(window.location.search).get('redirect') ?? undefined;
 		try {
-			const result = await trpc.auth.requestEmailVerification.mutate();
+			const result = await trpc.auth.requestEmailVerification.mutate({ returnPath });
 			message = result.message;
 			unavailable = !result.deliveryAvailable;
 		} catch {

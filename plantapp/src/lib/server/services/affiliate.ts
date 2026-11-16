@@ -7,6 +7,7 @@ import {
 } from '../catalogTruth/publicCatalog';
 import { encodeBase64url } from '@oslojs/encoding';
 import { invalidateUserSessions } from '../auth';
+import { affiliateSharePath, normalizeAffiliateLinkCode } from '$lib/affiliate/linkCode';
 import {
 	AFFILIATE_TIERS,
 	DEFAULT_AFFILIATE_TIER,
@@ -264,6 +265,7 @@ export class AffiliateService {
 	): Promise<table.AffiliateLink> {
 		const { affiliateId, productId, customCode } = params;
 		await this.requireActiveAffiliateById(affiliateId);
+		const normalizedCode = normalizeAffiliateLinkCode(customCode);
 		assertPublicCatalogAvailable();
 
 		// Check if link already exists
@@ -314,12 +316,12 @@ export class AffiliateService {
 		}
 
 		// Generate unique link code
-		const linkCode = customCode || this.generateLinkCode();
+		const linkCode = normalizedCode ?? this.generateLinkCode();
 		await this.ensureUniqueLinkCode(linkCode);
 
 		// Build URLs — product detail pages use /products/[category]/[slug]
 		const originalUrl = `/products/${categorySlug}/${product.slug}`;
-		const affiliateUrl = `/aff/${linkCode}`;
+		const affiliateUrl = affiliateSharePath(linkCode);
 
 		const newLink: typeof table.affiliateLink.$inferInsert = {
 			affiliateId,

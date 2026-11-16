@@ -1,7 +1,10 @@
 <script lang="ts">
+	import { get } from 'svelte/store';
+	import { page } from '$app/stores';
 	import Icon from '$lib/components/icons/Icon.svelte';
 	import CredentialErrorSummary from '$lib/components/forms/CredentialErrorSummary.svelte';
 	import { describedByFor } from '$lib/auth/credentialFieldErrors';
+	import { authHandoffHref, safeRedirectPath } from '$lib/auth/safeRedirect';
 	import { trpc } from '$lib/trpc/client';
 	import { tick } from 'svelte';
 	import type { ActionData } from './$types';
@@ -14,6 +17,31 @@
 	} from './validation';
 
 	let { form }: { form: ActionData } = $props();
+
+	function pageRedirect(): { origin: string; redirect: string | null } | null {
+		try {
+			const current = get(page);
+			return {
+				origin: current.url.origin,
+				redirect: current.url.searchParams.get('redirect')
+			};
+		} catch {
+			if (typeof window === 'undefined') return null;
+			return {
+				origin: window.location.origin,
+				redirect: new URLSearchParams(window.location.search).get('redirect')
+			};
+		}
+	}
+
+	const continuePath = $derived.by(() => {
+		const current = pageRedirect();
+		return current ? safeRedirectPath(current.redirect, current.origin) : '/account/profile';
+	});
+	const signInHref = $derived.by(() => {
+		const current = pageRedirect();
+		return current ? authHandoffHref('login', continuePath, current.origin) : '/login';
+	});
 
 	let username = $state('');
 	let email = $state('');
@@ -128,7 +156,8 @@
 				email: normalizedEmail,
 				password,
 				firstName: firstName.trim() || undefined,
-				lastName: lastName.trim() || undefined
+				lastName: lastName.trim() || undefined,
+				returnPath: continuePath
 			});
 
 			if (result.user) {
@@ -181,10 +210,10 @@
 					{/if}
 					<div class="register-success-actions">
 						<a
-							href="/account/profile"
+							href={continuePath}
 							class="font-display btn w-full tracking-wider uppercase btn-primary"
 						>
-							Go to My Account
+							{continuePath === '/account/profile' ? 'Go to My Account' : 'Continue'}
 						</a>
 						<a
 							href="/products"
@@ -402,7 +431,7 @@
 				<div class="register-footer">
 					<p>
 						Already have an account?
-						<a href="/login" class="link font-semibold link-primary">Sign in</a>.
+						<a href={signInHref} class="link font-semibold link-primary">Sign in</a>.
 					</p>
 					<p class="register-legal">
 						By creating an account, you agree to our

@@ -219,9 +219,9 @@ const routeMetadata: Record<string, { title: string; description: string }> = {
 			'The referral program is not open. The referral share has not been set, and applications are not being accepted.'
 	},
 	'/affiliate/join': {
-		title: 'Affiliate referrals — Aevani',
+		title: 'Affiliate application — Aevani',
 		description:
-			'The referral program is not open. The referral share has not been set, and applications are not being accepted.'
+			'Apply for an Aevani affiliate account and create tracked links for catalogue items.'
 	},
 	'/affiliate/terms': {
 		title: 'Affiliate referrals — Aevani',

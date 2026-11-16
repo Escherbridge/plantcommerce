@@ -22,6 +22,7 @@ import {
 } from '../auth';
 import { deleteGuestCartSessionCookie, readGuestCartSessionId } from '../guestCart';
 import { AuditLogService } from '../services/auditLog';
+import { safeRedirectPath } from '$lib/auth/safeRedirect';
 import type { Session } from '../db/schema';
 import { EmailService } from '../services/email';
 import { LoginProtectionService } from '../services/loginProtection';
@@ -67,6 +68,12 @@ function clientAddress(event: RequestEvent): string {
 	}
 }
 
+/** A same-origin return path for a verification link. The account home adds nothing. */
+function emailReturnPath(value: string | undefined, origin: string): string | undefined {
+	const path = safeRedirectPath(value, origin);
+	return path === '/account/profile' ? undefined : path;
+}
+
 /** Audit delivery must not turn a completed account or session change into a false failure. */
 async function recordAuthAuditEvent(userId: string, action: string): Promise<void> {
 	try {
@@ -89,7 +96,8 @@ export const authRouter = router({
 				email: z.string().trim().email(),
 				password: z.string().min(8),
 				firstName: z.string().trim().max(100).optional(),
-				lastName: z.string().trim().max(100).optional()
+				lastName: z.string().trim().max(100).optional(),
+				returnPath: z.string().max(200).optional()
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
@@ -110,7 +118,11 @@ export const authRouter = router({
 				try {
 					const token = await generateEmailVerificationToken(user.id, user.email);
 					if (token) {
-						await EmailService.sendVerificationEmail(user.email, token);
+						await EmailService.sendVerificationEmail(
+							user.email,
+							token,
+							emailReturnPath(input.returnPath, ctx.event.url.origin)
+						);
 						verificationEmailSent = true;
 					}
 				} catch (error) {
@@ -209,66 +221,72 @@ export const authRouter = router({
 			};
 		}),
 
-	requestEmailVerification: protectedProcedure.mutation(async ({ ctx }) => {
-		const deliveryAddress = ctx.user.pendingEmail ?? ctx.user.email;
-		const deliveryAvailable = accountCapabilitiesEnabled() && EmailService.isConfigured();
-		if (!deliveryAvailable) {
-			return {
-				deliveryAvailable: false,
-				message: 'Verification email is temporarily unavailable. Please contact support.'
-			};
-		}
-
-		if (ctx.user.emailVerified && !ctx.user.pendingEmail) {
-			return { deliveryAvailable: true, message: 'Your email address is already verified.' };
-		}
-
-		try {
-			const allowed = await LoginProtectionService.beginEmailVerificationRequest(
-				clientAddress(ctx.event),
-				deliveryAddress
-			);
-			if (!allowed) {
+	requestEmailVerification: protectedProcedure
+		.input(z.object({ returnPath: z.string().max(200).optional() }).optional())
+		.mutation(async ({ ctx, input }) => {
+			const deliveryAddress = ctx.user.pendingEmail ?? ctx.user.email;
+			const deliveryAvailable = accountCapabilitiesEnabled() && EmailService.isConfigured();
+			if (!deliveryAvailable) {
 				return {
-					deliveryAvailable: true,
-					message: 'Please wait before requesting another verification email.'
+					deliveryAvailable: false,
+					message: 'Verification email is temporarily unavailable. Please contact support.'
 				};
 			}
 
-			if (ctx.user.pendingEmail) {
-				const capabilities = await generateEmailChangeCapabilities(
-					ctx.user.id,
-					ctx.user.email,
-					ctx.user.pendingEmail
-				);
-				if (capabilities) {
-					await EmailService.sendNewEmailChangeProof(
-						ctx.user.pendingEmail,
-						capabilities.newEmailToken
-					);
-					await EmailService.sendExistingEmailChangeConfirmation(
-						ctx.user.email,
-						ctx.user.pendingEmail,
-						capabilities.existingEmailToken
-					);
-					await recordAuthAuditEvent(ctx.user.id, 'email_verification_requested');
-				}
-			} else {
-				const token = await generateEmailVerificationToken(ctx.user.id, deliveryAddress);
-				if (token) {
-					await EmailService.sendVerificationEmail(deliveryAddress, token);
-					await recordAuthAuditEvent(ctx.user.id, 'email_verification_requested');
-				}
+			if (ctx.user.emailVerified && !ctx.user.pendingEmail) {
+				return { deliveryAvailable: true, message: 'Your email address is already verified.' };
 			}
-			return { deliveryAvailable: true, message: 'Verification instructions were sent.' };
-		} catch (error) {
-			console.error('Failed to send verification email:', error);
-			return {
-				deliveryAvailable: false,
-				message: 'Verification email is temporarily unavailable. Please contact support.'
-			};
-		}
-	}),
+
+			try {
+				const allowed = await LoginProtectionService.beginEmailVerificationRequest(
+					clientAddress(ctx.event),
+					deliveryAddress
+				);
+				if (!allowed) {
+					return {
+						deliveryAvailable: true,
+						message: 'Please wait before requesting another verification email.'
+					};
+				}
+
+				if (ctx.user.pendingEmail) {
+					const capabilities = await generateEmailChangeCapabilities(
+						ctx.user.id,
+						ctx.user.email,
+						ctx.user.pendingEmail
+					);
+					if (capabilities) {
+						await EmailService.sendNewEmailChangeProof(
+							ctx.user.pendingEmail,
+							capabilities.newEmailToken
+						);
+						await EmailService.sendExistingEmailChangeConfirmation(
+							ctx.user.email,
+							ctx.user.pendingEmail,
+							capabilities.existingEmailToken
+						);
+						await recordAuthAuditEvent(ctx.user.id, 'email_verification_requested');
+					}
+				} else {
+					const token = await generateEmailVerificationToken(ctx.user.id, deliveryAddress);
+					if (token) {
+						await EmailService.sendVerificationEmail(
+							deliveryAddress,
+							token,
+							emailReturnPath(input?.returnPath, ctx.event.url.origin)
+						);
+						await recordAuthAuditEvent(ctx.user.id, 'email_verification_requested');
+					}
+				}
+				return { deliveryAvailable: true, message: 'Verification instructions were sent.' };
+			} catch (error) {
+				console.error('Failed to send verification email:', error);
+				return {
+					deliveryAvailable: false,
+					message: 'Verification email is temporarily unavailable. Please contact support.'
+				};
+			}
+		}),
 
 	resetPassword: publicProcedure
 		.input(z.object({ token: z.string().min(1).max(128), password: z.string().min(8).max(256) }))

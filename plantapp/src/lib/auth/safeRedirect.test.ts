@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { safeRedirectPath } from './safeRedirect';
+import { authHandoffHref, pathWithRedirect, safeRedirectPath } from './safeRedirect';
 
 const origin = 'https://aevani.com';
 const fallback = '/account/profile';
@@ -37,6 +37,20 @@ describe('safeRedirectPath', () => {
 		expect(safeRedirectPath(null, origin)).toBe(fallback);
 		expect(safeRedirectPath('', origin)).toBe(fallback);
 		expect(safeRedirectPath(undefined, origin)).toBe(fallback);
+	});
+
+	it('keeps an affiliate join return on signup and sign-in', () => {
+		expect(authHandoffHref('register', '/affiliate/join', origin)).toBe(
+			'/register?redirect=%2Faffiliate%2Fjoin'
+		);
+		expect(authHandoffHref('login', '/affiliate/join', origin)).toBe(
+			'/login?redirect=%2Faffiliate%2Fjoin'
+		);
+		expect(pathWithRedirect('/resend-verification', '/affiliate/join', origin)).toBe(
+			'/resend-verification?redirect=%2Faffiliate%2Fjoin'
+		);
+		expect(authHandoffHref('register', 'https://evil.com', origin)).toBe('/register');
+		expect(authHandoffHref('login', null, origin)).toBe('/login');
 	});
 
 	it('never returns a url whose next parse leaves the origin', () => {

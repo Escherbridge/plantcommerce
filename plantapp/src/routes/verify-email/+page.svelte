@@ -19,7 +19,9 @@
 						<div class="mb-4 text-6xl text-success" aria-hidden="true">✓</div>
 						<h1 class="mb-2 card-title text-2xl">Email verified</h1>
 						<p class="mb-6">{form.message}</p>
-						<a href="/login" class="btn btn-primary">Log in</a>
+						<a href={form.redirectTo || data.redirectTo || '/login'} class="btn btn-primary"
+							>Continue</a
+						>
 					</div>
 				</div>
 			{:else if data.token}
@@ -29,6 +31,7 @@
 						<p class="mb-6">Confirm that you want to verify this email address.</p>
 						<form method="POST">
 							<input type="hidden" name="token" value={data.token} />
+							<input type="hidden" name="redirect" value={data.redirectTo} />
 							<button class="btn btn-primary" type="submit">Verify email</button>
 						</form>
 						{#if form?.message}

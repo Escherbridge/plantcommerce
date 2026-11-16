@@ -122,6 +122,7 @@ describe('account recovery capabilities', () => {
 
 		expect(publicUser).not.toHaveProperty('passwordHash');
 		expect(publicUser).not.toHaveProperty('pendingEmail');
+		expect(publicUser).toMatchObject({ emailVerified: false });
 		expect(
 			toPublicSession({
 				id: 'session-secret',
