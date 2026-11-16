@@ -177,8 +177,6 @@ describe('credential forms', () => {
 					confirmPassword: 'other'
 				},
 				errors: [
-					{ field: 'firstName', message: 'Enter your first name' },
-					{ field: 'lastName', message: 'Enter your last name' },
 					{ field: 'username', message: 'Username must be at least 3 characters' },
 					{ field: 'email', message: 'Enter a valid email address' },
 					{ field: 'password', message: 'Password must be at least 8 characters' },
@@ -197,8 +195,6 @@ describe('credential forms', () => {
 					confirmPassword: ''
 				},
 				errors: [
-					{ field: 'firstName', message: 'Enter your first name' },
-					{ field: 'lastName', message: 'Enter your last name' },
 					{ field: 'username', message: 'Username must be at least 3 characters' },
 					{ field: 'email', message: 'Enter a valid email address' },
 					{ field: 'password', message: 'Password must be at least 8 characters' },
@@ -276,5 +272,34 @@ describe('credential forms', () => {
 			}
 			expect(serialized).not.toMatch(/location|redirect/i);
 		}
+	});
+
+	it('lets a no-JS register post with blank names pass validation', async () => {
+		const result = await registerActions.default({
+			request: new Request('https://aevani.com/register', {
+				method: 'POST',
+				headers: { 'content-type': 'application/x-www-form-urlencoded' },
+				body: new URLSearchParams({
+					firstName: '   ',
+					lastName: '',
+					username: 'grower',
+					email: 'ada@example.com',
+					password: secret,
+					confirmPassword: secret
+				})
+			}),
+			url: new URL('https://aevani.com/register')
+		} as never);
+
+		expect(result).toMatchObject({
+			status: 400,
+			data: { message: 'Please try again.', fieldErrors: [] }
+		});
+		const serialized = JSON.stringify(result);
+		expect(serialized).not.toContain('Enter your first name');
+		expect(serialized).not.toContain('Enter your last name');
+		expect(serialized).not.toContain(secret);
+		expect(serialized).not.toContain('ada@example.com');
+		expect(serialized).not.toContain('grower');
 	});
 });
