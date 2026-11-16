@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {
 		CREDENTIAL_ERROR_SUMMARY_HEADING,
-		credentialErrorDomId,
+		credentialSummaryItems,
 		type CredentialFieldError
 	} from '$lib/auth/credentialFieldErrors';
 
@@ -19,8 +19,8 @@
 <div class="credential-error-summary" role="alert" tabindex="-1" autofocus>
 	<h2>{CREDENTIAL_ERROR_SUMMARY_HEADING}</h2>
 	<ul>
-		{#each errors as item, index (credentialErrorDomId(item.field, index))}
-			<li id={credentialErrorDomId(item.field, index)}>
+		{#each credentialSummaryItems(errors) as item (item.id)}
+			<li id={item.id}>
 				{#if fieldIds[item.field]}
 					<a href="#{fieldIds[item.field]}">{item.message}</a>
 				{:else}

@@ -88,10 +88,49 @@ describe('registrationFieldErrors', () => {
 				confirmPassword: ''
 			})
 		).toEqual([
+			{ field: 'firstName', message: 'Enter your first name' },
+			{ field: 'lastName', message: 'Enter your last name' },
 			{ field: 'username', message: 'Username must be at least 3 characters' },
 			{ field: 'email', message: 'Enter a valid email address' },
-			{ field: 'password', message: 'Password must be at least 8 characters' }
+			{ field: 'password', message: 'Password must be at least 8 characters' },
+			{ field: 'confirmPassword', message: 'Confirm your password' }
 		]);
+	});
+
+	it('flags a blank first name, last name, and confirm password', () => {
+		expect(
+			registrationFieldErrors({
+				...valid,
+				firstName: '  ',
+				lastName: '',
+				confirmPassword: ''
+			})
+		).toEqual([
+			{ field: 'firstName', message: 'Enter your first name' },
+			{ field: 'lastName', message: 'Enter your last name' },
+			{ field: 'confirmPassword', message: 'Confirm your password' }
+		]);
+	});
+
+	it('keeps a mismatch on the password when confirmation is filled', () => {
+		expect(
+			registrationFieldErrors({
+				...valid,
+				firstName: 'Ada',
+				lastName: 'Lovelace',
+				confirmPassword: 'different-password'
+			})
+		).toEqual([{ field: 'password', message: 'Passwords do not match' }]);
+	});
+
+	it('accepts names and a matching confirmation', () => {
+		expect(
+			registrationFieldErrors({
+				...valid,
+				firstName: 'Ada',
+				lastName: 'Lovelace'
+			})
+		).toEqual([]);
 	});
 });
 
