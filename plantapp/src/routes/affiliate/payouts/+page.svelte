@@ -13,7 +13,10 @@
 	</div>
 	<div class="platform-card">
 		<div class="platform-empty">
-			<p class="platform-empty__text">Payouts aren't set up yet.</p>
+			<p class="platform-empty__text">
+				Payouts aren't set up. The referral share has not been set, and this page does not quote a
+				commission.
+			</p>
 		</div>
 	</div>
 </div>

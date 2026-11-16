@@ -3,17 +3,20 @@
 </script>
 
 <svelte:head>
-	<title>Affiliate Earnings | Aevani</title>
+	<title>Payouts | Aevani</title>
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <div class="platform-content">
 	<div class="platform-header">
-		<h1 class="platform-header__title">Affiliate Earnings</h1>
+		<h1 class="platform-header__title">Payouts</h1>
 	</div>
 	<div class="platform-card">
 		<div class="platform-empty">
-			<p class="platform-empty__text">Payouts aren't set up yet.</p>
+			<p class="platform-empty__text">
+				Payouts aren't set up. The referral share has not been set, and this page does not quote a
+				commission.
+			</p>
 		</div>
 	</div>
 </div>
