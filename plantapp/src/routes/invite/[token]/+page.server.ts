@@ -3,7 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { authHandoffHref, pathWithRedirect } from '$lib/auth/safeRedirect';
 import { invitePath } from '$lib/invites/urls';
 import { deleteSessionTokenCookie, invalidateSession } from '$lib/server/auth';
-import { resolveInviteVisit } from '$lib/server/services/managerInvite';
+import { recordInviteUse, resolveInviteVisit } from '$lib/server/services/managerInvite';
 
 function viewerFrom(user: App.Locals['user']) {
 	if (!user) return null;
@@ -34,6 +34,14 @@ export const actions = {
 		if (!locals.user) {
 			throw redirect(303, authHandoffHref('login', invitePath(params.token), url.origin));
 		}
+		await recordInviteUse({
+			token: params.token,
+			viewer: {
+				id: locals.user.id,
+				email: locals.user.email,
+				emailVerified: locals.user.emailVerified
+			}
+		});
 		throw redirect(303, invitePath(params.token));
 	},
 	signout: async (event) => {

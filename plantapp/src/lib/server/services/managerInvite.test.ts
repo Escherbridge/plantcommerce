@@ -64,6 +64,9 @@ function memoryRepo() {
 		},
 		async findUse() {
 			return null;
+		},
+		async insertUse() {
+			return 'created';
 		}
 	};
 	return { repo, rows };

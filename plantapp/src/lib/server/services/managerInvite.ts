@@ -71,6 +71,9 @@ export type InviteRepository = {
 	revokeInvite(id: string, now: Date): Promise<boolean>;
 	findByTokenHash(tokenHash: string): Promise<InviteListRecord | null>;
 	findUse(inviteId: string, userId: string): Promise<ViewerUse | null>;
+	insertUse(row: { id: string; inviteId: string; userId: string; createdAt: Date }): Promise<
+		'created' | 'exists'
+	>;
 };
 
 export function inviteHashesMatch(storedHex: string, presentedToken: string): boolean {
@@ -215,6 +218,23 @@ const drizzleRepository: InviteRepository = {
 			sellerApplicationReceived: Boolean(application),
 			dashboardAvailable: membership ? isActiveApprovedAffiliate(membership) : false
 		};
+	},
+	async insertUse(row) {
+		try {
+			await db.insert(managerInviteUse).values({
+				id: row.id,
+				inviteId: row.inviteId,
+				userId: row.userId,
+				status: 'pending',
+				createdAt: row.createdAt
+			});
+			return 'created';
+		} catch (error) {
+			if (error && typeof error === 'object' && 'code' in error && error.code === '23505') {
+				return 'exists';
+			}
+			throw error;
+		}
 	}
 };
 
@@ -339,5 +359,38 @@ export async function resolveInviteVisit(input: {
 		viewer: input.viewer,
 		viewerUse,
 		now
+	});
+}
+
+/** Record a pending use. The role stays unchanged until a manager approves it. */
+export async function recordInviteUse(input: {
+	token: string;
+	viewer: Viewer;
+	now?: Date;
+	repo?: InviteRepository;
+}): Promise<TokenVisit> {
+	const now = input.now ?? new Date();
+	const repo = input.repo ?? drizzleRepository;
+	const before = await resolveInviteVisit({
+		token: input.token,
+		viewer: input.viewer,
+		now,
+		repo
+	});
+	if (before.kind !== 'wrong_account' && before.kind !== 'landing') return before;
+	const tokenHash = lookupHashForToken(input.token);
+	const invite = tokenHash ? await repo.findByTokenHash(tokenHash) : null;
+	if (!invite || !inviteHashesMatch(invite.tokenHash, input.token)) return { kind: 'not_found' };
+	await repo.insertUse({
+		id: crypto.randomUUID(),
+		inviteId: invite.id,
+		userId: input.viewer.id,
+		createdAt: now
+	});
+	return resolveInviteVisit({
+		token: input.token,
+		viewer: input.viewer,
+		now,
+		repo
 	});
 }

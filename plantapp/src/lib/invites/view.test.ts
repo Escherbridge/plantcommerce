@@ -11,12 +11,13 @@ import { fileURLToPath } from 'node:url';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { safeRedirectPath } from '$lib/auth/safeRedirect';
-import { errorCopy } from './copy';
+import { errorCopy, inviteCopyForbidden, statusPanel } from './copy';
 import { hashInviteToken } from './token';
-import { describeInviteVisit, type VisitInvite, type Viewer } from './view';
+import { describeInviteVisit, type ViewerUse, type VisitInvite, type Viewer } from './view';
 import InvitePage from '../../routes/invite/[token]/+page.svelte';
 import {
 	inviteHashesMatch,
+	recordInviteUse,
 	resolveInviteVisit,
 	type InviteListRecord,
 	type InviteRepository
@@ -157,6 +158,9 @@ describe('invite token pages', () => {
 			},
 			async findUse() {
 				return null;
+			},
+			async insertUse() {
+				return 'created';
 			}
 		};
 		const productCode = 'spring-kit';
@@ -179,5 +183,85 @@ describe('invite token pages', () => {
 		);
 		expect(aff).not.toContain('managerInvite');
 		expect(aff).not.toContain('resolveInviteVisit');
+	});
+
+	it('records one pending use and shows the panel, then a later person sees the used page', async () => {
+		const stored = record();
+		stored.role = 'affiliate';
+		stored.useLimit = 1;
+		const uses = new Map<string, ViewerUse>();
+		const repo: InviteRepository = {
+			async insertInvite() {},
+			async listInvites() {
+				return [];
+			},
+			async getInvite() {
+				return null;
+			},
+			async revokeInvite() {
+				return false;
+			},
+			async findByTokenHash(hash) {
+				if (hash !== stored.tokenHash) return null;
+				return { ...stored, useCount: uses.size };
+			},
+			async findUse(_inviteId, userId) {
+				return uses.get(userId) ?? null;
+			},
+			async insertUse(row) {
+				if (uses.has(row.userId)) return 'exists';
+				uses.set(row.userId, {
+					status: 'pending',
+					roleRemovedAt: null,
+					sellerApplicationReceived: false,
+					dashboardAvailable: false
+				});
+				return 'created';
+			}
+		};
+		const ada = { id: 'ada', email: 'ada@example.com', emailVerified: true };
+		const first = await recordInviteUse({ token, viewer: ada, now, repo });
+		expect(first.kind).toBe('status');
+		if (first.kind !== 'status') return;
+		expect(first.state).toBe('pending');
+		const panel = statusPanel({
+			role: first.role,
+			state: first.state,
+			email: first.email,
+			sellerApplicationReceived: false,
+			dashboardAvailable: false
+		});
+		expect(panel.heading).toBe("We've saved your invite");
+		expect(inviteCopyForbidden(panel.body)).toBeNull();
+		const rendered = render(InvitePage, {
+			props: {
+				data: {
+					visit: first,
+					registerHref: '/register',
+					loginHref: '/login',
+					resendHref: '/resend-verification'
+				}
+			} as never
+		});
+		expect(rendered.body).toContain("We've saved your invite");
+		expect(rendered.body).toContain('id="invite-complete"');
+		expect(rendered.body).not.toContain('stripe');
+
+		const later = await resolveInviteVisit({
+			token,
+			viewer: { id: 'bea', email: 'bea@example.com', emailVerified: true },
+			now,
+			repo
+		});
+		expect(later.kind).toBe('used');
+		const repeat = await recordInviteUse({ token, viewer: ada, now, repo });
+		expect(repeat.kind).toBe('status');
+		expect(uses.size).toBe(1);
+
+		const service = readFileSync(
+			join(dirname(fileURLToPath(import.meta.url)), '../server/services/managerInvite.ts'),
+			'utf8'
+		);
+		expect(service).not.toMatch(/stripe|setAffiliateStatus|commissionRate/i);
 	});
 });
