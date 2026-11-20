@@ -28,6 +28,7 @@
 		"catalog:enrichment:apply": "npx tsx scripts/catalog-enrichment.ts apply",
 		"catalog:enrichment:verify": "npx tsx scripts/catalog-enrichment.ts verify",
 		"catalog:enrichment:backup": "node scripts/catalog-enrichment-backup.mjs",
+		"white-papers:pdf": "npx tsx scripts/render-white-paper-pdf.ts",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build"
 	},

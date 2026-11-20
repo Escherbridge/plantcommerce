@@ -45,6 +45,8 @@ describe('llms.txt', () => {
 		);
 		expect(text).not.toMatch(/\b\d{5}(?:-\d{4})?\b/);
 		expect(text).not.toMatch(/\b(?:Street|Avenue|Boulevard|Road|Drive|Lane)\b/);
+		expect(text).not.toContain('/white-papers');
+		expect(text).not.toContain('Example white paper');
 
 		for (const match of text.matchAll(/https:\/\/aevani\.com(\/[^\s)]*)?/g)) {
 			const raw = match[1] && match[1] !== '/' ? match[1] : '/';

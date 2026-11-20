@@ -2,6 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { demoProducts } from '$lib/server/db/catalogDemo';
 import { cornerstoneEssays } from '$lib/content/essays';
 import { publishedGuideSectors, writingSitemapPaths } from '$lib/content/writing';
+import { publishedWhitePaperLastmods, publishedWhitePaperPaths } from '$lib/content/white-papers';
 import { SITE_URL, publicIndexablePaths } from '$lib/config/site';
 
 /** YYYY-MM-DD when the content records a real date. No guessed dates. */
@@ -15,7 +16,8 @@ const lastmodByPath = new Map<string, string>(
 		...cornerstoneEssays.map((essay) => datedPath(`/blog/${essay.slug}`, essay.publishedAt)),
 		...publishedGuideSectors.map((guide) =>
 			datedPath(`/guides/${guide.slug}`, guide.reviewedAt || guide.publishedAt)
-		)
+		),
+		...publishedWhitePaperLastmods()
 	].filter((entry): entry is [string, string] => entry !== null)
 );
 
@@ -78,7 +80,8 @@ function publishedContentPaths(): string[] {
 		...publishedEditorialPaths,
 		...publishedGuideSectors.map((guide) => `/guides/${guide.slug}`),
 		...writingSitemapPaths,
-		...publishedCataloguePaths()
+		...publishedCataloguePaths(),
+		...publishedWhitePaperPaths()
 	];
 }
 
