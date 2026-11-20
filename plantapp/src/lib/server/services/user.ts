@@ -9,6 +9,7 @@ import {
 	assertPublicCatalogAvailable,
 	getPublicCatalogAvailability
 } from '../catalogTruth/publicCatalog';
+import type { UserRole } from '$lib/auth/userRole';
 
 // Generate a random ID
 function generateId(length: number = 15): string {
@@ -55,7 +56,7 @@ export interface UserProfile {
 	email: string;
 	firstName: string | null;
 	lastName: string | null;
-	role: 'admin' | 'customer' | 'affiliate' | 'instructor';
+	role: UserRole;
 	isActive: boolean;
 	createdAt: Date;
 	updatedAt: Date;
@@ -67,7 +68,7 @@ export interface CreateUserParams {
 	password: string;
 	firstName?: string;
 	lastName?: string;
-	role?: 'admin' | 'customer' | 'affiliate' | 'instructor';
+	role?: UserRole;
 }
 
 export interface UpdateUserParams {
@@ -576,7 +577,7 @@ export class UserService {
 	static async getAllUsers(
 		limit: number = 50,
 		offset: number = 0,
-		role?: 'admin' | 'customer' | 'affiliate' | 'instructor',
+		role?: UserRole,
 		search?: string,
 		isActive?: boolean
 	): Promise<UserProfile[]> {
@@ -652,10 +653,7 @@ export class UserService {
 	/**
 	 * Update user role (admin only)
 	 */
-	static async updateUserRole(
-		userId: string,
-		role: 'admin' | 'customer' | 'affiliate' | 'instructor'
-	): Promise<void> {
+	static async updateUserRole(userId: string, role: UserRole): Promise<void> {
 		await db.transaction(async (tx) => {
 			await tx
 				.update(table.user)

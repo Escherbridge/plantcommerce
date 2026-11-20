@@ -17,6 +17,7 @@ import {
 	type AnyPgColumn
 } from 'drizzle-orm/pg-core';
 import { relations, sql } from 'drizzle-orm';
+import { inviteRoles, userRoles } from '$lib/auth/userRole';
 
 // ======= USER MANAGEMENT =======
 export const user = pgTable(
@@ -29,9 +30,7 @@ export const user = pgTable(
 		firstName: text('first_name'),
 		lastName: text('last_name'),
 		avatarFileId: text('avatar_file_id'), // Reference to file table
-		role: text('role', { enum: ['admin', 'customer', 'affiliate', 'instructor'] })
-			.notNull()
-			.default('customer'),
+		role: text('role', { enum: userRoles }).notNull().default('customer'),
 		isActive: boolean('is_active').notNull().default(true),
 		emailVerified: boolean('email_verified').notNull().default(false),
 		pendingEmail: text('pending_email'),
@@ -309,6 +308,83 @@ export const sellerApplication = pgTable(
 	(table) => ({
 		emailIdx: index('seller_application_email_idx').on(table.email),
 		createdIdx: index('seller_application_created_at_idx').on(table.createdAt)
+	})
+);
+
+/**
+ * Staff invite link. Lookup uses `token_hash` only.
+ * `token` is kept so a manager can copy the link again; it is never the lookup key.
+ * No payout or commission columns.
+ */
+export const managerInvite = pgTable(
+	'manager_invite',
+	{
+		id: text('id').primaryKey(),
+		tokenHash: text('token_hash').notNull(),
+		token: text('token').notNull(),
+		role: text('role', { enum: inviteRoles }).notNull(),
+		label: text('label'),
+		expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }),
+		useLimit: integer('use_limit'),
+		note: text('note'),
+		status: text('status', { enum: ['active', 'revoked'] })
+			.notNull()
+			.default('active'),
+		revokedAt: timestamp('revoked_at', { withTimezone: true, mode: 'date' }),
+		createdBy: text('created_by')
+			.notNull()
+			.references(() => user.id),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		tokenHashIdx: uniqueIndex('manager_invite_token_hash_idx').on(table.tokenHash),
+		tokenIdx: uniqueIndex('manager_invite_token_idx').on(table.token),
+		createdByIdx: index('manager_invite_created_by_idx').on(table.createdBy),
+		roleCheck: check(
+			'manager_invite_role_check',
+			sql`${table.role} in ('affiliate', 'seller', 'instructor')`
+		),
+		statusCheck: check(
+			'manager_invite_status_check',
+			sql`${table.status} in ('active', 'revoked')`
+		),
+		useLimitCheck: check(
+			'manager_invite_use_limit_check',
+			sql`${table.useLimit} is null or ${table.useLimit} >= 1`
+		)
+	})
+);
+
+/** One person completing one invite. The role is granted only after a manager approves. */
+export const managerInviteUse = pgTable(
+	'manager_invite_use',
+	{
+		id: text('id').primaryKey(),
+		inviteId: text('invite_id')
+			.notNull()
+			.references(() => managerInvite.id),
+		userId: text('user_id')
+			.notNull()
+			.references(() => user.id),
+		status: text('status', { enum: ['pending', 'approved', 'declined'] })
+			.notNull()
+			.default('pending'),
+		roleRemovedAt: timestamp('role_removed_at', { withTimezone: true, mode: 'date' }),
+		reviewedAt: timestamp('reviewed_at', { withTimezone: true, mode: 'date' }),
+		reviewedBy: text('reviewed_by').references(() => user.id),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		inviteUserIdx: uniqueIndex('manager_invite_use_invite_user_idx').on(
+			table.inviteId,
+			table.userId
+		),
+		inviteIdx: index('manager_invite_use_invite_idx').on(table.inviteId),
+		userIdx: index('manager_invite_use_user_idx').on(table.userId),
+		statusCheck: check(
+			'manager_invite_use_status_check',
+			sql`${table.status} in ('pending', 'approved', 'declined')`
+		)
 	})
 );
 

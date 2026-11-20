@@ -16,7 +16,18 @@
 		type RegisterField
 	} from './validation';
 
-	let { form }: { form: ActionData } = $props();
+	let {
+		form,
+		data = { redirectTo: '', invite: '' }
+	}: {
+		form: ActionData;
+		data?: { redirectTo: string; invite: string };
+	} = $props();
+
+	const hiddenRedirect = $derived(
+		(form && 'returnPath' in form && form.returnPath) || data.redirectTo || ''
+	);
+	const hiddenInvite = $derived((form && 'invite' in form && form.invite) || data.invite || '');
 
 	function pageRedirect(): { origin: string; redirect: string | null } | null {
 		try {
@@ -157,7 +168,7 @@
 				password,
 				firstName: firstName.trim() || undefined,
 				lastName: lastName.trim() || undefined,
-				returnPath: continuePath
+				returnPath: hiddenRedirect || continuePath
 			});
 
 			if (result.user) {
@@ -270,6 +281,8 @@
 							}}
 						/>
 					{/if}
+					<input type="hidden" name="redirect" value={hiddenRedirect} />
+					<input type="hidden" name="invite" value={hiddenInvite} />
 					<div class="register-row">
 						<div class="form-control">
 							<label class="label" for="firstName">

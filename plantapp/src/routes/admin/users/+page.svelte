@@ -43,6 +43,9 @@
 	<div class="platform-header">
 		<h1 class="platform-header__title">Users</h1>
 		<p class="platform-header__subtitle">Manage registered users and roles</p>
+		<p>
+			<a class="invite-shortcut" href="/admin/invites?role=seller">Create an invite link</a>
+		</p>
 	</div>
 
 	<!-- Filters -->
@@ -126,6 +129,13 @@
 </div>
 
 <style>
+	.invite-shortcut {
+		display: inline-flex;
+		align-items: center;
+		min-width: 24px;
+		min-height: 24px;
+	}
+
 	.admin-filters {
 		display: flex;
 		gap: 0.75rem;

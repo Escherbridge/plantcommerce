@@ -68,7 +68,7 @@ describe('auth page titles and register hints', () => {
 			confirmPassword: 'short'
 		});
 		const body = render(RegisterPage, {
-			props: { form: { message: undefined, fieldErrors: errors } }
+			props: { form: { message: undefined, fieldErrors: errors, returnPath: '', invite: '' } }
 		}).body;
 
 		expect(inputTag(body, 'username')).toContain('username-hint');

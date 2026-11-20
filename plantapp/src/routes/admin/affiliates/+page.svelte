@@ -143,6 +143,9 @@
 	<div class="platform-header">
 		<h1 class="platform-header__title">Affiliate Management</h1>
 		<p class="platform-header__subtitle">Review and manage affiliate applications and accounts</p>
+		<p>
+			<a class="invite-shortcut" href="/admin/invites?role=affiliate">Create an invite link</a>
+		</p>
 	</div>
 
 	<!-- Tab Navigation -->
@@ -286,6 +289,13 @@
 </div>
 
 <style>
+	.invite-shortcut {
+		display: inline-flex;
+		align-items: center;
+		min-width: 24px;
+		min-height: 24px;
+	}
+
 	.admin-tabs {
 		display: flex;
 		gap: 0.5rem;
