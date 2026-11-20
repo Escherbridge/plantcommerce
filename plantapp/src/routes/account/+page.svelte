@@ -125,8 +125,8 @@
 				<div>
 					<h3 class="affiliate-cta__title">Affiliate program</h3>
 					<p class="affiliate-cta__text">
-						The referral program is not open. The share has not been set, and applications are not
-						being accepted. Direct sellers can apply now.
+						The referral program is not open, and applications are not being accepted. Direct
+						sellers can apply now.
 					</p>
 				</div>
 			</div>

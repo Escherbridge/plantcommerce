@@ -32,7 +32,7 @@ const active = {
 	status: 'active',
 	isActive: true,
 	affiliateCode: 'GARDEN1',
-	commissionRate: '0.0200',
+	commissionRate: '0.0000',
 	totalEarnings: '0.00',
 	totalClicks: 0,
 	totalConversions: 0

@@ -36,7 +36,7 @@ describe('AffiliateService', () => {
 					id: 1,
 					userId: 'user123',
 					affiliateCode: 'CODE123',
-					commissionRate: '0.05',
+					commissionRate: '0.0000',
 					isActive: true
 				}
 			]);
@@ -47,7 +47,9 @@ describe('AffiliateService', () => {
 			const affiliate = await AffiliateService.createAffiliate('user123');
 
 			expect(affiliate.id).toBe(1);
-			expect(db.insert).toHaveBeenCalled();
+			expect(valuesMock).toHaveBeenCalledWith(
+				expect.objectContaining({ commissionRate: '0.0000' })
+			);
 		});
 
 		it('should return existing affiliate if exists', async () => {

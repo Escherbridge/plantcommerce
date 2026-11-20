@@ -238,14 +238,14 @@
 
 **Priority**: High
 
-| Test Case ID | Description                           | Steps                                                                                         | Expected Result                                  | Test Data           |
-| ------------ | ------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------ | ------------------- |
-| AFF-001      | Create affiliate account              | 1. Login as customer<br>2. Navigate to /affiliate/join<br>3. Fill affiliate form<br>4. Submit | Affiliate account created, unique code generated | (customer account)  |
-| AFF-002      | User already affiliate                | 1. Login as affiliate<br>2. Navigate to /affiliate/join                                       | Redirect to affiliate dashboard                  | (affiliate account) |
-| AFF-003      | View affiliate dashboard              | 1. Login as affiliate<br>2. Navigate to /affiliate                                            | Dashboard shows stats, earnings, clicks          | (affiliate account) |
-| AFF-004      | Unique affiliate code generated       | 1. Create affiliate account<br>2. Check affiliate data                                        | Unique code assigned (e.g., "AFF-12345")         | (new affiliate)     |
-| AFF-005      | Default commission rate assigned      | 1. Create affiliate account<br>2. Check commission rate                                       | Default 5% commission set                        | (new affiliate)     |
-| AFF-006      | Non-affiliate cannot access dashboard | 1. Login as customer (non-affiliate)<br>2. Navigate to /affiliate                             | Redirect to join page or error                   | (customer account)  |
+| Test Case ID | Description                           | Steps                                                                                         | Expected Result                                        | Test Data           |
+| ------------ | ------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------- |
+| AFF-001      | Create affiliate account              | 1. Login as customer<br>2. Navigate to /affiliate/join<br>3. Fill affiliate form<br>4. Submit | Affiliate account created, unique code generated       | (customer account)  |
+| AFF-002      | User already affiliate                | 1. Login as affiliate<br>2. Navigate to /affiliate/join                                       | Redirect to affiliate dashboard                        | (affiliate account) |
+| AFF-003      | View affiliate dashboard              | 1. Login as affiliate<br>2. Navigate to /affiliate                                            | Dashboard shows stats, earnings, clicks                | (affiliate account) |
+| AFF-004      | Unique affiliate code generated       | 1. Create affiliate account<br>2. Check affiliate data                                        | Unique code assigned (e.g., "AFF-12345")               | (new affiliate)     |
+| AFF-005      | Default commission rate assigned      | 1. Create affiliate account<br>2. Check commission rate                                       | Stored rate is 0. Checkout quote is 0 until configured | (new affiliate)     |
+| AFF-006      | Non-affiliate cannot access dashboard | 1. Login as customer (non-affiliate)<br>2. Navigate to /affiliate                             | Redirect to join page or error                         | (customer account)  |
 
 #### 5.2 Affiliate Links
 

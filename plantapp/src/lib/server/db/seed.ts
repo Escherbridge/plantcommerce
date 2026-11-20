@@ -715,7 +715,8 @@ async function seed() {
 	console.log('[7/13] Inserting affiliate tiers, affiliates, and links...');
 
 	// Historical fixture rows for the affiliate ledger. Public pages do not quote these rates.
-	const AFFILIATE_PLATFORM_FEE_BPS = 200;
+	// Seller platform fee is 8% (800 bps), matching affiliateCommissionPolicy.ts. Not a referral rate.
+	const AFFILIATE_PLATFORM_FEE_BPS = 800;
 	const affiliateTierDefs = [
 		{ code: 'sprout', version: 1, commissionRateBps: 200 },
 		{ code: 'grower', version: 1, commissionRateBps: 350 },

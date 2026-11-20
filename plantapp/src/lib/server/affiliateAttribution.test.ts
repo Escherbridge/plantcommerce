@@ -93,6 +93,7 @@ describe('affiliate attribution', () => {
 		vi.clearAllMocks();
 		env.AFFILIATE_ATTRIBUTION_ENABLED = 'false';
 		env.AFFILIATE_ATTRIBUTION_COOKIE_SECRET = 'a'.repeat(40);
+		delete env.AFFILIATE_ATTRIBUTION_WINDOW_DAYS;
 		getLinkByCode.mockResolvedValue(link);
 		const rows = [{ id: 'aat_test', affiliateId: 4, affiliateLinkId: 7 }];
 		(db.select as any).mockImplementation(() => queryChain(rows));
@@ -113,8 +114,20 @@ describe('affiliate attribution', () => {
 		expect(await AffiliateAttributionService.resolveForCart(jar as any)).toBeNull();
 	});
 
+	it('does not issue an attribution cookie when no window is configured', async () => {
+		env.AFFILIATE_ATTRIBUTION_ENABLED = 'true';
+		const jar = cookies();
+
+		const resolved = await AffiliateAttributionService.recordRedirect('garden-kit', jar as any);
+
+		expect(resolved?.originalUrl).toBe('/products/hydroponics/net-pots');
+		expect(db.transaction).not.toHaveBeenCalled();
+		expect(jar.setCalls.some((call) => call.name === affiliateAttributionCookieName)).toBe(false);
+	});
+
 	it('issues an httpOnly capability cookie that the cart can resolve when attribution is enabled', async () => {
 		env.AFFILIATE_ATTRIBUTION_ENABLED = 'true';
+		env.AFFILIATE_ATTRIBUTION_WINDOW_DAYS = '30';
 		const jar = cookies();
 
 		const resolved = await AffiliateAttributionService.recordRedirect(
@@ -134,6 +147,7 @@ describe('affiliate attribution', () => {
 
 	it('keeps the redirect when the attribution write fails', async () => {
 		env.AFFILIATE_ATTRIBUTION_ENABLED = 'true';
+		env.AFFILIATE_ATTRIBUTION_WINDOW_DAYS = '30';
 		(db.transaction as any).mockRejectedValue(new Error('relation does not exist'));
 		const jar = cookies();
 

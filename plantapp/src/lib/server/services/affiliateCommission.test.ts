@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { env } from '$env/dynamic/private';
 import { AffiliateCommissionService } from './affiliateCommission';
 
 vi.mock('$env/dynamic/private', () => ({
@@ -25,6 +26,35 @@ describe('AffiliateCommissionService', () => {
 		expect(result).toBeNull();
 		expect(tx.select).not.toHaveBeenCalled();
 		expect(tx.insert).not.toHaveBeenCalled();
+	});
+
+	it('logs and skips an attributed paid order when the ledger is disabled', async () => {
+		env.AFFILIATE_LEDGER_ENABLED = 'false';
+		const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+		const tx = { select: vi.fn(), insert: vi.fn(), update: vi.fn() };
+
+		try {
+			const result = await AffiliateCommissionService.recordPaidCommission(tx, {
+				draft: {
+					id: 'draft_disabled',
+					affiliateLinkId: 17,
+					affiliateCommissionMinor: 425
+				} as any,
+				order: { id: 31 } as any,
+				stripeWebhookEventId: 'evt_ledger_off'
+			});
+
+			expect(result).toBeNull();
+			expect(tx.select).not.toHaveBeenCalled();
+			expect(tx.insert).not.toHaveBeenCalled();
+			expect(error).toHaveBeenCalledWith(
+				expect.stringMatching(/ledger is disabled/i),
+				expect.objectContaining({ checkoutDraftId: 'draft_disabled', orderId: 31 })
+			);
+		} finally {
+			error.mockRestore();
+			env.AFFILIATE_LEDGER_ENABLED = 'true';
+		}
 	});
 
 	it('does not block fulfillment for an attributed draft whose frozen commission is zero', async () => {

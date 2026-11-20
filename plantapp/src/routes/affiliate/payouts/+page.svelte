@@ -14,8 +14,7 @@
 	<div class="platform-card">
 		<div class="platform-empty">
 			<p class="platform-empty__text">
-				Payouts aren't set up. The referral share has not been set, and this page does not quote a
-				commission.
+				Referral payments are not set up, and this page does not quote one.
 			</p>
 		</div>
 	</div>
