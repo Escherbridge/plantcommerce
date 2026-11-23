@@ -13,8 +13,8 @@ export const load: PageLoad = async (event) => {
 			slug: event.params.slug
 		});
 		if (guide.page.type !== 'guide') throw error(404, 'Guide not found');
-		// `content_page` is not rewritten in place. This return value is the
-		// data SvelteKit serializes into the hydration payload.
+		// `content.getPage` already rewrites the fetched body. This pass is
+		// idempotent if that response is the stored wording.
 		return { sector: null, guide: presentSoilHealthGuide(guide) };
 	} catch (cause) {
 		if (cause && typeof cause === 'object' && 'status' in cause) throw cause;
