@@ -68,7 +68,7 @@ const indoorLighting = guide(
 );
 const nutrientFilm = guide(
 	'nutrient-film-technique',
-	'Nutrient film technique: slope, flow, and channel length'
+	'Nutrient film technique: slope, flow and channel length'
 );
 const ecPh = guide('hydroponic-ec-ph-nutrients', 'Hydroponic nutrients, EC, and pH');
 const outdoorIpm = guide(

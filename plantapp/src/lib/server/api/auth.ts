@@ -23,6 +23,7 @@ import {
 import { deleteGuestCartSessionCookie, readGuestCartSessionId } from '../guestCart';
 import { AuditLogService } from '../services/auditLog';
 import { safeRedirectPath } from '$lib/auth/safeRedirect';
+import { accountCreationFailureCopy } from '$lib/copy/accountCreation';
 import { verificationEmailResendUnavailableMessage } from '$lib/copy/verificationEmail';
 import type { Session } from '../db/schema';
 import { EmailService } from '../services/email';
@@ -108,7 +109,7 @@ export const authRouter = router({
 			} catch {
 				throw new TRPCError({
 					code: 'CONFLICT',
-					message: 'We could not create an account with those details.'
+					message: accountCreationFailureCopy
 				});
 			}
 

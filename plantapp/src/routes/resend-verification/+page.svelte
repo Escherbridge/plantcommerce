@@ -12,6 +12,10 @@
 	let message = $state('');
 	let unavailable = $state(Boolean(data.user) && data.verificationEmailAvailable === false);
 	const signedIn = $derived(Boolean(data.user));
+	const resendContactPhrase = 'contact us';
+	const resendCopyParts = verificationResendPageCopy.split(resendContactPhrase);
+	const resendCopyBefore = resendCopyParts[0] ?? '';
+	const resendCopyAfter = resendCopyParts[1] ?? '';
 
 	async function requestVerification() {
 		loading = true;
@@ -42,10 +46,9 @@
 		<div class="card-body">
 			<h1 id="resend-title" class="card-title text-2xl">Verify your email</h1>
 			{#if unavailable}
-				<p role="status">{verificationResendPageCopy}</p>
-				<p>
-					Try again later, or <a class="link link-primary" href="/contact">contact us</a> if you need
-					help.
+				<p role="status">
+					{resendCopyBefore}<a class="link link-primary" href="/contact">{resendContactPhrase}</a
+					>{resendCopyAfter}
 				</p>
 			{:else if signedIn}
 				<p>Request a new verification email for the address on your signed-in account.</p>

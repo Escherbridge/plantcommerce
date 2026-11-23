@@ -21,7 +21,7 @@ export const verificationEmailUnavailableCopy =
  * `verificationEmailUnavailableCopy`.
  */
 export const verificationResendPageCopy =
-	"Your account is ready, but we couldn't send the verification email.";
+	"Your account is ready, but we couldn't send the verification email. You can try again with the button below, or contact us if you need help.";
 
 /** Returned by the resend API when delivery is unavailable. */
 export const verificationEmailResendUnavailableMessage =

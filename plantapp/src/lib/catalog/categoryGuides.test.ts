@@ -129,7 +129,7 @@ describe('product category guides', () => {
 		});
 		expect(guideForProduct('nft-hydroponic-channel-system')).toEqual({
 			href: '/guides/nutrient-film-technique',
-			label: 'Nutrient film technique: slope, flow, and channel length'
+			label: 'Nutrient film technique: slope, flow and channel length'
 		});
 		expect(guideForProduct('digital-ph-ec-meter-set')).toEqual({
 			href: '/guides/hydroponic-ec-ph-nutrients',
