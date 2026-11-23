@@ -52,7 +52,9 @@ export function connectAccountSnapshot(object: unknown): ConnectAccountSnapshot 
 
 	const capabilities = asRecord(account.capabilities);
 	const requirements = asRecord(account.requirements);
-	const currentlyDue = Array.isArray(requirements?.currently_due) ? requirements.currently_due : null;
+	const currentlyDue = Array.isArray(requirements?.currently_due)
+		? requirements.currently_due
+		: null;
 	const country = countryCode(account.country);
 	return {
 		stripeAccountId: account.id,

@@ -1,5 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
-import { affiliateBatchGate, netAfterDebt, payableBalance, sellerTransferGate } from './payoutExecution';
+import {
+	affiliateBatchGate,
+	netAfterDebt,
+	payableBalance,
+	sellerTransferGate
+} from './payoutExecution';
 import { runSellerTransfers } from './payoutJobs';
 
 vi.mock('$lib/server/db', () => ({ db: {}, sqlClient: null }));
