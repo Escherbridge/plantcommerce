@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import type Stripe from 'stripe';
 import { chargeIdFromCheckoutSession, orderProviderChargeFields } from './stripeCharge';
 
-function session(paymentIntent: Stripe.Checkout.Session['payment_intent']): Stripe.Checkout.Session {
+function session(
+	paymentIntent: Stripe.Checkout.Session['payment_intent']
+): Stripe.Checkout.Session {
 	return { payment_intent: paymentIntent } as Stripe.Checkout.Session;
 }
 
