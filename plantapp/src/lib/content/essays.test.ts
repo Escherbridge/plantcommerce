@@ -39,19 +39,65 @@ describe('cornerstone essays', () => {
 
 		for (const essay of cornerstoneEssays) {
 			const html = sanitizeRichText(cornerstoneEssayHtml(essay.body));
+			const linksPlantGeo =
+				html.includes('href="https://plantgeo.aevani.com') ||
+				essay.related?.some((link) => link.href.startsWith('https://plantgeo.aevani.com'));
+			const linksSell =
+				html.includes('href="/sell"') || essay.related?.some((link) => link.href === '/sell');
 			if (essay.slug !== 'the-fee-that-didnt-move') {
-				expect(html).toContain('href="https://plantgeo.aevani.com');
+				expect(linksPlantGeo, essay.slug).toBe(true);
 			}
 			if (essay.slug !== 'fall-soil-test') {
-				expect(html).toContain('href="/sell"');
+				expect(linksSell, essay.slug).toBe(true);
 			}
 			expect(html).not.toContain('nofollow');
+			expect(html).not.toContain('<h2>Sources</h2>');
+			expect(html).not.toContain('<h2>Related</h2>');
+			expect(essay.body).not.toMatch(/^## (Sources|Related)$/m);
 			expect(cornerstoneEssayBySlug(essay.slug)?.title).toBe(essay.title);
 			expect(essay.sources.length).toBeGreaterThan(0);
 			expect(essay.metaDescription).toBeDefined();
 			expect((essay.metaDescription ?? '').length).toBeLessThanOrEqual(220);
 			expect(essay.metaDescription).not.toBe(essay.excerpt);
+			expect(cornerstoneEssayRecord(essay).related).toBe(essay.related ?? null);
 		}
+
+		const soil = cornerstoneEssayBySlug('fall-soil-test');
+		expect(soil?.related?.map((link) => [link.label, link.href])).toEqual([
+			['Soil health: the foundation of a garden', '/guides/understanding-soil-health'],
+			['Raised beds: width, depth, and soil', '/guides/raised-beds'],
+			['PlantGeo', 'https://plantgeo.aevani.com'],
+			['No-dig beds and sheet mulching', '/guides/no-dig-sheet-mulch'],
+			['Frost dates and hardiness zones', '/guides/frost-dates-hardiness'],
+			['Winterizing tunnels, irrigation, and pots', '/guides/winterizing-growing-systems'],
+			[
+				'How to build a raised bed that works in heavy clay and hot summers',
+				'/blog/raised-beds-for-heavy-clay-and-hot-summers'
+			],
+			[
+				'Before you buy seed packets: a five-step pre-spring checklist',
+				'/blog/pre-spring-grower-checklist'
+			],
+			['Guides', '/guides']
+		]);
+		expect(soil?.body).toContain('is a natural next read when the beds thaw.');
+		expect(soil?.body).not.toContain('https://yardandgarden.extension.iastate.edu');
+
+		const feeComparison = cornerstoneEssayBySlug('the-fee-that-didnt-move');
+		expect(feeComparison?.related).toEqual([
+			{
+				label: 'The seller fee is a flat 8%',
+				href: '/blog/a-flat-eight-percent',
+				after: ' — the published Aevani rate, in one place.'
+			},
+			{
+				label: 'In a dry climate, cooling can use more water than the plants',
+				href: '/blog/cooling-can-use-more-water-than-the-crop'
+			},
+			{ label: 'Sell on Aevani', href: '/sell' }
+		]);
+		expect(feeComparison?.body).toContain('[applications to sell](https://aevani.com/sell)');
+		expect(feeComparison?.body).not.toContain('https://help.etsy.com');
 
 		const fee = cornerstoneEssayBySlug('a-flat-eight-percent');
 		expect(fee?.title).toBe('The seller fee is a flat 8%');

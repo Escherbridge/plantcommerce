@@ -7,6 +7,14 @@ export interface EssaySource {
 	alsoLead?: string;
 }
 
+/** A configured related link. The blog template renders these instead of the other field notes. */
+export interface EssayLink {
+	label: string;
+	href: string;
+	/** Plain text that follows the anchor, when the item continues past the link. */
+	after?: string;
+}
+
 export interface CornerstoneEssay {
 	slug: string;
 	title: string;
@@ -18,6 +26,11 @@ export interface CornerstoneEssay {
 	publishedAt: string;
 	tags: readonly string[];
 	sources: readonly EssaySource[];
+	/**
+	 * When set, the blog template prints this list as the only Related section.
+	 * Omitted essays keep the automatic list of the other field notes.
+	 */
+	related?: readonly EssayLink[];
 	body: string;
 }
 
@@ -79,6 +92,29 @@ export const cornerstoneEssays: readonly CornerstoneEssay[] = [
 				datePublished: '1989'
 			}
 		],
+		related: [
+			{
+				label: 'Soil health: the foundation of a garden',
+				href: '/guides/understanding-soil-health'
+			},
+			{ label: 'Raised beds: width, depth, and soil', href: '/guides/raised-beds' },
+			{ label: 'PlantGeo', href: 'https://plantgeo.aevani.com' },
+			{ label: 'No-dig beds and sheet mulching', href: '/guides/no-dig-sheet-mulch' },
+			{ label: 'Frost dates and hardiness zones', href: '/guides/frost-dates-hardiness' },
+			{
+				label: 'Winterizing tunnels, irrigation, and pots',
+				href: '/guides/winterizing-growing-systems'
+			},
+			{
+				label: 'How to build a raised bed that works in heavy clay and hot summers',
+				href: '/blog/raised-beds-for-heavy-clay-and-hot-summers'
+			},
+			{
+				label: 'Before you buy seed packets: a five-step pre-spring checklist',
+				href: '/blog/pre-spring-grower-checklist'
+			},
+			{ label: 'Guides', href: '/guides' }
+		],
 		body: `The garden is done, the beds are bare, and the ground isn't frozen yet. That is the window.
 
 Most advice to test your soil stops at the verb. The useful part is narrower. A late-fall sample can give a usable baseline for pH, salts, free lime, phosphorus, potassium, and organic matter, in time to plan next year's beds. It is a poor forecast of next spring's nitrogen.
@@ -115,29 +151,7 @@ In Colorado's neutral and alkaline soils, GardenNotes says to re-test about ever
 
 ## If the ground is already frozen
 
-If the beds are already frozen or under snow, wait. Sample in early spring once they thaw and are not soggy. Bulletin 704 notes that frozen soil will not change the results, though it is hard to collect, and says not to sample snow-covered fields. The CSU lab guide prefers an annual spring sample when the goal is to estimate nutrients for the coming season, taken at the same time each year so you can see trends. Keep the report with the map of the beds. The [frost dates and hardiness guide](/guides/frost-dates-hardiness) is the place to check whether the ground is likely to stay closed, and the [pre-spring grower checklist](/blog/pre-spring-grower-checklist) is a natural next read when the beds thaw.
-
-## Sources
-
-1. Iowa State University Extension and Outreach, Yard and Garden FAQ, “How do I collect a soil sample?”, last updated 20 November 2026. https://yardandgarden.extension.iastate.edu/faq/how-do-i-collect-soil-sample
-2. Card, A., Hammond, E., Whiting, D., Wilson, C., and Reeder, J., “Soil Tests,” CMG GardenNotes #221, Colorado State University Extension, published October 2015, reviewed September 2022. https://extension.colostate.edu/resource/soil-tests/
-3. Colorado State University Soil, Water and Plant Testing Lab, “Interpreting a Soil Test Report,” PDF named September 2026; prepared and reviewed by Dr. Wilma Trujillo, Lab Manager, 3 January 2024. https://agsci.colostate.edu/soiltestinglab/wp-content/uploads/sites/140/2026/10/Soil-Test-Interpretation-September-2026.pdf
-4. Reeder, Jean, “Desirable range of soil properties,” Colorado State University Extension / Colorado Master Gardener, 6 December 2020. The PDF says it should not be copied without permission; the ranges above are paraphrased, not reproduced as a table. https://cmg.extension.colostate.edu/wp-content/uploads/sites/59/2021/03/Soil-Results-Table.pdf
-5. Utah State University Analytical Laboratories, “Home Soil Test.” https://www.usu.edu/analytical-laboratories/tests/home-soil-testing
-6. Washington State University Whatcom County Extension, “Soil Testing for Home Gardeners,” revised March 2021. https://wpcdn.web.wsu.edu/wp-extension/uploads/sites/2093/2021/03/SoilTestingHomeGardeners.pdf
-7. Mahler, R. L., and T. A. Tindall, “Soil Sampling,” University of Idaho Bulletin 704, revised, reprint dated 8-97. Revised edition hosted by Washington State University Extension: https://wpcdn.web.wsu.edu/wp-extension/uploads/sites/2093/2024/03/SoilSampling704.pdf. University of Idaho Library archive record for the 1989 edition, marked archived content: https://www.lib.uidaho.edu/digital/uiext/items/uiext23464.html
-
-## Related
-
-- [Soil health: the foundation of a garden](/guides/understanding-soil-health)
-- [Raised beds: width, depth, and soil](/guides/raised-beds)
-- [PlantGeo](https://plantgeo.aevani.com)
-- [No-dig beds and sheet mulching](/guides/no-dig-sheet-mulch)
-- [Frost dates and hardiness zones](/guides/frost-dates-hardiness)
-- [Winterizing tunnels, irrigation, and pots](/guides/winterizing-growing-systems)
-- [How to build a raised bed that works in heavy clay and hot summers](/blog/raised-beds-for-heavy-clay-and-hot-summers)
-- [Before you buy seed packets: a five-step pre-spring checklist](/blog/pre-spring-grower-checklist)
-- [Guides](/guides)`
+If the beds are already frozen or under snow, wait. Sample in early spring once they thaw and are not soggy. Bulletin 704 notes that frozen soil will not change the results, though it is hard to collect, and says not to sample snow-covered fields. The CSU lab guide prefers an annual spring sample when the goal is to estimate nutrients for the coming season, taken at the same time each year so you can see trends. Keep the report with the map of the beds. The [frost dates and hardiness guide](/guides/frost-dates-hardiness) is the place to check whether the ground is likely to stay closed, and the [pre-spring grower checklist](/blog/pre-spring-grower-checklist) is a natural next read when the beds thaw.`
 	},
 	{
 		slug: 'cooling-can-use-more-water-than-the-crop',
@@ -266,6 +280,18 @@ While growers read free [field guides](/guides) and sketch beds, greenhouses, an
 			},
 			{ label: 'Sell on Aevani', href: 'https://aevani.com/sell' }
 		],
+		related: [
+			{
+				label: 'The seller fee is a flat 8%',
+				href: '/blog/a-flat-eight-percent',
+				after: ' — the published Aevani rate, in one place.'
+			},
+			{
+				label: 'In a dry climate, cooling can use more water than the plants',
+				href: '/blog/cooling-can-use-more-water-than-the-crop'
+			},
+			{ label: 'Sell on Aevani', href: '/sell' }
+		],
 		body: `A $40 order of seed packets, shipping included, no sales tax, from a U.S. seller with a U.S. bank account. That is a small, ordinary sale. What the seller keeps is not the headline rate someone checked in the spring. It is the total of every line that still prints on the statement.
 
 Etsy's headline seller fees did not change in 2026 for a U.S. shop. Growtsy's changelog, which compared the February 13 and October 5 versions of the fees policy, is the source for that October 5 revision date. Etsy's own legal fees page blocked a fetch for this piece, so the date is treated as secondary. The number people watch held still. The other lines did what they always do.
@@ -297,21 +323,7 @@ A few limits belong next to those numbers. The Etsy listing fee is per listing, 
 
 Selling on Aevani is one line: a flat 8% on each sale, with card processing included and absorbed by Aevani, and no listing, monthly, or ad fees. That is the whole published rate. Etsy and eBay bring a buyer audience that Aevani does not have yet. That is the honest trade, and it is the part of the comparison that a headline rate will not tell you.
 
-This is not a claim that Etsy or eBay are a bad deal. They are large markets with real buyers. The useful critique is of a fee bill with many lines, not of the companies. It is also not a pitch to buyers. If you grow or make tools that belong here, [applications to sell](https://aevani.com/sell) are open.
-
-## Sources
-
-1. Etsy Help, “What are the Fees and Taxes for Selling on Etsy,” opened 10 November 2026. https://help.etsy.com/hc/en-us/articles/115014483627-What-are-the-Fees-and-Taxes-for-Selling-on-Etsy
-2. Etsy Help, “What are Payment Processing Fees for Selling on Etsy,” opened 10 November 2026. https://help.etsy.com/hc/en-us/articles/115015628847-What-are-Payment-Processing-Fees-for-Selling-on-Etsy
-3. eBay Seller Center, “Seller fees,” opened 10 November 2026. https://www.ebay.com/sellercenter/selling/start-selling-on-ebay/seller-fees
-4. Growtsy, Etsy changes changelog, opened 10 November 2026. Used only for the October 5 revision date and the June 22 non-U.S. Regulatory Operating Fee date. https://www.growtsy.com/etsy-changes
-5. Sell on Aevani, flat 8% with card processing included and no other fees. https://aevani.com/sell
-
-## Related
-
-- [The seller fee is a flat 8%](/blog/a-flat-eight-percent) — the published Aevani rate, in one place.
-- [In a dry climate, cooling can use more water than the plants](/blog/cooling-can-use-more-water-than-the-crop)
-- [Sell on Aevani](/sell)`
+This is not a claim that Etsy or eBay are a bad deal. They are large markets with real buyers. The useful critique is of a fee bill with many lines, not of the companies. It is also not a pitch to buyers. If you grow or make tools that belong here, [applications to sell](https://aevani.com/sell) are open.`
 	},
 	{
 		slug: 'dwc-vs-kratky-vs-nft',
@@ -628,6 +640,7 @@ export function cornerstoneEssayRecord(essay: CornerstoneEssay) {
 			tags: JSON.stringify(essay.tags)
 		},
 		author: null,
-		sources: essay.sources
+		sources: essay.sources,
+		related: essay.related ?? null
 	};
 }
