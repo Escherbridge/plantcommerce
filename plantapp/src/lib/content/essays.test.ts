@@ -12,6 +12,7 @@ import {
 describe('cornerstone essays', () => {
 	it('publishes the field notes, routes into PlantGeo and /sell, and passes hard compliance rules', async () => {
 		expect(cornerstoneEssays.map((essay) => essay.slug)).toEqual([
+			'fall-soil-test',
 			'cooling-can-use-more-water-than-the-crop',
 			'a-flat-eight-percent',
 			'the-fee-that-didnt-move',
@@ -41,7 +42,9 @@ describe('cornerstone essays', () => {
 			if (essay.slug !== 'the-fee-that-didnt-move') {
 				expect(html).toContain('href="https://plantgeo.aevani.com');
 			}
-			expect(html).toContain('href="/sell"');
+			if (essay.slug !== 'fall-soil-test') {
+				expect(html).toContain('href="/sell"');
+			}
 			expect(html).not.toContain('nofollow');
 			expect(cornerstoneEssayBySlug(essay.slug)?.title).toBe(essay.title);
 			expect(essay.sources.length).toBeGreaterThan(0);
