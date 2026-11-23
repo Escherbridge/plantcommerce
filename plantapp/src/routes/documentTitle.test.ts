@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import SEO from '$lib/components/SEO.svelte';
 import ReferralHold from '$lib/components/content/ReferralHold.svelte';
 import { layoutOwnsDocumentMeta, publicRouteMetadata } from '$lib/config/site';
+import RegisterPage from './register/+page.svelte';
 import SellPage from './sell/+page.svelte';
 import VerifyEmailPage from './verify-email/+page.svelte';
 
@@ -100,6 +101,16 @@ describe('document title', () => {
 
 		expect(publicRouteMetadata('/verify-email').title).toBe('Aevani');
 		expect(layoutOwnsDocumentMeta('/verify-email')).toBe(false);
+	});
+
+	it('prints one register title from route metadata, including client-nav ownership', () => {
+		const pageHead = render(RegisterPage, { props: { form: null } }).head;
+		expect(pageHead).not.toContain('<title');
+		expect(titles(serverHead('/register', pageHead))).toEqual([
+			'<title>Create an account — Aevani</title>'
+		]);
+		expect(publicRouteMetadata('/register').title).toBe('Create an account — Aevani');
+		expect(layoutOwnsDocumentMeta('/register')).toBe(true);
 	});
 
 	it('prints one sell title on the open form, a 400, and the confirmation', () => {

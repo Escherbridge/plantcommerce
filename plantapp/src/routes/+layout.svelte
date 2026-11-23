@@ -1334,6 +1334,7 @@
 		justify-content: center;
 	}
 
+	/* oklch(var(--bc) / 0.6) renders #768177 on #f4f1ea (3.6:1). #5c665d clears 4.5:1. */
 	.user-bottom-bar__link {
 		display: flex;
 		align-items: center;
@@ -1341,7 +1342,7 @@
 		padding: 0.5rem 0.75rem;
 		font-size: 0.8125rem;
 		font-weight: 500;
-		color: oklch(var(--bc) / 0.6);
+		color: #5c665d;
 		text-decoration: none;
 		border-radius: var(--input-radius, 10px);
 		transition:

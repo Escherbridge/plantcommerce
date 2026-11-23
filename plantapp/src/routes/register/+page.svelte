@@ -5,6 +5,7 @@
 	import CredentialErrorSummary from '$lib/components/forms/CredentialErrorSummary.svelte';
 	import { describedByFor } from '$lib/auth/credentialFieldErrors';
 	import { authHandoffHref, safeRedirectPath } from '$lib/auth/safeRedirect';
+	import { postRegisterHref, verificationEmailUnavailableCopy } from '$lib/copy/verificationEmail';
 	import { trpc } from '$lib/trpc/client';
 	import { tick } from 'svelte';
 	import type { ActionData } from './$types';
@@ -177,10 +178,6 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Create an account — Aevani</title>
-</svelte:head>
-
 <div class="register-page">
 	<div class="register-container">
 		<div class="register-card glass-card-strong">
@@ -204,30 +201,49 @@
 						</p>
 					{:else}
 						<p class="register-step-text">
-							Your account was created, but verification email delivery is not available yet. Please
-							contact support before relying on email verification.
+							{verificationEmailUnavailableCopy}
+							<a href="/resend-verification" class="link link-primary">Resend verification email</a>
+							when you are ready, or
+							<a href="/contact" class="link link-primary">contact us</a>
+							if you need help before then.
 						</p>
 					{/if}
 					<div class="register-success-actions">
 						<a
-							href={continuePath}
+							href={postRegisterHref(verificationEmailSent, continuePath)}
 							class="font-display btn w-full tracking-wider uppercase btn-primary"
 						>
-							{continuePath === '/account/profile' ? 'Go to My Account' : 'Continue'}
+							{#if !verificationEmailSent}
+								Browse catalogue
+							{:else if continuePath === '/account/profile'}
+								Go to My Account
+							{:else}
+								Continue
+							{/if}
 						</a>
-						<a
-							href="/products"
-							class="font-display btn w-full tracking-wider uppercase btn-outline"
-						>
-							Browse catalogue
-						</a>
+						{#if verificationEmailSent}
+							<a
+								href="/products"
+								class="font-display btn w-full tracking-wider uppercase btn-outline"
+							>
+								Browse catalogue
+							</a>
+						{:else}
+							<a
+								href="/account/profile"
+								class="font-display btn w-full tracking-wider uppercase btn-outline"
+							>
+								Go to your account
+							</a>
+						{/if}
 					</div>
 				</div>
 
 				{#if verificationEmailSent}
 					<div class="register-footer">
 						<p class="register-legal">
-							Didn't receive the email? Check your spam folder or contact support.
+							Didn't receive the email? Check your spam folder or
+							<a href="/contact" class="link link-primary">contact us</a>.
 						</p>
 					</div>
 				{/if}

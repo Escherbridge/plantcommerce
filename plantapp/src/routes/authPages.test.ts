@@ -3,6 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
+import { layoutOwnsDocumentMeta, publicRouteMetadata } from '$lib/config/site';
 import { registrationFieldErrors } from './register/validation';
 import LoginPage from './login/+page.svelte';
 import RegisterPage from './register/+page.svelte';
@@ -14,7 +15,6 @@ const routesDir = dirname(fileURLToPath(import.meta.url));
 
 const titles = [
 	['login/+page.svelte', 'Sign in — Aevani'],
-	['register/+page.svelte', 'Create an account — Aevani'],
 	['forgot-password/+page.svelte', 'Reset your password — Aevani'],
 	['reset-password/+page.svelte', 'Choose a new password — Aevani'],
 	['resend-verification/+page.svelte', 'Verify your email — Aevani'],
@@ -29,7 +29,6 @@ describe('auth page titles and register hints', () => {
 	it('uses the Aevani titles', () => {
 		const rendered = [
 			[LoginPage, { form: null }, 'Sign in — Aevani'],
-			[RegisterPage, { form: null }, 'Create an account — Aevani'],
 			[ForgotPasswordPage, { form: null }, 'Reset your password — Aevani'],
 			[ResendPage, { data: { user: null } }, 'Verify your email — Aevani'],
 			[VerifyEmailPage, { data: { token: null }, form: null }, 'Verify your email — Aevani']
@@ -44,6 +43,13 @@ describe('auth page titles and register hints', () => {
 		for (const [file, title] of titles) {
 			expect(readFileSync(join(routesDir, file), 'utf8')).toContain(`<title>${title}</title>`);
 		}
+
+		// Register's title lives in route metadata so client navigation keeps it.
+		// A static <title> in the page was empty after that navigation.
+		const register = readFileSync(join(routesDir, 'register/+page.svelte'), 'utf8');
+		expect(register).not.toContain('<title');
+		expect(publicRouteMetadata('/register').title).toBe('Create an account — Aevani');
+		expect(layoutOwnsDocumentMeta('/register')).toBe(true);
 	});
 
 	it('describes the username and password hints and marks names optional', () => {
