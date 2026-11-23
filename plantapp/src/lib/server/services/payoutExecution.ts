@@ -17,14 +17,20 @@ export function readOptionalMinor(
 	return value;
 }
 
-export function sellerTransferGate(source: Record<string, string | undefined>): 'disabled' | 'timing_unset' | 'ready' {
+export function sellerTransferGate(
+	source: Record<string, string | undefined>
+): 'disabled' | 'timing_unset' | 'ready' {
 	if (!enabled(source, 'SELLER_TRANSFERS_ENABLED')) return 'disabled';
-	if (readOptionalWholeDays(source, 'PAYOUT_HOLD_DAYS_AFTER_DELIVERY') === null) return 'timing_unset';
+	if (readOptionalWholeDays(source, 'PAYOUT_HOLD_DAYS_AFTER_DELIVERY') === null)
+		return 'timing_unset';
 	return 'ready';
 }
 
 export type AffiliateBatchGate =
-	| { action: 'skip'; reason: 'disabled' | 'rate_unset' | 'window_unset' | 'minimum_unset' | 'float_unset' }
+	| {
+			action: 'skip';
+			reason: 'disabled' | 'rate_unset' | 'window_unset' | 'minimum_unset' | 'float_unset';
+	  }
 	| { action: 'pay'; minimumMinor: number; needsApproval: (totalMinor: number) => boolean };
 
 export function affiliateBatchGate(source: Record<string, string | undefined>): AffiliateBatchGate {
@@ -54,12 +60,16 @@ export function payableBalance(
 	events: { eventType: string; amountDeltaMinor: number }[]
 ): number | null {
 	if (!events.some((event) => event.eventType === 'approved')) return null;
-	if (events.some((event) => event.eventType === 'paid' || event.eventType === 'payable')) return null;
+	if (events.some((event) => event.eventType === 'paid' || event.eventType === 'payable'))
+		return null;
 	const net = events.reduce((sum, event) => sum + event.amountDeltaMinor, 0);
 	return net > 0 ? net : null;
 }
 
-export function netAfterDebt(netMinor: number, debtMinor: number): { payMinor: number; debtAppliedMinor: number } {
+export function netAfterDebt(
+	netMinor: number,
+	debtMinor: number
+): { payMinor: number; debtAppliedMinor: number } {
 	const debtAppliedMinor = Math.min(Math.max(debtMinor, 0), Math.max(netMinor, 0));
 	return { payMinor: Math.max(netMinor, 0) - debtAppliedMinor, debtAppliedMinor };
 }

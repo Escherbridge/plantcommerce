@@ -194,7 +194,10 @@ export async function runAffiliateBatch(
 		list.push(row);
 		grouped.set(row.commissionId, list);
 	}
-	const totals = new Map<string, { affiliateId: number; currency: string; total: number; ids: string[] }>();
+	const totals = new Map<
+		string,
+		{ affiliateId: number; currency: string; total: number; ids: string[] }
+	>();
 	for (const [commissionId, events] of grouped) {
 		const net = payableBalance(
 			events.map((event) => ({
