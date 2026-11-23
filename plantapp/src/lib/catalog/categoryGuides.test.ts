@@ -90,7 +90,6 @@ describe('product category guides', () => {
 			href: '/guides/vertical-growing',
 			label: 'Vertical hydroponic growing: density and light'
 		});
-		expect(guideForProduct('nft-hydroponic-channel-system')).toBeNull();
 		expect(guideForProduct('ibc-aquaponics-fish-tank')).toBeNull();
 		expect(guideForProduct(null)).toBeNull();
 	});
@@ -113,11 +112,26 @@ describe('product category guides', () => {
 			href: '/guides/hydroponic-media',
 			label: 'Soilless hydroponic media: perlite, rockwool, and coir'
 		});
+		expect(guideForProduct('hydroponic-grow-tent-kit')).toEqual({
+			href: '/guides/indoor-lighting-dli',
+			label: 'Daily light integral for indoor and greenhouse greens'
+		});
+		expect(guideForProduct('nft-hydroponic-channel-system')).toEqual({
+			href: '/guides/nutrient-film-technique',
+			label: 'Nutrient film technique: slope, flow, and channel length'
+		});
+		expect(guideForProduct('digital-ph-ec-meter-set')).toEqual({
+			href: '/guides/hydroponic-ec-ph-nutrients',
+			label: 'Hydroponic nutrients, EC, and pH'
+		});
 		for (const guide of [
 			guideForProduct('soil-building-amendment-kit'),
 			guideForProduct('rainwater-harvesting-kit'),
 			guideForProduct('season-extension-kit'),
 			guideForProduct('rockwool-cubes-growing-media-sampler'),
+			guideForProduct('hydroponic-grow-tent-kit'),
+			guideForProduct('nft-hydroponic-channel-system'),
+			guideForProduct('digital-ph-ec-meter-set'),
 			guideForProduct('vertical-tower-garden-system')
 		]) {
 			expect(live.has(guide?.href ?? ''), guide?.href).toBe(true);
@@ -179,19 +193,22 @@ describe('product category guides', () => {
 			},
 			{
 				text: 'hydroponics field guide',
-				from: '/guides/choosing-hydroponic-system',
+				from: '/learn',
+				alsoFrom: ['/guides/choosing-hydroponic-system'],
 				href: '/guides/hydroponic-ec-ph-nutrients',
 				context: 'target ranges by crop'
 			},
 			{
 				text: 'hydroponics field guide',
-				from: '/guides/choosing-hydroponic-system',
+				from: '/learn',
+				alsoFrom: ['/guides/choosing-hydroponic-system'],
 				href: '/guides/nutrient-film-technique',
 				context: 'nft spacing and flow'
 			},
 			{
 				text: 'hydroponics field guide',
-				from: '/guides/choosing-hydroponic-system',
+				from: '/learn',
+				alsoFrom: ['/guides/choosing-hydroponic-system'],
 				href: '/guides/indoor-lighting-dli',
 				context: 'airflow, humidity, and light height',
 				paragraph:
@@ -199,7 +216,8 @@ describe('product category guides', () => {
 			},
 			{
 				text: 'hydroponics field guide',
-				from: '/guides/choosing-hydroponic-system',
+				from: '/learn',
+				alsoFrom: ['/guides/choosing-hydroponic-system'],
 				context: 'aeroponics chapter',
 				paragraph:
 					'Ready to push technique? None of the published guides includes an aeroponics chapter.'
@@ -236,11 +254,9 @@ describe('product category guides', () => {
 			rewriteProductGuideLinks(
 				'<a href="/learn" rel="noopener noreferrer">hydroponics field guide</a>'
 			)
-		).toBe(
-			'<a href="/guides/choosing-hydroponic-system" rel="noopener noreferrer">hydroponics field guide</a>'
-		);
+		).toBe('<a href="/guides/choosing-hydroponic-system">hydroponics field guide</a>');
 		expect(rewriteProductGuideLinks(`<a href='/learn'> Aquaponics   Field Guide </a>`)).toBe(
-			`<a href='/guides/small-scale-aquaponics'> Aquaponics   Field Guide </a>`
+			'<a href="/guides/small-scale-aquaponics"> Aquaponics   Field Guide </a>'
 		);
 		expect(
 			rewriteProductGuideLinks('<a href="https://aevani.com/learn/">aquaponics field guide</a>')
@@ -322,11 +338,9 @@ describe('product category guides', () => {
 
 		expect(
 			rewriteProductGuideLinks('<a href="/learn" rel="noopener noreferrer">silvopasture guide</a>')
-		).toBe(
-			'<a href="/guides/temperate-silvopasture" rel="noopener noreferrer">silvopasture guide</a>'
-		);
+		).toBe('<a href="/guides/temperate-silvopasture">silvopasture guide</a>');
 		expect(rewriteProductGuideLinks(`<a href='/learn'> Soil-Health   Guide </a>`)).toBe(
-			`<a href='/guides/no-dig-sheet-mulch'> Soil-Health   Guide </a>`
+			'<a href="/guides/no-dig-sheet-mulch"> Soil-Health   Guide </a>'
 		);
 		expect(
 			rewriteProductGuideLinks(
@@ -363,9 +377,7 @@ describe('product category guides', () => {
 			rewriteProductGuideLinks(
 				'<a href="/learn" rel="noopener noreferrer">silvopasture &amp; agroforestry guide</a>'
 			)
-		).toBe(
-			'<a href="/guides/temperate-food-forest" rel="noopener noreferrer">food forest guide</a>'
-		);
+		).toBe('<a href="/guides/temperate-food-forest">food forest guide</a>');
 
 		for (const slug of ['permaculture-starter-kit', 'heirloom-tomato-collection'] as const) {
 			const product = demoProducts.find((entry) => entry.slug === slug);
@@ -424,6 +436,62 @@ describe('product category guides', () => {
 		expect(dwc?.descriptionHtml).toContain(
 			'<a href="/guides/choosing-hydroponic-system">hydroponics field guide</a>'
 		);
+	});
+
+	it('matches prod /learn rows and rendered anchors that carry extra attributes', () => {
+		const prodDatabase = {
+			tent: '<p>Dialing in your first environment? Our <a href="/learn">hydroponics field guide</a> covers airflow, humidity, and light height.</p>',
+			aero: '<p>Ready to push technique? The <a href="/learn">hydroponics field guide</a> has a full aeroponics chapter.</p>',
+			nft: '<p>Growing greens at volume? The <a href="/learn">hydroponics field guide</a> covers NFT spacing and flow rates.</p>',
+			meter:
+				'<p>Not sure what your numbers should be? The <a href="/learn">hydroponics field guide</a> lists target ranges by crop.</p>',
+			dwc: '<p>First time growing without soil? Read the <a href="/learn">hydroponics field guide</a>.</p>'
+		};
+		const rendered = {
+			tent: '<a href="/guides/choosing-hydroponic-system" rel="noopener noreferrer">hydroponics field guide</a> covers airflow, humidity, and light height.',
+			aero: '<a href="/guides/choosing-hydroponic-system" rel="noopener noreferrer">hydroponics field guide</a> has a full aeroponics chapter.',
+			nft: '<a href="/guides/choosing-hydroponic-system" rel="noopener noreferrer">hydroponics field guide</a> covers NFT spacing and flow rates.',
+			meter:
+				'<a href="/guides/choosing-hydroponic-system" rel="noopener noreferrer">hydroponics field guide</a> lists target ranges by crop.'
+		};
+		const relFirst =
+			'<p>Growing greens at volume? The <a class="guide" rel="noopener noreferrer" href="/guides/choosing-hydroponic-system">hydroponics field guide</a> covers NFT spacing and flow rates.</p>';
+
+		expect(sanitizeRichText(rewriteProductGuideLinks(prodDatabase.tent))).toBe(
+			'<p>Dialing in your first environment? The <a href="/guides/indoor-lighting-dli" rel="noopener noreferrer">indoor lighting guide</a> covers daily light for greens.</p>'
+		);
+		expect(sanitizeRichText(rewriteProductGuideLinks(prodDatabase.aero))).toBe(
+			'<p>Ready to push technique? None of the published guides includes an aeroponics chapter.</p>'
+		);
+		expect(sanitizeRichText(rewriteProductGuideLinks(prodDatabase.nft))).toContain(
+			'<a href="/guides/nutrient-film-technique" rel="noopener noreferrer">hydroponics field guide</a> covers NFT spacing and flow rates.'
+		);
+		expect(sanitizeRichText(rewriteProductGuideLinks(prodDatabase.meter))).toContain(
+			'<a href="/guides/hydroponic-ec-ph-nutrients" rel="noopener noreferrer">hydroponics field guide</a> lists target ranges by crop.'
+		);
+		expect(sanitizeRichText(rewriteProductGuideLinks(prodDatabase.dwc))).toContain(
+			'<a href="/guides/choosing-hydroponic-system" rel="noopener noreferrer">hydroponics field guide</a>'
+		);
+
+		expect(sanitizeRichText(rewriteProductGuideLinks(rendered.tent))).toContain(
+			'<a href="/guides/indoor-lighting-dli" rel="noopener noreferrer">indoor lighting guide</a> covers daily light for greens.'
+		);
+		expect(sanitizeRichText(rewriteProductGuideLinks(rendered.tent))).not.toContain(
+			'choosing-hydroponic-system'
+		);
+		expect(sanitizeRichText(rewriteProductGuideLinks(rendered.aero))).toBe(
+			'None of the published guides includes an aeroponics chapter.'
+		);
+		expect(sanitizeRichText(rewriteProductGuideLinks(rendered.nft))).toBe(
+			'<a href="/guides/nutrient-film-technique" rel="noopener noreferrer">hydroponics field guide</a> covers NFT spacing and flow rates.'
+		);
+		expect(sanitizeRichText(rewriteProductGuideLinks(rendered.meter))).toBe(
+			'<a href="/guides/hydroponic-ec-ph-nutrients" rel="noopener noreferrer">hydroponics field guide</a> lists target ranges by crop.'
+		);
+		expect(sanitizeRichText(rewriteProductGuideLinks(relFirst))).toContain(
+			'<a href="/guides/nutrient-film-technique" rel="noopener noreferrer">hydroponics field guide</a>'
+		);
+		expect(rewriteProductGuideLinks(rendered.nft)).not.toContain('noopener');
 	});
 
 	it('points the tower long read at the published vertical growing guide', async () => {

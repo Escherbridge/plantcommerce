@@ -62,6 +62,15 @@ const hydroponicMedia = guide(
 	'hydroponic-media',
 	'Soilless hydroponic media: perlite, rockwool, and coir'
 );
+const indoorLighting = guide(
+	'indoor-lighting-dli',
+	'Daily light integral for indoor and greenhouse greens'
+);
+const nutrientFilm = guide(
+	'nutrient-film-technique',
+	'Nutrient film technique: slope, flow, and channel length'
+);
+const ecPh = guide('hydroponic-ec-ph-nutrients', 'Hydroponic nutrients, EC, and pH');
 
 /**
  * Preview guides that should not follow the category default.
@@ -74,9 +83,13 @@ const hydroponicMedia = guide(
  * pest procedure, and guilds are a tree planting, not a native-meadow note.
  * Herb spiral and the permaculture starter stay on guilds on purpose.
  * Aeroponics stays on choosing a system: there is no aeroponics guide.
+ * Deep water culture stays there too: its sentence does not promise a missing topic.
  */
 const productGuides: Record<string, CategoryGuide> = {
 	'vertical-tower-garden-system': verticalGrowing,
+	'hydroponic-grow-tent-kit': indoorLighting,
+	'nft-hydroponic-channel-system': nutrientFilm,
+	'digital-ph-ec-meter-set': ecPh,
 	'soil-building-amendment-kit': noDig,
 	'rainwater-harvesting-kit': rainwaterGuide,
 	'season-extension-kit': seasonExtension,
@@ -151,20 +164,24 @@ export const productGuideLinks: readonly ProductGuideLink[] = [
 			'For how a bed is built from compost layers and worm castings, see the <a href="/guides/no-dig-sheet-mulch">no-dig guide</a>.'
 	},
 	{
+		// Prod rows still store /learn. The seed already points at the system guide.
 		text: 'hydroponics field guide',
-		from: '/guides/choosing-hydroponic-system',
+		from: '/learn',
+		alsoFrom: ['/guides/choosing-hydroponic-system'],
 		href: '/guides/hydroponic-ec-ph-nutrients',
 		context: 'target ranges by crop'
 	},
 	{
 		text: 'hydroponics field guide',
-		from: '/guides/choosing-hydroponic-system',
+		from: '/learn',
+		alsoFrom: ['/guides/choosing-hydroponic-system'],
 		href: '/guides/nutrient-film-technique',
 		context: 'nft spacing and flow'
 	},
 	{
 		text: 'hydroponics field guide',
-		from: '/guides/choosing-hydroponic-system',
+		from: '/learn',
+		alsoFrom: ['/guides/choosing-hydroponic-system'],
 		href: '/guides/indoor-lighting-dli',
 		context: 'airflow, humidity, and light height',
 		paragraph:
@@ -172,7 +189,8 @@ export const productGuideLinks: readonly ProductGuideLink[] = [
 	},
 	{
 		text: 'hydroponics field guide',
-		from: '/guides/choosing-hydroponic-system',
+		from: '/learn',
+		alsoFrom: ['/guides/choosing-hydroponic-system'],
 		context: 'aeroponics chapter',
 		paragraph:
 			'Ready to push technique? None of the published guides includes an aeroponics chapter.'
@@ -259,10 +277,38 @@ function ruleMatchesAnchor(
 	return window.toLowerCase().includes(entry.context.toLowerCase());
 }
 
+function storedGuideHref(attrs: string): string {
+	const match = /\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/i.exec(attrs);
+	return guidePath(match?.[1] ?? match?.[2] ?? match?.[3] ?? '');
+}
+
+/**
+ * Claim text that may sit outside a `<p>`, or on an anchor that carries extra attributes.
+ * Prod stores `/learn`. The seed and some rendered copies use the system guide.
+ */
+function rewriteLooseClaims(html: string): string {
+	const allowed = new Set(['/learn', '/guides/choosing-hydroponic-system']);
+	const replace = (pattern: RegExp, replacement: string, source: string) =>
+		source.replace(pattern, (full: string, attrs: string) =>
+			allowed.has(storedGuideHref(attrs)) ? replacement : full
+		);
+	const lighting = replace(
+		/<a\b([^>]*)>\s*hydroponics field guide\s*<\/a>\s*covers airflow, humidity, and light height\./gi,
+		'<a href="/guides/indoor-lighting-dli">indoor lighting guide</a> covers daily light for greens.',
+		html
+	);
+	return replace(
+		/<a\b([^>]*)>\s*hydroponics field guide\s*<\/a>\s*has a full aeroponics chapter\./gi,
+		'None of the published guides includes an aeroponics chapter.',
+		lighting
+	);
+}
+
 /**
  * Rewrite stored field-guide anchors at render time.
  * A link changes only when its text and its old href both match a rule.
  * Paragraph rules replace a whole sentence when the stored claim does not fit the destination.
+ * Extra attributes on the anchor are ignored, and the replacement keeps only href.
  */
 export function rewriteProductGuideLinks(html: string): string {
 	if (!html) return html;
@@ -274,7 +320,8 @@ export function rewriteProductGuideLinks(html: string): string {
 			return `<p${attrs ?? ''}>${rule.paragraph}</p>`;
 		}
 	);
-	const withAnchors = withParagraphs.replace(
+	const withClaims = rewriteLooseClaims(withParagraphs);
+	const withAnchors = withClaims.replace(
 		/<a\b([^>]*)>([\s\S]*?)<\/a>/gi,
 		(full, attrs: string, inner: string, offset: number, source: string) => {
 			const text = anchorText(inner);
@@ -290,11 +337,9 @@ export function rewriteProductGuideLinks(html: string): string {
 				matches.find((entry) => entry.context) ?? matches.find((entry) => !entry.context);
 			if (!rule?.href) return full;
 
-			const quoted = match[1] !== undefined ? '"' : match[2] !== undefined ? "'" : '';
-			const replacement = quoted ? `href=${quoted}${rule.href}${quoted}` : `href="${rule.href}"`;
-			const nextAttrs =
-				attrs.slice(0, match.index) + replacement + attrs.slice(match.index + match[0].length);
-			return `<a${nextAttrs}>${rule.textTo ?? inner}</a>`;
+			// Drop every attribute except the new href. Stored rows may carry rel or other
+			// attributes, and the sanitizer keeps an anchor only when href is the only one.
+			return `<a href="${rule.href}">${rule.textTo ?? inner}</a>`;
 		}
 	);
 	if (
