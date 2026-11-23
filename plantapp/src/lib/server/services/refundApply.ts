@@ -61,7 +61,11 @@ export async function applyMoneyEvent(
 	for (const earning of earnings) {
 		const clawback = proportionalShare(earning.netMinor, facts.amountMinor, orderTotalMinor);
 		const feeDebt = facts.sellerPaysFee
-			? proportionalShare(facts.feeMinor, earning.lineTotalMinor, orderTotalMinor || earning.lineTotalMinor)
+			? proportionalShare(
+					facts.feeMinor,
+					earning.lineTotalMinor,
+					orderTotalMinor || earning.lineTotalMinor
+				)
 			: 0;
 		const [transfer] = await db
 			.select()

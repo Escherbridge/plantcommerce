@@ -1,6 +1,10 @@
 const SELLER_FAULT_REASONS = new Set(['product_not_received', 'product_unacceptable']);
 
-export function proportionalShare(amountMinor: number, refundedMinor: number, baseMinor: number): number {
+export function proportionalShare(
+	amountMinor: number,
+	refundedMinor: number,
+	baseMinor: number
+): number {
 	if (amountMinor <= 0 || refundedMinor <= 0 || baseMinor <= 0) return 0;
 	const refunded = BigInt(Math.min(refundedMinor, baseMinor));
 	const base = BigInt(baseMinor);
