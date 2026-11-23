@@ -28,7 +28,7 @@ describe('verification email unavailable copy', () => {
 			"Your account is ready, but we couldn't send the verification email. You can resend it from the verification page later."
 		);
 		expect(verificationResendPageCopy).toBe(
-			"Your account is ready, but we couldn't send the verification email."
+			"Your account is ready, but we couldn't send the verification email. You can try again with the button below, or contact us if you need help."
 		);
 		expect(verificationResendPageCopy).not.toContain(
 			'You can resend it from the verification page later.'
@@ -98,9 +98,9 @@ describe('verification email unavailable copy', () => {
 		}
 		expect(register).toContain('>Contact us</a> if you need help.');
 		expect(join).toContain('>Contact us</a> if you need help.');
-		expect(resend).toContain('Try again later, or');
-		expect(resend).toContain('>contact us</a>');
-		expect(resend).toContain('if you need');
+		expect(resend).not.toContain('Try again later, or');
+		expect(resend).toContain('class="link link-primary" href="/contact"');
+		expect(resend).toContain('{resendContactPhrase}');
 		expect(resend).not.toContain('Resend it later');
 		expect(resend).not.toContain('You can resend it from the verification page later.');
 		expect(resend).toContain('verificationResendTransportError');
@@ -136,11 +136,15 @@ describe('verification email unavailable copy', () => {
 		}).body;
 
 		const visible = body.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
-		expect(body).toContain(verificationResendPageCopy);
+		expect(visible).toContain(verificationResendPageCopy);
 		expect(body).not.toContain(verificationEmailUnavailableCopy);
 		expect(body).not.toContain('You can resend it from the verification page later.');
-		expect(body).toContain('href="/contact"');
-		expect(visible).toContain('Try again later, or contact us if you need help.');
+		expect(body).toContain('class="link link-primary" href="/contact"');
+		expect(visible).not.toContain('Try again later, or contact us if you need help.');
+		expect(visible.indexOf('button below')).toBeLessThan(
+			visible.indexOf('Send verification email')
+		);
+		expect(body).toContain('>Send verification email<');
 		expect(visible).not.toContain('Resend it later');
 		expect(body).toContain('>contact us<');
 		expect(body).toContain('href="/products"');

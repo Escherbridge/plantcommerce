@@ -5,6 +5,7 @@
 	import CredentialErrorSummary from '$lib/components/forms/CredentialErrorSummary.svelte';
 	import { describedByFor } from '$lib/auth/credentialFieldErrors';
 	import { authHandoffHref, safeRedirectPath } from '$lib/auth/safeRedirect';
+	import { accountCreationFailureCopy } from '$lib/copy/accountCreation';
 	import { documentTitleOverride } from '$lib/copy/documentTitleOverride';
 	import {
 		accountCreatedDocumentTitle,
@@ -24,6 +25,13 @@
 	} from './validation';
 
 	let { form }: { form: ActionData } = $props();
+
+	const accountCreationContactPhrase = 'contact us';
+	const accountCreationFailureParts = accountCreationFailureCopy.split(
+		accountCreationContactPhrase
+	);
+	const accountCreationFailureBefore = accountCreationFailureParts[0] ?? '';
+	const accountCreationFailureAfter = accountCreationFailureParts[1] ?? '';
 
 	function pageRedirect(): { origin: string; redirect: string | null } | null {
 		try {
@@ -183,12 +191,10 @@
 				verificationEmailSent = result.verificationEmailSent;
 				registrationComplete = true;
 			} else {
-				errorMessage =
-					'We could not complete account creation. Please try signing in or contact support.';
+				errorMessage = accountCreationFailureCopy;
 			}
 		} catch {
-			errorMessage =
-				'We could not create an account with those details. Please review them and try again.';
+			errorMessage = accountCreationFailureCopy;
 		} finally {
 			isLoading = false;
 		}
@@ -277,7 +283,15 @@
 				{#if errorMessage || form?.message}
 					<div id="register-form-error" class="register-error" role="alert" aria-live="assertive">
 						<Icon name="alert-circle" size={16} class="h-4 w-4 shrink-0" />
-						<span>{errorMessage || form?.message}</span>
+						<span>
+							{#if errorMessage === accountCreationFailureCopy}
+								{accountCreationFailureBefore}<a class="link link-primary" href="/contact"
+									>{accountCreationContactPhrase}</a
+								>{accountCreationFailureAfter}
+							{:else}
+								{errorMessage || form?.message}
+							{/if}
+						</span>
 					</div>
 				{/if}
 
