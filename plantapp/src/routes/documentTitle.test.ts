@@ -2,9 +2,12 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { render } from 'svelte/server';
+import { get } from 'svelte/store';
 import { describe, expect, it } from 'vitest';
 import SEO from '$lib/components/SEO.svelte';
 import ReferralHold from '$lib/components/content/ReferralHold.svelte';
+import { accountCreatedDocumentTitle } from '$lib/copy/verificationEmail';
+import { documentTitleOverride } from '$lib/copy/documentTitleOverride';
 import { layoutOwnsDocumentMeta, publicRouteMetadata } from '$lib/config/site';
 import RegisterPage from './register/+page.svelte';
 import SellPage from './sell/+page.svelte';
@@ -71,7 +74,7 @@ function serverHead(pathname: string, pageHead: string, status = 200): string {
 	const meta = publicRouteMetadata(pathname);
 	const layout = render(SEO, {
 		props: {
-			title: meta.title,
+			title: get(documentTitleOverride) ?? meta.title,
 			description: meta.description,
 			url: pathname,
 			author: 'Escherbridge',
@@ -104,6 +107,7 @@ describe('document title', () => {
 	});
 
 	it('prints one register title from route metadata, including client-nav ownership', () => {
+		documentTitleOverride.set(null);
 		const pageHead = render(RegisterPage, { props: { form: null } }).head;
 		expect(pageHead).not.toContain('<title');
 		expect(titles(serverHead('/register', pageHead))).toEqual([
@@ -111,6 +115,31 @@ describe('document title', () => {
 		]);
 		expect(publicRouteMetadata('/register').title).toBe('Create an account — Aevani');
 		expect(layoutOwnsDocumentMeta('/register')).toBe(true);
+	});
+
+	it('prints Account created while the register success state shows', () => {
+		const register = readFileSync(join(routesDir, 'register/+page.svelte'), 'utf8');
+		const layout = readFileSync(join(routesDir, '+layout.svelte'), 'utf8');
+		expect(accountCreatedDocumentTitle).toBe('Account created — Aevani');
+		expect(register).toContain('<h1 class="register-title">Account created</h1>');
+		expect(register).not.toContain('Account Created');
+		expect(register).not.toContain('Welcome to Aevani');
+		expect(register).not.toContain('<title');
+		expect(register).toContain('documentTitleOverride.set(accountCreatedDocumentTitle)');
+		expect(register).toContain('if (!registrationComplete) return;');
+		expect(layout).toContain('$documentTitleOverride ?? routeMeta.title');
+		expect(layout).toContain("if (currentUrl !== '/register') documentTitleOverride.set(null);");
+
+		documentTitleOverride.set(accountCreatedDocumentTitle);
+		try {
+			const pageHead = render(RegisterPage, { props: { form: null } }).head;
+			expect(pageHead).not.toContain('<title');
+			expect(titles(serverHead('/register', pageHead))).toEqual([
+				'<title>Account created — Aevani</title>'
+			]);
+		} finally {
+			documentTitleOverride.set(null);
+		}
 	});
 
 	it('prints one sell title on the open form, a 400, and the confirmation', () => {

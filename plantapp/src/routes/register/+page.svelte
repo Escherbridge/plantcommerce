@@ -5,7 +5,13 @@
 	import CredentialErrorSummary from '$lib/components/forms/CredentialErrorSummary.svelte';
 	import { describedByFor } from '$lib/auth/credentialFieldErrors';
 	import { authHandoffHref, safeRedirectPath } from '$lib/auth/safeRedirect';
-	import { postRegisterHref, verificationEmailUnavailableCopy } from '$lib/copy/verificationEmail';
+	import { documentTitleOverride } from '$lib/copy/documentTitleOverride';
+	import {
+		accountCreatedDocumentTitle,
+		postRegisterHref,
+		verificationEmailUnavailableCopy,
+		verificationResendHref
+	} from '$lib/copy/verificationEmail';
 	import { trpc } from '$lib/trpc/client';
 	import { tick } from 'svelte';
 	import type { ActionData } from './$types';
@@ -43,6 +49,11 @@
 		const current = pageRedirect();
 		return current ? authHandoffHref('login', continuePath, current.origin) : '/login';
 	});
+	const resendHref = $derived.by(() => {
+		const current = pageRedirect();
+		if (!current) return '/resend-verification';
+		return verificationResendHref(current.redirect, current.origin);
+	});
 
 	let username = $state('');
 	let email = $state('');
@@ -56,6 +67,12 @@
 	let registrationComplete = $state(false);
 	let registeredEmail = $state('');
 	let verificationEmailSent = $state(false);
+
+	$effect(() => {
+		if (!registrationComplete) return;
+		documentTitleOverride.set(accountCreatedDocumentTitle);
+		return () => documentTitleOverride.set(null);
+	});
 	let usernameInput = $state<HTMLInputElement | null>(null);
 	let emailInput = $state<HTMLInputElement | null>(null);
 	let passwordInput = $state<HTMLInputElement | null>(null);
@@ -188,8 +205,7 @@
 					<div class="register-success-icon">
 						<Icon name="check-circle" size={48} />
 					</div>
-					<h1 class="register-title">Account Created</h1>
-					<p class="register-subtitle">Welcome to Aevani!</p>
+					<h1 class="register-title">Account created</h1>
 					<p class="register-email-highlight">{registeredEmail}</p>
 				</div>
 
@@ -202,10 +218,10 @@
 					{:else}
 						<p class="register-step-text">
 							{verificationEmailUnavailableCopy}
-							<a href="/resend-verification" class="link link-primary">Resend verification email</a>
-							when you are ready, or
-							<a href="/contact" class="link link-primary">contact us</a>
-							if you need help before then.
+							<a href={resendHref} class="link link-primary">Resend verification email</a>.
+						</p>
+						<p class="register-step-text">
+							<a href="/contact" class="link link-primary">Contact us</a> if you need help.
 						</p>
 					{/if}
 					<div class="register-success-actions">

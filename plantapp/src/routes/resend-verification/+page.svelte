@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { verificationEmailUnavailableCopy } from '$lib/copy/verificationEmail';
+	import {
+		verificationEmailUnavailableCopy,
+		verificationResendTransportError
+	} from '$lib/copy/verificationEmail';
 	import { trpc } from '$lib/trpc/client';
 	import type { PageData } from './$types';
 
@@ -19,7 +22,7 @@
 			message = result.message;
 			unavailable = !result.deliveryAvailable;
 		} catch {
-			message = 'Sign in to request a verification email.';
+			message = verificationResendTransportError;
 			unavailable = false;
 		} finally {
 			loading = false;
@@ -41,8 +44,8 @@
 			{#if unavailable}
 				<p role="status">{verificationEmailUnavailableCopy}</p>
 				<p>
-					<a class="link link-primary" href="/contact">Contact us</a>
-					if you need help before then.
+					Resend it later, or <a class="link link-primary" href="/contact">contact us</a> if you need
+					help.
 				</p>
 			{:else if signedIn}
 				<p>Request a new verification email for the address on your signed-in account.</p>
@@ -67,7 +70,9 @@
 				<a class="btn mt-2 btn-outline" href="/products">Browse catalogue</a>
 				<a class="btn mt-2 btn-ghost" href="/account/profile">Go to your account</a>
 			{/if}
-			<a class="btn mt-2 btn-ghost" href="/login">Back to login</a>
+			{#if !signedIn}
+				<a class="btn mt-2 btn-ghost" href="/login">Back to login</a>
+			{/if}
 		</div>
 	</section>
 </section>

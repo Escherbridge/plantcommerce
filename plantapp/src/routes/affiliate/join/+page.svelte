@@ -84,10 +84,8 @@
 					<p>{verificationEmailUnavailableCopy}</p>
 					<p>
 						<a class="link link-primary" href={resendHref}>Resend verification email</a>
-						when you are ready, or
-						<a class="link link-primary" href="/contact">contact us</a>
-						if you need help before then.
 					</p>
+					<p><a class="link link-primary" href="/contact">Contact us</a> if you need help.</p>
 					<div class="flex flex-wrap gap-3">
 						<a class="btn btn-primary" href="/products">Browse catalogue</a>
 						<a class="btn btn-outline" href="/account/profile">Go to your account</a>
