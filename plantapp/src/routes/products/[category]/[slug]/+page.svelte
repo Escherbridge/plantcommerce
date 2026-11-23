@@ -4,7 +4,7 @@
 	import { ProductGallery, ProductCard } from '$lib/components/cards';
 	import { StatTile, SectionHeader, Badge, Button, GlassCard } from '$lib/components/ui';
 	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
-	import { productCategoryHref } from '../../catalog';
+	import { productBreadcrumbLabel, productCategoryHref } from '../../catalog';
 	import {
 		guideForCategory,
 		guideForProduct,
@@ -24,7 +24,7 @@
 
 	const productUrl = $derived(`/products/${data.categorySlug}/${p.slug}`);
 	const categoryHref = $derived(productCategoryHref(data.categorySlug));
-	const categoryName = $derived(p.category?.name || data.categorySlug);
+	const categoryName = $derived(productBreadcrumbLabel(data.categorySlug, p.category));
 	const nextGuide = $derived(
 		guideForProduct(p.slug) ??
 			guideForCategory(p.category?.slug) ??

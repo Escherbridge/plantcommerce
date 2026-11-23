@@ -71,6 +71,10 @@ const nutrientFilm = guide(
 	'Nutrient film technique: slope, flow, and channel length'
 );
 const ecPh = guide('hydroponic-ec-ph-nutrients', 'Hydroponic nutrients, EC, and pH');
+const outdoorIpm = guide(
+	'outdoor-bed-ipm',
+	'Integrated pest management in outdoor beds and containers'
+);
 
 /**
  * Preview guides that should not follow the category default.
@@ -79,8 +83,11 @@ const ecPh = guide('hydroponic-ec-ph-nutrients', 'Hydroponic nutrients, EC, and 
  * Left on that default because no published guide fits the product:
  * mushroom cultivation, microgreens, worm composting, the compost starter,
  * and seed saving. The trowel stays on raised beds, the bed guide for a
- * hand tool. The pollinator mix stays on raised beds: outdoor-bed IPM is a
- * pest procedure, and guilds are a tree planting, not a native-meadow note.
+ * hand tool. Seed collections (heirloom vault, artisan packets, tomato
+ * collection, pollinator mix) stay on raised beds: the live seed notes are
+ * soilless plug starting and hydroponic crop choice, and both say they are
+ * not seed catalogs. Outdoor-bed IPM fits the beneficial-insect kit, not a
+ * wildflower mix.
  * Herb spiral and the permaculture starter stay on guilds on purpose.
  * Aeroponics stays on choosing a system: there is no aeroponics guide.
  * Deep water culture stays there too: its sentence does not promise a missing topic.
@@ -93,7 +100,8 @@ const productGuides: Record<string, CategoryGuide> = {
 	'soil-building-amendment-kit': noDig,
 	'rainwater-harvesting-kit': rainwaterGuide,
 	'season-extension-kit': seasonExtension,
-	'rockwool-cubes-growing-media-sampler': hydroponicMedia
+	'rockwool-cubes-growing-media-sampler': hydroponicMedia,
+	'beneficial-insect-habitat-kit': outdoorIpm
 };
 
 export function guideForProduct(slug: string | null | undefined): CategoryGuide | null {

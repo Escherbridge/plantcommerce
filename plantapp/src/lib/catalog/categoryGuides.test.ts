@@ -124,6 +124,10 @@ describe('product category guides', () => {
 			href: '/guides/hydroponic-ec-ph-nutrients',
 			label: 'Hydroponic nutrients, EC, and pH'
 		});
+		expect(guideForProduct('beneficial-insect-habitat-kit')).toEqual({
+			href: '/guides/outdoor-bed-ipm',
+			label: 'Integrated pest management in outdoor beds and containers'
+		});
 		for (const guide of [
 			guideForProduct('soil-building-amendment-kit'),
 			guideForProduct('rainwater-harvesting-kit'),
@@ -132,6 +136,7 @@ describe('product category guides', () => {
 			guideForProduct('hydroponic-grow-tent-kit'),
 			guideForProduct('nft-hydroponic-channel-system'),
 			guideForProduct('digital-ph-ec-meter-set'),
+			guideForProduct('beneficial-insect-habitat-kit'),
 			guideForProduct('vertical-tower-garden-system')
 		]) {
 			expect(live.has(guide?.href ?? ''), guide?.href).toBe(true);
@@ -146,6 +151,9 @@ describe('product category guides', () => {
 			'seed-saving-starter-kit',
 			'hand-forged-garden-trowel',
 			'pollinator-garden-seed-collection',
+			'heirloom-seed-vault',
+			'artisan-seed-packet-collection',
+			'heirloom-tomato-collection',
 			'herb-spiral-garden-kit',
 			'permaculture-starter-kit',
 			'aeroponic-misting-system'
