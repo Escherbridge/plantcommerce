@@ -1050,7 +1050,10 @@ export const sellerEarning = pgTable(
 		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 	},
 	(table) => ({
-		orderSellerIdx: uniqueIndex('seller_earning_order_seller_idx').on(table.orderId, table.sellerId),
+		orderSellerIdx: uniqueIndex('seller_earning_order_seller_idx').on(
+			table.orderId,
+			table.sellerId
+		),
 		sellerIdx: index('seller_earning_seller_idx').on(table.sellerId),
 		feeBpsCheck: check('seller_earning_fee_bps_check', sql`${table.feeBps} = 800`),
 		amountsCheck: check(
