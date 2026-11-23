@@ -107,6 +107,10 @@ describe('auth page titles and register hints', () => {
 		);
 		expect(signedIn).toContain('Send verification email');
 		expect(signedIn).not.toContain('Sign in first, then come back here for a new link.');
+		expect(signedIn).not.toContain('Back to login');
+		expect(signedIn).not.toContain('Sign in to');
+
+		expect(signedOut).toContain('>Back to login<');
 	});
 
 	it('sends login through the same-origin redirect helper', () => {

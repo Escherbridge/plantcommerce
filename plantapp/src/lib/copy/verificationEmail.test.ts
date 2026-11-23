@@ -9,7 +9,10 @@ import {
 	VERIFICATION_CONTACT_PATH,
 	VERIFICATION_SHOP_PATH,
 	postRegisterHref,
-	verificationEmailUnavailableCopy
+	verificationEmailResendUnavailableMessage,
+	verificationEmailUnavailableCopy,
+	verificationResendHref,
+	verificationResendTransportError
 } from './verificationEmail';
 
 const srcDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -21,12 +24,19 @@ function source(path: string): string {
 describe('verification email unavailable copy', () => {
 	it('says the account exists, email can be retried later, and names no rate or address', () => {
 		expect(verificationEmailUnavailableCopy).toBe(
-			"Your account is created. We couldn't send the verification email right now. You'll be able to verify once email is back. Try resending it later."
+			"Your account is ready, but we couldn't send the verification email. You can resend it from the verification page later."
+		);
+		expect(verificationEmailResendUnavailableMessage).toBe(
+			"We couldn't send the verification email. Try again later."
+		);
+		expect(verificationResendTransportError).toBe(
+			"That didn't send. Check your connection and try again."
 		);
 		expect(verificationEmailUnavailableCopy).not.toMatch(
 			/commission|payout|share|rate|contact support|street|avenue|boulevard/i
 		);
 		expect(verificationEmailUnavailableCopy).not.toMatch(/\d{5}/);
+		expect(verificationEmailResendUnavailableMessage).not.toMatch(/contact support/i);
 	});
 
 	it('sends a failed registration away from the verify gate', () => {
@@ -37,6 +47,16 @@ describe('verification email unavailable copy', () => {
 		expect(postRegisterHref(false, '/account/profile')).toBe(VERIFICATION_SHOP_PATH);
 		expect(postRegisterHref(true, '/affiliate/join')).toBe('/affiliate/join');
 		expect(postRegisterHref(true, '/account/profile')).toBe('/account/profile');
+		expect(verificationResendHref('/affiliate/join', 'https://aevani.com')).toBe(
+			'/resend-verification?redirect=%2Faffiliate%2Fjoin'
+		);
+		expect(verificationResendHref('/account/orders?tab=open', 'https://aevani.com')).toBe(
+			'/resend-verification?redirect=%2Faccount%2Forders%3Ftab%3Dopen'
+		);
+		expect(verificationResendHref(null, 'https://aevani.com')).toBe('/resend-verification');
+		expect(verificationResendHref('https://evil.com', 'https://aevani.com')).toBe(
+			'/resend-verification'
+		);
 		expect(VERIFICATION_CONTACT_PATH).toBe('/contact');
 		expect(VERIFICATION_ACCOUNT_PATH).toBe('/account/profile');
 	});
@@ -59,9 +79,21 @@ describe('verification email unavailable copy', () => {
 		expect(register).not.toContain(
 			'verification email delivery is not available yet. Please contact support'
 		);
+		for (const page of [register, join, resend]) {
+			expect(page).not.toContain('before then');
+		}
+		expect(register).toContain('>Contact us</a> if you need help.');
+		expect(join).toContain('>Contact us</a> if you need help.');
+		expect(resend).toContain('Resend it later, or');
+		expect(resend).toContain('>contact us</a> if you need');
+		expect(resend).toContain('verificationResendTransportError');
+		expect(resend).not.toContain('Sign in to request a verification email.');
+		expect(resend).toContain('{#if !signedIn}');
 
 		expect(register).toContain('postRegisterHref(verificationEmailSent, continuePath)');
 		expect(register).not.toContain('href={continuePath}');
+		expect(register).toContain('verificationResendHref(current.redirect, current.origin)');
+		expect(register).not.toContain('href="/resend-verification"');
 		expect(join).toContain('data.verificationEmailAvailable === false');
 		expect(join).toContain('Resend verification email');
 		expect(resend).toContain('data.verificationEmailAvailable === false');
@@ -70,8 +102,12 @@ describe('verification email unavailable copy', () => {
 			'return accountCapabilitiesEnabled() && EmailService.isConfigured();'
 		);
 		expect(availability).not.toMatch(/process\.env|AUTH_CAPABILITIES_ENABLED\s*=/);
-		expect(source('lib/server/api/auth.ts')).toContain(
-			"message: 'Verification email is temporarily unavailable. Please contact support.'"
+		const auth = source('lib/server/api/auth.ts');
+		expect(auth).toContain('verificationEmailResendUnavailableMessage');
+		expect(auth.match(/message: verificationEmailResendUnavailableMessage/g)).toHaveLength(2);
+		expect(auth).not.toContain('Verification email is temporarily unavailable');
+		expect(auth).toContain(
+			"'Password recovery email is temporarily unavailable. Please contact support.'"
 		);
 	});
 
@@ -82,13 +118,18 @@ describe('verification email unavailable copy', () => {
 			} as never
 		}).body;
 
+		const visible = body.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
 		expect(body).toContain(verificationEmailUnavailableCopy);
 		expect(body).toContain('href="/contact"');
-		expect(body).toContain('>Contact us<');
+		expect(visible).toContain('Resend it later, or contact us if you need help.');
+		expect(body).toContain('>contact us<');
 		expect(body).toContain('href="/products"');
 		expect(body).toContain('href="/account/profile"');
+		expect(body).not.toContain('before then');
 		expect(body).not.toContain('contact support');
 		expect(body).not.toContain('Verification email is temporarily unavailable');
 		expect(body).not.toContain('Request a new verification email');
+		expect(body).not.toContain('Back to login');
+		expect(body).not.toContain('Sign in to');
 	});
 });

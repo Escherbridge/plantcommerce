@@ -22,6 +22,7 @@
 		publicSite,
 		publicSiteUrl
 	} from '$lib/config/site';
+	import { documentTitleOverride } from '$lib/copy/documentTitleOverride';
 	import { navLinkIsCurrent } from '$lib/navigation/currentNav';
 	import { tick } from 'svelte';
 
@@ -30,6 +31,7 @@
 	const pageStatus = $derived($page.status);
 	const absoluteUrl = $derived(publicSiteUrl(currentUrl));
 	const routeMeta = $derived(publicRouteMetadata(currentUrl));
+	const documentTitle = $derived($documentTitleOverride ?? routeMeta.title);
 	const layoutOwnsMeta = $derived(layoutOwnsDocumentMeta(currentUrl) && pageStatus < 400);
 	const indexable = $derived(isPublicIndexablePath(currentUrl) && pageStatus < 400);
 	const organizationId = `${publicSite.origin}/#organization`;
@@ -131,11 +133,13 @@
 		}
 	}
 
-	// Close drawer on route change
+	// Close drawer on route change. The register success title is layout-owned;
+	// drop it as soon as the visitor leaves that route.
 	$effect(() => {
 		currentUrl; // reactive dependency
 		drawerOpen = false;
 		drawerTrigger = null;
+		if (currentUrl !== '/register') documentTitleOverride.set(null);
 	});
 
 	// Initialize cart on mount
@@ -241,7 +245,7 @@
 <svelte:head>
 	{#if layoutOwnsMeta}
 		<SEO
-			title={routeMeta.title}
+			title={documentTitle}
 			description={routeMeta.description}
 			url={absoluteUrl}
 			author="Escherbridge"

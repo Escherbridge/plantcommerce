@@ -1,3 +1,5 @@
+import { pathWithRedirect } from '$lib/auth/safeRedirect';
+
 /** Shop path. It does not require a verified email. */
 export const VERIFICATION_SHOP_PATH = '/products' as const;
 
@@ -12,7 +14,18 @@ export const VERIFICATION_CONTACT_PATH = '/contact' as const;
  * Plain copy only: no rate, share, or payout timing.
  */
 export const verificationEmailUnavailableCopy =
-	"Your account is created. We couldn't send the verification email right now. You'll be able to verify once email is back. Try resending it later.";
+	"Your account is ready, but we couldn't send the verification email. You can resend it from the verification page later.";
+
+/** Returned by the resend API when delivery is unavailable. */
+export const verificationEmailResendUnavailableMessage =
+	"We couldn't send the verification email. Try again later.";
+
+/** Shown when the resend request fails before the API answers. */
+export const verificationResendTransportError =
+	"That didn't send. Check your connection and try again.";
+
+/** Document title while the register success state is on screen. */
+export const accountCreatedDocumentTitle = 'Account created — Aevani';
 
 /**
  * After registration, follow the return path only when the verification email went out.
@@ -21,4 +34,12 @@ export const verificationEmailUnavailableCopy =
 export function postRegisterHref(verificationEmailSent: boolean, continuePath: string): string {
 	if (!verificationEmailSent) return VERIFICATION_SHOP_PATH;
 	return continuePath;
+}
+
+/** Success-screen resend link. Keeps a same-origin `redirect` and drops anything else. */
+export function verificationResendHref(
+	redirectTo: string | null | undefined,
+	origin: string
+): string {
+	return pathWithRedirect('/resend-verification', redirectTo, origin);
 }
