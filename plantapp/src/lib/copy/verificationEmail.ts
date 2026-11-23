@@ -16,6 +16,13 @@ export const VERIFICATION_CONTACT_PATH = '/contact' as const;
 export const verificationEmailUnavailableCopy =
 	"Your account is ready, but we couldn't send the verification email. You can resend it from the verification page later.";
 
+/**
+ * /resend-verification only. Signup and /affiliate/join keep
+ * `verificationEmailUnavailableCopy`.
+ */
+export const verificationResendPageCopy =
+	"Your account is ready, but we couldn't send the verification email.";
+
 /** Returned by the resend API when delivery is unavailable. */
 export const verificationEmailResendUnavailableMessage =
 	"We couldn't send the verification email. Try again later.";

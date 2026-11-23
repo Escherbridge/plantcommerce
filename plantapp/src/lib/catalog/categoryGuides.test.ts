@@ -1,17 +1,20 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { publishedGuideSectors } from '$lib/content/research';
 import { demoProducts } from '$lib/server/db/catalogDemo';
 import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
 import { load as loadGuide } from '../../routes/guides/[slug]/+page';
+import ProductPage from '../../routes/products/[category]/[slug]/+page.svelte';
 import {
 	categoryGuides,
 	guideForCategory,
 	guideForProduct,
 	productGuideLinks,
-	rewriteProductGuideLinks
+	rewriteProductGuideLinks,
+	rewriteProductPageData
 } from './categoryGuides';
 
 describe('product category guides', () => {
@@ -79,6 +82,14 @@ describe('product category guides', () => {
 		expect(page).toContain(
 			"sanitizeRichText(rewriteProductGuideLinks(p.descriptionHtml || p.description || ''))"
 		);
+		const load = readFileSync(
+			join(
+				dirname(fileURLToPath(import.meta.url)),
+				'../../routes/products/[category]/[slug]/+page.server.ts'
+			),
+			'utf8'
+		);
+		expect(load).toContain('rewriteProductPageData(await loadProductDetail');
 		const productGuide = page.indexOf('guideForProduct(p.slug)');
 		const categoryGuide = page.indexOf('guideForCategory(p.category?.slug)');
 		expect(productGuide).toBeGreaterThan(-1);
@@ -211,7 +222,9 @@ describe('product category guides', () => {
 				from: '/learn',
 				alsoFrom: ['/guides/choosing-hydroponic-system'],
 				href: '/guides/nutrient-film-technique',
-				context: 'nft spacing and flow'
+				context: 'nft spacing and flow',
+				paragraph:
+					'Growing greens at volume? The <a href="/guides/nutrient-film-technique">nutrient film technique guide</a> covers channel slope, flow rate and channel length.'
 			},
 			{
 				text: 'hydroponics field guide',
@@ -227,8 +240,7 @@ describe('product category guides', () => {
 				from: '/learn',
 				alsoFrom: ['/guides/choosing-hydroponic-system'],
 				context: 'aeroponics chapter',
-				paragraph:
-					'Ready to push technique? None of the published guides includes an aeroponics chapter.'
+				removeParagraph: true
 			}
 		]);
 		const live = new Set(publishedGuideSectors.map((guide) => `/guides/${guide.slug}`));
@@ -409,8 +421,16 @@ describe('product category guides', () => {
 		expect(tentRewritten).not.toContain('/guides/choosing-hydroponic-system');
 
 		const nft = demoProducts.find((product) => product.slug === 'nft-hydroponic-channel-system');
+		const nftSentence =
+			'The <a href="/guides/nutrient-film-technique">nutrient film technique guide</a> covers channel slope, flow rate and channel length.';
 		expect(rewriteProductGuideLinks(nft?.descriptionHtml ?? '')).toContain(
-			'<a href="/guides/nutrient-film-technique">hydroponics field guide</a> covers NFT spacing and flow rates.'
+			`Growing greens at volume? ${nftSentence}`
+		);
+		expect(rewriteProductGuideLinks(nft?.descriptionHtml ?? '')).not.toContain(
+			'NFT spacing and flow rates'
+		);
+		expect(rewriteProductGuideLinks(nft?.descriptionHtml ?? '')).not.toContain(
+			'hydroponics field guide'
 		);
 
 		const meter = demoProducts.find((product) => product.slug === 'digital-ph-ec-meter-set');
@@ -431,13 +451,20 @@ describe('product category guides', () => {
 
 		const aeroponics = demoProducts.find((product) => product.slug === 'aeroponic-misting-system');
 		expect(aeroponics?.descriptionHtml).toContain('has a full aeroponics chapter');
+		const aeroponicsClose =
+			'<p>Ready to push technique? The <a href="/guides/choosing-hydroponic-system">hydroponics field guide</a> has a full aeroponics chapter.</p>';
+		expect(aeroponics?.descriptionHtml.endsWith(aeroponicsClose)).toBe(true);
 		const aeroponicsRewritten = rewriteProductGuideLinks(aeroponics?.descriptionHtml ?? '');
-		expect(aeroponicsRewritten).toContain(
-			'Ready to push technique? None of the published guides includes an aeroponics chapter.'
-		);
+		expect(aeroponicsRewritten).toBe(aeroponics?.descriptionHtml.slice(0, -aeroponicsClose.length));
+		expect(aeroponicsRewritten).not.toContain('Ready to push technique');
 		expect(aeroponicsRewritten).not.toContain('has a full aeroponics chapter');
+		expect(aeroponicsRewritten).not.toContain(
+			'None of the published guides includes an aeroponics chapter.'
+		);
+		expect(aeroponicsRewritten).not.toContain('<p></p>');
 		expect(aeroponicsRewritten).not.toContain('/guides/choosing-hydroponic-system');
 		expect(aeroponicsRewritten).toContain('Aeroponics suspends roots');
+		expect(aeroponicsRewritten.endsWith('</p>')).toBe(true);
 
 		const dwc = demoProducts.find((product) => product.slug === 'deep-water-culture-bucket-system');
 		expect(rewriteProductGuideLinks(dwc?.descriptionHtml ?? '')).toBe(dwc?.descriptionHtml);
@@ -468,11 +495,10 @@ describe('product category guides', () => {
 		expect(sanitizeRichText(rewriteProductGuideLinks(prodDatabase.tent))).toBe(
 			'<p>Dialing in your first environment? The <a href="/guides/indoor-lighting-dli" rel="noopener noreferrer">indoor lighting guide</a> covers daily light for greens.</p>'
 		);
-		expect(sanitizeRichText(rewriteProductGuideLinks(prodDatabase.aero))).toBe(
-			'<p>Ready to push technique? None of the published guides includes an aeroponics chapter.</p>'
-		);
-		expect(sanitizeRichText(rewriteProductGuideLinks(prodDatabase.nft))).toContain(
-			'<a href="/guides/nutrient-film-technique" rel="noopener noreferrer">hydroponics field guide</a> covers NFT spacing and flow rates.'
+		expect(sanitizeRichText(rewriteProductGuideLinks(prodDatabase.aero))).toBe('');
+		expect(rewriteProductGuideLinks(prodDatabase.aero)).toBe('');
+		expect(sanitizeRichText(rewriteProductGuideLinks(prodDatabase.nft))).toBe(
+			'<p>Growing greens at volume? The <a href="/guides/nutrient-film-technique" rel="noopener noreferrer">nutrient film technique guide</a> covers channel slope, flow rate and channel length.</p>'
 		);
 		expect(sanitizeRichText(rewriteProductGuideLinks(prodDatabase.meter))).toContain(
 			'<a href="/guides/hydroponic-ec-ph-nutrients" rel="noopener noreferrer">hydroponics field guide</a> lists target ranges by crop.'
@@ -487,19 +513,154 @@ describe('product category guides', () => {
 		expect(sanitizeRichText(rewriteProductGuideLinks(rendered.tent))).not.toContain(
 			'choosing-hydroponic-system'
 		);
-		expect(sanitizeRichText(rewriteProductGuideLinks(rendered.aero))).toBe(
-			'None of the published guides includes an aeroponics chapter.'
-		);
+		expect(rewriteProductGuideLinks(rendered.aero)).toBe('');
+		expect(sanitizeRichText(rewriteProductGuideLinks(rendered.aero))).toBe('');
 		expect(sanitizeRichText(rewriteProductGuideLinks(rendered.nft))).toBe(
-			'<a href="/guides/nutrient-film-technique" rel="noopener noreferrer">hydroponics field guide</a> covers NFT spacing and flow rates.'
+			'The <a href="/guides/nutrient-film-technique" rel="noopener noreferrer">nutrient film technique guide</a> covers channel slope, flow rate and channel length.'
 		);
 		expect(sanitizeRichText(rewriteProductGuideLinks(rendered.meter))).toBe(
 			'<a href="/guides/hydroponic-ec-ph-nutrients" rel="noopener noreferrer">hydroponics field guide</a> lists target ranges by crop.'
 		);
+		expect(rewriteProductGuideLinks(relFirst)).toBe(
+			'<p>Growing greens at volume? The <a href="/guides/nutrient-film-technique">nutrient film technique guide</a> covers channel slope, flow rate and channel length.</p>'
+		);
 		expect(sanitizeRichText(rewriteProductGuideLinks(relFirst))).toContain(
-			'<a href="/guides/nutrient-film-technique" rel="noopener noreferrer">hydroponics field guide</a>'
+			'<a href="/guides/nutrient-film-technique" rel="noopener noreferrer">nutrient film technique guide</a>'
 		);
 		expect(rewriteProductGuideLinks(rendered.nft)).not.toContain('noopener');
+	});
+
+	it('drops both aeroponics sentences and replaces the NFT sentence in seed and prod HTML', () => {
+		const nftSentence =
+			'The <a href="/guides/nutrient-film-technique">nutrient film technique guide</a> covers channel slope, flow rate and channel length.';
+		const retired = [
+			'Ready to push technique',
+			'None of the published guides includes an aeroponics chapter',
+			'has a full aeroponics chapter',
+			'NFT spacing and flow rates',
+			'hydroponics field guide'
+		];
+		const forms = [
+			'<p>Ready to push technique? The <a href="/guides/choosing-hydroponic-system" rel="noopener noreferrer">hydroponics field guide</a> has a full aeroponics chapter.</p>',
+			'<p>Ready to push technique? The <a href="/learn">hydroponics field guide</a> has a full aeroponics chapter.</p>',
+			'Ready to push technique? The <a href="/guides/choosing-hydroponic-system" rel="noopener noreferrer">hydroponics field guide</a> has a full aeroponics chapter.',
+			'<a href="/guides/choosing-hydroponic-system" rel="noopener noreferrer">hydroponics field guide</a> has a full aeroponics chapter.',
+			'<p>Ready to push technique? None of the published guides includes an aeroponics chapter.</p>',
+			'None of the published guides includes an aeroponics chapter.'
+		];
+		for (const form of forms) {
+			expect(rewriteProductGuideLinks(form), form).toBe('');
+			expect(rewriteProductGuideLinks(form), form).not.toMatch(/<p>\s*<\/p>/);
+		}
+		expect(
+			rewriteProductGuideLinks(
+				'<p>Keep this.</p>\n<p>Ready to push technique? The <a href="/learn" rel="noopener noreferrer">hydroponics field guide</a> has a full aeroponics chapter.</p>\n'
+			)
+		).toBe('<p>Keep this.</p>');
+
+		const nftForms = [
+			'<p>Growing greens at volume? The <a href="/guides/choosing-hydroponic-system">hydroponics field guide</a> covers NFT spacing and flow rates.</p>',
+			'<p>Growing greens at volume? The <a href="/learn" rel="noopener noreferrer">hydroponics field guide</a> covers NFT spacing and flow rates.</p>',
+			'<p>Growing greens at volume? The <a class="guide" rel="noopener noreferrer" href="/guides/choosing-hydroponic-system">hydroponics field guide</a> covers NFT spacing and flow rates.</p>'
+		];
+		for (const form of nftForms) {
+			const rewritten = rewriteProductGuideLinks(form);
+			expect(rewritten, form).toBe(`<p>Growing greens at volume? ${nftSentence}</p>`);
+			expect(rewriteProductGuideLinks(rewritten), form).toBe(rewritten);
+			expect(sanitizeRichText(rewriteProductGuideLinks(rewritten)), form).toBe(
+				sanitizeRichText(rewritten)
+			);
+		}
+		expect(
+			rewriteProductGuideLinks(
+				'<a href="/guides/choosing-hydroponic-system" rel="noopener noreferrer">hydroponics field guide</a> covers NFT spacing and flow rates.'
+			)
+		).toBe(nftSentence);
+
+		const aero = demoProducts.find((product) => product.slug === 'aeroponic-misting-system');
+		const nft = demoProducts.find((product) => product.slug === 'nft-hydroponic-channel-system');
+		const prodAero = (aero?.descriptionHtml ?? '').replace(
+			'<a href="/guides/choosing-hydroponic-system">hydroponics field guide</a>',
+			'<a href="/guides/choosing-hydroponic-system" rel="noopener noreferrer">hydroponics field guide</a>'
+		);
+		const prodNft = (nft?.descriptionHtml ?? '').replace(
+			'<a href="/guides/choosing-hydroponic-system">hydroponics field guide</a>',
+			'<a href="/learn" rel="noopener noreferrer">hydroponics field guide</a>'
+		);
+		const pageProduct = (slug: string, name: string, descriptionHtml: string) => ({
+			id: slug === 'aeroponic-misting-system' ? 1 : 2,
+			name,
+			slug,
+			description: 'Short catalogue line.',
+			shortDescription: 'Short catalogue line.',
+			descriptionHtml,
+			price: null,
+			comparePrice: null,
+			currency: 'USD',
+			inStock: false,
+			comingSoon: true,
+			stockQuantity: null,
+			badges: [] as string[],
+			keyFeatures: [] as string[],
+			stats: [] as { value: string; label: string }[],
+			specs: [] as { label: string; value: string }[],
+			inTheBox: [] as string[],
+			faqs: [] as { q: string; a: string }[],
+			testBedNote: null,
+			bundleOffer: null,
+			images: [] as { url: string; altText: string | null }[],
+			category: {
+				id: 1,
+				name: 'Hydroponic Systems',
+				slug: 'hydroponic-systems',
+				description: null
+			}
+		});
+		const loaded = rewriteProductPageData({
+			categorySlug: 'hydroponics',
+			product: pageProduct('aeroponic-misting-system', 'Aeroponic Misting System', prodAero),
+			relatedProducts: [
+				pageProduct('nft-hydroponic-channel-system', 'NFT Hydroponic Channel System', prodNft)
+			]
+		});
+		const serialized = JSON.stringify(loaded);
+		for (const phrase of retired) {
+			expect(serialized, phrase).not.toContain(phrase);
+		}
+		expect(loaded.product.descriptionHtml).not.toContain('href="/learn"');
+		expect(loaded.product.descriptionHtml).not.toMatch(/<p>\s*<\/p>/);
+		expect(loaded.product.descriptionHtml).toContain('Aeroponics suspends roots');
+		expect(loaded.relatedProducts[0]?.descriptionHtml).toContain(nftSentence);
+		expect(loaded.relatedProducts[0]?.descriptionHtml).not.toContain('href="/learn"');
+		expect(rewriteProductGuideLinks(loaded.product.descriptionHtml ?? '')).toBe(
+			loaded.product.descriptionHtml
+		);
+		expect(rewriteProductGuideLinks(loaded.relatedProducts[0]?.descriptionHtml ?? '')).toBe(
+			loaded.relatedProducts[0]?.descriptionHtml
+		);
+
+		const aeroBody = render(ProductPage, {
+			props: { data: { ...loaded, relatedProducts: [] } }
+		} as never).body;
+		const nftLoaded = rewriteProductPageData({
+			categorySlug: 'hydroponics',
+			product: pageProduct(
+				'nft-hydroponic-channel-system',
+				'NFT Hydroponic Channel System',
+				prodNft
+			),
+			relatedProducts: []
+		});
+		const nftBody = render(ProductPage, { props: { data: nftLoaded } } as never).body;
+		const renderedDocument = `${aeroBody}${nftBody}<script type="application/json">${serialized}</script>`;
+		for (const phrase of retired) {
+			expect(renderedDocument, phrase).not.toContain(phrase);
+		}
+		expect(aeroBody).toContain('Aeroponics suspends roots');
+		expect(aeroBody).not.toContain('<p></p>');
+		expect(nftBody).toContain('channel slope, flow rate and channel length');
+		expect(nftBody).toContain('href="/guides/nutrient-film-technique"');
+		expect(nftBody).toContain('>nutrient film technique guide<');
 	});
 
 	it('points the tower long read at the published vertical growing guide', async () => {

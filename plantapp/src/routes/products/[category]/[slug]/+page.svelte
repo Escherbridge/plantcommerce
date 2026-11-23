@@ -112,7 +112,8 @@
 	);
 
 	// ---- The long read: the ONLY @html on the page, always sanitized. ----
-	// Stored descriptions still carry the old /learn field-guide hrefs.
+	// The load already rewrote descriptionHtml, so this payload has no old /learn
+	// anchors. Running the rewrite again must leave that HTML unchanged.
 	const longReadHtml = $derived(
 		sanitizeRichText(rewriteProductGuideLinks(p.descriptionHtml || p.description || ''))
 	);
