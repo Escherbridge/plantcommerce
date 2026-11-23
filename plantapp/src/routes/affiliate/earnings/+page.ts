@@ -8,7 +8,7 @@ export const load: PageLoad = async (event) => {
 	try {
 		const affiliate = await trpc.affiliate.getMyAffiliate.query();
 		if (!affiliate) throw redirect(303, '/affiliate/join');
-		return {};
+		return { lines: event.data.lines };
 	} catch (error) {
 		if (isRedirect(error)) throw error;
 		console.error('Error loading affiliate earnings page:', error);

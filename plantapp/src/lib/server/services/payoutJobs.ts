@@ -231,6 +231,7 @@ export async function runAffiliateBatch(
 			currency: total.currency,
 			totalMinor: total.total,
 			status: needsApproval ? 'pending_approval' : 'approved',
+			commissionIds: total.ids.join(','),
 			createdAt: now,
 			approvedAt: needsApproval ? null : now
 		});
@@ -322,6 +323,47 @@ async function payAffiliateBatch(
 			.set({ status: 'paid' })
 			.where(eq(table.affiliatePayoutBatch.id, batchId));
 	});
+}
+
+/** Mark a waiting batch approved. Stripe is called only when the payout gate is open and a client is passed. */
+export async function approveAffiliateBatch(
+	batchId: string,
+	source: Record<string, string | undefined>,
+	client: TransferClient | null,
+	now = new Date()
+): Promise<{ paid: boolean; reason: string }> {
+	const [batch] = await db
+		.select()
+		.from(table.affiliatePayoutBatch)
+		.where(eq(table.affiliatePayoutBatch.id, batchId))
+		.limit(1);
+	if (!batch || batch.status !== 'pending_approval') return { paid: false, reason: 'not_pending' };
+	await db
+		.update(table.affiliatePayoutBatch)
+		.set({ status: 'approved', approvedAt: now })
+		.where(eq(table.affiliatePayoutBatch.id, batchId));
+	const gate = affiliateBatchGate(source);
+	const ids = (batch.commissionIds ?? '').split(',').filter((id) => id.length > 0);
+	if (gate.action !== 'pay' || !client || ids.length === 0)
+		return { paid: false, reason: 'not_ready' };
+	const [commission] = await db
+		.select({ affiliateId: table.affiliateCommissionLedger.affiliateId })
+		.from(table.affiliateCommissionLedger)
+		.where(eq(table.affiliateCommissionLedger.id, ids[0]))
+		.limit(1);
+	if (!commission) return { paid: false, reason: 'not_ready' };
+	await payAffiliateBatch(
+		client,
+		batchId,
+		{
+			affiliateId: commission.affiliateId,
+			currency: batch.currency,
+			total: batch.totalMinor,
+			ids
+		},
+		now
+	);
+	return { paid: true, reason: 'paid' };
 }
 
 export { payableBalance };

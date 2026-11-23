@@ -238,3 +238,10 @@ approval threshold means every affiliate batch waits for approval. It does not
 update existing rows. It is applied by the same startup helper, after `0016`.
 It is not journaled. Do not use `db:migrate` or `db:push`. Run
 `preflight_payout_transfer.sql` read-only before a production apply.
+
+## `0018_affiliate_batch_commissions.sql`
+
+This additive file adds nullable `affiliate_payout_batch.commission_ids`. It
+does not update existing rows. It is applied by the same startup helper, after
+`0017`. It is not journaled. Do not use `db:migrate` or `db:push`. Run
+`preflight_affiliate_batch_commissions.sql` read-only before a production apply.

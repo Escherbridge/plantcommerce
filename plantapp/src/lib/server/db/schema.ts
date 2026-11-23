@@ -1146,6 +1146,7 @@ export const affiliatePayoutBatch = pgTable(
 		status: text('status', {
 			enum: ['pending_approval', 'approved', 'paid', 'skipped']
 		}).notNull(),
+		commissionIds: text('commission_ids'),
 		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 		approvedAt: timestamp('approved_at', { withTimezone: true, mode: 'date' })
 	},

@@ -239,6 +239,7 @@ const pageOwnedDocumentTitles = new Set([
 	'/affiliate/payouts/refresh',
 	'/affiliate/payouts/return',
 	'/affiliate/settings',
+	'/seller/earnings',
 	'/seller/payouts',
 	'/seller/payouts/refresh',
 	'/seller/payouts/return',
