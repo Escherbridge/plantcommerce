@@ -23,7 +23,12 @@ describe('seller earnings and hold', () => {
 
 	it('does nothing when the return window and auto-delivery days are unset', () => {
 		expect(readOptionalWholeDays({}, 'PAYOUT_HOLD_DAYS_AFTER_DELIVERY')).toBeNull();
-		expect(readOptionalWholeDays({ PAYOUT_HOLD_DAYS_AFTER_DELIVERY: 'soon' }, 'PAYOUT_HOLD_DAYS_AFTER_DELIVERY')).toBeNull();
+		expect(
+			readOptionalWholeDays(
+				{ PAYOUT_HOLD_DAYS_AFTER_DELIVERY: 'soon' },
+				'PAYOUT_HOLD_DAYS_AFTER_DELIVERY'
+			)
+		).toBeNull();
 		const delivered = new Date('2026-01-01T00:00:00Z');
 		expect(
 			holdReleasePlan(
@@ -38,17 +43,22 @@ describe('seller earnings and hold', () => {
 		const deliveredAt = new Date('2026-01-01T00:00:00Z');
 		const order = { status: 'delivered', shippedAt: deliveredAt, deliveredAt, openHold: false };
 		expect(
-			holdReleasePlan(order, new Date(deliveredAt.getTime() + 6 * day), { holdDays: 7, autoDeliverDays: null })
+			holdReleasePlan(order, new Date(deliveredAt.getTime() + 6 * day), {
+				holdDays: 7,
+				autoDeliverDays: null
+			})
 		).toEqual({ deliver: false, release: false });
 		expect(
-			holdReleasePlan(order, new Date(deliveredAt.getTime() + 7 * day), { holdDays: 7, autoDeliverDays: null })
+			holdReleasePlan(order, new Date(deliveredAt.getTime() + 7 * day), {
+				holdDays: 7,
+				autoDeliverDays: null
+			})
 		).toEqual({ deliver: false, release: true });
 		expect(
-			holdReleasePlan(
-				{ ...order, openHold: true },
-				new Date(deliveredAt.getTime() + 30 * day),
-				{ holdDays: 7, autoDeliverDays: null }
-			).release
+			holdReleasePlan({ ...order, openHold: true }, new Date(deliveredAt.getTime() + 30 * day), {
+				holdDays: 7,
+				autoDeliverDays: null
+			}).release
 		).toBe(false);
 	});
 

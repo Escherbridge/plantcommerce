@@ -2,11 +2,7 @@ import { and, eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { AffiliateCommissionService } from './affiliateCommission';
-import {
-	holdReleasePlan,
-	readOptionalWholeDays,
-	sellerShare
-} from './sellerEarnings';
+import { holdReleasePlan, readOptionalWholeDays, sellerShare } from './sellerEarnings';
 
 export type EarningLine = { sellerId: number | null; totalPriceMinor: number };
 
@@ -92,17 +88,10 @@ export async function runHoldRelease(
 			.select({ id: table.orderBalanceHold.id })
 			.from(table.orderBalanceHold)
 			.where(
-				and(
-					eq(table.orderBalanceHold.orderId, order.id),
-					eq(table.orderBalanceHold.status, 'open')
-				)
+				and(eq(table.orderBalanceHold.orderId, order.id), eq(table.orderBalanceHold.status, 'open'))
 			);
 		const openHold = holds.length > 0;
-		const plan = holdReleasePlan(
-			{ ...order, openHold },
-			now,
-			{ holdDays, autoDeliverDays }
-		);
+		const plan = holdReleasePlan({ ...order, openHold }, now, { holdDays, autoDeliverDays });
 		if (!plan.deliver && !plan.release) continue;
 		await db.transaction(async (tx) => {
 			if (plan.deliver) {
@@ -110,7 +99,9 @@ export async function runHoldRelease(
 					.update(table.order)
 					.set({
 						status: 'delivered',
-						deliveredAt: new Date((order.shippedAt ?? now).getTime() + (autoDeliverDays ?? 0) * 86400000),
+						deliveredAt: new Date(
+							(order.shippedAt ?? now).getTime() + (autoDeliverDays ?? 0) * 86400000
+						),
 						updatedAt: now
 					})
 					.where(eq(table.order.id, order.id));
