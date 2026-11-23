@@ -1,9 +1,9 @@
 /**
  * Retired soil-health passages. Stored `content_page` rows are not migrated.
- * The guide page load applies this before returning data, so the value
- * SvelteKit serializes for hydration already uses the corrected wording.
- * Markdown and HTML both match, including minor whitespace. A second pass
- * changes nothing.
+ * `content.getPage` applies this to its output, which is the response body
+ * SvelteKit inlines from the guide fetch. The guide page load applies it
+ * again; a second pass changes nothing.
+ * Markdown and HTML both match, including minor whitespace.
  */
 const SOIL_HEALTH_SLUG = 'understanding-soil-health';
 
