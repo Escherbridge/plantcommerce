@@ -95,6 +95,51 @@ describe('product category guides', () => {
 		expect(guideForProduct(null)).toBeNull();
 	});
 
+	it('overrides a product preview only when a published guide fits', () => {
+		const live = new Set(publishedGuideSectors.map((guide) => `/guides/${guide.slug}`));
+		expect(guideForProduct('soil-building-amendment-kit')).toEqual({
+			href: '/guides/no-dig-sheet-mulch',
+			label: 'No-dig beds and sheet mulching'
+		});
+		expect(guideForProduct('rainwater-harvesting-kit')).toEqual({
+			href: '/guides/rainwater-irrigation-quality',
+			label: 'Harvesting rainwater for garden irrigation'
+		});
+		expect(guideForProduct('season-extension-kit')).toEqual({
+			href: '/guides/season-extension-covers-frames',
+			label: 'Row covers, low tunnels, and cold frames'
+		});
+		expect(guideForProduct('rockwool-cubes-growing-media-sampler')).toEqual({
+			href: '/guides/hydroponic-media',
+			label: 'Soilless hydroponic media: perlite, rockwool, and coir'
+		});
+		for (const guide of [
+			guideForProduct('soil-building-amendment-kit'),
+			guideForProduct('rainwater-harvesting-kit'),
+			guideForProduct('season-extension-kit'),
+			guideForProduct('rockwool-cubes-growing-media-sampler'),
+			guideForProduct('vertical-tower-garden-system')
+		]) {
+			expect(live.has(guide?.href ?? ''), guide?.href).toBe(true);
+		}
+
+		// No published guide is a better fit, so these stay on the category default.
+		for (const slug of [
+			'mushroom-cultivation-kit',
+			'microgreens-growing-kit',
+			'worm-composting-vermicompost-kit',
+			'composting-starter-kit',
+			'seed-saving-starter-kit',
+			'hand-forged-garden-trowel',
+			'pollinator-garden-seed-collection',
+			'herb-spiral-garden-kit',
+			'permaculture-starter-kit',
+			'aeroponic-misting-system'
+		]) {
+			expect(guideForProduct(slug), slug).toBeNull();
+		}
+	});
+
 	it('rewrites stored field-guide hrefs from the link text and the old /learn href', () => {
 		expect(productGuideLinks).toEqual([
 			{
@@ -115,14 +160,55 @@ describe('product category guides', () => {
 			{
 				text: 'soil-health guide',
 				from: '/learn',
-				href: '/guides/understanding-soil-health'
+				href: '/guides/no-dig-sheet-mulch'
 			},
 			{
 				text: 'silvopasture &amp; agroforestry guide',
 				from: '/learn',
-				href: '/guides/temperate-food-forest'
+				href: '/guides/temperate-food-forest',
+				textTo: 'food forest guide'
+			},
+			{
+				text: 'soil-health guide',
+				from: '/learn',
+				alsoFrom: ['/guides/understanding-soil-health'],
+				href: '/guides/no-dig-sheet-mulch',
+				context: 'why behind each one',
+				paragraph:
+					'For how a bed is built from compost layers and worm castings, see the <a href="/guides/no-dig-sheet-mulch">no-dig guide</a>.'
+			},
+			{
+				text: 'hydroponics field guide',
+				from: '/guides/choosing-hydroponic-system',
+				href: '/guides/hydroponic-ec-ph-nutrients',
+				context: 'target ranges by crop'
+			},
+			{
+				text: 'hydroponics field guide',
+				from: '/guides/choosing-hydroponic-system',
+				href: '/guides/nutrient-film-technique',
+				context: 'nft spacing and flow'
+			},
+			{
+				text: 'hydroponics field guide',
+				from: '/guides/choosing-hydroponic-system',
+				href: '/guides/indoor-lighting-dli',
+				context: 'airflow, humidity, and light height',
+				paragraph:
+					'Dialing in your first environment? The <a href="/guides/indoor-lighting-dli">indoor lighting guide</a> covers daily light for greens.'
+			},
+			{
+				text: 'hydroponics field guide',
+				from: '/guides/choosing-hydroponic-system',
+				context: 'aeroponics chapter',
+				paragraph:
+					'Ready to push technique? None of the published guides includes an aeroponics chapter.'
 			}
 		]);
+		const live = new Set(publishedGuideSectors.map((guide) => `/guides/${guide.slug}`));
+		for (const rule of productGuideLinks) {
+			if (rule.href) expect(live.has(rule.href), rule.href).toBe(true);
+		}
 
 		const stored =
 			'<p>Read the <a href="/learn">hydroponics field guide</a>.</p>' +
@@ -137,18 +223,14 @@ describe('product category guides', () => {
 			'<a href="/guides/small-scale-aquaponics">aquaponics field guide</a>'
 		);
 		expect(rewritten).toContain('<a href="/guides/temperate-silvopasture">silvopasture guide</a>');
-		expect(rewritten).toContain(
-			'<a href="/guides/understanding-soil-health">soil-health guide</a>'
-		);
-		expect(rewritten).toContain(
-			'<a href="/guides/temperate-food-forest">silvopasture &amp; agroforestry guide</a>'
-		);
+		expect(rewritten).toContain('<a href="/guides/no-dig-sheet-mulch">soil-health guide</a>');
+		expect(rewritten).toContain('<a href="/guides/temperate-food-forest">food forest guide</a>');
 		expect(rewritten).toContain('<a href="/learn">Aevani learning hub</a>');
 		expect(rewritten).not.toContain('href="/learn">hydroponics field guide');
 		expect(rewritten).not.toContain('href="/learn">aquaponics field guide');
 		expect(rewritten).not.toContain('href="/learn">silvopasture guide');
 		expect(rewritten).not.toContain('href="/learn">soil-health guide');
-		expect(rewritten).not.toContain('href="/learn">silvopasture &amp; agroforestry guide');
+		expect(rewritten).not.toContain('silvopasture &amp; agroforestry guide');
 
 		expect(
 			rewriteProductGuideLinks(
@@ -192,18 +274,27 @@ describe('product category guides', () => {
 			['portable-electric-netting-164-ft', '/guides/temperate-silvopasture'],
 			['tree-shelters-protectors-25-pack', '/guides/temperate-silvopasture'],
 			['chestnut-tree-seedlings-10-pack', '/guides/temperate-food-forest'],
-			['soil-building-amendment-kit', '/guides/understanding-soil-health']
+			['soil-building-amendment-kit', '/guides/no-dig-sheet-mulch']
+		]);
+		const rewrittenInPlace = new Set([
+			'hydroponic-grow-tent-kit',
+			'aeroponic-misting-system',
+			'nft-hydroponic-channel-system',
+			'digital-ph-ec-meter-set',
+			'rockwool-cubes-growing-media-sampler'
 		]);
 		for (const product of demoProducts) {
 			const rewritten = rewriteProductGuideLinks(product.descriptionHtml);
+			expect(rewriteProductGuideLinks(rewritten), product.slug).toBe(rewritten);
 			const target = retargeted.get(product.slug);
-			if (!target) {
-				expect(rewritten, product.slug).toBe(product.descriptionHtml);
+			if (target) {
+				expect(product.descriptionHtml, product.slug).toContain('href="/learn"');
+				expect(rewritten, product.slug).toContain(`href="${target}"`);
+				expect(rewritten, product.slug).not.toContain('href="/learn"');
 				continue;
 			}
-			expect(product.descriptionHtml, product.slug).toContain('href="/learn"');
-			expect(rewritten, product.slug).toContain(`href="${target}"`);
-			expect(rewritten, product.slug).not.toContain('href="/learn"');
+			if (rewrittenInPlace.has(product.slug)) continue;
+			expect(rewritten, product.slug).toBe(product.descriptionHtml);
 		}
 	});
 
@@ -222,9 +313,12 @@ describe('product category guides', () => {
 
 		const soil = demoProducts.find((product) => product.slug === 'soil-building-amendment-kit');
 		expect(soil?.descriptionHtml).toContain('<a href="/learn">soil-health guide</a>');
-		expect(rewriteProductGuideLinks(soil?.descriptionHtml ?? '')).toContain(
-			'<a href="/guides/understanding-soil-health">soil-health guide</a>'
-		);
+		expect(soil?.descriptionHtml).toContain('breaks it down');
+		const soilRewritten = rewriteProductGuideLinks(soil?.descriptionHtml ?? '');
+		expect(soilRewritten).toContain('<a href="/guides/no-dig-sheet-mulch">no-dig guide</a>');
+		expect(soilRewritten).not.toContain('understanding-soil-health');
+		expect(soilRewritten).not.toContain('breaks it down');
+		expect(soilRewritten).toContain('compost layers and worm castings');
 
 		expect(
 			rewriteProductGuideLinks('<a href="/learn" rel="noopener noreferrer">silvopasture guide</a>')
@@ -232,16 +326,23 @@ describe('product category guides', () => {
 			'<a href="/guides/temperate-silvopasture" rel="noopener noreferrer">silvopasture guide</a>'
 		);
 		expect(rewriteProductGuideLinks(`<a href='/learn'> Soil-Health   Guide </a>`)).toBe(
-			`<a href='/guides/understanding-soil-health'> Soil-Health   Guide </a>`
+			`<a href='/guides/no-dig-sheet-mulch'> Soil-Health   Guide </a>`
 		);
 		expect(
 			rewriteProductGuideLinks(
 				'<a href="https://aevani.com/learn?topic=soil">soil-health guide</a>'
 			)
-		).toBe('<a href="/guides/understanding-soil-health">soil-health guide</a>');
+		).toBe('<a href="/guides/no-dig-sheet-mulch">soil-health guide</a>');
 		expect(
 			rewriteProductGuideLinks('<a href="/guides/understanding-soil-health">soil-health guide</a>')
 		).toBe('<a href="/guides/understanding-soil-health">soil-health guide</a>');
+		expect(
+			rewriteProductGuideLinks(
+				'<p>Want the why behind each one? The <a href="/guides/understanding-soil-health">soil-health guide</a> breaks it down.</p>'
+			)
+		).toBe(
+			'<p>For how a bed is built from compost layers and worm castings, see the <a href="/guides/no-dig-sheet-mulch">no-dig guide</a>.</p>'
+		);
 		expect(
 			rewriteProductGuideLinks('<a href="/products/silvopasture">silvopasture guide</a>')
 		).toBe('<a href="/products/silvopasture">silvopasture guide</a>');
@@ -253,14 +354,17 @@ describe('product category guides', () => {
 			'<a href="/learn">silvopasture &amp; agroforestry guide</a>'
 		);
 		expect(rewriteProductGuideLinks(chestnut?.descriptionHtml ?? '')).toContain(
-			'<a href="/guides/temperate-food-forest">silvopasture &amp; agroforestry guide</a>'
+			'<a href="/guides/temperate-food-forest">food forest guide</a>'
+		);
+		expect(rewriteProductGuideLinks(chestnut?.descriptionHtml ?? '')).not.toContain(
+			'silvopasture &amp; agroforestry guide'
 		);
 		expect(
 			rewriteProductGuideLinks(
 				'<a href="/learn" rel="noopener noreferrer">silvopasture &amp; agroforestry guide</a>'
 			)
 		).toBe(
-			'<a href="/guides/temperate-food-forest" rel="noopener noreferrer">silvopasture &amp; agroforestry guide</a>'
+			'<a href="/guides/temperate-food-forest" rel="noopener noreferrer">food forest guide</a>'
 		);
 
 		for (const slug of ['permaculture-starter-kit', 'heirloom-tomato-collection'] as const) {
@@ -270,6 +374,56 @@ describe('product category guides', () => {
 				'<a href="/learn">Aevani learning hub</a>'
 			);
 		}
+	});
+
+	it('retargets hydroponic long reads that promise a topic the system guide does not cover', () => {
+		const tent = demoProducts.find((product) => product.slug === 'hydroponic-grow-tent-kit');
+		expect(tent?.descriptionHtml).toContain(
+			'<a href="/guides/choosing-hydroponic-system">hydroponics field guide</a> covers airflow, humidity, and light height.'
+		);
+		const tentRewritten = rewriteProductGuideLinks(tent?.descriptionHtml ?? '');
+		expect(tentRewritten).toContain(
+			'<a href="/guides/indoor-lighting-dli">indoor lighting guide</a> covers daily light for greens.'
+		);
+		expect(tentRewritten).not.toContain('airflow, humidity, and light height');
+		expect(tentRewritten).not.toContain('/guides/choosing-hydroponic-system');
+
+		const nft = demoProducts.find((product) => product.slug === 'nft-hydroponic-channel-system');
+		expect(rewriteProductGuideLinks(nft?.descriptionHtml ?? '')).toContain(
+			'<a href="/guides/nutrient-film-technique">hydroponics field guide</a> covers NFT spacing and flow rates.'
+		);
+
+		const meter = demoProducts.find((product) => product.slug === 'digital-ph-ec-meter-set');
+		expect(rewriteProductGuideLinks(meter?.descriptionHtml ?? '')).toContain(
+			'<a href="/guides/hydroponic-ec-ph-nutrients">hydroponics field guide</a> lists target ranges by crop.'
+		);
+
+		const media = demoProducts.find(
+			(product) => product.slug === 'rockwool-cubes-growing-media-sampler'
+		);
+		expect(media?.descriptionHtml).not.toContain('/guides/');
+		const mediaRewritten = rewriteProductGuideLinks(media?.descriptionHtml ?? '');
+		expect(mediaRewritten).toContain(
+			'<a href="/guides/hydroponic-media">hydroponic media guide</a>'
+		);
+		expect(mediaRewritten).toContain('Perlite, rockwool, and coir are covered');
+		expect(mediaRewritten).not.toContain('/guides/choosing-hydroponic-system');
+
+		const aeroponics = demoProducts.find((product) => product.slug === 'aeroponic-misting-system');
+		expect(aeroponics?.descriptionHtml).toContain('has a full aeroponics chapter');
+		const aeroponicsRewritten = rewriteProductGuideLinks(aeroponics?.descriptionHtml ?? '');
+		expect(aeroponicsRewritten).toContain(
+			'Ready to push technique? None of the published guides includes an aeroponics chapter.'
+		);
+		expect(aeroponicsRewritten).not.toContain('has a full aeroponics chapter');
+		expect(aeroponicsRewritten).not.toContain('/guides/choosing-hydroponic-system');
+		expect(aeroponicsRewritten).toContain('Aeroponics suspends roots');
+
+		const dwc = demoProducts.find((product) => product.slug === 'deep-water-culture-bucket-system');
+		expect(rewriteProductGuideLinks(dwc?.descriptionHtml ?? '')).toBe(dwc?.descriptionHtml);
+		expect(dwc?.descriptionHtml).toContain(
+			'<a href="/guides/choosing-hydroponic-system">hydroponics field guide</a>'
+		);
 	});
 
 	it('points the tower long read at the published vertical growing guide', async () => {
