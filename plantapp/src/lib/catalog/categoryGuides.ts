@@ -127,6 +127,11 @@ export interface ProductGuideLink {
 	context?: string;
 	/** Replaces the inner HTML of the paragraph that contains the matched anchor. */
 	paragraph?: string;
+	/**
+	 * Deletes that paragraph, including the whitespace around it.
+	 * Used when the stored claim should leave no replacement text.
+	 */
+	removeParagraph?: boolean;
 }
 
 /**
@@ -184,7 +189,9 @@ export const productGuideLinks: readonly ProductGuideLink[] = [
 		from: '/learn',
 		alsoFrom: ['/guides/choosing-hydroponic-system'],
 		href: '/guides/nutrient-film-technique',
-		context: 'nft spacing and flow'
+		context: 'nft spacing and flow',
+		paragraph:
+			'Growing greens at volume? The <a href="/guides/nutrient-film-technique">nutrient film technique guide</a> covers channel slope, flow rate and channel length.'
 	},
 	{
 		text: 'hydroponics field guide',
@@ -196,12 +203,12 @@ export const productGuideLinks: readonly ProductGuideLink[] = [
 			'Dialing in your first environment? The <a href="/guides/indoor-lighting-dli">indoor lighting guide</a> covers daily light for greens.'
 	},
 	{
+		// Both closing sentences go: the lead-in and the aeroponics-chapter claim.
 		text: 'hydroponics field guide',
 		from: '/learn',
 		alsoFrom: ['/guides/choosing-hydroponic-system'],
 		context: 'aeroponics chapter',
-		paragraph:
-			'Ready to push technique? None of the published guides includes an aeroponics chapter.'
+		removeParagraph: true
 	}
 ];
 
@@ -209,6 +216,8 @@ const hydroponicMediaClose =
 	'<p>Start seeds, root cuttings, and compare how each medium holds water and air.</p>';
 const hydroponicMediaFollow =
 	'<p>Perlite, rockwool, and coir are covered in the <a href="/guides/hydroponic-media">hydroponic media guide</a>.</p>';
+const nutrientFilmSentence =
+	'The <a href="/guides/nutrient-film-technique">nutrient film technique guide</a> covers channel slope, flow rate and channel length.';
 
 const hrefAttribute = /\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/i;
 
@@ -262,7 +271,7 @@ function paragraphRule(inner: string): ProductGuideLink | undefined {
 		const path = guidePath(value);
 		const rule = productGuideLinks.find(
 			(entry) =>
-				Boolean(entry.paragraph) &&
+				(Boolean(entry.paragraph) || entry.removeParagraph === true) &&
 				entry.text === text &&
 				hrefMatches(entry, path) &&
 				Boolean(entry.context) &&
@@ -279,7 +288,7 @@ function ruleMatchesAnchor(
 	path: string,
 	window: string
 ): boolean {
-	if (entry.paragraph) return false;
+	if (entry.paragraph || entry.removeParagraph) return false;
 	if (!entry.href || entry.text !== text || !hrefMatches(entry, path)) return false;
 	if (!entry.context) return true;
 	return window.toLowerCase().includes(entry.context.toLowerCase());
@@ -305,30 +314,62 @@ function rewriteLooseClaims(html: string): string {
 		'<a href="/guides/indoor-lighting-dli">indoor lighting guide</a> covers daily light for greens.',
 		html
 	);
-	return replace(
-		/<a\b([^>]*)>\s*hydroponics field guide\s*<\/a>\s*has a full aeroponics chapter\./gi,
-		'None of the published guides includes an aeroponics chapter.',
+	const nft = replace(
+		/(?:The\s+)?<a\b([^>]*)>\s*hydroponics field guide\s*<\/a>\s*covers NFT spacing and flow rates\./gi,
+		nutrientFilmSentence,
 		lighting
 	);
+	return replace(
+		/(?:The\s+)?<a\b([^>]*)>\s*hydroponics field guide\s*<\/a>\s*has a full aeroponics chapter\.\s*/gi,
+		'',
+		nft
+	);
+}
+
+/**
+ * The previous aeroponics close, and a claim that was not inside a `<p>`.
+ * An emptied paragraph is removed so the page does not keep a blank `<p>`.
+ */
+function stripRetiredAeroponicsCopy(html: string): string {
+	if (
+		!html.includes('Ready to push technique') &&
+		!html.includes('None of the published guides includes an aeroponics chapter.')
+	) {
+		return html;
+	}
+	const stripped = html
+		.replace(/Ready to push technique\?\s*/g, '')
+		.replace(/None of the published guides includes an aeroponics chapter\.\s*/g, '')
+		.replace(/\s*<p\b[^>]*>\s*<\/p>/gi, '');
+	return stripped.trim() ? stripped : '';
 }
 
 /**
  * Rewrite stored field-guide anchors at render time.
  * A link changes only when its text and its old href both match a rule.
  * Paragraph rules replace a whole sentence when the stored claim does not fit the destination.
+ * A `removeParagraph` rule drops the paragraph instead of leaving a new sentence.
  * Extra attributes on the anchor are ignored, and the replacement keeps only href.
+ * Running the function again on its own output changes nothing.
  */
 export function rewriteProductGuideLinks(html: string): string {
 	if (!html) return html;
 	const withParagraphs = html.replace(
-		/<p(\s[^>]*)?>([\s\S]*?)<\/p>/gi,
-		(full, attrs: string | undefined, inner: string) => {
+		/([ \t]*\n)?<p(\s[^>]*)?>([\s\S]*?)<\/p>([ \t]*\n)?/gi,
+		(
+			full,
+			before: string | undefined,
+			attrs: string | undefined,
+			inner: string,
+			after: string | undefined
+		) => {
 			const rule = paragraphRule(inner);
+			if (rule?.removeParagraph) return '';
 			if (!rule?.paragraph) return full;
-			return `<p${attrs ?? ''}>${rule.paragraph}</p>`;
+			return `${before ?? ''}<p${attrs ?? ''}>${rule.paragraph}</p>${after ?? ''}`;
 		}
 	);
-	const withClaims = rewriteLooseClaims(withParagraphs);
+	const withClaims = stripRetiredAeroponicsCopy(rewriteLooseClaims(withParagraphs));
 	const withAnchors = withClaims.replace(
 		/<a\b([^>]*)>([\s\S]*?)<\/a>/gi,
 		(full, attrs: string, inner: string, offset: number, source: string) => {
@@ -350,11 +391,29 @@ export function rewriteProductGuideLinks(html: string): string {
 			return `<a href="${rule.href}">${rule.textTo ?? inner}</a>`;
 		}
 	);
-	if (
-		withAnchors.includes(hydroponicMediaClose) &&
-		!withAnchors.includes('/guides/hydroponic-media')
-	) {
-		return withAnchors.replace(hydroponicMediaClose, hydroponicMediaClose + hydroponicMediaFollow);
+	let result = withAnchors;
+	if (result.includes(hydroponicMediaClose) && !result.includes('/guides/hydroponic-media')) {
+		result = result.replace(hydroponicMediaClose, hydroponicMediaClose + hydroponicMediaFollow);
 	}
-	return withAnchors;
+	if (result === html) return html;
+	const tidied = result.replace(/\s+$/g, '');
+	return tidied.trim() ? tidied : '';
+}
+
+/** Product-page load data. Rewritten HTML is what SvelteKit serializes for the client. */
+export function rewriteProductPageData<T extends { descriptionHtml?: string | null }>(data: {
+	product: T;
+	relatedProducts: readonly T[];
+	categorySlug: string;
+}): { product: T; relatedProducts: T[]; categorySlug: string } {
+	const rewrite = (product: T): T => {
+		if (!product.descriptionHtml) return product;
+		const descriptionHtml = rewriteProductGuideLinks(product.descriptionHtml);
+		return descriptionHtml === product.descriptionHtml ? product : { ...product, descriptionHtml };
+	};
+	return {
+		categorySlug: data.categorySlug,
+		product: rewrite(data.product),
+		relatedProducts: data.relatedProducts.map(rewrite)
+	};
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import {
-		verificationEmailUnavailableCopy,
+		verificationResendPageCopy,
 		verificationResendTransportError
 	} from '$lib/copy/verificationEmail';
 	import { trpc } from '$lib/trpc/client';
@@ -42,9 +42,9 @@
 		<div class="card-body">
 			<h1 id="resend-title" class="card-title text-2xl">Verify your email</h1>
 			{#if unavailable}
-				<p role="status">{verificationEmailUnavailableCopy}</p>
+				<p role="status">{verificationResendPageCopy}</p>
 				<p>
-					Resend it later, or <a class="link link-primary" href="/contact">contact us</a> if you need
+					Try again later, or <a class="link link-primary" href="/contact">contact us</a> if you need
 					help.
 				</p>
 			{:else if signedIn}

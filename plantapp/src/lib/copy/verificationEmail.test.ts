@@ -12,6 +12,7 @@ import {
 	verificationEmailResendUnavailableMessage,
 	verificationEmailUnavailableCopy,
 	verificationResendHref,
+	verificationResendPageCopy,
 	verificationResendTransportError
 } from './verificationEmail';
 
@@ -26,16 +27,24 @@ describe('verification email unavailable copy', () => {
 		expect(verificationEmailUnavailableCopy).toBe(
 			"Your account is ready, but we couldn't send the verification email. You can resend it from the verification page later."
 		);
+		expect(verificationResendPageCopy).toBe(
+			"Your account is ready, but we couldn't send the verification email."
+		);
+		expect(verificationResendPageCopy).not.toContain(
+			'You can resend it from the verification page later.'
+		);
 		expect(verificationEmailResendUnavailableMessage).toBe(
 			"We couldn't send the verification email. Try again later."
 		);
 		expect(verificationResendTransportError).toBe(
 			"That didn't send. Check your connection and try again."
 		);
-		expect(verificationEmailUnavailableCopy).not.toMatch(
-			/commission|payout|share|rate|contact support|street|avenue|boulevard/i
-		);
-		expect(verificationEmailUnavailableCopy).not.toMatch(/\d{5}/);
+		for (const copy of [verificationEmailUnavailableCopy, verificationResendPageCopy]) {
+			expect(copy).not.toMatch(
+				/commission|payout|share|rate|contact support|street|avenue|boulevard/i
+			);
+			expect(copy).not.toMatch(/\d{5}/);
+		}
 		expect(verificationEmailResendUnavailableMessage).not.toMatch(/contact support/i);
 	});
 
@@ -68,11 +77,16 @@ describe('verification email unavailable copy', () => {
 		const availability = source('lib/server/verificationEmailAvailable.ts');
 
 		for (const page of [register, join, resend]) {
-			expect(page).toContain('verificationEmailUnavailableCopy');
 			expect(page).toContain('href="/contact"');
 			expect(page).toContain('href="/products"');
 			expect(page).toContain('href="/account/profile"');
 		}
+		for (const page of [register, join]) {
+			expect(page).toContain('verificationEmailUnavailableCopy');
+			expect(page).not.toContain('verificationResendPageCopy');
+		}
+		expect(resend).toContain('verificationResendPageCopy');
+		expect(resend).not.toContain('verificationEmailUnavailableCopy');
 
 		expect(join).not.toMatch(/contact support/i);
 		expect(resend).not.toMatch(/contact support/i);
@@ -84,8 +98,11 @@ describe('verification email unavailable copy', () => {
 		}
 		expect(register).toContain('>Contact us</a> if you need help.');
 		expect(join).toContain('>Contact us</a> if you need help.');
-		expect(resend).toContain('Resend it later, or');
-		expect(resend).toContain('>contact us</a> if you need');
+		expect(resend).toContain('Try again later, or');
+		expect(resend).toContain('>contact us</a>');
+		expect(resend).toContain('if you need');
+		expect(resend).not.toContain('Resend it later');
+		expect(resend).not.toContain('You can resend it from the verification page later.');
 		expect(resend).toContain('verificationResendTransportError');
 		expect(resend).not.toContain('Sign in to request a verification email.');
 		expect(resend).toContain('{#if !signedIn}');
@@ -119,9 +136,12 @@ describe('verification email unavailable copy', () => {
 		}).body;
 
 		const visible = body.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
-		expect(body).toContain(verificationEmailUnavailableCopy);
+		expect(body).toContain(verificationResendPageCopy);
+		expect(body).not.toContain(verificationEmailUnavailableCopy);
+		expect(body).not.toContain('You can resend it from the verification page later.');
 		expect(body).toContain('href="/contact"');
-		expect(visible).toContain('Resend it later, or contact us if you need help.');
+		expect(visible).toContain('Try again later, or contact us if you need help.');
+		expect(visible).not.toContain('Resend it later');
 		expect(body).toContain('>contact us<');
 		expect(body).toContain('href="/products"');
 		expect(body).toContain('href="/account/profile"');
