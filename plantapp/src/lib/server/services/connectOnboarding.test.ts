@@ -37,9 +37,11 @@ describe('hosted Connect onboarding', () => {
 			fees_collector: 'application',
 			losses_collector: 'application'
 		});
-		expect(params.configuration?.recipient?.capabilities?.stripe_balance?.stripe_transfers).toEqual({
-			requested: true
-		});
+		expect(params.configuration?.recipient?.capabilities?.stripe_balance?.stripe_transfers).toEqual(
+			{
+				requested: true
+			}
+		);
 		expect(params).not.toHaveProperty('configuration.merchant');
 	});
 

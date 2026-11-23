@@ -15,7 +15,10 @@ export function readOptionalWholeDays(
 	return value;
 }
 
-export function sellerShare(lineTotalMinor: number, shippingPassthroughMinor = 0): {
+export function sellerShare(
+	lineTotalMinor: number,
+	shippingPassthroughMinor = 0
+): {
 	lineTotalMinor: number;
 	shippingPassthroughMinor: number;
 	feeBps: number;
@@ -77,9 +80,7 @@ export function holdReleasePlan(
 }
 
 /** Shipment and delivery no longer approve referral commission. The hold job does. */
-export function commissionActionForOrderStatus(
-	status: string
-): 'none' | 'reverse' {
+export function commissionActionForOrderStatus(status: string): 'none' | 'reverse' {
 	if (status === 'refunded' || status === 'cancelled') return 'reverse';
 	return 'none';
 }

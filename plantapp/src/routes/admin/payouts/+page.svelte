@@ -7,7 +7,9 @@
 <div class="platform-content">
 	<div class="platform-header">
 		<h1 class="platform-header__title">Payouts</h1>
-		<p class="platform-header__subtitle">Manual hold check. Nothing is transferred from this page.</p>
+		<p class="platform-header__subtitle">
+			Manual hold check. Nothing is transferred from this page.
+		</p>
 	</div>
 	<div class="platform-card">
 		<form method="POST">
