@@ -93,7 +93,10 @@ export class PayoutAccountService {
 		return true;
 	}
 
-	static async noteExternalAccountUpdated(stripeAccountId: string, now = new Date()): Promise<boolean> {
+	static async noteExternalAccountUpdated(
+		stripeAccountId: string,
+		now = new Date()
+	): Promise<boolean> {
 		const [row] = await db
 			.select({ id: table.payoutAccount.id })
 			.from(table.payoutAccount)
