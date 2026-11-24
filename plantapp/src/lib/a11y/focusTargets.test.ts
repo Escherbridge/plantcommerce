@@ -111,7 +111,9 @@ describe('focus and sticky-header targets', () => {
 	});
 
 	it('ties the register submit error to the invalid field and moves focus there', () => {
-		expect(register).toContain('focusRegistrationField');
+		expect(register).toContain('focusRegistrationFailure');
+		expect(register).toContain('focusFailure(failure.field)');
+		expect(register).toContain('tabindex="-1"');
 		expect(register).toContain('id="register-form-error"');
 		expect(register).toContain('id="register-password-errors"');
 		for (const field of ['username', 'email', 'password']) {
