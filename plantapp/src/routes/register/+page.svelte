@@ -20,7 +20,7 @@
 		PASSWORD_TOO_SHORT,
 		PASSWORDS_DO_NOT_MATCH,
 		firstRegistrationError,
-		focusRegistrationField,
+		focusRegistrationFailure,
 		type RegisterField
 	} from './validation';
 
@@ -85,6 +85,19 @@
 	let emailInput = $state<HTMLInputElement | null>(null);
 	let passwordInput = $state<HTMLInputElement | null>(null);
 	let confirmPasswordInput = $state<HTMLInputElement | null>(null);
+	let registerError = $state<HTMLElement | null>(null);
+
+	function focusFailure(field: RegisterField | null) {
+		focusRegistrationFailure(field, {
+			fields: {
+				username: usernameInput,
+				email: emailInput,
+				password: passwordInput,
+				confirmPassword: confirmPasswordInput
+			},
+			error: registerError
+		});
+	}
 
 	const passwordErrors = $derived(() => {
 		const errors: string[] = [];
@@ -162,12 +175,7 @@
 			errorMessage = failure.message;
 			invalidField = failure.field;
 			await tick();
-			focusRegistrationField(failure.field, {
-				username: usernameInput,
-				email: emailInput,
-				password: passwordInput,
-				confirmPassword: confirmPasswordInput
-			});
+			focusFailure(failure.field);
 			return;
 		}
 
@@ -175,6 +183,7 @@
 		const normalizedEmail = email.trim();
 
 		isLoading = true;
+		let serverFailed = false;
 
 		try {
 			const result = await trpc.auth.register.mutate({
@@ -192,11 +201,18 @@
 				registrationComplete = true;
 			} else {
 				errorMessage = accountCreationFailureCopy;
+				serverFailed = true;
 			}
 		} catch {
 			errorMessage = accountCreationFailureCopy;
+			serverFailed = true;
 		} finally {
 			isLoading = false;
+		}
+
+		if (serverFailed) {
+			await tick();
+			focusFailure(null);
 		}
 	}
 </script>
@@ -281,7 +297,14 @@
 
 				<!-- Error -->
 				{#if errorMessage || form?.message}
-					<div id="register-form-error" class="register-error" role="alert" aria-live="assertive">
+					<div
+						id="register-form-error"
+						class="register-error"
+						role="alert"
+						aria-live="assertive"
+						tabindex="-1"
+						bind:this={registerError}
+					>
 						<Icon name="alert-circle" size={16} class="h-4 w-4 shrink-0" />
 						<span>
 							{#if errorMessage === accountCreationFailureCopy}
