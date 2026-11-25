@@ -64,6 +64,12 @@ describe('focus and sticky-header targets', () => {
 	outline: 2px solid var(--aevani-focus) !important;
 	outline-offset: 2px !important;
 }`);
+		expect(appCss).toContain(`
+.register-page #register-form-error:focus,
+.register-page #register-form-error:focus-visible {
+	outline: 2px solid var(--aevani-focus) !important;
+	outline-offset: 2px !important;
+}`);
 
 		const page = '#f4f1ea';
 		const field = compositeWhite(page, 0.6);
