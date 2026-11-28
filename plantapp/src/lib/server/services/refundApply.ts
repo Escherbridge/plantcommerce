@@ -12,23 +12,33 @@ export type ReversalClient = {
 			params: { amount?: number; metadata?: Record<string, string> },
 			options?: { idempotencyKey?: string }
 		) => Promise<{ id: string }>;
+		listReversals: (
+			transferId: string,
+			params: { limit?: number; starting_after?: string }
+		) => Promise<{
+			data: { id: string; amount: number; metadata?: Record<string, string> | null }[];
+			has_more: boolean;
+		}>;
 	};
 };
 
+/** Refund debt reserved for a Stripe reversal. Payout netting skips it until the outcome is recorded. */
 type PendingReversal = {
 	earningId: string;
+	sellerId: number;
 	currency: string;
 	transferId: string;
-	amountMinor: number;
-	reference: string;
-	reasonCode: string;
+	transferAmountMinor: number;
+	reservedMinor: number;
 };
 
 /**
  * Record a refund or dispute. Stripe is called only when a reversal client is passed.
- * All ledger writes happen in one transaction under a row lock on the order, so concurrent webhooks for the
- * same charge serialize and the second one sees the first one's rows. Stripe reversals run after commit, from
- * the recorded debt, so a failed reversal is retried from the ledger instead of being forgotten.
+ * Phase 1, one transaction under a row lock on the order: concurrent webhooks for the charge serialize, and money
+ * owed back by an already-paid seller is written as RESERVED debt (`:debt-reserved:`), which payout netting skips.
+ * Phase 2, per reservation, under the seller's payout-account lock (the one runSellerTransfers takes): reverse at
+ * Stripe and record the outcome. Success settles the reservation; confirmed failure releases it as ordinary
+ * nettable debt exactly once; an unknown outcome leaves it reserved and fails the webhook so it is retried.
  */
 export async function applyMoneyEvent(
 	type: string,
@@ -125,9 +135,10 @@ export async function applyMoneyEvent(
 				)
 				.limit(1);
 
-			const debtReference = `seller-earning:${earning.id}:debt:${sourceKey}`;
+			// With a Stripe client the debt is reserved for reversal; without one it is plain nettable debt.
+			const reservedReference = `seller-earning:${earning.id}:debt-reserved:${sourceKey}`;
+			const plainReference = `seller-earning:${earning.id}:debt:${sourceKey}`;
 			if (clawback > 0 && transfer) {
-				// Already paid out: record debt now (netted from the next transfer); Stripe reversal follows below.
 				await tx
 					.insert(table.sellerEarningEvent)
 					.values({
@@ -136,7 +147,7 @@ export async function applyMoneyEvent(
 						eventType: 'debt',
 						amountDeltaMinor: clawback,
 						currency: earning.currency,
-						eventReference: debtReference,
+						eventReference: client ? reservedReference : plainReference,
 						reasonCode: facts.reasonCode,
 						createdAt: now
 					})
@@ -157,34 +168,23 @@ export async function applyMoneyEvent(
 					.onConflictDoNothing();
 			}
 
-			// Reverse at Stripe from the recorded debt of this very event, once, capped at what the transfer sent.
-			const recordedDebt = events.find((row) => row.eventReference === debtReference);
-			const debtMinor = recordedDebt
-				? recordedDebt.amount
-				: clawback > 0 && transfer
-					? clawback
-					: 0;
-			const alreadyReversed = events.some(
-				(row) => row.eventReference === `seller-earning:${earning.id}:debt-reversed:${sourceKey}`
+			// A reservation (this delivery's or an earlier one's) without an outcome still needs one.
+			const reservation = events.find((row) => row.eventReference === reservedReference);
+			const reservedMinor = reservation ? reservation.amount : client && transfer ? clawback : 0;
+			const hasOutcome = events.some(
+				(row) =>
+					row.eventReference === `seller-earning:${earning.id}:reversed-at-stripe:${sourceKey}` ||
+					row.eventReference === `seller-earning:${earning.id}:debt-released:${sourceKey}`
 			);
-			if (client && transfer?.stripeTransferId && debtMinor > 0 && !alreadyReversed) {
-				const reversedAtStripe = events
-					.filter((row) => row.eventType === 'reversed' && row.stripeReversalId)
-					.reduce((sum, row) => sum + Math.abs(row.amount), 0);
-				const reverseMinor = Math.min(
-					debtMinor,
-					Math.max(transfer.amountMinor - reversedAtStripe, 0)
-				);
-				if (reverseMinor > 0) {
-					pendingReversals.push({
-						earningId: earning.id,
-						currency: earning.currency,
-						transferId: transfer.stripeTransferId,
-						amountMinor: reverseMinor,
-						reference: `seller-earning:${earning.id}:${sourceKey}`,
-						reasonCode: facts.reasonCode
-					});
-				}
+			if (transfer?.stripeTransferId && reservedMinor > 0 && !hasOutcome) {
+				pendingReversals.push({
+					earningId: earning.id,
+					sellerId: earning.sellerId,
+					currency: earning.currency,
+					transferId: transfer.stripeTransferId,
+					transferAmountMinor: transfer.amountMinor,
+					reservedMinor
+				});
 			}
 
 			const feeDebt = facts.sellerPaysFee
@@ -260,46 +260,123 @@ export async function applyMoneyEvent(
 			.where(eq(table.orderBalanceHold.stripeObjectId, facts.objectId));
 	});
 
-	if (client) {
-		for (const work of pendingReversals) {
-			const reversal = await client.transfers.createReversal(
-				work.transferId,
-				{
-					amount: work.amountMinor,
-					metadata: { earning_id: work.earningId, source: sourceKey }
-				},
-				{ idempotencyKey: `reversal:${work.reference}` }
-			);
-			// The reversal recovered the money at Stripe, so the debt it was recorded as is settled.
-			await db.transaction(async (tx) => {
-				await tx
-					.insert(table.sellerEarningEvent)
-					.values([
-						{
-							id: crypto.randomUUID(),
-							earningId: work.earningId,
-							eventType: 'reversed' as const,
-							amountDeltaMinor: -work.amountMinor,
-							currency: work.currency,
-							eventReference: `seller-earning:${work.earningId}:reversed-at-stripe:${sourceKey}`,
-							reasonCode: 'reversal_of_debt',
-							stripeReversalId: reversal.id,
-							createdAt: now
-						},
-						{
-							id: crypto.randomUUID(),
-							earningId: work.earningId,
-							eventType: 'debt' as const,
-							amountDeltaMinor: -work.amountMinor,
-							currency: work.currency,
-							eventReference: `seller-earning:${work.earningId}:debt-reversed:${sourceKey}`,
-							reasonCode: 'debt_settled',
-							createdAt: now
-						}
-					])
-					.onConflictDoNothing();
+	for (const work of pendingReversals) await settleReservedDebt(client, work, sourceKey, now);
+	return 'processed';
+}
+
+/** Phase 2 for one reservation. Holds the seller's payout-account lock, so a payout run cannot net this debt meanwhile. */
+async function settleReservedDebt(
+	client: ReversalClient | null,
+	work: PendingReversal,
+	sourceKey: string,
+	now: Date
+): Promise<void> {
+	const reservedReference = `seller-earning:${work.earningId}:debt-reserved:${sourceKey}`;
+	await db.transaction(async (tx) => {
+		await tx
+			.select({ id: table.payoutAccount.id })
+			.from(table.payoutAccount)
+			.where(eq(table.payoutAccount.sellerId, work.sellerId))
+			.for('update');
+		const events = await tx
+			.select({
+				eventType: table.sellerEarningEvent.eventType,
+				amount: table.sellerEarningEvent.amountDeltaMinor,
+				eventReference: table.sellerEarningEvent.eventReference,
+				stripeReversalId: table.sellerEarningEvent.stripeReversalId
+			})
+			.from(table.sellerEarningEvent)
+			.where(eq(table.sellerEarningEvent.earningId, work.earningId));
+		const settledReference = `seller-earning:${work.earningId}:reversed-at-stripe:${sourceKey}`;
+		const releasedReference = `seller-earning:${work.earningId}:debt-released:${sourceKey}`;
+		if (
+			events.some(
+				(row) => row.eventReference === settledReference || row.eventReference === releasedReference
+			) ||
+			!events.some((row) => row.eventReference === reservedReference)
+		) {
+			return;
+		}
+
+		const reversedAtStripe = events
+			.filter((row) => row.eventType === 'reversed' && row.stripeReversalId)
+			.reduce((sum, row) => sum + Math.abs(row.amount), 0);
+		const reverseMinor = client
+			? Math.min(work.reservedMinor, Math.max(work.transferAmountMinor - reversedAtStripe, 0))
+			: 0;
+
+		let recovered: { id: string; amount: number } | null = null;
+		if (client && reverseMinor > 0) {
+			const key = `reversal:${work.earningId}:${sourceKey}`;
+			try {
+				const created = await client.transfers.createReversal(
+					work.transferId,
+					{ amount: reverseMinor, metadata: { earning_id: work.earningId, source: sourceKey } },
+					{ idempotencyKey: key }
+				);
+				recovered = { id: created.id, amount: reverseMinor };
+			} catch (error) {
+				// Unknown outcome: ask Stripe. If it cannot answer, stay reserved and let the webhook retry.
+				const existing = await findReversal(
+					client,
+					work.transferId,
+					work.earningId,
+					sourceKey
+				).catch(() => {
+					throw error;
+				});
+				recovered = existing;
+			}
+		}
+
+		if (recovered) {
+			await tx.insert(table.sellerEarningEvent).values({
+				id: crypto.randomUUID(),
+				earningId: work.earningId,
+				eventType: 'reversed',
+				amountDeltaMinor: -recovered.amount,
+				currency: work.currency,
+				eventReference: settledReference,
+				reasonCode: 'reversal_of_debt',
+				stripeReversalId: recovered.id,
+				createdAt: now
 			});
 		}
+		const remainder = work.reservedMinor - (recovered?.amount ?? 0);
+		if (remainder > 0) {
+			// Not recovered at Stripe: from here it is ordinary debt, netted from the next transfer, once.
+			await tx.insert(table.sellerEarningEvent).values({
+				id: crypto.randomUUID(),
+				earningId: work.earningId,
+				eventType: 'debt',
+				amountDeltaMinor: remainder,
+				currency: work.currency,
+				eventReference: releasedReference,
+				reasonCode: 'debt_released',
+				createdAt: now
+			});
+		}
+	});
+}
+
+async function findReversal(
+	client: ReversalClient,
+	transferId: string,
+	earningId: string,
+	sourceKey: string
+): Promise<{ id: string; amount: number } | null> {
+	let startingAfter: string | undefined;
+	for (;;) {
+		const page = await client.transfers.listReversals(transferId, {
+			limit: 100,
+			...(startingAfter ? { starting_after: startingAfter } : {})
+		});
+		const hit = page.data.find(
+			(reversal) =>
+				reversal.metadata?.earning_id === earningId && reversal.metadata?.source === sourceKey
+		);
+		if (hit) return { id: hit.id, amount: hit.amount };
+		if (!page.has_more || page.data.length === 0) return null;
+		startingAfter = page.data[page.data.length - 1].id;
 	}
-	return 'processed';
 }
