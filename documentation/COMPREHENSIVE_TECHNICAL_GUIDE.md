@@ -138,14 +138,14 @@ const link = await AffiliateService.createAffiliateLink({
 When someone clicks an affiliate link:
 1. Server captures tracking data (IP, User-Agent, Referer)
 2. Records click in `affiliate_click` table
-3. Sets attribution cookie for 30 days
+3. Sets an attribution cookie only when an attribution window is configured
 4. Redirects to original product page
 5. Updates click counts on affiliate and link records
 
 #### 4. Conversion Tracking
 When an attributed user makes a purchase:
 1. Order creation checks for affiliate attribution cookie
-2. Commission calculated based on affiliate's rate
+2. Commission calculated from the commission policy (zero until configured)
 3. Conversion recorded and earnings updated
 4. All statistics automatically updated
 
@@ -181,7 +181,7 @@ const links = await trpc.affiliate.getLinks.query();
 ### Key Features
 
 #### 1. Automatic Attribution
-- 30-day cookie-based attribution window
+- Attribution cookie only when a window is configured
 - Works for both registered and guest users
 - Tracks complete customer journey
 
@@ -204,7 +204,7 @@ const links = await trpc.affiliate.getLinks.query();
 
 #### Affiliate Table
 - `affiliateCode` - Unique identifier for the affiliate
-- `commissionRate` - Percentage commission (default 5%)
+- `commissionRate` - Stored referral rate. New rows are `0.0000`; checkout quotes the commission policy, which is zero until configured.
 - `totalEarnings` - Running total of all commissions
 - `totalClicks` - Total clicks across all links
 - `totalConversions` - Total conversions across all links

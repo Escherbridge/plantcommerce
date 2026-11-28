@@ -100,7 +100,15 @@ export class AffiliateCommissionService {
 			throw new Error('Attributed checkout draft has an invalid frozen commission quote');
 		}
 		if (!this.isEnabled()) {
-			throw new Error('Affiliate ledger is disabled for an attributed paid checkout');
+			console.error(
+				'Affiliate ledger is disabled; skipping commission accrual for an attributed paid checkout',
+				{
+					checkoutDraftId: draft.id,
+					orderId: order.id,
+					affiliateLinkId: draft.affiliateLinkId
+				}
+			);
+			return null;
 		}
 		if (order.checkoutDraftId !== draft.id || order.affiliateLinkId !== draft.affiliateLinkId) {
 			throw new Error('Order does not match the attributed checkout draft');

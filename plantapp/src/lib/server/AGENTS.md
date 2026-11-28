@@ -14,12 +14,13 @@ Password reset and email verification depend on the source-only `drizzle/0004_au
 
 ## Affiliate attribution capabilities
 
-Affiliate redirects issue a 30-day, HTTP-only HMAC-authenticated capability
-only when `AFFILIATE_ATTRIBUTION_ENABLED=true` and
-`AFFILIATE_ATTRIBUTION_COOKIE_SECRET` is a distinct private value of at least
-32 bytes. The database stores only HMAC-derived capability and client values;
-new tracking never persists raw IP address, user-agent, referer, or the legacy
-numeric `affiliate-link` cookie. A separate signed client capability lasts 24
+Affiliate redirects issue an HTTP-only HMAC-authenticated capability only when
+`AFFILIATE_ATTRIBUTION_ENABLED=true`, `AFFILIATE_ATTRIBUTION_COOKIE_SECRET` is a
+distinct private value of at least 32 bytes, and an attribution window is
+configured. No window is assumed when that value is unset. The database stores
+only HMAC-derived capability and client values; new tracking never persists raw
+IP address, user-agent, referer, or the legacy numeric `affiliate-link` cookie.
+A separate signed client capability lasts 24
 hours and supports one counted click per active link/client rolling 24-hour
 window. Cart mutations resolve the server record and can attach only its active
 approved affiliate link; they ignore and clear the legacy cookie.
@@ -51,8 +52,8 @@ refunds or clawbacks must append a reversal event instead.
 The `0007_affiliate_commission_ledger.sql` recovery artifact is source-only.
 Do not enable `AFFILIATE_LEDGER_ENABLED` until its target preflight and
 disposable rehearsal are approved. With it disabled, an attributed paid Stripe
-webhook fails closed and rolls back rather than persisting an order without its
-commission source record. The ledger is append-only at the database layer:
+webhook logs the skip and continues fulfillment instead of rolling the order
+back. The ledger is append-only at the database layer:
 approval, payable, and paid states use idempotent, validated lifecycle events,
 while `affiliate_payout` is only an immutable payout instruction in this release
 and never invokes a disbursement provider. Existing affiliate and link totals

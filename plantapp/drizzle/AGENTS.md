@@ -114,9 +114,9 @@ constraints, and indexes.
 The recovery DDL deliberately aborts instead of choosing a winner for duplicate
 affiliate or cart rows. Do not journal it or use `db:migrate`/`db:push` until
 the target baseline is reconciled. Only after the approved rehearsal may an
-operator set `AFFILIATE_LEDGER_ENABLED=true`. An attributed paid checkout fails
-closed while that flag is disabled so no order can be marked fulfilled without
-its source-of-truth commission entry.
+operator set `AFFILIATE_LEDGER_ENABLED=true`. While that flag is disabled, an
+attributed paid checkout logs the skip and continues fulfillment instead of
+rolling the order back for a missing commission entry.
 
 `affiliate_commission_ledger` is a fact table, not a mutable balance. Its
 pending event records the frozen checkout-draft quote, rate basis points,

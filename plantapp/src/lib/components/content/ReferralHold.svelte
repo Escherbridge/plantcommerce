@@ -7,7 +7,7 @@
 <svelte:head>
 	<meta
 		name="description"
-		content="The Aevani referral program is not open. The referral share has not been set, and applications are not being accepted."
+		content="The Aevani referral program is not open. Applications are not being accepted."
 	/>
 </svelte:head>
 
@@ -23,11 +23,9 @@
 				</h1>
 				<p class="max-w-3xl text-lg text-base-content/70">
 					Direct sellers are the core of Aevani, and they can apply now, at a flat 8%. A later path
-					will let PlantGeo affiliates send shoppers to Aevani. Aevani would pay that referral share
-					from its own margin, only on completed retail sales, and never for recruiting. Affiliates
-					would not be sub-affiliates on third-party retail links. The referral share has not been
-					set, and applications are not being accepted. We will not quote a rate until those terms
-					exist.
+					will let PlantGeo affiliates send shoppers to Aevani. Aevani would pay that referral from
+					its own margin, only on completed retail sales, and never for recruiting. Affiliates would
+					not be sub-affiliates on third-party retail links. Applications are not being accepted.
 				</p>
 			</header>
 			<div class="flex flex-wrap items-center gap-6">

@@ -8,14 +8,13 @@ import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { getPublicCatalogAvailability } from '$lib/server/catalogTruth/publicCatalog';
 import AffiliateService from '$lib/server/services/affiliate';
-import { AFFILIATE_COOKIE_WINDOW_DAYS } from '$lib/server/services/affiliateTiers';
+import { attributionLifetimeSeconds } from '$lib/server/services/affiliateCommissionPolicy';
 
 export const affiliateAttributionCookieName = 'aevani_affiliate_attribution';
 export const affiliateClientCookieName = 'aevani_affiliate_client';
 
 const COOKIE_VERSION = 'v1';
 const CAPABILITY_BYTES = 32;
-const ATTRIBUTION_LIFETIME_SECONDS = 60 * 60 * 24 * AFFILIATE_COOKIE_WINDOW_DAYS;
 const CLIENT_LIFETIME_SECONDS = 60 * 60 * 24;
 const CLICK_DEDUPE_WINDOW_MS = 24 * 60 * 60 * 1000;
 const signedCookiePattern = /^v1\.([A-Za-z0-9_-]{43})\.(\d{10,11})\.([A-Za-z0-9_-]{43})$/;
@@ -182,12 +181,17 @@ export class AffiliateAttributionService {
 			return link;
 		}
 
+		const lifetimeSeconds = attributionLifetimeSeconds();
+		if (lifetimeSeconds === null) {
+			return link;
+		}
+
 		const clientCapability = readOrCreateClientCapability(cookies, secret);
 		const clientHash = hashValue('aevani:affiliate-client:v1', clientCapability, secret);
 		const capability = newCapability();
 		const capabilityHash = hashValue('aevani:affiliate-attribution:v1', capability, secret);
 		const issuedAt = new Date();
-		const expiresAt = new Date(issuedAt.getTime() + ATTRIBUTION_LIFETIME_SECONDS * 1000);
+		const expiresAt = new Date(issuedAt.getTime() + lifetimeSeconds * 1000);
 		const dedupeCutoff = new Date(issuedAt.getTime() - CLICK_DEDUPE_WINDOW_MS);
 		const attributionId = newAttributionId();
 
@@ -278,7 +282,7 @@ export class AffiliateAttributionService {
 			cookies.set(
 				affiliateAttributionCookieName,
 				serializeCookie('affiliate-attribution', capability, expiresAt, secret),
-				cookieOptions(ATTRIBUTION_LIFETIME_SECONDS)
+				cookieOptions(lifetimeSeconds)
 			);
 		} catch (error) {
 			// A failed telemetry write must not break the storefront redirect or revive the raw cookie path.
