@@ -17,7 +17,7 @@ import {
 	type AnyPgColumn
 } from 'drizzle-orm/pg-core';
 import { relations, sql } from 'drizzle-orm';
-import { inviteRoles, userRoles } from '$lib/auth/userRole';
+import { inviteRoles, userRoles } from '../../auth/userRole';
 
 // ======= USER MANAGEMENT =======
 export const user = pgTable(
