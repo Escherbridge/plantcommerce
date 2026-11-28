@@ -316,16 +316,14 @@ async function settleReservedDebt(
 				);
 				recovered = { id: created.id, amount: reverseMinor };
 			} catch (error) {
-				// Unknown outcome: ask Stripe. If it cannot answer, stay reserved and let the webhook retry.
-				const existing = await findReversal(
-					client,
-					work.transferId,
-					work.earningId,
-					sourceKey
-				).catch(() => {
-					throw error;
-				});
-				recovered = existing;
+				// Only a definitive refusal proves no reversal exists. After a connection, timeout, rate-limit or
+				// unknown error it may still have succeeded, so the debt stays reserved and the webhook is retried
+				// (same idempotency key). A reversal Stripe already lists is adopted rather than re-created.
+				if (!isDefinitiveStripeRefusal(error)) {
+					const existing = await findReversal(client, work.transferId, work.earningId, sourceKey);
+					if (!existing) throw error;
+					recovered = existing;
+				}
 			}
 		}
 
@@ -357,6 +355,18 @@ async function settleReservedDebt(
 			});
 		}
 	});
+}
+
+/** A 4xx invalid-request error (insufficient funds, already fully reversed): Stripe did not create the reversal. */
+export function isDefinitiveStripeRefusal(error: unknown): boolean {
+	if (typeof error !== 'object' || error === null) return false;
+	const { type, statusCode } = error as { type?: unknown; statusCode?: unknown };
+	return (
+		type === 'StripeInvalidRequestError' &&
+		typeof statusCode === 'number' &&
+		statusCode >= 400 &&
+		statusCode < 500
+	);
 }
 
 async function findReversal(

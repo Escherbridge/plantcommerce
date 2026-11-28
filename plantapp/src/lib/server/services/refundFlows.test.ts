@@ -91,16 +91,30 @@ describe.skipIf(!databaseUrl)('refund flows on Postgres', { timeout: 30_000 }, (
 
 	function reversalClient(options: {
 		delayMs?: number;
-		createFails?: boolean;
+		createFails?: boolean | 'refused';
 		listFails?: boolean;
 		already?: { id: string; amount: number; metadata: Record<string, string> }[];
 	}) {
 		const reversals: number[] = [];
+		const keys: string[] = [];
 		const client = {
 			transfers: {
-				createReversal: async (_id: string, params: { amount?: number }) => {
+				createReversal: async (
+					_id: string,
+					params: { amount?: number },
+					callOptions?: { idempotencyKey?: string }
+				) => {
+					keys.push(callOptions?.idempotencyKey ?? '');
 					if (options.delayMs) await new Promise((resolve) => setTimeout(resolve, options.delayMs));
-					if (options.createFails) throw new Error('stripe unavailable');
+					if (options.createFails === 'refused') {
+						throw Object.assign(new Error('insufficient funds'), {
+							type: 'StripeInvalidRequestError',
+							statusCode: 400
+						});
+					}
+					if (options.createFails) {
+						throw Object.assign(new Error('socket hang up'), { type: 'StripeConnectionError' });
+					}
 					reversals.push(params.amount ?? 0);
 					return { id: `trr_${reversals.length}` };
 				},
@@ -110,7 +124,7 @@ describe.skipIf(!databaseUrl)('refund flows on Postgres', { timeout: 30_000 }, (
 				}
 			}
 		};
-		return { client, reversals };
+		return { client, reversals, keys };
 	}
 
 	async function nettableDebtMinor(): Promise<number> {
@@ -161,10 +175,10 @@ describe.skipIf(!databaseUrl)('refund flows on Postgres', { timeout: 30_000 }, (
 		expect(sent).toEqual([9200]);
 	});
 
-	it('a confirmed failed reversal becomes ordinary debt, netted once from the next payout', async () => {
+	it('a definitively refused reversal becomes ordinary debt, netted once from the next payout', async () => {
 		await seedPaidSeller({ withSecondEarning: true });
 		const payouts = await import('./payoutJobs');
-		const { client } = reversalClient({ createFails: true });
+		const { client } = reversalClient({ createFails: 'refused' });
 		const sent: number[] = [];
 		const stripe = {
 			transfers: {
@@ -186,6 +200,41 @@ describe.skipIf(!databaseUrl)('refund flows on Postgres', { timeout: 30_000 }, (
 		);
 		expect(sent).toEqual([6900]);
 		expect(await nettableDebtMinor()).toBe(0);
+	});
+
+	it('a connection error whose reversal exists on the next attempt debits the seller exactly once', async () => {
+		await seedPaidSeller({ withSecondEarning: true });
+		const payouts = await import('./payoutJobs');
+		// Stripe applied the reversal but the response was lost, and the list has not caught up yet.
+		const lost = reversalClient({ createFails: true });
+		await expect(apply('charge.refunded', refunded(2500), lost.client)).rejects.toThrow();
+		expect(await nettableDebtMinor()).toBe(0);
+
+		const sent: number[] = [];
+		const stripe = {
+			transfers: {
+				create: async (params: { amount: number }) => {
+					sent.push(params.amount);
+					return { id: 'tr_2' };
+				},
+				list: async () => ({ data: [], has_more: false })
+			}
+		};
+		// A payout run in between must not net the reserved debt.
+		await payouts.runSellerTransfers(
+			{ SELLER_TRANSFERS_ENABLED: 'true', PAYOUT_HOLD_DAYS_AFTER_DELIVERY: '14' },
+			stripe
+		);
+		expect(sent).toEqual([9200]);
+
+		// The retry reuses the same idempotency key, so Stripe returns the reversal it already made.
+		const retry = reversalClient({});
+		await apply('charge.refunded', refunded(2500), retry.client);
+		expect(retry.keys).toEqual(lost.keys);
+		expect(await nettableDebtMinor()).toBe(0);
+		const [{ count }] =
+			await sql`SELECT count(*)::int AS count FROM seller_earning_event WHERE event_reference LIKE '%:reversed-at-stripe:%'`;
+		expect(count).toBe(1);
 	});
 
 	it('an unknown reversal outcome stays reserved, not nettable, and is settled on retry without a second reversal', async () => {
