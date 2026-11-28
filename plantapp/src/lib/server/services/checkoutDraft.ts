@@ -64,6 +64,7 @@ type DraftItemSnapshot = {
 	unitPriceMinor: number;
 	totalPriceMinor: number;
 	trackInventory: boolean;
+	sellerId: number | null;
 };
 
 type AffiliateDraftPolicySnapshot = {
@@ -543,7 +544,8 @@ export class CheckoutDraftService {
 					quantity,
 					unitPriceMinor,
 					totalPriceMinor: multiplyMinorUnits(unitPriceMinor, quantity),
-					trackInventory: product.trackInventory
+					trackInventory: product.trackInventory,
+					sellerId: product.sellerId
 				};
 			});
 

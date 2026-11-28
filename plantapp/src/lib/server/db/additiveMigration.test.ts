@@ -4,12 +4,16 @@ import { inviteRoles, userRoles } from '$lib/auth/userRole';
 import { executableMigrationSql } from './additiveMigration';
 
 const migrationPath = new URL('../../../../drizzle/0010_product_coming_soon.sql', import.meta.url);
+const sellerMigrationPath = new URL(
+	'../../../../drizzle/0011_seller_application.sql',
+	import.meta.url
+);
 const transferGroupMigrationPath = new URL(
 	'../../../../drizzle/0013_order_transfer_group.sql',
 	import.meta.url
 );
-const sellerMigrationPath = new URL(
-	'../../../../drizzle/0011_seller_application.sql',
+const sellerPayoutMigrationPath = new URL(
+	'../../../../drizzle/0014_seller_payout_account.sql',
 	import.meta.url
 );
 
@@ -40,6 +44,39 @@ describe('seller application migration', () => {
 	});
 });
 
+describe('order transfer group migration', () => {
+	const source = readFileSync(transferGroupMigrationPath, 'utf8');
+	const sql = executableMigrationSql(source);
+
+	it('adds nullable charge columns only when missing and does not rewrite order rows', () => {
+		expect(sql).toContain('ALTER TABLE "public"."order" ADD COLUMN "stripe_charge_id" text');
+		expect(sql).toContain('ALTER TABLE "public"."order" ADD COLUMN "transfer_group" text');
+		expect(sql).toContain("column_name = 'stripe_charge_id'");
+		expect(sql).toContain('CREATE UNIQUE INDEX "order_stripe_charge_id_unique"');
+		expect(sql).toContain("to_regclass('public.order_stripe_charge_id_unique') IS NULL");
+		expect(sql).not.toMatch(/(DROP|DELETE|UPDATE|TRUNCATE|ALTER COLUMN)/i);
+		expect(sql.replace(/IS NOT NULL/gi, '')).not.toMatch(/NOT NULL/i);
+		expect(sql).not.toMatch(/BEGIN\s*;|COMMIT\s*;/i);
+	});
+});
+
+describe('seller and payout account migration', () => {
+	const source = readFileSync(sellerPayoutMigrationPath, 'utf8');
+	const sql = executableMigrationSql(source);
+
+	it('adds seller ownership and a Connect record without rewriting rows', () => {
+		expect(sql).toContain('CREATE TABLE IF NOT EXISTS "public"."seller"');
+		expect(sql).toContain('CREATE TABLE IF NOT EXISTS "public"."payout_account"');
+		expect(sql).toContain('ALTER TABLE "public"."product" ADD COLUMN "seller_id" integer');
+		expect(sql).toContain('ALTER TABLE "public"."order_item" ADD COLUMN "seller_id" integer');
+		// checkout_draft_item is optional (source-only artifact 0003): guarded by an existence check.
+		expect(sql).toContain("to_regclass('public.checkout_draft_item') IS NOT NULL");
+		expect(sql).not.toMatch(/\b(DROP|DELETE|UPDATE|TRUNCATE)\b/i);
+		expect(sql).not.toMatch(/\b(bank|ssn|ein|tax_id|address)\b/i);
+		expect(sql).not.toMatch(/^\s*BEGIN\s*;|^\s*COMMIT\s*;/im);
+	});
+});
+
 describe('manager invite migration', () => {
 	const migrationPath = new URL('../../../../drizzle/0012_manager_invites.sql', import.meta.url);
 	const source = readFileSync(migrationPath, 'utf8');
@@ -64,21 +101,5 @@ describe('manager invite migration', () => {
 		expect(schemaSource).not.toMatch(/ALTER TABLE/);
 		expect(sql).not.toMatch(/ALTER TABLE\s+"public"\."user"/i);
 		expect(source).toMatch(/does not ALTER "user"/);
-	});
-});
-
-describe('order transfer group migration', () => {
-	const source = readFileSync(transferGroupMigrationPath, 'utf8');
-	const sql = executableMigrationSql(source);
-
-	it('adds nullable charge columns only when missing and does not rewrite order rows', () => {
-		expect(sql).toContain('ALTER TABLE "public"."order" ADD COLUMN "stripe_charge_id" text');
-		expect(sql).toContain('ALTER TABLE "public"."order" ADD COLUMN "transfer_group" text');
-		expect(sql).toContain("column_name = 'stripe_charge_id'");
-		expect(sql).toContain('CREATE UNIQUE INDEX "order_stripe_charge_id_unique"');
-		expect(sql).toContain("to_regclass('public.order_stripe_charge_id_unique') IS NULL");
-		expect(sql).not.toMatch(/(DROP|DELETE|UPDATE|TRUNCATE|ALTER COLUMN)/i);
-		expect(sql.replace(/IS NOT NULL/gi, '')).not.toMatch(/NOT NULL/i);
-		expect(sql).not.toMatch(/BEGIN\s*;|COMMIT\s*;/i);
 	});
 });
