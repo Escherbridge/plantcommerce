@@ -48,7 +48,7 @@ describe('register failure focus', () => {
 	it('renders the server error as a focusable alert', () => {
 		const body = render(RegisterPage, {
 			props: {
-				form: { message: 'Please try again.', fieldErrors: [] }
+				form: { message: 'Please try again.', fieldErrors: [], returnPath: '', invite: '' }
 			}
 		}).body;
 		const error = body.match(/<div\b[^>]*\bid="register-form-error"[^>]*>/)?.[0] ?? '';
@@ -64,7 +64,9 @@ describe('register failure focus', () => {
 			props: {
 				form: {
 					message: undefined,
-					fieldErrors: [{ field: 'email', message: 'Enter a valid email address' }]
+					fieldErrors: [{ field: 'email', message: 'Enter a valid email address' }],
+					returnPath: '',
+					invite: ''
 				}
 			}
 		}).body;
