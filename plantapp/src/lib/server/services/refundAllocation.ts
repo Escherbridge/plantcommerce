@@ -1,10 +1,12 @@
-import { and, eq, like } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { decimalToMinorUnits } from './checkoutDraft';
 import { proportionalShare } from './refundClawback';
+import { earningBalance, loadEarningEvents } from './sellerLedgerBalance';
 import {
 	clawbackEarning,
+	findReversal,
 	reverseCommissions,
 	settleReservedDebt,
 	type ClawbackContext,
@@ -151,14 +153,19 @@ export async function resolveAllocationOnFullRefund(
 
 /**
  * A dispute that closed in the platform's favour (won, warning closed, funds reinstated). Anything it left behind
- * is undone: a waiting allocation is cancelled and its hold closed; a clawback already assigned is credited back
- * as ledger events (no silent edit). A credit does not move money by itself.
+ * is undone through the ledger, never by editing rows: a waiting allocation is cancelled and its hold closed; an
+ * assigned clawback, Stripe recovery and dispute fee are credited with explicit credit events that name the row they
+ * undo. A credit does not move money by itself.
+ * Lock order is order (held by the caller) -> earning -> payout account. Under the payout-account lock, a reservation
+ * still waiting on Stripe is looked up at Stripe first: a reversal that was already made is recorded and credited
+ * back; if Stripe cannot be read the webhook fails and is retried.
  */
 export async function cancelAllocationForDispute(
 	tx: any,
 	orderId: number,
 	disputeId: string,
-	now: Date
+	now: Date,
+	client: ReversalClient | null
 ): Promise<void> {
 	const [allocation] = await tx
 		.select()
@@ -170,73 +177,111 @@ export async function cancelAllocationForDispute(
 			)
 		)
 		.for('update');
-	if (!allocation || allocation.status === 'cancelled') return;
-	if (allocation.status === 'allocated') {
+	if (allocation?.status === 'cancelled') return;
+	// What this dispute left behind: rows assigned through an allocation, or written directly under its id.
+	const belongsToDispute = (reference: string | undefined) =>
+		Boolean(reference) &&
+		((allocation && reference!.includes(`:alloc:${allocation.id}`)) ||
+			reference!.endsWith(`:${disputeId}`));
+	if (!allocation || allocation.status === 'allocated') {
 		const earnings = await tx
-			.select({ id: table.sellerEarning.id })
+			.select()
 			.from(table.sellerEarning)
 			.where(eq(table.sellerEarning.orderId, orderId));
 		for (const earning of earnings) {
-			const rows: {
-				eventType: string;
-				amount: number;
-				currency: string;
-				eventReference: string;
-			}[] = await tx
-				.select({
-					eventType: table.sellerEarningEvent.eventType,
-					amount: table.sellerEarningEvent.amountDeltaMinor,
-					currency: table.sellerEarningEvent.currency,
-					eventReference: table.sellerEarningEvent.eventReference
-				})
-				.from(table.sellerEarningEvent)
-				.where(
-					and(
-						eq(table.sellerEarningEvent.earningId, earning.id),
-						like(table.sellerEarningEvent.eventReference, `%:alloc:${allocation.id}%`)
-					)
-				);
-			for (const row of rows) {
-				// Credit the clawback, the Stripe reversal and the dispute fee; markers and earlier credits are skipped.
-				if (row.eventReference.includes(':credited:') || row.amount === 0) continue;
-				if (row.eventType !== 'reversed' && row.eventType !== 'debt') continue;
-				if (row.eventReference.includes(':debt-reserved:')) {
-					// Reserved for a Stripe reversal: cancel it so the reversal is not made; nothing was netted.
-					await tx
-						.insert(table.sellerEarningEvent)
-						.values({
-							id: crypto.randomUUID(),
-							earningId: earning.id,
-							eventType: 'debt',
-							amountDeltaMinor: 0,
-							currency: row.currency,
-							eventReference: row.eventReference.replace(':debt-reserved:', ':debt-released:'),
-							reasonCode: 'dispute_won',
-							createdAt: now
-						})
-						.onConflictDoNothing();
-					// The reservation was never collected (and is excluded from netting): nothing to credit.
-					continue;
-				}
+			await tx
+				.select({ id: table.sellerEarning.id })
+				.from(table.sellerEarning)
+				.where(eq(table.sellerEarning.id, earning.id))
+				.for('update');
+			await tx
+				.select({ id: table.payoutAccount.id })
+				.from(table.payoutAccount)
+				.where(eq(table.payoutAccount.sellerId, earning.sellerId))
+				.for('update');
+			const credit = async (
+				original: { eventReference?: string; amountDeltaMinor: number; reasonCode?: string | null },
+				eventType: 'reversal_credited' | 'debt_credited' | 'fee_credited',
+				currency: string
+			) => {
 				await tx
 					.insert(table.sellerEarningEvent)
 					.values({
 						id: crypto.randomUUID(),
 						earningId: earning.id,
-						eventType: row.eventType === 'reversed' ? 'reversed' : 'debt',
-						amountDeltaMinor: -row.amount,
-						currency: row.currency,
-						eventReference: row.eventReference.replace(
-							/^seller-earning:([^:]+):/,
-							'seller-earning:$1:credited:'
-						),
+						eventType,
+						amountDeltaMinor: -original.amountDeltaMinor,
+						currency,
+						eventReference: `${original.eventReference}:credit`,
+						creditsReference: original.eventReference,
 						reasonCode: 'dispute_won',
 						createdAt: now
 					})
 					.onConflictDoNothing();
+			};
+
+			let events = await loadEarningEvents(tx, earning.id);
+			const reservations = earningBalance(events).reservations.filter((row) =>
+				belongsToDispute(row.reference)
+			);
+			for (const reservation of reservations) {
+				if (!reservation.active) continue;
+				if (!client) {
+					throw new Error(
+						'A Stripe reversal is reserved for this dispute; retry with Stripe available'
+					);
+				}
+				const [transfer] = await tx
+					.select()
+					.from(table.payoutTransfer)
+					.where(
+						and(
+							eq(table.payoutTransfer.earningId, earning.id),
+							eq(table.payoutTransfer.status, 'succeeded')
+						)
+					)
+					.limit(1);
+				const found = transfer?.stripeTransferId
+					? await findReversal(client, transfer.stripeTransferId, earning.id, reservation.sourceKey)
+					: null;
+				if (found) {
+					// The reversal reached Stripe after all: record it, so the credit below undoes a real row.
+					await tx
+						.insert(table.sellerEarningEvent)
+						.values({
+							id: crypto.randomUUID(),
+							earningId: earning.id,
+							eventType: 'reversed',
+							amountDeltaMinor: -found.amount,
+							currency: earning.currency,
+							eventReference: `seller-earning:${earning.id}:reversed-at-stripe:${reservation.sourceKey}`,
+							reasonCode: 'reversal_of_debt',
+							stripeReversalId: found.id,
+							createdAt: now
+						})
+						.onConflictDoNothing();
+				}
+			}
+
+			events = await loadEarningEvents(tx, earning.id);
+			const credited = new Set(events.map((event) => event.creditsReference).filter(Boolean));
+			const undo = events.filter(
+				(event) =>
+					belongsToDispute(event.eventReference) &&
+					!credited.has(event.eventReference) &&
+					!event.creditsReference &&
+					event.amountDeltaMinor !== 0 &&
+					(event.eventType === 'reversed' || event.eventType === 'debt')
+			);
+			for (const row of undo) {
+				if (row.eventType === 'reversed') await credit(row, 'reversal_credited', earning.currency);
+				else if (row.reasonCode === 'dispute_fee')
+					await credit(row, 'fee_credited', earning.currency);
+				else await credit(row, 'debt_credited', earning.currency);
 			}
 		}
 	}
+	if (!allocation) return;
 	await tx
 		.update(table.refundAllocation)
 		.set({ status: 'cancelled', resolvedAt: now })
