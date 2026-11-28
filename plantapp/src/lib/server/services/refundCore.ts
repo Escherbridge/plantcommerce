@@ -45,6 +45,8 @@ export type ClawbackContext = {
 	reasonCode: 'refund' | 'chargeback';
 	feeMinor: number;
 	sellerPaysFee: boolean;
+	/** A dispute fee already assigned to this earning (line allocation); overrides the order-share split. */
+	feeForEarningMinor?: number;
 	client: ReversalClient | null;
 	now: Date;
 };
@@ -80,15 +82,18 @@ export async function clawbackEarning(
 		})
 		.from(table.sellerEarningEvent)
 		.where(eq(table.sellerEarningEvent.earningId, earning.id));
-	// Only clawbacks count: 'reversed' for a refund or chargeback, and 'debt' recorded for one.
-	// Fee debt, settlements and the Stripe reversal of a debt carry other reason codes.
+	// Only clawbacks count: 'reversed' for a refund or chargeback, and 'debt' recorded for one. A credit from a
+	// dispute that was later won ('dispute_won') takes its amount back out. Fee debt, settlements and the Stripe
+	// reversal of a debt carry other reason codes.
 	const clawbacks = events
 		.filter(
 			(row) =>
 				(row.eventType === 'reversed' || row.eventType === 'debt') &&
-				(row.reasonCode === 'refund' || row.reasonCode === 'chargeback')
+				(row.reasonCode === 'refund' ||
+					row.reasonCode === 'chargeback' ||
+					row.reasonCode === 'dispute_won')
 		)
-		.map((row) => ({ ...row, taken: Math.abs(row.amount) }));
+		.map((row) => ({ ...row, taken: row.eventType === 'reversed' ? -row.amount : row.amount }));
 	const clawback = clawbackDelta({
 		baseMinor: earning.netMinor,
 		refundedMinor: ctx.refundedMinor,
@@ -149,11 +154,12 @@ export async function clawbackEarning(
 	}
 
 	const feeDebt = ctx.sellerPaysFee
-		? proportionalShare(
+		? (ctx.feeForEarningMinor ??
+			proportionalShare(
 				ctx.feeMinor,
 				earning.lineTotalMinor,
 				ctx.orderTotalMinor || earning.lineTotalMinor
-			)
+			))
 		: 0;
 	if (feeDebt > 0) {
 		await tx

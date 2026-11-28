@@ -14,8 +14,10 @@ import {
 } from './refundCore';
 import { moneyEventFacts } from './refundClawback';
 import {
+	cancelAllocationForDispute,
 	isAmbiguousRefund,
 	recordAllocationNeed,
+	refundSourceKey,
 	resolveAllocationOnFullRefund
 } from './refundAllocation';
 import { readOptionalWholeDays } from './sellerEarnings';
@@ -58,6 +60,10 @@ export async function applyMoneyEvent(
 				.update(table.orderBalanceHold)
 				.set({ status: 'closed', closedAt: now })
 				.where(eq(table.orderBalanceHold.stripeObjectId, facts.objectId));
+			// A dispute that closed in our favour cancels what it left behind (a waiting allocation, or a clawback).
+			if (facts.kind === 'dispute') {
+				await cancelAllocationForDispute(tx, found.id, facts.objectId, now);
+			}
 			// While the return window is unset, shipped/delivered approve commission; a hold that blocked that
 			// approval releases it here once it closes.
 			if (
@@ -120,8 +126,11 @@ export async function applyMoneyEvent(
 			await recordAllocationNeed(tx, {
 				orderId: order.id,
 				chargeId: facts.chargeId as string,
+				sourceKey: facts.cumulative ? refundSourceKey(facts.chargeId as string) : facts.objectId,
 				refundedMinor: facts.amountMinor,
 				reasonCode: facts.reasonCode,
+				feeMinor: facts.feeMinor,
+				sellerPaysFee: facts.sellerPaysFee,
 				now
 			});
 			await closeEventHold();
@@ -152,7 +161,13 @@ export async function applyMoneyEvent(
 		await reverseCommissions(tx, order.id, context);
 		if (facts.amountMinor >= orderTotalMinor) {
 			// A full refund settles any partial refund still waiting for an admin to allocate it.
-			await resolveAllocationOnFullRefund(tx, order.id, facts.amountMinor, now);
+			await resolveAllocationOnFullRefund(
+				tx,
+				order.id,
+				facts.chargeId as string,
+				facts.amountMinor,
+				now
+			);
 		}
 		await closeEventHold();
 	});
