@@ -21,7 +21,7 @@ export const load: PageLoad = async (event) => {
 			slug: event.params.slug
 		});
 		if (post.page.type !== 'blog_post') throw error(404, 'Post not found');
-		return { post: { ...post, sources: [] } };
+		return { post: { ...post, sources: [], related: null } };
 	} catch (cause) {
 		if (cause && typeof cause === 'object' && 'status' in cause) throw cause;
 		throw error(404, 'Post not found');

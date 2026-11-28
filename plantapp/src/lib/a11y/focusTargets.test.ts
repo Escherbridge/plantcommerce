@@ -64,6 +64,12 @@ describe('focus and sticky-header targets', () => {
 	outline: 2px solid var(--aevani-focus) !important;
 	outline-offset: 2px !important;
 }`);
+		expect(appCss).toContain(`
+.register-page #register-form-error:focus,
+.register-page #register-form-error:focus-visible {
+	outline: 2px solid var(--aevani-focus) !important;
+	outline-offset: 2px !important;
+}`);
 
 		const page = '#f4f1ea';
 		const field = compositeWhite(page, 0.6);
@@ -111,7 +117,9 @@ describe('focus and sticky-header targets', () => {
 	});
 
 	it('ties the register submit error to the invalid field and moves focus there', () => {
-		expect(register).toContain('focusRegistrationField');
+		expect(register).toContain('focusRegistrationFailure');
+		expect(register).toContain('focusFailure(failure.field)');
+		expect(register).toContain('tabindex="-1"');
 		expect(register).toContain('id="register-form-error"');
 		expect(register).toContain('id="register-password-errors"');
 		for (const field of ['username', 'email', 'password']) {

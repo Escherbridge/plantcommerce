@@ -57,6 +57,7 @@ describe('public crawler discovery', () => {
 		expect(contentPaths).toContain('/blog/raised-beds-for-heavy-clay-and-hot-summers');
 		expect(contentPaths).toContain('/blog/pre-spring-grower-checklist');
 		expect(contentPaths).toContain('/blog/cycling-your-first-aquaponics-loop');
+		expect(contentPaths).toContain('/blog/fall-soil-test');
 		const fullXml = _renderPublicSitemap('https://aevani.com', [
 			..._publicSitemapRoutes,
 			...contentPaths
@@ -65,6 +66,8 @@ describe('public crawler discovery', () => {
 		expect(source).not.toContain('nothing-for-sale-yet');
 		expect(fullXml).not.toContain('nothing-for-sale-yet');
 		expect(fullXml).toContain('<loc>https://aevani.com/blog/the-fee-that-didnt-move</loc>');
+		expect(fullXml).toContain('<loc>https://aevani.com/blog/fall-soil-test</loc>');
+		expect(fullXml).toContain('<lastmod>2026-11-23</lastmod>');
 		expect(contentPaths).toContain('/blog/the-fee-that-didnt-move');
 
 		for (const indexableRoute of [

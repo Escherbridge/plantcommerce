@@ -55,6 +55,8 @@ describe('public site origin', () => {
 		expect(layoutOwnsDocumentMeta('/courses/hydroponics-field-guide')).toBe(false);
 		expect(layoutOwnsDocumentMeta('/products/hydroponics/net-pots')).toBe(false);
 		expect(layoutOwnsDocumentMeta('/login')).toBe(false);
+		expect(layoutOwnsDocumentMeta('/register')).toBe(true);
+		expect(publicRouteMetadata('/register').title).toBe('Create an account — Aevani');
 		expect(layoutOwnsDocumentMeta('/cart')).toBe(false);
 		expect(layoutOwnsDocumentMeta('/sell')).toBe(false);
 		expect(layoutOwnsDocumentMeta('/admin/invites')).toBe(false);
