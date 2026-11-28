@@ -66,6 +66,6 @@ Usernames may not be email-shaped and are reserved across active and pending ema
 
 ## Payout flow tests (`services/payoutFlows.test.ts`)
 
-Real-Postgres flows for transfers and batches. Skipped unless `FLOW_TEST_DATABASE_URL` points at a throwaway database holding the schema.
+Real-Postgres flows for transfers and batches. Skipped unless `FLOW_TEST_DATABASE_URL` points at a throwaway database holding the schema. Run with `vitest run --no-file-parallelism` (the files share and truncate that database).
 Build one with `DATABASE_URL=x npx drizzle-kit export --sql > schema.sql`, load it with `psql` (one FK error on `checkout_payment_attempt` is pre-existing and harmless), and run `ALTER DATABASE <db> SET session_replication_role = replica` so fixtures skip FK checks. `drizzle-kit push` cannot build it because of that FK.
 Resume rule: a pending claim younger than `STALE_CLAIM_MS` belongs to a live worker; an older one is reconciled against Stripe (transfer_group + metadata) before anything is created.
