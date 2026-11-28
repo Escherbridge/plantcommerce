@@ -48,7 +48,8 @@
 				<form method="POST" action="?/allocate">
 					<input type="hidden" name="allocationId" value={allocation.allocationId} />
 					<p>
-						Order {allocation.orderNumber}: {allocation.unallocated} refunded and not yet assigned.
+						Order {allocation.orderNumber}: {allocation.source}, {allocation.unallocated} not yet assigned.
+						{#if allocation.feeMinor > 0}The dispute fee follows the lines you assign.{/if}
 					</p>
 					<ul>
 						{#each allocation.items as item (item.id)}
