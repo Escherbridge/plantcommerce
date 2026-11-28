@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS "public"."affiliate_payout_batch" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"approved_at" timestamp with time zone,
 	"send_amount_minor" bigint,
+	"send_started_at" timestamp with time zone,
 	CONSTRAINT "affiliate_payout_batch_status_check" CHECK (
 		"status" IN ('pending_approval', 'approved', 'sending', 'paid', 'skipped')
 	)

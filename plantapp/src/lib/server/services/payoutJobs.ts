@@ -1,4 +1,4 @@
-import { and, eq, inArray, sql } from 'drizzle-orm';
+import { and, eq, inArray, isNull, lt, or, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { AffiliateCommissionService } from './affiliateCommission';
@@ -26,9 +26,60 @@ export type TransferClient = {
 			transfer_group: string;
 			destination?: string;
 			limit?: number;
-		}) => Promise<{ data: { id: string; metadata?: Record<string, string> | null }[] }>;
+			starting_after?: string;
+		}) => Promise<{
+			data: { id: string; amount: number; metadata?: Record<string, string> | null }[];
+			has_more: boolean;
+		}>;
 	};
 };
+
+/** A pending claim younger than this belongs to a live worker; older means it crashed and may be resumed. */
+export const STALE_CLAIM_MS = 2 * 60 * 1000;
+
+type FoundTransfer = { id: string; amount: number };
+
+/** Walk every page of transfers in a group. Throws if Stripe cannot be read, so callers leave the row pending. */
+async function findTransferByMetadata(
+	client: TransferClient,
+	input: { group: string; destination: string; key: string; value: string }
+): Promise<FoundTransfer | null> {
+	let startingAfter: string | undefined;
+	for (;;) {
+		const page = await client.transfers.list({
+			transfer_group: input.group,
+			destination: input.destination,
+			limit: 100,
+			...(startingAfter ? { starting_after: startingAfter } : {})
+		});
+		const hit = page.data.find((transfer) => transfer.metadata?.[input.key] === input.value);
+		if (hit) return { id: hit.id, amount: hit.amount };
+		if (!page.has_more || page.data.length === 0) return null;
+		startingAfter = page.data[page.data.length - 1].id;
+	}
+}
+
+/** What a resumed pending row may still send: net minus reversals recorded since, minus the debt reserved at claim. */
+async function resumablePayMinor(earning: {
+	earningId: string;
+	netMinor: number;
+}): Promise<{ maxPayMinor: number; debtSettledMinor: number }> {
+	const events = await db
+		.select({
+			eventType: table.sellerEarningEvent.eventType,
+			amount: table.sellerEarningEvent.amountDeltaMinor,
+			reasonCode: table.sellerEarningEvent.reasonCode
+		})
+		.from(table.sellerEarningEvent)
+		.where(eq(table.sellerEarningEvent.earningId, earning.earningId));
+	const reversedMinor = events
+		.filter((row) => row.eventType === 'reversed')
+		.reduce((sum, row) => sum + Math.abs(row.amount), 0);
+	const debtSettledMinor = events
+		.filter((row) => row.eventType === 'debt' && row.reasonCode === 'debt_settled')
+		.reduce((sum, row) => sum + Math.abs(row.amount), 0);
+	return { maxPayMinor: earning.netMinor - reversedMinor - debtSettledMinor, debtSettledMinor };
+}
 
 /** Pay released seller earnings. Claim-then-send: a pending row under the idempotency key exists before Stripe is called. */
 export async function runSellerTransfers(
@@ -133,6 +184,14 @@ export async function runSellerTransfers(
 				.where(eq(table.payoutTransfer.idempotencyKey, idempotencyKey))
 				.limit(1);
 			if (existing?.status === 'pending') {
+				// Take over only a stale claim, atomically under the account lock.
+				if (now.getTime() - existing.updatedAt.getTime() < STALE_CLAIM_MS) {
+					return { kind: 'done' as const };
+				}
+				await tx
+					.update(table.payoutTransfer)
+					.set({ updatedAt: now })
+					.where(eq(table.payoutTransfer.idempotencyKey, idempotencyKey));
 				return { kind: 'resume' as const, amountMinor: existing.amountMinor };
 			}
 			if (existing) return { kind: 'done' as const };
@@ -204,28 +263,91 @@ export async function runSellerTransfers(
 		});
 		if (claim.kind === 'done') continue;
 
-		// Resume: a crash may have left Stripe holding a transfer that was never recorded. Look first, then create
-		// under the same key. The lookup also covers retries after Stripe's 24h idempotency window.
+		// Every transfer carries a group (the order's, else one per earning) so a resumed row can always be looked up.
+		const transferGroup = order.transferGroup ?? `earning:${earning.earningId}`;
+		let amountMinor = claim.amountMinor;
 		let stripeTransferId: string | null = null;
-		if (claim.kind === 'resume' && order.transferGroup) {
-			const listed = await client.transfers.list({
-				transfer_group: order.transferGroup,
-				destination: stripeAccountId,
-				limit: 100
-			});
-			stripeTransferId =
-				listed.data.find((transfer) => transfer.metadata?.earning_id === earning.earningId)?.id ??
-				null;
+		if (claim.kind === 'resume') {
+			// A crash may have left Stripe holding a transfer that was never recorded. Read every page first.
+			// If Stripe cannot be read, the row stays pending: never create what might already exist.
+			let found: FoundTransfer | null;
+			try {
+				found = await findTransferByMetadata(client, {
+					group: transferGroup,
+					destination: stripeAccountId,
+					key: 'earning_id',
+					value: earning.earningId
+				});
+			} catch {
+				continue;
+			}
+			const limits = await resumablePayMinor(earning);
+			if (found) {
+				stripeTransferId = found.id;
+				if (found.amount > limits.maxPayMinor) {
+					// A refund landed after the money was sent: the excess is debt against the seller.
+					await db
+						.insert(table.sellerEarningEvent)
+						.values({
+							id: crypto.randomUUID(),
+							earningId: earning.earningId,
+							eventType: 'debt',
+							amountDeltaMinor: found.amount - Math.max(limits.maxPayMinor, 0),
+							currency: earning.currency,
+							eventReference: `seller-earning:${earning.earningId}:debt:resume-overpay`,
+							reasonCode: 'overpay',
+							createdAt: now
+						})
+						.onConflictDoNothing();
+				}
+			} else {
+				amountMinor = Math.min(claim.amountMinor, limits.maxPayMinor);
+				if (amountMinor <= 0) {
+					await db.transaction(async (tx) => {
+						if (limits.debtSettledMinor > 0) {
+							await tx
+								.insert(table.sellerEarningEvent)
+								.values({
+									id: crypto.randomUUID(),
+									earningId: earning.earningId,
+									eventType: 'debt',
+									amountDeltaMinor: limits.debtSettledMinor,
+									currency: earning.currency,
+									eventReference: `seller-earning:${earning.earningId}:debt-restored`,
+									reasonCode: 'debt_restored',
+									createdAt: now
+								})
+								.onConflictDoNothing();
+						}
+						await tx
+							.update(table.payoutTransfer)
+							.set({
+								status: 'skipped',
+								amountMinor: 0,
+								failureReason: 'not_payable',
+								updatedAt: now
+							})
+							.where(eq(table.payoutTransfer.idempotencyKey, idempotencyKey));
+					});
+					continue;
+				}
+				if (amountMinor !== claim.amountMinor) {
+					await db
+						.update(table.payoutTransfer)
+						.set({ amountMinor, updatedAt: now })
+						.where(eq(table.payoutTransfer.idempotencyKey, idempotencyKey));
+				}
+			}
 		}
 		if (!stripeTransferId) {
 			try {
 				const transfer = await client.transfers.create(
 					{
-						amount: claim.amountMinor,
+						amount: amountMinor,
 						currency: earning.currency.toLowerCase(),
 						destination: stripeAccountId,
 						source_transaction: stripeChargeId,
-						...(order.transferGroup ? { transfer_group: order.transferGroup } : {}),
+						transfer_group: transferGroup,
 						metadata: {
 							earning_id: earning.earningId,
 							order_id: String(earning.orderId)
@@ -463,7 +585,7 @@ export async function payApprovedAffiliateBatch(
 		if (!account?.stripeAccountId) return 'no_account';
 		const claimedRows = await db
 			.update(table.affiliatePayoutBatch)
-			.set({ status: 'sending', sendAmountMinor: amountMinor })
+			.set({ status: 'sending', sendAmountMinor: amountMinor, sendStartedAt: now })
 			.where(
 				and(
 					eq(table.affiliatePayoutBatch.id, batchId),
@@ -474,19 +596,41 @@ export async function payApprovedAffiliateBatch(
 		if (claimedRows.length === 0) return 'not_approved';
 	} else {
 		if (batch.sendAmountMinor === null || !account?.stripeAccountId) return 'no_account';
+		// Take over only a stale claim; the conditional UPDATE lets exactly one resumer through.
+		const takenOver = await db
+			.update(table.affiliatePayoutBatch)
+			.set({ sendStartedAt: now })
+			.where(
+				and(
+					eq(table.affiliatePayoutBatch.id, batchId),
+					eq(table.affiliatePayoutBatch.status, 'sending'),
+					or(
+						isNull(table.affiliatePayoutBatch.sendStartedAt),
+						lt(table.affiliatePayoutBatch.sendStartedAt, new Date(now.getTime() - STALE_CLAIM_MS))
+					)
+				)
+			)
+			.returning({ id: table.affiliatePayoutBatch.id });
+		if (takenOver.length === 0) return 'not_approved';
 		amountMinor = batch.sendAmountMinor;
 	}
 
 	const idempotencyKey = `affiliate-batch:${batchId}`;
 	let stripeTransferId: string | null = null;
 	if (batch.status === 'sending') {
-		const listed = await client.transfers.list({
-			transfer_group: idempotencyKey,
-			destination: account.stripeAccountId,
-			limit: 100
-		});
-		stripeTransferId =
-			listed.data.find((transfer) => transfer.metadata?.batch_id === batchId)?.id ?? null;
+		try {
+			stripeTransferId =
+				(
+					await findTransferByMetadata(client, {
+						group: idempotencyKey,
+						destination: account.stripeAccountId,
+						key: 'batch_id',
+						value: batchId
+					})
+				)?.id ?? null;
+		} catch {
+			return 'no_account';
+		}
 	}
 	if (!stripeTransferId) {
 		try {
