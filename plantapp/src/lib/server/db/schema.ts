@@ -1147,6 +1147,7 @@ export const affiliatePayoutBatch = pgTable(
 			enum: ['pending_approval', 'approved', 'sending', 'paid', 'skipped']
 		}).notNull(),
 		sendAmountMinor: bigint('send_amount_minor', { mode: 'number' }),
+		sendStartedAt: timestamp('send_started_at', { withTimezone: true, mode: 'date' }),
 		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 		approvedAt: timestamp('approved_at', { withTimezone: true, mode: 'date' })
 	},
