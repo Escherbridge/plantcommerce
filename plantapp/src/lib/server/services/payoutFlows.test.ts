@@ -185,6 +185,44 @@ describe.skipIf(!databaseUrl)('payout flows on Postgres', { timeout: 30_000 }, (
 			]);
 		});
 
+		it('after the seller switched payout account, finds the earlier send at the old account instead of re-sending', async () => {
+			await resetAndSeedSeller({ transferGroup: 'draft-1' });
+			const stripe = fakeStripe({ honorIdempotency: false });
+			stripe.transfers.push({
+				id: 'tr_old',
+				amount: 9200,
+				destination: 'acct_old',
+				transfer_group: 'draft-1',
+				metadata: { earning_id: 'e1' }
+			});
+			await sql`INSERT INTO payout_transfer (id, kind, earning_id, stripe_account_id, amount_minor, currency, status, idempotency_key, created_at, updated_at)
+				VALUES ('pt1','seller','e1','acct_old',9200,'usd','pending','seller-transfer:e1', now() - interval '1 hour', now() - interval '1 hour')`;
+
+			await jobs.runSellerTransfers(releasedEnv, stripe.client);
+
+			expect(stripe.transfers).toHaveLength(1);
+			expect(await transferRows()).toMatchObject([
+				{ status: 'succeeded', stripe_transfer_id: 'tr_old' }
+			]);
+		});
+
+		it('after the seller switched payout account with no proof of the earlier send, holds for review and sends nothing', async () => {
+			await resetAndSeedSeller({ transferGroup: 'draft-1' });
+			const stripe = fakeStripe({ honorIdempotency: false });
+			await sql`INSERT INTO payout_transfer (id, kind, earning_id, stripe_account_id, amount_minor, currency, status, idempotency_key, created_at, updated_at)
+				VALUES ('pt1','seller','e1','acct_old',9200,'usd','pending','seller-transfer:e1', now() - interval '1 hour', now() - interval '1 hour')`;
+
+			await jobs.runSellerTransfers(releasedEnv, stripe.client);
+
+			expect(stripe.transfers).toHaveLength(0);
+			const rows =
+				await sql`SELECT status, failure_reason FROM payout_transfer ORDER BY idempotency_key`;
+			expect(rows).toMatchObject([
+				{ status: 'pending' },
+				{ status: 'failed', failure_reason: 'destination_changed_manual_review' }
+			]);
+		});
+
 		it('a live claim is left alone, a stale claim whose refund landed pays only what is still owed', async () => {
 			await resetAndSeedSeller({ transferGroup: 'draft-1' });
 			await sql`INSERT INTO payout_transfer (id, kind, earning_id, stripe_account_id, amount_minor, currency, status, idempotency_key)
@@ -220,6 +258,22 @@ describe.skipIf(!databaseUrl)('payout flows on Postgres', { timeout: 30_000 }, (
 			const [restored] =
 				await sql`SELECT amount_delta_minor::int AS amount FROM seller_earning_event WHERE event_reference = 'seller-earning:e1:debt-restored'`;
 			expect(restored.amount).toBe(3000);
+		});
+
+		it('does not net refund debt that is reserved for a Stripe reversal', async () => {
+			const { sellerId } = await resetAndSeedSeller({ transferGroup: 'draft-1' });
+			const [otherOrder] = await sql`
+				INSERT INTO "order" (order_number, total_amount, subtotal_amount, customer_email)
+				VALUES ('A-0', '100.00', '100.00', 'c@example.com') RETURNING id`;
+			await sql`INSERT INTO seller_earning (id, order_id, seller_id, currency, line_total_minor, fee_bps, fee_minor, net_minor)
+				VALUES ('e0', ${otherOrder.id}, ${sellerId}, 'usd', 10000, 800, 800, 9200)`;
+			await sql`INSERT INTO seller_earning_event (id, earning_id, event_type, amount_delta_minor, currency, event_reference, reason_code)
+				VALUES ('d1','e0','debt',2300,'usd','seller-earning:e0:debt-reserved:ch_9:2500','refund')`;
+			const stripe = fakeStripe();
+
+			await jobs.runSellerTransfers(releasedEnv, stripe.client);
+
+			expect(stripe.transfers.map((transfer) => transfer.amount)).toEqual([9200]);
 		});
 
 		it('nets only same-currency debt from the transfer', async () => {
@@ -286,13 +340,50 @@ describe.skipIf(!databaseUrl)('payout flows on Postgres', { timeout: 30_000 }, (
 			expect(batches.map((row) => row.status)).toEqual(['paid']);
 		});
 
+		it('a slow claimant stamped with an old caller clock keeps its lease against a second worker', async () => {
+			await seedCommission(1);
+			const stripe = fakeStripe();
+			const slowCreate = stripe.client.transfers.create;
+			stripe.client.transfers.create = async (...args: Parameters<typeof slowCreate>) => {
+				await new Promise((resolve) => setTimeout(resolve, 400));
+				return slowCreate(...args);
+			};
+			const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+
+			const first = jobs.runAffiliateBatch(batchEnv, stripe.client, tenMinutesAgo);
+			await new Promise((resolve) => setTimeout(resolve, 200));
+			await jobs.runAffiliateBatch(batchEnv, stripe.client);
+			await first;
+
+			expect(stripe.transfers).toHaveLength(1);
+			const [done] = await sql`SELECT status FROM affiliate_payout_batch`;
+			expect(done.status).toBe('paid');
+		});
+
+		it('after the affiliate switched payout account, holds the batch for review and sends nothing', async () => {
+			await seedCommission(1);
+			await jobs.runAffiliateBatch(batchEnv, null);
+			await sql`UPDATE affiliate_payout_batch SET status = 'sending', send_amount_minor = 500,
+				send_stripe_account_id = 'acct_old', send_started_at = now() - interval '1 hour'`;
+			const stripe = fakeStripe({ honorIdempotency: false });
+
+			await jobs.runAffiliateBatch(batchEnv, stripe.client);
+
+			expect(stripe.transfers).toHaveLength(0);
+			const [batch] = await sql`SELECT status FROM affiliate_payout_batch`;
+			expect(batch.status).toBe('sending');
+			const [flag] = await sql`SELECT failure_reason FROM payout_transfer WHERE kind = 'affiliate'`;
+			expect(flag.failure_reason).toBe('destination_changed_manual_review');
+		});
+
 		it('a crash after the Stripe call resumes from the stored amount without a second transfer', async () => {
 			await seedCommission(1);
 			const stripe = fakeStripe({ honorIdempotency: false });
 			await jobs.runAffiliateBatch(batchEnv, null);
 			const [batch] = await sql`SELECT id FROM affiliate_payout_batch`;
 			// Crash state: claimed (sending, amount fixed), transfer exists at Stripe, nothing recorded locally.
-			await sql`UPDATE affiliate_payout_batch SET status = 'sending', send_amount_minor = 500, send_started_at = now() - interval '1 hour'`;
+			await sql`UPDATE affiliate_payout_batch SET status = 'sending', send_amount_minor = 500,
+				send_stripe_account_id = 'acct_2', send_started_at = now() - interval '1 hour'`;
 			stripe.transfers.push({
 				id: 'tr_crashed',
 				amount: 500,
