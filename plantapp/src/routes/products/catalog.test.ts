@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { catalogChipMatches, legacyCatalogueIndexRedirect, productCategoryHref } from './catalog';
+import {
+	catalogChipMatches,
+	legacyCatalogueIndexRedirect,
+	productBreadcrumbLabel,
+	productCategoryHref
+} from './catalog';
 
 describe('product category links', () => {
 	it('redirects the old kit and supply indexes to the catalogue filters', () => {
@@ -19,7 +24,24 @@ describe('product category links', () => {
 		expect(productCategoryHref('heirloom-seeds')).toBe('/products?category=seeds-supplies');
 		expect(productCategoryHref('hydroponics')).toBe('/products/hydroponics');
 		expect(productCategoryHref('hydroponic-systems')).toBe('/products/hydroponics');
+		expect(productCategoryHref('soil-testing')).toBe('/products/hydroponics');
 		expect(productCategoryHref('missing-shelf')).toBeNull();
+	});
+
+	it('labels the soil-testing shelf with the hydroponics listing it opens', () => {
+		expect(
+			productBreadcrumbLabel('hydroponics', { slug: 'soil-testing', name: 'Soil Testing' })
+		).toBe('Hydroponics');
+		expect(
+			productBreadcrumbLabel('hydroponics', {
+				slug: 'nutrients-media',
+				name: 'Nutrients & Media'
+			})
+		).toBe('Nutrients & Media');
+		expect(productBreadcrumbLabel('kits', { slug: 'starter-kits', name: 'Starter Kits' })).toBe(
+			'Starter Kits'
+		);
+		expect(productBreadcrumbLabel('hydroponics', null)).toBe('hydroponics');
 	});
 
 	it('matches starter kits and seeds to their parent systems', () => {
