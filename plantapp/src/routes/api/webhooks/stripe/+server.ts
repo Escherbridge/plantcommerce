@@ -1,8 +1,10 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { env } from '$env/dynamic/private';
+import { sellerTransferGate } from '$lib/server/services/payoutExecution';
 import { StripeCheckoutService } from '$lib/server/services/stripeCheckout';
 import { StripeWebhookService } from '$lib/server/services/stripeWebhook';
+import { getStripeClient } from '$lib/server/stripe';
 import type Stripe from 'stripe';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -30,7 +32,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	let result: Awaited<ReturnType<typeof StripeWebhookService.processVerifiedEvent>>;
 	try {
-		result = await StripeWebhookService.processVerifiedEvent(event, body);
+		const reversalClient = sellerTransferGate(env) === 'ready' ? getStripeClient() : null;
+		result = await StripeWebhookService.processVerifiedEvent(event, body, reversalClient);
 	} catch {
 		console.error(`[Stripe Webhook] Processing failed for verified event ${event.id}`);
 		throw error(500, 'Unable to process payment event');

@@ -22,6 +22,8 @@ export type EarningBalance = {
 	preTransferReversalMinor: number;
 	/** Money pulled back from the seller at Stripe (reversal of reserved debt), net of credits. */
 	stripeRecoveredMinor: number;
+	/** Gross reversed at Stripe, ignoring credits: what the transfer can no longer give back. */
+	stripeReversedGrossMinor: number;
 	/** Everything taken from the seller for refunds and chargebacks: pre-transfer + debt + reservations, net of credits. */
 	clawedBackMinor: number;
 	/** Dispute fees owed by the seller, net of credits. */
@@ -68,6 +70,7 @@ export function earningBalance(events: LedgerEvent[]): EarningBalance {
 		netMinor: 0,
 		preTransferReversalMinor: 0,
 		stripeRecoveredMinor: 0,
+		stripeReversedGrossMinor: 0,
 		clawedBackMinor: 0,
 		feeDebtMinor: 0,
 		overpayMinor: 0,
@@ -82,8 +85,10 @@ export function earningBalance(events: LedgerEvent[]): EarningBalance {
 		const reason = event.reasonCode ?? null;
 		if (event.eventType === 'pending') balance.netMinor += event.amountDeltaMinor;
 		else if (event.eventType === 'reversed') {
-			if (reason === 'reversal_of_debt') balance.stripeRecoveredMinor += -residual;
-			else balance.preTransferReversalMinor += -residual;
+			if (reason === 'reversal_of_debt') {
+				balance.stripeRecoveredMinor += -residual;
+				balance.stripeReversedGrossMinor += -event.amountDeltaMinor;
+			} else balance.preTransferReversalMinor += -residual;
 		} else if (event.eventType === 'debt') {
 			if (reference.includes(RESERVED)) {
 				const sourceKey = reference.split(RESERVED)[1];
