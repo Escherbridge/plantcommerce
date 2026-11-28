@@ -69,3 +69,9 @@ Usernames may not be email-shaped and are reserved across active and pending ema
 - Approval needs an active (not revoked) invite, a still-pending use, a verified email, and an account whose role is the base `customer` role (or already the invited role). One conditional UPDATE decides which reviewer wins. An account holds a single role; approving over `instructor`, `affiliate`, `seller` or `admin` is refused with an admin-facing message. **Owner question:** should an account be able to hold several roles? Until answered, remove the old role first.
 - The use limit is enforced under a row lock on the invite (`insertUse`), so concurrent visitors cannot pass it.
 - `manager_invite.token` keeps the raw token **on purpose**: the admin list and detail pages re-display and copy the invite link later (PR #49 body). Only `token_hash` is used for public lookup. If links should be shown once only, drop the column and the re-copy button together; that is a product decision, left as is.
+
+## Seller and payout-account ownership (PR #52)
+
+- `product.seller_id` is not writable through any route today: `SellerService.linkProduct` has no caller, and the admin product procedures strip unknown keys (no `sellerId` in their zod input). Whoever adds a UI for it must make it admin-only and keep the active-seller check in `linkProduct`.
+- Payout accounts are derived from the signed-in session user only (`localOwner`): a seller must hold the `seller` role, an affiliate must be an active approved affiliate. No Stripe account id is accepted from a request. `attachStripeAccount` attaches once (`stripe_account_id IS NULL`), and unique indexes cover one account per seller, per affiliate, and per Stripe account id.
+- `applyAccountSnapshot` only updates status flags on the row whose `stripe_account_id` matches a signature-verified Connect event; it cannot attach or move an account.
