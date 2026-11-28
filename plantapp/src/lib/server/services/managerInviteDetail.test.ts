@@ -90,8 +90,13 @@ function harness(role: InviteUseRecord['userRole'] = 'customer', userId = 'ada')
 		async listUses() {
 			return [use];
 		},
-		async setUseStatus(_id, status) {
+		async claimUseReview(_id, status) {
+			if (use.status !== 'pending') return false;
 			use.status = status;
+			return true;
+		},
+		async reopenUse() {
+			use.status = 'pending';
 		},
 		async markRoleRemoved(_id, when) {
 			use.roleRemovedAt = when;
@@ -231,5 +236,56 @@ describe('invite detail actions', () => {
 			'They still need to verify their email before you can approve them.'
 		);
 		expect(inviteCopyForbidden(rendered.body)).toBeNull();
+	});
+
+	it.each([
+		['an instructor', 'instructor', 'role_conflict'],
+		['an admin', 'admin', 'role_conflict']
+	] as const)('refuses to overwrite the role of %s', async (_label, role, reason) => {
+		const { repo, use, roles, setRole } = harness(role);
+		use.emailVerified = true;
+		const result = await reviewInviteUse({
+			actor,
+			useId: use.id,
+			decision: 'approved',
+			now,
+			repo,
+			setRole
+		});
+		expect(result).toMatchObject({ ok: false, reason });
+		expect(roles).toEqual([]);
+		expect(use.status).toBe('pending');
+	});
+
+	it('refuses a revoked invite and a use that was already reviewed', async () => {
+		const revoked = harness();
+		revoked.use.emailVerified = true;
+		revoked.invite.status = 'revoked';
+		expect(
+			await reviewInviteUse({
+				actor,
+				useId: revoked.use.id,
+				decision: 'approved',
+				now,
+				repo: revoked.repo,
+				setRole: revoked.setRole
+			})
+		).toMatchObject({ ok: false, reason: 'invite_inactive' });
+		expect(revoked.roles).toEqual([]);
+
+		const reviewed = harness();
+		reviewed.use.emailVerified = true;
+		reviewed.use.status = 'declined';
+		expect(
+			await reviewInviteUse({
+				actor,
+				useId: reviewed.use.id,
+				decision: 'approved',
+				now,
+				repo: reviewed.repo,
+				setRole: reviewed.setRole
+			})
+		).toMatchObject({ ok: false, reason: 'not_pending' });
+		expect(reviewed.roles).toEqual([]);
 	});
 });

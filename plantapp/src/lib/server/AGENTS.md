@@ -63,3 +63,9 @@ Usernames may not be email-shaped and are reserved across active and pending ema
 ## Development seeds
 
 `db/seed.ts` erases and recreates UAT fixtures. It is intentionally blocked unless the target database name is clearly disposable (`*_dev`, `*_test`, or `*_uat`), `AEVANI_UAT_SEED_CONFIRM` contains the exact destructive acknowledgement, and a unique 16-character-or-longer `AEVANI_UAT_SEED_PASSWORD` is supplied at runtime. Never add a shared seed credential or weaken the database-name check. The optional default-admin helper likewise requires `AEVANI_DEV_ADMIN_PASSWORD`; its purpose is local setup only, not production provisioning.
+
+## Invite approval rules (manager invites)
+
+- Approval needs an active (not revoked) invite, a still-pending use, a verified email, and an account whose role is the base `customer` role (or already the invited role). One conditional UPDATE decides which reviewer wins. An account holds a single role; approving over `instructor`, `affiliate`, `seller` or `admin` is refused with an admin-facing message. **Owner question:** should an account be able to hold several roles? Until answered, remove the old role first.
+- The use limit is enforced under a row lock on the invite (`insertUse`), so concurrent visitors cannot pass it.
+- `manager_invite.token` keeps the raw token **on purpose**: the admin list and detail pages re-display and copy the invite link later (PR #49 body). Only `token_hash` is used for public lookup. If links should be shown once only, drop the column and the re-copy button together; that is a product decision, left as is.
