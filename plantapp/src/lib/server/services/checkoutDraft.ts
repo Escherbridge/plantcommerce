@@ -1,11 +1,16 @@
 import { createHash } from 'node:crypto';
 import { encodeBase64url } from '@oslojs/encoding';
-import { and, asc, desc, eq, inArray, isNull, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { comingSoonPurchaseError, productIsPurchasable } from '../commerce/purchasable';
 import { AffiliateCommissionService } from './affiliateCommission';
-import { AFFILIATE_TIER_VERSION, resolveAffiliateTier } from './affiliateTiers';
+import {
+	UNSET_AFFILIATE_TIER_CODE,
+	UNSET_AFFILIATE_TIER_VERSION,
+	quoteAffiliateCommissionMinor,
+	readAffiliateCommissionPolicy
+} from './affiliateCommissionPolicy';
 
 const CHECKOUT_CURRENCY = 'usd';
 const TAX_RATE_BASIS_POINTS = 800n;
@@ -234,22 +239,6 @@ function snapshotHash(
 		.digest('hex');
 }
 
-function commissionRateToBasisPoints(commissionRate: string): number {
-	const rateBasisPoints = decimalToScaledInteger(commissionRate, 4, 'Affiliate commission rate');
-	if (rateBasisPoints > BASIS_POINTS_DENOMINATOR) {
-		throw new Error('Affiliate commission rate cannot exceed 100%');
-	}
-	return Number(rateBasisPoints);
-}
-
-function calculateAffiliateCommissionMinor(subtotalMinor: number, commissionRate: string): number {
-	const rateBasisPoints = BigInt(commissionRateToBasisPoints(commissionRate));
-	return assertSafeMinor(
-		divideRoundedHalfUp(BigInt(subtotalMinor) * rateBasisPoints, BASIS_POINTS_DENOMINATOR),
-		'Affiliate commission'
-	);
-}
-
 function toSnapshot(draft: typeof table.checkoutDraft.$inferSelect): CheckoutDraftSnapshot {
 	return {
 		id: draft.id,
@@ -336,24 +325,6 @@ async function releaseDraftReservationsInTransaction(
 	return true;
 }
 
-/** Sum of prior attributed order subtotals (USD) for tier resolution, excluding cancelled/refunded. */
-async function getAffiliateLifetimeAttributedSalesUsd(
-	tx: any,
-	affiliateId: number
-): Promise<number> {
-	const [row] = await tx
-		.select({ total: sql<string>`COALESCE(SUM(${table.order.subtotalAmount}), 0)` })
-		.from(table.order)
-		.innerJoin(table.affiliateLink, eq(table.order.affiliateLinkId, table.affiliateLink.id))
-		.where(
-			and(
-				eq(table.affiliateLink.affiliateId, affiliateId),
-				sql`${table.order.status} NOT IN ('cancelled', 'refunded')`
-			)
-		);
-	return row ? Number(row.total) : 0;
-}
-
 async function getActiveAffiliateAttribution(tx: any, affiliateLinkId: number | null) {
 	if (!affiliateLinkId) {
 		return null;
@@ -380,19 +351,13 @@ async function getActiveAffiliateAttribution(tx: any, affiliateLinkId: number | 
 		return null;
 	}
 
-	// Freeze the affiliate's current tier rate (from lifetime attributed sales) into the draft.
-	const lifetimeSalesUsd = await getAffiliateLifetimeAttributedSalesUsd(
-		tx,
-		attribution.affiliateId
-	);
-	const tier = resolveAffiliateTier(lifetimeSalesUsd);
-
+	const policy = readAffiliateCommissionPolicy();
 	return {
 		linkId: attribution.linkId,
 		affiliateId: attribution.affiliateId,
-		commissionRate: tier.rate,
-		tierCode: tier.code,
-		tierVersion: AFFILIATE_TIER_VERSION
+		commissionRateBps: policy.commissionRateBps,
+		tierCode: UNSET_AFFILIATE_TIER_CODE,
+		tierVersion: UNSET_AFFILIATE_TIER_VERSION
 	};
 }
 
@@ -400,7 +365,7 @@ async function getAffiliateDraftPolicySnapshot(
 	tx: any,
 	attribution: {
 		affiliateId: number;
-		commissionRate: string;
+		commissionRateBps: number;
 		tierCode: string;
 		tierVersion: number;
 	}
@@ -421,7 +386,7 @@ async function getAffiliateDraftPolicySnapshot(
 
 	return {
 		affiliateId: attribution.affiliateId,
-		affiliateCommissionRateBps: commissionRateToBasisPoints(attribution.commissionRate),
+		affiliateCommissionRateBps: attribution.commissionRateBps,
 		affiliateTierCode: attribution.tierCode,
 		affiliateTierVersion: attribution.tierVersion,
 		affiliateTermsVersion: acceptance?.termsVersion ?? UNRECORDED_AFFILIATE_TERMS_VERSION,
@@ -591,7 +556,7 @@ export class CheckoutDraftService {
 			const totals = calculateCheckoutTotals(subtotalMinor);
 			const attribution = await getActiveAffiliateAttribution(tx, cart.affiliateLinkId);
 			const affiliateCommissionMinor = attribution
-				? calculateAffiliateCommissionMinor(subtotalMinor, attribution.commissionRate)
+				? quoteAffiliateCommissionMinor(subtotalMinor, attribution.commissionRateBps)
 				: 0;
 			const affiliatePolicy =
 				attribution && AffiliateCommissionService.isEnabled()

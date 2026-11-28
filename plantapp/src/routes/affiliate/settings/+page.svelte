@@ -18,8 +18,8 @@
 	<div class="platform-card">
 		<div class="platform-empty">
 			<p class="platform-empty__text">
-				The referral program is not open, so there is no rate to configure here. Direct sellers can
-				apply now. Other account questions can go to support.
+				The referral program is not open. Direct sellers can apply now. Other account questions can
+				go to support.
 			</p>
 			<a href="/affiliate/earnings" class="platform-action-btn">View earnings</a>
 		</div>

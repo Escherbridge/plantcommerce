@@ -8,12 +8,7 @@ import {
 import { encodeBase64url } from '@oslojs/encoding';
 import { invalidateUserSessions } from '../auth';
 import { affiliateSharePath, normalizeAffiliateLinkCode } from '$lib/affiliate/linkCode';
-import {
-	AFFILIATE_TIERS,
-	DEFAULT_AFFILIATE_TIER,
-	resolveAffiliateTier,
-	type AffiliateTier
-} from './affiliateTiers';
+import { UNCONFIGURED_AFFILIATE_COMMISSION_RATE } from './affiliateCommissionPolicy';
 
 export type AffiliateStatus = 'pending' | 'active' | 'rejected' | 'suspended';
 
@@ -116,8 +111,8 @@ export class AffiliateService {
 					.values({
 						userId,
 						affiliateCode,
-						// Self-serve affiliates start in the Sprout tier and are approved on join.
-						commissionRate: DEFAULT_AFFILIATE_TIER.rate,
+						// Zero means the quote uses the commission policy. The policy is 0 until configured.
+						commissionRate: UNCONFIGURED_AFFILIATE_COMMISSION_RATE,
 						totalEarnings: '0.00',
 						totalClicks: 0,
 						totalConversions: 0,
@@ -170,32 +165,6 @@ export class AffiliateService {
 				.set({ role: 'affiliate', updatedAt: new Date() })
 				.where(eq(table.user.id, userId));
 		}
-	}
-
-	/** Sum of attributed order subtotals (USD), excluding cancelled/refunded orders. */
-	static async getLifetimeAttributedSalesUsd(affiliateId: number): Promise<number> {
-		const [row] = await db
-			.select({ total: sql<string>`COALESCE(SUM(${table.order.subtotalAmount}), 0)` })
-			.from(table.order)
-			.innerJoin(table.affiliateLink, eq(table.order.affiliateLinkId, table.affiliateLink.id))
-			.where(
-				and(
-					eq(table.affiliateLink.affiliateId, affiliateId),
-					sql`${table.order.status} NOT IN ('cancelled', 'refunded')`
-				)
-			);
-		return row ? Number(row.total) : 0;
-	}
-
-	/** Resolve the affiliate's current commission tier from their lifetime attributed sales. */
-	static async getCurrentTier(affiliateId: number): Promise<AffiliateTier> {
-		const lifetimeSalesUsd = await this.getLifetimeAttributedSalesUsd(affiliateId);
-		return resolveAffiliateTier(lifetimeSalesUsd);
-	}
-
-	/** All commission tiers, ordered from entry (Sprout) to top (Steward). */
-	static getTierLadder(): readonly AffiliateTier[] {
-		return AFFILIATE_TIERS;
 	}
 
 	/**
