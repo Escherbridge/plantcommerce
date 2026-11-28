@@ -1,5 +1,9 @@
 import { getStripeClient } from '$lib/server/stripe';
-import type Stripe from 'stripe';
+import Stripe from 'stripe';
+
+type CheckoutSessionCreateParams = NonNullable<
+	Parameters<InstanceType<typeof Stripe>['checkout']['sessions']['create']>[0]
+>;
 
 export interface CheckoutLineItem {
 	name: string;
@@ -17,6 +21,44 @@ export interface CreateCheckoutParams {
 	expiresAt: Date;
 }
 
+/**
+ * Checkout Session body for a platform charge.
+ * `transfer_group` is the checkout draft reference so a later seller transfer
+ * can be tied to this charge. The shopper still pays Aevani. There is no
+ * destination, `on_behalf_of`, or application fee.
+ */
+export function buildCheckoutSessionCreateParams(
+	params: CreateCheckoutParams,
+	expiresAtSeconds: number
+): CheckoutSessionCreateParams {
+	const { lineItems, currency, successUrl, cancelUrl, draftReference } = params;
+	return {
+		mode: 'payment',
+		// Card only, exactly as before this PR: do not fall back to Dashboard payment-method settings.
+		payment_method_types: ['card'],
+		line_items: lineItems.map((item) => ({
+			price_data: {
+				currency,
+				product_data: {
+					name: item.name
+				},
+				unit_amount: item.unitPriceMinor
+			},
+			quantity: item.quantity
+		})),
+		success_url: successUrl,
+		cancel_url: cancelUrl,
+		expires_at: expiresAtSeconds,
+		metadata: { checkout_draft_reference: draftReference },
+		payment_intent_data: {
+			transfer_group: draftReference
+		},
+		shipping_address_collection: {
+			allowed_countries: ['US', 'CA', 'GB', 'AU']
+		}
+	};
+}
+
 export class StripeCheckoutService {
 	/**
 	 * Create a Stripe Checkout Session from an immutable server-priced draft.
@@ -25,19 +67,11 @@ export class StripeCheckoutService {
 		params: CreateCheckoutParams
 	): Promise<Stripe.Checkout.Session> {
 		const stripe = getStripeClient();
-		const {
-			lineItems,
-			currency,
-			successUrl,
-			cancelUrl,
-			draftReference,
-			idempotencyKey,
-			expiresAt
-		} = params;
+		const { lineItems, currency, draftReference, idempotencyKey, expiresAt } = params;
 		if (!/^[a-z]{3}$/.test(currency)) {
 			throw new Error('Checkout currency must be a lowercase ISO currency code');
 		}
-		if (!draftReference || lineItems.length === 0) {
+		if (!draftReference || draftReference.length > 255 || lineItems.length === 0) {
 			throw new Error('Checkout requires a draft reference and at least one immutable line item');
 		}
 		if (!idempotencyKey) {
@@ -65,32 +99,8 @@ export class StripeCheckoutService {
 			}
 		}
 
-		const stripeLineItems: NonNullable<
-			NonNullable<Parameters<typeof stripe.checkout.sessions.create>[0]>['line_items']
-		> = lineItems.map((item) => ({
-			price_data: {
-				currency,
-				product_data: {
-					name: item.name
-				},
-				unit_amount: item.unitPriceMinor
-			},
-			quantity: item.quantity
-		}));
-
 		const session = await stripe.checkout.sessions.create(
-			{
-				mode: 'payment',
-				payment_method_types: ['card'],
-				line_items: stripeLineItems,
-				success_url: successUrl,
-				cancel_url: cancelUrl,
-				expires_at: expiresAtSeconds,
-				metadata: { checkout_draft_reference: draftReference },
-				shipping_address_collection: {
-					allowed_countries: ['US', 'CA', 'GB', 'AU']
-				}
-			},
+			buildCheckoutSessionCreateParams(params, expiresAtSeconds),
 			{ idempotencyKey }
 		);
 

@@ -4,6 +4,10 @@ import { inviteRoles, userRoles } from '$lib/auth/userRole';
 import { executableMigrationSql } from './additiveMigration';
 
 const migrationPath = new URL('../../../../drizzle/0010_product_coming_soon.sql', import.meta.url);
+const transferGroupMigrationPath = new URL(
+	'../../../../drizzle/0013_order_transfer_group.sql',
+	import.meta.url
+);
 const sellerMigrationPath = new URL(
 	'../../../../drizzle/0011_seller_application.sql',
 	import.meta.url
@@ -60,5 +64,21 @@ describe('manager invite migration', () => {
 		expect(schemaSource).not.toMatch(/ALTER TABLE/);
 		expect(sql).not.toMatch(/ALTER TABLE\s+"public"\."user"/i);
 		expect(source).toMatch(/does not ALTER "user"/);
+	});
+});
+
+describe('order transfer group migration', () => {
+	const source = readFileSync(transferGroupMigrationPath, 'utf8');
+	const sql = executableMigrationSql(source);
+
+	it('adds nullable charge columns only when missing and does not rewrite order rows', () => {
+		expect(sql).toContain('ALTER TABLE "public"."order" ADD COLUMN "stripe_charge_id" text');
+		expect(sql).toContain('ALTER TABLE "public"."order" ADD COLUMN "transfer_group" text');
+		expect(sql).toContain("column_name = 'stripe_charge_id'");
+		expect(sql).toContain('CREATE UNIQUE INDEX "order_stripe_charge_id_unique"');
+		expect(sql).toContain("to_regclass('public.order_stripe_charge_id_unique') IS NULL");
+		expect(sql).not.toMatch(/(DROP|DELETE|UPDATE|TRUNCATE|ALTER COLUMN)/i);
+		expect(sql.replace(/IS NOT NULL/gi, '')).not.toMatch(/NOT NULL/i);
+		expect(sql).not.toMatch(/BEGIN\s*;|COMMIT\s*;/i);
 	});
 });

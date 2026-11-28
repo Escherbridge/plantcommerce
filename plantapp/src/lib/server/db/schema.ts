@@ -910,6 +910,10 @@ export const order = pgTable(
 		notes: text('notes'),
 		stripeSessionId: text('stripe_session_id'), // Stripe Checkout session ID
 		stripePaymentIntentId: text('stripe_payment_intent_id'), // Stripe PaymentIntent ID
+		// Charge that later seller transfers use as source_transaction. Null until fulfilment.
+		stripeChargeId: text('stripe_charge_id'),
+		// Same string sent as payment_intent_data.transfer_group (the checkout draft reference).
+		transferGroup: text('transfer_group'),
 		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 	},
@@ -927,7 +931,10 @@ export const order = pgTable(
 			.where(sql`${table.stripeSessionId} IS NOT NULL`),
 		stripePaymentIntentIdx: uniqueIndex('order_stripe_payment_intent_idx')
 			.on(table.stripePaymentIntentId)
-			.where(sql`${table.stripePaymentIntentId} IS NOT NULL`)
+			.where(sql`${table.stripePaymentIntentId} IS NOT NULL`),
+		stripeChargeIdx: uniqueIndex('order_stripe_charge_id_unique')
+			.on(table.stripeChargeId)
+			.where(sql`${table.stripeChargeId} IS NOT NULL`)
 	})
 );
 
