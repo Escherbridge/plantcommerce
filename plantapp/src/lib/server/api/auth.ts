@@ -23,6 +23,8 @@ import {
 import { deleteGuestCartSessionCookie, readGuestCartSessionId } from '../guestCart';
 import { AuditLogService } from '../services/auditLog';
 import { safeRedirectPath } from '$lib/auth/safeRedirect';
+import { accountCreationFailureCopy } from '$lib/copy/accountCreation';
+import { verificationEmailResendUnavailableMessage } from '$lib/copy/verificationEmail';
 import type { Session } from '../db/schema';
 import { EmailService } from '../services/email';
 import { LoginProtectionService } from '../services/loginProtection';
@@ -107,7 +109,7 @@ export const authRouter = router({
 			} catch {
 				throw new TRPCError({
 					code: 'CONFLICT',
-					message: 'We could not create an account with those details.'
+					message: accountCreationFailureCopy
 				});
 			}
 
@@ -229,7 +231,7 @@ export const authRouter = router({
 			if (!deliveryAvailable) {
 				return {
 					deliveryAvailable: false,
-					message: 'Verification email is temporarily unavailable. Please contact support.'
+					message: verificationEmailResendUnavailableMessage
 				};
 			}
 
@@ -283,7 +285,7 @@ export const authRouter = router({
 				console.error('Failed to send verification email:', error);
 				return {
 					deliveryAvailable: false,
-					message: 'Verification email is temporarily unavailable. Please contact support.'
+					message: verificationEmailResendUnavailableMessage
 				};
 			}
 		}),
