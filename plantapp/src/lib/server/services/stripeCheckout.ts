@@ -34,6 +34,8 @@ export function buildCheckoutSessionCreateParams(
 	const { lineItems, currency, successUrl, cancelUrl, draftReference } = params;
 	return {
 		mode: 'payment',
+		// Card only, exactly as before this PR: do not fall back to Dashboard payment-method settings.
+		payment_method_types: ['card'],
 		line_items: lineItems.map((item) => ({
 			price_data: {
 				currency,
