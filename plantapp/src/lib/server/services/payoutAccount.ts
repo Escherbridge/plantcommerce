@@ -1,5 +1,7 @@
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
+import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
+import type { ConnectAccountSnapshot } from './connectAccountStatus';
 
 export type PayoutOwner =
 	| { ownerType: 'seller'; sellerId: number }
@@ -36,5 +38,81 @@ export class PayoutAccountService {
 			})
 			.returning();
 		return created;
+	}
+
+	static async attachStripeAccount(
+		payoutAccountId: string,
+		stripeAccountId: string,
+		now = new Date()
+	): Promise<void> {
+		// Attach once. A payout account never switches Stripe account through the app; a replay cannot overwrite it.
+		await db
+			.update(table.payoutAccount)
+			.set({ stripeAccountId, country: 'US', updatedAt: now })
+			.where(
+				and(
+					eq(table.payoutAccount.id, payoutAccountId),
+					isNull(table.payoutAccount.stripeAccountId)
+				)
+			);
+	}
+
+	/** Apply a connected-account snapshot. Unknown accounts are left alone. */
+	static async applyAccountSnapshot(
+		snapshot: ConnectAccountSnapshot,
+		now = new Date()
+	): Promise<boolean> {
+		const [row] = await db
+			.select({ id: table.payoutAccount.id })
+			.from(table.payoutAccount)
+			.where(eq(table.payoutAccount.stripeAccountId, snapshot.stripeAccountId))
+			.limit(1);
+		if (!row) return false;
+		await db
+			.update(table.payoutAccount)
+			.set({
+				country: snapshot.country,
+				transfersActive: snapshot.transfersActive,
+				requirementsDue: snapshot.requirementsDue,
+				disabledReason: snapshot.disabledReason,
+				updatedAt: now
+			})
+			.where(eq(table.payoutAccount.id, row.id));
+		return true;
+	}
+
+	static async notePayout(
+		stripeAccountId: string,
+		status: 'paid' | 'failed',
+		now = new Date()
+	): Promise<boolean> {
+		const [row] = await db
+			.select({ id: table.payoutAccount.id })
+			.from(table.payoutAccount)
+			.where(eq(table.payoutAccount.stripeAccountId, stripeAccountId))
+			.limit(1);
+		if (!row) return false;
+		await db
+			.update(table.payoutAccount)
+			.set({ lastPayoutStatus: status, lastPayoutAt: now, updatedAt: now })
+			.where(eq(table.payoutAccount.id, row.id));
+		return true;
+	}
+
+	static async noteExternalAccountUpdated(
+		stripeAccountId: string,
+		now = new Date()
+	): Promise<boolean> {
+		const [row] = await db
+			.select({ id: table.payoutAccount.id })
+			.from(table.payoutAccount)
+			.where(eq(table.payoutAccount.stripeAccountId, stripeAccountId))
+			.limit(1);
+		if (!row) return false;
+		await db
+			.update(table.payoutAccount)
+			.set({ externalAccountUpdatedAt: now, updatedAt: now })
+			.where(eq(table.payoutAccount.id, row.id));
+		return true;
 	}
 }

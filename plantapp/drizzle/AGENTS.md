@@ -209,3 +209,10 @@ account id and status flags only. It is applied by the same startup helper,
 after `0013`. It is not journaled. Do not use `db:migrate` or `db:push`. Run
 `preflight_seller_payout_account.sql` read-only before a production apply. The
 file does not update or delete existing rows.
+
+## `0015_payout_account_status.sql`
+
+This additive file adds nullable payout-status timestamps on `payout_account`.
+It does not store bank or tax data. It is applied by the same startup helper,
+after `0014`. It is not journaled. Do not use `db:migrate` or `db:push`. Run
+`preflight_payout_account_status.sql` read-only before a production apply.
