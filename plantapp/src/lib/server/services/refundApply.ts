@@ -3,7 +3,7 @@ import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { AffiliateCommissionService } from './affiliateCommission';
 import { decimalToMinorUnits } from './checkoutDraft';
-import { moneyEventFacts, proportionalShare } from './refundClawback';
+import { clawbackDelta, moneyEventFacts, proportionalShare } from './refundClawback';
 
 export type ReversalClient = {
 	transfers: {
@@ -54,12 +54,47 @@ export async function applyMoneyEvent(
 	if (facts.action !== 'reverse') return 'processed';
 
 	const orderTotalMinor = decimalToMinorUnits(order.totalAmount);
+	// Refunds are cumulative per charge, so the reference carries the running total; a dispute is keyed by its id.
+	const sourceKey = facts.cumulative ? `${facts.objectId}:${facts.amountMinor}` : facts.objectId;
 	const earnings = await db
 		.select()
 		.from(table.sellerEarning)
 		.where(eq(table.sellerEarning.orderId, order.id));
 	for (const earning of earnings) {
-		const clawback = proportionalShare(earning.netMinor, facts.amountMinor, orderTotalMinor);
+		const events = await db
+			.select({
+				eventType: table.sellerEarningEvent.eventType,
+				amount: table.sellerEarningEvent.amountDeltaMinor,
+				reasonCode: table.sellerEarningEvent.reasonCode,
+				eventReference: table.sellerEarningEvent.eventReference,
+				stripeReversalId: table.sellerEarningEvent.stripeReversalId
+			})
+			.from(table.sellerEarningEvent)
+			.where(eq(table.sellerEarningEvent.earningId, earning.id));
+		// Only clawbacks count: 'reversed', and 'debt' recorded for a refund or chargeback (not fee debt or settlements).
+		const clawbacks = events
+			.filter(
+				(row) =>
+					row.eventType === 'reversed' ||
+					(row.eventType === 'debt' &&
+						(row.reasonCode === 'refund' || row.reasonCode === 'chargeback'))
+			)
+			.map((row) => ({ ...row, taken: Math.abs(row.amount) }));
+		const alreadyAllMinor = clawbacks.reduce((sum, row) => sum + row.taken, 0);
+		const alreadyForSourceMinor = clawbacks
+			.filter((row) =>
+				facts.cumulative
+					? row.reasonCode === 'refund'
+					: row.eventReference.endsWith(`:${facts.objectId}`)
+			)
+			.reduce((sum, row) => sum + row.taken, 0);
+		const clawback = clawbackDelta({
+			baseMinor: earning.netMinor,
+			refundedMinor: facts.amountMinor,
+			totalMinor: orderTotalMinor,
+			alreadyForSourceMinor,
+			alreadyAllMinor
+		});
 		const feeDebt = facts.sellerPaysFee
 			? proportionalShare(
 					facts.feeMinor,
@@ -77,54 +112,83 @@ export async function applyMoneyEvent(
 				)
 			)
 			.limit(1);
-		if (transfer?.stripeTransferId && client && clawback > 0) {
-			const reversal = await client.transfers.createReversal(
-				transfer.stripeTransferId,
-				{
-					amount: clawback,
-					metadata: { earning_id: earning.id, object_id: facts.objectId }
-				},
-				{ idempotencyKey: `reversal:${earning.id}:${facts.objectId}` }
-			);
-			await db
-				.insert(table.sellerEarningEvent)
-				.values({
-					id: crypto.randomUUID(),
-					earningId: earning.id,
-					eventType: 'reversed',
-					amountDeltaMinor: -clawback,
-					currency: earning.currency,
-					eventReference: `seller-earning:${earning.id}:reversed:${facts.objectId}`,
-					reasonCode: facts.reasonCode,
-					stripeReversalId: reversal.id,
-					createdAt: now
-				})
-				.onConflictDoNothing();
-		} else if (transfer && clawback + feeDebt > 0) {
+
+		let remaining = clawback;
+		if (transfer?.stripeTransferId && client && remaining > 0) {
+			// A reversal cannot exceed what the transfer actually sent (debt may have shrunk it).
+			const alreadyReversedAtStripe = events
+				.filter((row) => row.eventType === 'reversed' && row.stripeReversalId)
+				.reduce((sum, row) => sum + Math.abs(row.amount), 0);
+			const reversible = Math.max(transfer.amountMinor - alreadyReversedAtStripe, 0);
+			const reverseMinor = Math.min(remaining, reversible);
+			if (reverseMinor > 0) {
+				const reference = `seller-earning:${earning.id}:reversed:${sourceKey}`;
+				const reversal = await client.transfers.createReversal(
+					transfer.stripeTransferId,
+					{
+						amount: reverseMinor,
+						metadata: { earning_id: earning.id, object_id: facts.objectId }
+					},
+					{ idempotencyKey: reference }
+				);
+				await db
+					.insert(table.sellerEarningEvent)
+					.values({
+						id: crypto.randomUUID(),
+						earningId: earning.id,
+						eventType: 'reversed',
+						amountDeltaMinor: -reverseMinor,
+						currency: earning.currency,
+						eventReference: reference,
+						reasonCode: facts.reasonCode,
+						stripeReversalId: reversal.id,
+						createdAt: now
+					})
+					.onConflictDoNothing();
+				remaining -= reverseMinor;
+			}
+		}
+		if (remaining > 0 && transfer) {
+			// Already paid out and not reversed at Stripe: record debt, netted from the seller's next transfer.
 			await db
 				.insert(table.sellerEarningEvent)
 				.values({
 					id: crypto.randomUUID(),
 					earningId: earning.id,
 					eventType: 'debt',
-					amountDeltaMinor: clawback + feeDebt,
+					amountDeltaMinor: remaining,
 					currency: earning.currency,
-					eventReference: `seller-earning:${earning.id}:debt:${facts.objectId}`,
+					eventReference: `seller-earning:${earning.id}:debt:${sourceKey}`,
 					reasonCode: facts.reasonCode,
 					createdAt: now
 				})
 				.onConflictDoNothing();
-		} else if (clawback > 0) {
+		} else if (remaining > 0) {
 			await db
 				.insert(table.sellerEarningEvent)
 				.values({
 					id: crypto.randomUUID(),
 					earningId: earning.id,
 					eventType: 'reversed',
-					amountDeltaMinor: -clawback,
+					amountDeltaMinor: -remaining,
 					currency: earning.currency,
-					eventReference: `seller-earning:${earning.id}:reversed:${facts.objectId}`,
+					eventReference: `seller-earning:${earning.id}:reversed:${sourceKey}`,
 					reasonCode: facts.reasonCode,
+					createdAt: now
+				})
+				.onConflictDoNothing();
+		}
+		if (feeDebt > 0) {
+			await db
+				.insert(table.sellerEarningEvent)
+				.values({
+					id: crypto.randomUUID(),
+					earningId: earning.id,
+					eventType: 'debt',
+					amountDeltaMinor: feeDebt,
+					currency: earning.currency,
+					eventReference: `seller-earning:${earning.id}:debt-fee:${facts.objectId}`,
+					reasonCode: 'dispute_fee',
 					createdAt: now
 				})
 				.onConflictDoNothing();
@@ -137,16 +201,37 @@ export async function applyMoneyEvent(
 		.where(eq(table.affiliateCommissionLedger.sourceOrderId, order.id));
 	await db.transaction(async (tx) => {
 		for (const commission of commissions) {
-			const portion = proportionalShare(
-				commission.quotedAmountMinor,
-				facts.amountMinor,
-				orderTotalMinor
-			);
+			const reversals = await tx
+				.select({
+					amount: table.affiliateCommissionLedgerEvent.amountDeltaMinor,
+					reasonCode: table.affiliateCommissionLedgerEvent.reasonCode,
+					eventReference: table.affiliateCommissionLedgerEvent.eventReference
+				})
+				.from(table.affiliateCommissionLedgerEvent)
+				.where(
+					and(
+						eq(table.affiliateCommissionLedgerEvent.commissionId, commission.id),
+						eq(table.affiliateCommissionLedgerEvent.eventType, 'reversed')
+					)
+				);
+			const portion = clawbackDelta({
+				baseMinor: commission.quotedAmountMinor,
+				refundedMinor: facts.amountMinor,
+				totalMinor: orderTotalMinor,
+				alreadyForSourceMinor: reversals
+					.filter((row) =>
+						facts.cumulative
+							? row.reasonCode === 'refund'
+							: row.eventReference.endsWith(`:${facts.objectId}`)
+					)
+					.reduce((sum, row) => sum + Math.abs(row.amount), 0),
+				alreadyAllMinor: reversals.reduce((sum, row) => sum + Math.abs(row.amount), 0)
+			});
 			if (portion <= 0) continue;
 			await AffiliateCommissionService.recordReversal(tx, {
 				commissionId: commission.id,
 				amountMinor: portion,
-				eventReference: `commission:${commission.id}:reversal:${facts.reasonCode}:${facts.objectId}`,
+				eventReference: `commission:${commission.id}:reversal:${facts.reasonCode}:${sourceKey}`,
 				reasonCode: facts.reasonCode,
 				causationReference: facts.objectId,
 				now
