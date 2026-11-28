@@ -216,3 +216,15 @@ This additive file adds nullable payout-status timestamps on `payout_account`.
 It does not store bank or tax data. It is applied by the same startup helper,
 after `0014`. It is not journaled. Do not use `db:migrate` or `db:push`. Run
 `preflight_payout_account_status.sql` read-only before a production apply.
+
+## `0016_seller_earning.sql`
+
+This additive file creates `seller_earning`, `seller_earning_event`, and
+`order_balance_hold`, and adds nullable `order.shipped_at` and
+`order.delivered_at`. The seller fee snapshot is the flat 8% (800 basis
+points) on item price. It does not update existing rows. It is applied by the
+same startup helper, after `0015`. It is not journaled. Do not use
+`db:migrate` or `db:push`. Run `preflight_seller_earning.sql` read-only before
+a production apply. The hold check is an admin action. It does not release
+anything while the return-window setting is unset, and it does not create
+Stripe transfers.

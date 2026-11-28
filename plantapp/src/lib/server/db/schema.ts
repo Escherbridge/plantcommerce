@@ -985,6 +985,8 @@ export const order = pgTable(
 		stripeChargeId: text('stripe_charge_id'),
 		// Same string sent as payment_intent_data.transfer_group (the checkout draft reference).
 		transferGroup: text('transfer_group'),
+		shippedAt: timestamp('shipped_at', { withTimezone: true, mode: 'date' }),
+		deliveredAt: timestamp('delivered_at', { withTimezone: true, mode: 'date' }),
 		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 		updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 	},
@@ -1025,6 +1027,100 @@ export const orderItem = pgTable('order_item', {
 	sellerId: integer('seller_id').references(() => seller.id),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
 });
+
+/** One seller's share of one order. Amounts are frozen at fulfilment. */
+export const sellerEarning = pgTable(
+	'seller_earning',
+	{
+		id: text('id').primaryKey(),
+		orderId: integer('order_id')
+			.notNull()
+			.references(() => order.id),
+		sellerId: integer('seller_id')
+			.notNull()
+			.references(() => seller.id),
+		currency: varchar('currency', { length: 3 }).notNull(),
+		lineTotalMinor: bigint('line_total_minor', { mode: 'number' }).notNull(),
+		shippingPassthroughMinor: bigint('shipping_passthrough_minor', { mode: 'number' })
+			.notNull()
+			.default(0),
+		feeBps: integer('fee_bps').notNull(),
+		feeMinor: bigint('fee_minor', { mode: 'number' }).notNull(),
+		netMinor: bigint('net_minor', { mode: 'number' }).notNull(),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		orderSellerIdx: uniqueIndex('seller_earning_order_seller_idx').on(
+			table.orderId,
+			table.sellerId
+		),
+		sellerIdx: index('seller_earning_seller_idx').on(table.sellerId),
+		feeBpsCheck: check('seller_earning_fee_bps_check', sql`${table.feeBps} = 800`),
+		amountsCheck: check(
+			'seller_earning_amounts_check',
+			sql`${table.lineTotalMinor} >= 0 AND ${table.shippingPassthroughMinor} >= 0 AND ${table.feeMinor} >= 0 AND ${table.netMinor} >= 0 AND ${table.netMinor} = ${table.lineTotalMinor} + ${table.shippingPassthroughMinor} - ${table.feeMinor}`
+		)
+	})
+);
+
+export const sellerEarningEvent = pgTable(
+	'seller_earning_event',
+	{
+		id: text('id').primaryKey(),
+		earningId: text('earning_id')
+			.notNull()
+			.references(() => sellerEarning.id),
+		eventType: text('event_type', {
+			enum: [
+				'pending',
+				'held',
+				'released',
+				'transferred',
+				'reversed',
+				'debt',
+				'reversal_credited',
+				'debt_credited',
+				'fee_credited'
+			]
+		}).notNull(),
+		amountDeltaMinor: bigint('amount_delta_minor', { mode: 'number' }).notNull(),
+		currency: varchar('currency', { length: 3 }).notNull(),
+		eventReference: text('event_reference').notNull(),
+		causationReference: text('causation_reference'),
+		reasonCode: text('reason_code'),
+		/** For a credit row: the event_reference of the row it undoes. */
+		creditsReference: text('credits_reference'),
+		stripeTransferId: text('stripe_transfer_id'),
+		stripeReversalId: text('stripe_reversal_id'),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		referenceIdx: uniqueIndex('seller_earning_event_reference_idx').on(table.eventReference),
+		earningIdx: index('seller_earning_event_earning_idx').on(table.earningId, table.createdAt)
+	})
+);
+
+/** Open refund or dispute. The hold job will not release an order that has one. */
+export const orderBalanceHold = pgTable(
+	'order_balance_hold',
+	{
+		id: text('id').primaryKey(),
+		orderId: integer('order_id')
+			.notNull()
+			.references(() => order.id),
+		kind: text('kind', { enum: ['refund', 'dispute'] }).notNull(),
+		status: text('status', { enum: ['open', 'closed'] })
+			.notNull()
+			.default('open'),
+		stripeObjectId: text('stripe_object_id').notNull(),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+		closedAt: timestamp('closed_at', { withTimezone: true, mode: 'date' })
+	},
+	(table) => ({
+		stripeObjectIdx: uniqueIndex('order_balance_hold_stripe_object_idx').on(table.stripeObjectId),
+		orderStatusIdx: index('order_balance_hold_order_status_idx').on(table.orderId, table.status)
+	})
+);
 
 export const catalogSeedCategory = pgTable(
 	'catalog_seed_category',

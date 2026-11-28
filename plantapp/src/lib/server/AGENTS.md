@@ -76,3 +76,24 @@ Usernames may not be email-shaped and are reserved across active and pending ema
 - `product.seller_id` is not writable through any route today: `SellerService.linkProduct` has no caller, and the admin product procedures strip unknown keys (no `sellerId` in their zod input). Whoever adds a UI for it must make it admin-only and keep the active-seller check in `linkProduct`.
 - Payout accounts are derived from the signed-in session user only (`localOwner`): a seller must hold the `seller` role, an affiliate must be an active approved affiliate. No Stripe account id is accepted from a request. `attachStripeAccount` attaches once (`stripe_account_id IS NULL`), and unique indexes cover one account per seller, per affiliate, and per Stripe account id.
 - `applyAccountSnapshot` only updates status flags on the row whose `stripe_account_id` matches a signature-verified Connect event; it cannot attach or move an account.
+
+## Seller ledger vocabulary (one reader)
+
+Every seller balance comes from `services/sellerLedgerBalance.ts` (`earningBalance`, `clawbackRows`,
+`sellerNettableDebtMinor`). Payout planning, refund clawbacks, allocation, the console and reconciliation read through
+it; do not re-derive balances from raw events elsewhere.
+
+| event_type                        | amount   | meaning                                                                                                                                                                                                                                                                             |
+| --------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pending`                         | +net     | the earning as accrued                                                                                                                                                                                                                                                              |
+| `released`, `held`, `transferred` | 0        | lifecycle markers                                                                                                                                                                                                                                                                   |
+| `reversed`                        | -x       | a reduction before payment (reason `refund`/`chargeback`), or money pulled back at Stripe (reason `reversal_of_debt`)                                                                                                                                                               |
+| `debt`                            | +x or -x | owed by the seller; the reason says which: `refund`/`chargeback` (clawback; reference `:debt-reserved:` while waiting on a Stripe reversal), `dispute_fee`, `overpay`, `debt_released` (a reservation Stripe refused), `debt_restored`, `debt_settled` (-x, netted from a transfer) |
+| `reversal_credited`               | +x       | undoes a `reversed` row (`credits_reference` is that row)                                                                                                                                                                                                                           |
+| `debt_credited`                   | -x       | undoes a clawback or released `debt` row                                                                                                                                                                                                                                            |
+| `fee_credited`                    | -x       | undoes a `dispute_fee` row                                                                                                                                                                                                                                                          |
+
+Credits never reuse `reversed` or `debt` with a flipped sign, and always name the row they undo. Invariants: `clawedBack`
+never exceeds the earning net; reserved debt is never nettable while active and is counted once (in `clawedBack`, and
+in `reservedDebt` only until its outcome row exists); a credit of a clawback returns room for a later refund; the debt
+shown to admins as collectable is `nettableDebt` only.

@@ -12,6 +12,7 @@ import {
 import { AffiliateCommissionService } from './affiliateCommission';
 import { connectAccountSnapshot } from './connectAccountStatus';
 import { PayoutAccountService } from './payoutAccount';
+import { recordSellerEarnings } from './sellerEarningLedger';
 import { orderProviderChargeFields } from './stripeCharge';
 import { StripeCheckoutService } from './stripeCheckout';
 
@@ -563,6 +564,15 @@ export class StripeWebhookService {
 					createdAt: now
 				}))
 			);
+			await recordSellerEarnings(tx, {
+				orderId: order.id,
+				currency: draft.currency,
+				lines: items.map((item) => ({
+					sellerId: item.sellerId,
+					totalPriceMinor: item.totalPriceMinor
+				})),
+				now
+			});
 
 			for (const reservation of reservations) {
 				const product = products.find(

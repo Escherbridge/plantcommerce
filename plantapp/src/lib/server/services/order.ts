@@ -2,6 +2,8 @@ import { eq, desc, and, or, inArray } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { AffiliateCommissionService } from './affiliateCommission';
+import { env } from '$env/dynamic/private';
+import { commissionActionForOrderStatus, readOptionalWholeDays } from './sellerEarnings';
 
 export type OrderStatus =
 	| 'pending'
@@ -266,27 +268,49 @@ export class OrderService {
 	static async updateOrderStatus(orderId: number, status: OrderStatus): Promise<void> {
 		await db.transaction(async (tx) => {
 			const now = new Date();
+			const [existing] = await tx
+				.select({
+					shippedAt: table.order.shippedAt,
+					deliveredAt: table.order.deliveredAt
+				})
+				.from(table.order)
+				.where(eq(table.order.id, orderId))
+				.limit(1);
+			if (!existing) throw new Error('Order was not found');
 			await tx
 				.update(table.order)
-				.set({ status, updatedAt: now })
+				.set({
+					status,
+					updatedAt: now,
+					...(status === 'shipped' && !existing.shippedAt ? { shippedAt: now } : {}),
+					...(status === 'delivered'
+						? {
+								deliveredAt: existing.deliveredAt ?? now,
+								...(existing.shippedAt ? {} : { shippedAt: now })
+							}
+						: {})
+				})
 				.where(eq(table.order.id, orderId));
 
-			// Fulfillment clears (approves) accrued affiliate commission; refund/chargeback/
-			// cancellation reverses it. No-ops when the affiliate ledger is disabled.
-			const causationReference = `order:${orderId}:status:${status}`;
-			if (status === 'shipped' || status === 'delivered') {
+			// Shipped/delivered approve commission while the return window is unset (the hold job is off);
+			// once PAYOUT_HOLD_DAYS_AFTER_DELIVERY is set, the hold-release job approves it instead.
+			const commissionAction = commissionActionForOrderStatus(
+				status,
+				readOptionalWholeDays(env, 'PAYOUT_HOLD_DAYS_AFTER_DELIVERY')
+			);
+			if (commissionAction === 'clear') {
 				await AffiliateCommissionService.clearCommissionsForOrder(
 					tx,
 					orderId,
-					causationReference,
+					`order:${orderId}:status:${status}`,
 					now
 				);
-			} else if (status === 'refunded' || status === 'cancelled') {
+			} else if (commissionAction === 'reverse') {
 				await AffiliateCommissionService.reverseCommissionsForOrder(
 					tx,
 					orderId,
 					'refund',
-					causationReference,
+					`order:${orderId}:status:${status}`,
 					now
 				);
 			}
