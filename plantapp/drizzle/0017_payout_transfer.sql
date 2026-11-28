@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS "public"."affiliate_payout_batch" (
 	"send_amount_minor" bigint,
 	"send_started_at" timestamp with time zone,
 	"send_stripe_account_id" text,
+	"debt_applied_minor" bigint DEFAULT 0 NOT NULL,
 	CONSTRAINT "affiliate_payout_batch_status_check" CHECK (
 		"status" IN ('pending_approval', 'approved', 'sending', 'paid', 'skipped')
 	)

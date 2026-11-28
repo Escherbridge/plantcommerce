@@ -40,6 +40,69 @@ export type TransferClient = {
  */
 const STALE_CLAIM_SQL = sql`now() - interval '2 minutes'`;
 
+/**
+ * What an affiliate still owes back: reversals recorded after a commission was already paid, minus the debt
+ * earlier batches already netted. Recovery is by netting from later batches only; there is no Stripe reversal for
+ * affiliates and no forfeiture policy (owner decision, see AGENTS.md).
+ */
+async function affiliateDebtMinor(
+	executor: any,
+	affiliateId: number,
+	currency: string
+): Promise<number> {
+	const rows = await executor
+		.select({
+			commissionId: table.affiliateCommissionLedgerEvent.commissionId,
+			eventType: table.affiliateCommissionLedgerEvent.eventType,
+			amount: table.affiliateCommissionLedgerEvent.amountDeltaMinor,
+			createdAt: table.affiliateCommissionLedgerEvent.createdAt
+		})
+		.from(table.affiliateCommissionLedgerEvent)
+		.innerJoin(
+			table.affiliateCommissionLedger,
+			eq(table.affiliateCommissionLedgerEvent.commissionId, table.affiliateCommissionLedger.id)
+		)
+		.where(
+			and(
+				eq(table.affiliateCommissionLedger.affiliateId, affiliateId),
+				eq(table.affiliateCommissionLedger.currency, currency)
+			)
+		);
+	const paidAt = new Map<string, number>();
+	for (const row of rows as { commissionId: string; eventType: string; createdAt: Date }[]) {
+		if (row.eventType === 'paid') paidAt.set(row.commissionId, row.createdAt.getTime());
+	}
+	let owedMinor = 0;
+	for (const row of rows as {
+		commissionId: string;
+		eventType: string;
+		amount: number;
+		createdAt: Date;
+	}[]) {
+		const paid = paidAt.get(row.commissionId);
+		if (row.eventType === 'reversed' && paid !== undefined && row.createdAt.getTime() > paid) {
+			owedMinor += Math.abs(row.amount);
+		}
+	}
+	const [applied] = await executor
+		.select({
+			total: sql<string>`COALESCE(SUM(${table.affiliatePayoutBatch.debtAppliedMinor}), 0)`
+		})
+		.from(table.affiliatePayoutBatch)
+		.innerJoin(
+			table.affiliatePayout,
+			sql`${table.affiliatePayout.payoutReference} = 'batch:' || ${table.affiliatePayoutBatch.id}`
+		)
+		.where(
+			and(
+				eq(table.affiliatePayout.affiliateId, affiliateId),
+				eq(table.affiliatePayoutBatch.currency, currency),
+				inArray(table.affiliatePayoutBatch.status, ['sending', 'paid'])
+			)
+		);
+	return Math.max(owedMinor - Number(applied?.total ?? 0), 0);
+}
+
 /** Hold a transfer for a person: a prior send cannot be proven absent, so nothing is created. */
 async function flagForManualReview(input: {
 	key: string;
@@ -92,11 +155,11 @@ async function findTransferByMetadata(
 }
 
 /** What a resumed pending row may still send: net minus reversals recorded since, minus the debt reserved at claim. */
-async function resumablePayMinor(earning: {
-	earningId: string;
-	netMinor: number;
-}): Promise<{ maxPayMinor: number; debtSettledMinor: number }> {
-	const events = await db
+async function resumablePayMinor(
+	earning: { earningId: string; netMinor: number },
+	executor: any = db
+): Promise<{ maxPayMinor: number; debtSettledMinor: number }> {
+	const events: { eventType: string; amount: number; reasonCode: string | null }[] = await executor
 		.select({
 			eventType: table.sellerEarningEvent.eventType,
 			amount: table.sellerEarningEvent.amountDeltaMinor,
@@ -191,11 +254,11 @@ export async function runSellerTransfers(
 					idempotencyKey: `${idempotencyKey}:skipped`,
 					sourceTransaction: order?.stripeChargeId ?? null,
 					createdAt: now,
-					updatedAt: now
+					updatedAt: sql`now()`
 				})
 				.onConflictDoUpdate({
 					target: table.payoutTransfer.idempotencyKey,
-					set: { failureReason, updatedAt: now }
+					set: { failureReason, updatedAt: sql`now()` }
 				});
 			continue;
 		}
@@ -309,6 +372,7 @@ export async function runSellerTransfers(
 		// Every transfer carries a group (the order's, else one per earning) so a resumed row can always be looked up.
 		const transferGroup = order.transferGroup ?? `earning:${earning.earningId}`;
 		let amountMinor = claim.amountMinor;
+		let sentMinor = claim.amountMinor;
 		let stripeTransferId: string | null = null;
 		// The destination fixed at claim time, not the seller's current account, is what a prior send used.
 		const sentTo =
@@ -330,22 +394,7 @@ export async function runSellerTransfers(
 			const limits = await resumablePayMinor(earning);
 			if (found) {
 				stripeTransferId = found.id;
-				if (found.amount > limits.maxPayMinor) {
-					// A refund landed after the money was sent: the excess is debt against the seller.
-					await db
-						.insert(table.sellerEarningEvent)
-						.values({
-							id: crypto.randomUUID(),
-							earningId: earning.earningId,
-							eventType: 'debt',
-							amountDeltaMinor: found.amount - Math.max(limits.maxPayMinor, 0),
-							currency: earning.currency,
-							eventReference: `seller-earning:${earning.earningId}:debt:resume-overpay`,
-							reasonCode: 'overpay',
-							createdAt: now
-						})
-						.onConflictDoNothing();
-				}
+				sentMinor = found.amount;
 			} else if (sentTo !== stripeAccountId) {
 				// The account changed since the claim and the earlier send cannot be proven absent: never re-send.
 				await flagForManualReview({
@@ -382,16 +431,17 @@ export async function runSellerTransfers(
 								status: 'skipped',
 								amountMinor: 0,
 								failureReason: 'not_payable',
-								updatedAt: now
+								updatedAt: sql`now()`
 							})
 							.where(eq(table.payoutTransfer.idempotencyKey, idempotencyKey));
 					});
 					continue;
 				}
+				sentMinor = amountMinor;
 				if (amountMinor !== claim.amountMinor) {
 					await db
 						.update(table.payoutTransfer)
-						.set({ amountMinor, updatedAt: now })
+						.set({ amountMinor, updatedAt: sql`now()` })
 						.where(eq(table.payoutTransfer.idempotencyKey, idempotencyKey));
 				}
 			}
@@ -417,16 +467,34 @@ export async function runSellerTransfers(
 				// The row stays pending: the next run reconciles it against Stripe before creating anything.
 				await db
 					.update(table.payoutTransfer)
-					.set({ failureReason: 'transfer_failed', updatedAt: now })
+					.set({ failureReason: 'transfer_failed', updatedAt: sql`now()` })
 					.where(eq(table.payoutTransfer.idempotencyKey, idempotencyKey));
 				continue;
 			}
 		}
 
 		await db.transaction(async (tx) => {
+			// Re-check after the send: a refund that landed while Stripe was working shrank what was owed, and the
+			// excess already sent becomes debt against the seller (netted from a later transfer).
+			const limits = await resumablePayMinor(earning, tx);
+			if (sentMinor > Math.max(limits.maxPayMinor, 0)) {
+				await tx
+					.insert(table.sellerEarningEvent)
+					.values({
+						id: crypto.randomUUID(),
+						earningId: earning.earningId,
+						eventType: 'debt',
+						amountDeltaMinor: sentMinor - Math.max(limits.maxPayMinor, 0),
+						currency: earning.currency,
+						eventReference: `seller-earning:${earning.earningId}:debt:send-overpay`,
+						reasonCode: 'overpay',
+						createdAt: sql`now()`
+					})
+					.onConflictDoNothing();
+			}
 			await tx
 				.update(table.payoutTransfer)
-				.set({ status: 'succeeded', stripeTransferId, failureReason: null, updatedAt: now })
+				.set({ status: 'succeeded', stripeTransferId, failureReason: null, updatedAt: sql`now()` })
 				.where(eq(table.payoutTransfer.idempotencyKey, idempotencyKey));
 			await tx
 				.insert(table.sellerEarningEvent)
@@ -628,8 +696,8 @@ export async function payApprovedAffiliateBatch(
 	// The destination fixed at claim time, not the affiliate's current account, is what a prior send used.
 	let sentTo: string | null = account?.stripeAccountId ?? null;
 	if (batch.status === 'approved') {
-		amountMinor = Math.min(dueMinor, batch.totalMinor);
-		if (amountMinor <= 0) {
+		const dueCappedMinor = Math.min(dueMinor, batch.totalMinor);
+		if (dueCappedMinor <= 0) {
 			await db
 				.update(table.affiliatePayoutBatch)
 				.set({ status: 'skipped' })
@@ -642,22 +710,56 @@ export async function payApprovedAffiliateBatch(
 			return 'nothing_due';
 		}
 		if (!account?.stripeAccountId) return 'no_account';
-		const claimedRows = await db
-			.update(table.affiliatePayoutBatch)
-			.set({
-				status: 'sending',
-				sendAmountMinor: amountMinor,
-				sendStartedAt: sql`now()`,
-				sendStripeAccountId: account.stripeAccountId
-			})
-			.where(
-				and(
-					eq(table.affiliatePayoutBatch.id, batchId),
-					eq(table.affiliatePayoutBatch.status, 'approved')
+		const stripeAccountId = account.stripeAccountId;
+		// Claim under the affiliate's payout-account lock so two batches cannot net the same debt twice.
+		const claimed = await db.transaction(async (tx) => {
+			await tx
+				.select({ id: table.payoutAccount.id })
+				.from(table.payoutAccount)
+				.where(eq(table.payoutAccount.affiliateId, payout.affiliateId))
+				.for('update');
+			const debtMinor = await affiliateDebtMinor(tx, payout.affiliateId, batch.currency);
+			const debtAppliedMinor = Math.min(debtMinor, dueCappedMinor);
+			const rows = await tx
+				.update(table.affiliatePayoutBatch)
+				.set({
+					status: 'sending',
+					sendAmountMinor: dueCappedMinor - debtAppliedMinor,
+					debtAppliedMinor,
+					sendStartedAt: sql`now()`,
+					sendStripeAccountId: stripeAccountId
+				})
+				.where(
+					and(
+						eq(table.affiliatePayoutBatch.id, batchId),
+						eq(table.affiliatePayoutBatch.status, 'approved')
+					)
 				)
-			)
-			.returning({ id: table.affiliatePayoutBatch.id });
-		if (claimedRows.length === 0) return 'not_approved';
+				.returning({ id: table.affiliatePayoutBatch.id });
+			return rows.length === 0 ? null : { amountMinor: dueCappedMinor - debtAppliedMinor };
+		});
+		if (!claimed) return 'not_approved';
+		amountMinor = claimed.amountMinor;
+		if (amountMinor <= 0) {
+			// The affiliate's debt absorbed this whole batch: close the commissions, send nothing.
+			await db.transaction(async (tx) => {
+				for (const commissionId of dueIds) {
+					await AffiliateCommissionService.recordLifecycleEvent(tx, {
+						commissionId,
+						eventType: 'paid',
+						eventReference: `commission:${commissionId}:paid`,
+						payoutId: payout.id,
+						causationReference: `batch:${batchId}`,
+						now
+					});
+				}
+				await tx
+					.update(table.affiliatePayoutBatch)
+					.set({ status: 'paid' })
+					.where(eq(table.affiliatePayoutBatch.id, batchId));
+			});
+			return 'paid';
+		}
 	} else {
 		if (batch.sendAmountMinor === null || !account?.stripeAccountId) return 'no_account';
 		// Take over only a stale claim; the conditional UPDATE lets exactly one resumer through.
@@ -753,7 +855,7 @@ export async function payApprovedAffiliateBatch(
 				idempotencyKey,
 				stripeTransferId,
 				createdAt: now,
-				updatedAt: now
+				updatedAt: sql`now()`
 			})
 			.onConflictDoNothing();
 		await tx
