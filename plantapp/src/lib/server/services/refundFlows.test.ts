@@ -521,13 +521,17 @@ describe.skipIf(!databaseUrl)('refund flows on Postgres', { timeout: 30_000 }, (
 			await apply('charge.dispute.funds_reinstated', dispute('won'), null);
 			await apply('charge.dispute.funds_reinstated', dispute('won'), null);
 
-			const [{ net }] =
-				await sql`SELECT COALESCE(SUM(amount_delta_minor), 0)::int AS net FROM seller_earning_event
-				WHERE earning_id = 'e1' AND event_type = 'reversed'`;
-			expect(net).toBe(0);
-			const [{ credits }] =
-				await sql`SELECT count(*)::int AS credits FROM seller_earning_event WHERE event_reference LIKE '%:credited:%'`;
-			expect(credits).toBe(1);
+			const ledger = await import('./sellerLedgerBalance');
+			const balance = ledger.earningBalance(
+				await ledger.loadEarningEvents((await import('$lib/server/db')).db, 'e1')
+			);
+			// Back to the pre-dispute position: nothing clawed back, and one explicit credit names the row it undoes.
+			expect(balance.clawedBackMinor).toBe(0);
+			const credits =
+				await sql`SELECT event_type, credits_reference FROM seller_earning_event WHERE event_reference LIKE '%:credit'`;
+			expect(credits).toHaveLength(1);
+			expect(credits[0].event_type).toBe('reversal_credited');
+			expect(credits[0].credits_reference).toContain(':alloc:');
 		});
 
 		it('a full refund still claws back every seller proportionally', async () => {

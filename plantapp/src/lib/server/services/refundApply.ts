@@ -62,7 +62,7 @@ export async function applyMoneyEvent(
 				.where(eq(table.orderBalanceHold.stripeObjectId, facts.objectId));
 			// A dispute that closed in our favour cancels what it left behind (a waiting allocation, or a clawback).
 			if (facts.kind === 'dispute') {
-				await cancelAllocationForDispute(tx, found.id, facts.objectId, now);
+				await cancelAllocationForDispute(tx, found.id, facts.objectId, now, client);
 			}
 			// While the return window is unset, shipped/delivered approve commission; a hold that blocked that
 			// approval releases it here once it closes.

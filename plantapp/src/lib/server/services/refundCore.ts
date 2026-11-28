@@ -1,8 +1,9 @@
-import { and, eq, inArray, like, sql } from 'drizzle-orm';
+import { and, eq, inArray, like } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { AffiliateCommissionService } from './affiliateCommission';
 import { clawbackDelta, proportionalShare } from './refundClawback';
+import { clawbackRows, earningBalance, loadEarningEvents } from './sellerLedgerBalance';
 
 export type ReversalClient = {
 	transfers: {
@@ -66,46 +67,21 @@ export async function clawbackEarning(
 		.from(table.sellerEarning)
 		.where(eq(table.sellerEarning.id, earning.id))
 		.for('update');
-	const events: {
-		eventType: string;
-		amount: number;
-		reasonCode: string | null;
-		eventReference: string;
-		stripeReversalId: string | null;
-	}[] = await tx
-		.select({
-			eventType: table.sellerEarningEvent.eventType,
-			amount: table.sellerEarningEvent.amountDeltaMinor,
-			reasonCode: table.sellerEarningEvent.reasonCode,
-			eventReference: table.sellerEarningEvent.eventReference,
-			stripeReversalId: table.sellerEarningEvent.stripeReversalId
-		})
-		.from(table.sellerEarningEvent)
-		.where(eq(table.sellerEarningEvent.earningId, earning.id));
-	// Only clawbacks count: 'reversed' for a refund or chargeback, and 'debt' recorded for one. A credit from a
-	// dispute that was later won ('dispute_won') takes its amount back out. Fee debt, settlements and the Stripe
-	// reversal of a debt carry other reason codes.
-	const clawbacks = events
-		.filter(
-			(row) =>
-				(row.eventType === 'reversed' || row.eventType === 'debt') &&
-				(row.reasonCode === 'refund' ||
-					row.reasonCode === 'chargeback' ||
-					row.reasonCode === 'dispute_won')
-		)
-		.map((row) => ({ ...row, taken: row.eventType === 'reversed' ? -row.amount : row.amount }));
+	const events = await loadEarningEvents(tx, earning.id);
+	const balance = earningBalance(events);
+	const clawbacks = clawbackRows(events);
 	const clawback = clawbackDelta({
 		baseMinor: earning.netMinor,
 		refundedMinor: ctx.refundedMinor,
 		totalMinor: ctx.totalMinor,
-		alreadyAllMinor: clawbacks.reduce((sum, row) => sum + row.taken, 0),
+		alreadyAllMinor: clawbacks.reduce((sum, row) => sum + row.takenMinor, 0),
 		alreadyForSourceMinor: clawbacks
 			.filter((row) =>
 				ctx.cumulative
 					? row.reasonCode === ctx.reasonCode
-					: row.eventReference.endsWith(`:${ctx.objectId}`)
+					: row.reference.endsWith(`:${ctx.objectId}`)
 			)
-			.reduce((sum, row) => sum + row.taken, 0)
+			.reduce((sum, row) => sum + row.takenMinor, 0)
 	});
 	const transfers = await tx
 		.select()
@@ -178,13 +154,9 @@ export async function clawbackEarning(
 	}
 
 	// A reservation (this delivery's or an earlier one's) without an outcome still needs one.
-	const reservation = events.find((row) => row.eventReference === reservedReference);
-	const reservedMinor = reservation ? reservation.amount : reservable ? clawback : 0;
-	const hasOutcome = events.some(
-		(row) =>
-			row.eventReference === `seller-earning:${earning.id}:reversed-at-stripe:${ctx.sourceKey}` ||
-			row.eventReference === `seller-earning:${earning.id}:debt-released:${ctx.sourceKey}`
-	);
+	const reservation = balance.reservations.find((row) => row.reference === reservedReference);
+	const reservedMinor = reservation ? reservation.amountMinor : reservable ? clawback : 0;
+	const hasOutcome = reservation ? !reservation.active : false;
 	if (transfer?.stripeTransferId && reservedMinor > 0 && !hasOutcome) {
 		return {
 			earningId: earning.id,
@@ -270,31 +242,18 @@ export async function settleReservedDebt(
 			.from(table.payoutAccount)
 			.where(eq(table.payoutAccount.sellerId, work.sellerId))
 			.for('update');
-		const events = await tx
-			.select({
-				eventType: table.sellerEarningEvent.eventType,
-				amount: table.sellerEarningEvent.amountDeltaMinor,
-				eventReference: table.sellerEarningEvent.eventReference,
-				stripeReversalId: table.sellerEarningEvent.stripeReversalId
-			})
-			.from(table.sellerEarningEvent)
-			.where(eq(table.sellerEarningEvent.earningId, work.earningId));
+		const balance = earningBalance(await loadEarningEvents(tx, work.earningId));
 		const settledReference = `seller-earning:${work.earningId}:reversed-at-stripe:${sourceKey}`;
 		const releasedReference = `seller-earning:${work.earningId}:debt-released:${sourceKey}`;
-		if (
-			events.some(
-				(row) => row.eventReference === settledReference || row.eventReference === releasedReference
-			) ||
-			!events.some((row) => row.eventReference === reservedReference)
-		) {
-			return;
-		}
+		// Settled, released or cancelled (credited by a won dispute) all show as an inactive reservation.
+		const reservation = balance.reservations.find((row) => row.reference === reservedReference);
+		if (!reservation || !reservation.active) return;
 
-		const reversedAtStripe = events
-			.filter((row) => row.eventType === 'reversed' && row.stripeReversalId)
-			.reduce((sum, row) => sum + Math.abs(row.amount), 0);
 		const reverseMinor = client
-			? Math.min(work.reservedMinor, Math.max(work.transferAmountMinor - reversedAtStripe, 0))
+			? Math.min(
+					work.reservedMinor,
+					Math.max(work.transferAmountMinor - balance.stripeReversedGrossMinor, 0)
+				)
 			: 0;
 
 		let recovered: { id: string; amount: number } | null = null;
@@ -396,44 +355,32 @@ export type ReservedDebt = {
 
 /** Reservations with no recorded outcome: waiting on Stripe. Shown apart from collectable debt. */
 export async function listReservedDebt(): Promise<ReservedDebt[]> {
-	const reserved = await db
+	const candidates = await db
 		.select({
 			earningId: table.sellerEarningEvent.earningId,
 			sellerId: table.sellerEarning.sellerId,
 			currency: table.sellerEarningEvent.currency,
-			reference: table.sellerEarningEvent.eventReference,
-			amount: table.sellerEarningEvent.amountDeltaMinor,
-			createdAt: table.sellerEarningEvent.createdAt
+			createdAt: table.sellerEarningEvent.createdAt,
+			reference: table.sellerEarningEvent.eventReference
 		})
 		.from(table.sellerEarningEvent)
 		.innerJoin(table.sellerEarning, eq(table.sellerEarningEvent.earningId, table.sellerEarning.id))
 		.where(like(table.sellerEarningEvent.eventReference, '%:debt-reserved:%'));
-	if (reserved.length === 0) return [];
-	const outcomes = await db
-		.select({ reference: table.sellerEarningEvent.eventReference })
-		.from(table.sellerEarningEvent)
-		.where(
-			sql`${table.sellerEarningEvent.eventReference} LIKE '%:reversed-at-stripe:%' OR ${table.sellerEarningEvent.eventReference} LIKE '%:debt-released:%'`
-		);
-	const done = new Set(outcomes.map((row) => row.reference));
-	return reserved
-		.map((row) => {
-			const sourceKey = row.reference.split(':debt-reserved:')[1];
-			return { row, sourceKey };
-		})
-		.filter(
-			({ row, sourceKey }) =>
-				!done.has(`seller-earning:${row.earningId}:reversed-at-stripe:${sourceKey}`) &&
-				!done.has(`seller-earning:${row.earningId}:debt-released:${sourceKey}`)
-		)
-		.map(({ row, sourceKey }) => ({
-			earningId: row.earningId,
-			sellerId: row.sellerId,
-			currency: row.currency,
-			sourceKey,
-			reservedMinor: row.amount,
-			createdAt: row.createdAt
-		}));
+	const result: ReservedDebt[] = [];
+	for (const candidate of candidates) {
+		const balance = earningBalance(await loadEarningEvents(db, candidate.earningId));
+		const reservation = balance.reservations.find((row) => row.reference === candidate.reference);
+		if (!reservation?.active) continue;
+		result.push({
+			earningId: candidate.earningId,
+			sellerId: candidate.sellerId,
+			currency: candidate.currency,
+			sourceKey: reservation.sourceKey,
+			reservedMinor: reservation.amountMinor,
+			createdAt: candidate.createdAt
+		});
+	}
+	return result;
 }
 
 /** Re-drive reservations that no webhook retry will reach. Find-first inside, so it is safe to run repeatedly. */
