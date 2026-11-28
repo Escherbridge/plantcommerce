@@ -3,6 +3,7 @@
 	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { publicShareImage, publicSiteUrl } from '$lib/config/site';
 	import { shortDocumentTitle } from '$lib/content/documentTitles';
+	import type { EssayLink } from '$lib/content/essays';
 	import { relatedEssays } from '$lib/content/writing';
 	import { renderMarkdownBody } from '$lib/utils/renderMarkdown';
 	import type { PageData } from './$types';
@@ -16,7 +17,13 @@
 				? page.documentTitle
 				: `${page.title} — Aevani`)
 	);
-	const related = $derived(relatedEssays(page.slug));
+	const relatedLinks = $derived<readonly EssayLink[]>(
+		data.post.related ??
+			relatedEssays(page.slug).map((essay) => ({
+				label: essay.title,
+				href: `/blog/${essay.slug}`
+			}))
+	);
 	const description = $derived(page.metaDescription || page.excerpt || page.title);
 	const citations = $derived(
 		data.post.sources.map((source) => ({
@@ -146,7 +153,7 @@
 		{#if data.post.sources.length > 0}
 			<section class="mt-12">
 				<h2 class="font-mono text-xs font-bold tracking-[0.18em] uppercase">Sources</h2>
-				<ul class="mt-4 list-disc space-y-2 pl-5">
+				<ul class="blog-list mt-4 list-disc space-y-2 pl-5">
 					{#each data.post.sources as source}
 						<li>
 							<a class="link" href={source.href}>{source.label}</a>
@@ -159,13 +166,13 @@
 				</ul>
 			</section>
 		{/if}
-		{#if related.length > 0}
+		{#if relatedLinks.length > 0}
 			<section class="mt-12">
 				<h2 class="font-mono text-xs font-bold tracking-[0.18em] uppercase">Related</h2>
-				<ul class="mt-4 space-y-2">
-					{#each related as essay}
+				<ul class="blog-list mt-4 space-y-2">
+					{#each relatedLinks as link}
 						<li>
-							<a class="link link-primary" href="/blog/{essay.slug}">{essay.title}</a>
+							<a class="link link-primary" href={link.href}>{link.label}</a>{link.after ?? ''}
 						</li>
 					{/each}
 				</ul>
@@ -182,5 +189,11 @@
 <style>
 	.blog-date {
 		color: #5c665d;
+	}
+
+	/* Long bare URLs in essay lists must wrap inside the clipped page shell. */
+	.prose :global(li),
+	.blog-list li {
+		overflow-wrap: anywhere;
 	}
 </style>

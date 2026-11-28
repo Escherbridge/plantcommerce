@@ -4,7 +4,7 @@
 	import { ProductGallery, ProductCard } from '$lib/components/cards';
 	import { StatTile, SectionHeader, Badge, Button, GlassCard } from '$lib/components/ui';
 	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
-	import { productCategoryHref } from '../../catalog';
+	import { productBreadcrumbLabel, productCategoryHref } from '../../catalog';
 	import {
 		guideForCategory,
 		guideForProduct,
@@ -24,7 +24,7 @@
 
 	const productUrl = $derived(`/products/${data.categorySlug}/${p.slug}`);
 	const categoryHref = $derived(productCategoryHref(data.categorySlug));
-	const categoryName = $derived(p.category?.name || data.categorySlug);
+	const categoryName = $derived(productBreadcrumbLabel(data.categorySlug, p.category));
 	const nextGuide = $derived(
 		guideForProduct(p.slug) ??
 			guideForCategory(p.category?.slug) ??
@@ -112,7 +112,8 @@
 	);
 
 	// ---- The long read: the ONLY @html on the page, always sanitized. ----
-	// Stored descriptions still carry the old /learn field-guide hrefs.
+	// The load already rewrote descriptionHtml, so this payload has no old /learn
+	// anchors. Running the rewrite again must leave that HTML unchanged.
 	const longReadHtml = $derived(
 		sanitizeRichText(rewriteProductGuideLinks(p.descriptionHtml || p.description || ''))
 	);
