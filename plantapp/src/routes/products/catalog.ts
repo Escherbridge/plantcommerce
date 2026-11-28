@@ -192,6 +192,25 @@ export function productCategoryHref(categorySlug: string): string | null {
 	return productCategoryHrefs[categorySlug] ?? null;
 }
 
+/**
+ * Breadcrumb label for the page `productCategoryHref(routeCategorySlug)` opens.
+ * The pH/EC meter is filed under the Soil Testing shelf, which has no listing
+ * of its own. Its crumb opens /products/hydroponics, so the label is that page.
+ */
+export function productBreadcrumbLabel(
+	routeCategorySlug: string,
+	productCategory: { name?: string | null; slug?: string | null } | null | undefined
+): string {
+	const storedName = productCategory?.name?.trim() || routeCategorySlug;
+	if (
+		productCategory?.slug === 'soil-testing' &&
+		productCategoryHref(routeCategorySlug) === '/products/hydroponics'
+	) {
+		return 'Hydroponics';
+	}
+	return storedName;
+}
+
 /** Old category indexes. They have no page; the catalogue filter lists them. */
 export function legacyCatalogueIndexRedirect(pathname: string): string | null {
 	if (pathname === '/products/kits') return productCategoryHref('kits');

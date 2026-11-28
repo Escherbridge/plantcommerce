@@ -207,6 +207,11 @@ const routeMetadata: Record<string, { title: string; description: string }> = {
 		title: 'Resources — Aevani',
 		description: 'Browse Aevani field guides, system references, and the free Learn hub.'
 	},
+	'/register': {
+		title: 'Create an account — Aevani',
+		description:
+			'Create an Aevani account. It saves your course progress and, once something is for sale, your orders.'
+	},
 	'/sustainability': {
 		title: 'Sustainability — Aevani',
 		description: 'No quantified environmental claims are published.'
@@ -243,7 +248,6 @@ const pageOwnedDocumentTitles = new Set([
 	'/learn/certificates',
 	'/learn/my-courses',
 	'/login',
-	'/register',
 	'/resend-verification',
 	'/reset-password',
 	'/search',

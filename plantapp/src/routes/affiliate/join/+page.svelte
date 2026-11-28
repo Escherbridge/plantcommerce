@@ -13,6 +13,7 @@
 		emptyAffiliateApplication,
 		type AffiliateApplicationDraft
 	} from '$lib/affiliate/application';
+	import { verificationEmailUnavailableCopy } from '$lib/copy/verificationEmail';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -75,6 +76,19 @@
 					<div class="flex flex-wrap gap-3">
 						<a class="btn btn-primary" href={signInHref}>Sign in</a>
 						<a class="btn btn-outline" href={signupHref}>Create an account</a>
+					</div>
+				</div>
+			{:else if !data.user.emailVerified && data.verificationEmailAvailable === false}
+				<div class="space-y-4 rounded-box border border-base-300 p-6" role="status">
+					<h2 class="font-display text-2xl">Verify your email first</h2>
+					<p>{verificationEmailUnavailableCopy}</p>
+					<p>
+						<a class="link link-primary" href={resendHref}>Resend verification email</a>
+					</p>
+					<p><a class="link link-primary" href="/contact">Contact us</a> if you need help.</p>
+					<div class="flex flex-wrap gap-3">
+						<a class="btn btn-primary" href="/products">Browse catalogue</a>
+						<a class="btn btn-outline" href="/account/profile">Go to your account</a>
 					</div>
 				</div>
 			{:else if !data.user.emailVerified}

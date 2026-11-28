@@ -5,6 +5,14 @@
 	import CredentialErrorSummary from '$lib/components/forms/CredentialErrorSummary.svelte';
 	import { describedByFor } from '$lib/auth/credentialFieldErrors';
 	import { authHandoffHref, safeRedirectPath } from '$lib/auth/safeRedirect';
+	import { accountCreationFailureCopy } from '$lib/copy/accountCreation';
+	import { documentTitleOverride } from '$lib/copy/documentTitleOverride';
+	import {
+		accountCreatedDocumentTitle,
+		postRegisterHref,
+		verificationEmailUnavailableCopy,
+		verificationResendHref
+	} from '$lib/copy/verificationEmail';
 	import { trpc } from '$lib/trpc/client';
 	import { tick } from 'svelte';
 	import type { ActionData } from './$types';
@@ -12,11 +20,18 @@
 		PASSWORD_TOO_SHORT,
 		PASSWORDS_DO_NOT_MATCH,
 		firstRegistrationError,
-		focusRegistrationField,
+		focusRegistrationFailure,
 		type RegisterField
 	} from './validation';
 
 	let { form }: { form: ActionData } = $props();
+
+	const accountCreationContactPhrase = 'contact us';
+	const accountCreationFailureParts = accountCreationFailureCopy.split(
+		accountCreationContactPhrase
+	);
+	const accountCreationFailureBefore = accountCreationFailureParts[0] ?? '';
+	const accountCreationFailureAfter = accountCreationFailureParts[1] ?? '';
 
 	function pageRedirect(): { origin: string; redirect: string | null } | null {
 		try {
@@ -42,6 +57,11 @@
 		const current = pageRedirect();
 		return current ? authHandoffHref('login', continuePath, current.origin) : '/login';
 	});
+	const resendHref = $derived.by(() => {
+		const current = pageRedirect();
+		if (!current) return '/resend-verification';
+		return verificationResendHref(current.redirect, current.origin);
+	});
 
 	let username = $state('');
 	let email = $state('');
@@ -55,10 +75,29 @@
 	let registrationComplete = $state(false);
 	let registeredEmail = $state('');
 	let verificationEmailSent = $state(false);
+
+	$effect(() => {
+		if (!registrationComplete) return;
+		documentTitleOverride.set(accountCreatedDocumentTitle);
+		return () => documentTitleOverride.set(null);
+	});
 	let usernameInput = $state<HTMLInputElement | null>(null);
 	let emailInput = $state<HTMLInputElement | null>(null);
 	let passwordInput = $state<HTMLInputElement | null>(null);
 	let confirmPasswordInput = $state<HTMLInputElement | null>(null);
+	let registerError = $state<HTMLElement | null>(null);
+
+	function focusFailure(field: RegisterField | null) {
+		focusRegistrationFailure(field, {
+			fields: {
+				username: usernameInput,
+				email: emailInput,
+				password: passwordInput,
+				confirmPassword: confirmPasswordInput
+			},
+			error: registerError
+		});
+	}
 
 	const passwordErrors = $derived(() => {
 		const errors: string[] = [];
@@ -136,12 +175,7 @@
 			errorMessage = failure.message;
 			invalidField = failure.field;
 			await tick();
-			focusRegistrationField(failure.field, {
-				username: usernameInput,
-				email: emailInput,
-				password: passwordInput,
-				confirmPassword: confirmPasswordInput
-			});
+			focusFailure(failure.field);
 			return;
 		}
 
@@ -149,6 +183,7 @@
 		const normalizedEmail = email.trim();
 
 		isLoading = true;
+		let serverFailed = false;
 
 		try {
 			const result = await trpc.auth.register.mutate({
@@ -165,21 +200,22 @@
 				verificationEmailSent = result.verificationEmailSent;
 				registrationComplete = true;
 			} else {
-				errorMessage =
-					'We could not complete account creation. Please try signing in or contact support.';
+				errorMessage = accountCreationFailureCopy;
+				serverFailed = true;
 			}
 		} catch {
-			errorMessage =
-				'We could not create an account with those details. Please review them and try again.';
+			errorMessage = accountCreationFailureCopy;
+			serverFailed = true;
 		} finally {
 			isLoading = false;
 		}
+
+		if (serverFailed) {
+			await tick();
+			focusFailure(null);
+		}
 	}
 </script>
-
-<svelte:head>
-	<title>Create an account — Aevani</title>
-</svelte:head>
 
 <div class="register-page">
 	<div class="register-container">
@@ -191,8 +227,7 @@
 					<div class="register-success-icon">
 						<Icon name="check-circle" size={48} />
 					</div>
-					<h1 class="register-title">Account Created</h1>
-					<p class="register-subtitle">Welcome to Aevani!</p>
+					<h1 class="register-title">Account created</h1>
 					<p class="register-email-highlight">{registeredEmail}</p>
 				</div>
 
@@ -204,30 +239,49 @@
 						</p>
 					{:else}
 						<p class="register-step-text">
-							Your account was created, but verification email delivery is not available yet. Please
-							contact support before relying on email verification.
+							{verificationEmailUnavailableCopy}
+							<a href={resendHref} class="link link-primary">Resend verification email</a>.
+						</p>
+						<p class="register-step-text">
+							<a href="/contact" class="link link-primary">Contact us</a> if you need help.
 						</p>
 					{/if}
 					<div class="register-success-actions">
 						<a
-							href={continuePath}
+							href={postRegisterHref(verificationEmailSent, continuePath)}
 							class="font-display btn w-full tracking-wider uppercase btn-primary"
 						>
-							{continuePath === '/account/profile' ? 'Go to My Account' : 'Continue'}
+							{#if !verificationEmailSent}
+								Browse catalogue
+							{:else if continuePath === '/account/profile'}
+								Go to My Account
+							{:else}
+								Continue
+							{/if}
 						</a>
-						<a
-							href="/products"
-							class="font-display btn w-full tracking-wider uppercase btn-outline"
-						>
-							Browse catalogue
-						</a>
+						{#if verificationEmailSent}
+							<a
+								href="/products"
+								class="font-display btn w-full tracking-wider uppercase btn-outline"
+							>
+								Browse catalogue
+							</a>
+						{:else}
+							<a
+								href="/account/profile"
+								class="font-display btn w-full tracking-wider uppercase btn-outline"
+							>
+								Go to your account
+							</a>
+						{/if}
 					</div>
 				</div>
 
 				{#if verificationEmailSent}
 					<div class="register-footer">
 						<p class="register-legal">
-							Didn't receive the email? Check your spam folder or contact support.
+							Didn't receive the email? Check your spam folder or
+							<a href="/contact" class="link link-primary">contact us</a>.
 						</p>
 					</div>
 				{/if}
@@ -243,9 +297,24 @@
 
 				<!-- Error -->
 				{#if errorMessage || form?.message}
-					<div id="register-form-error" class="register-error" role="alert" aria-live="assertive">
+					<div
+						id="register-form-error"
+						class="register-error"
+						role="alert"
+						aria-live="assertive"
+						tabindex="-1"
+						bind:this={registerError}
+					>
 						<Icon name="alert-circle" size={16} class="h-4 w-4 shrink-0" />
-						<span>{errorMessage || form?.message}</span>
+						<span>
+							{#if errorMessage === accountCreationFailureCopy}
+								{accountCreationFailureBefore}<a class="link link-primary" href="/contact"
+									>{accountCreationContactPhrase}</a
+								>{accountCreationFailureAfter}
+							{:else}
+								{errorMessage || form?.message}
+							{/if}
+						</span>
 					</div>
 				{/if}
 
