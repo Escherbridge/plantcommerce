@@ -131,7 +131,11 @@ describe('seller earning migration', () => {
 
 	it('adds the ledger and delivery timestamps without rewriting rows', () => {
 		expect(sql).toContain('CREATE TABLE IF NOT EXISTS "public"."seller_earning"');
-		expect(sql).toContain('ADD COLUMN IF NOT EXISTS "delivered_at"');
+		// Added only when missing, so later boots take no lock on "order".
+		expect(sql).toContain(
+			'ALTER TABLE "public"."order" ADD COLUMN "delivered_at" timestamp with time zone'
+		);
+		expect(sql).toContain("column_name = 'delivered_at'");
 		expect(sql).toContain('"fee_bps" = 800');
 		expect(sql).not.toMatch(/\b(DROP|DELETE|UPDATE|TRUNCATE)\b/i);
 		expect(sql).not.toMatch(/^\s*BEGIN\s*;|^\s*COMMIT\s*;/im);
