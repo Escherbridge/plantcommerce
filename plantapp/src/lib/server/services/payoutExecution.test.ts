@@ -14,6 +14,9 @@ const stripe = {
 	transfers: {
 		create: vi.fn(() => {
 			throw new Error('Stripe must not be called while payouts are off');
+		}),
+		list: vi.fn(() => {
+			throw new Error('Stripe must not be called while payouts are off');
 		})
 	}
 };

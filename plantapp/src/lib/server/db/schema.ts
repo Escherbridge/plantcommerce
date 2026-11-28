@@ -1122,7 +1122,7 @@ export const payoutTransfer = pgTable(
 		amountMinor: bigint('amount_minor', { mode: 'number' }).notNull(),
 		currency: varchar('currency', { length: 3 }).notNull(),
 		status: text('status', {
-			enum: ['skipped', 'failed', 'succeeded', 'pending_approval']
+			enum: ['pending', 'skipped', 'failed', 'succeeded', 'pending_approval']
 		}).notNull(),
 		failureReason: text('failure_reason'),
 		idempotencyKey: text('idempotency_key').notNull(),
@@ -1144,8 +1144,9 @@ export const affiliatePayoutBatch = pgTable(
 		currency: varchar('currency', { length: 3 }).notNull(),
 		totalMinor: bigint('total_minor', { mode: 'number' }).notNull(),
 		status: text('status', {
-			enum: ['pending_approval', 'approved', 'paid', 'skipped']
+			enum: ['pending_approval', 'approved', 'sending', 'paid', 'skipped']
 		}).notNull(),
+		sendAmountMinor: bigint('send_amount_minor', { mode: 'number' }),
 		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 		approvedAt: timestamp('approved_at', { withTimezone: true, mode: 'date' })
 	},
