@@ -180,6 +180,8 @@ export async function reverseCommissions(
 		'refundedMinor' | 'sourceKey' | 'objectId' | 'cumulative' | 'reasonCode' | 'now'
 	> & { orderTotalMinor: number }
 ): Promise<void> {
+	// With the affiliate ledger off (the live default) the commission tables may not exist: do not query them.
+	if (!AffiliateCommissionService.isEnabled()) return;
 	const commissions = await tx
 		.select()
 		.from(table.affiliateCommissionLedger)
