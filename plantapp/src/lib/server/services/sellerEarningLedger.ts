@@ -83,17 +83,34 @@ export async function runHoldRelease(
 
 	let delivered = 0;
 	let released = 0;
-	for (const order of [...orders, ...deliveredOrders]) {
-		const holds = await db
-			.select({ id: table.orderBalanceHold.id })
-			.from(table.orderBalanceHold)
-			.where(
-				and(eq(table.orderBalanceHold.orderId, order.id), eq(table.orderBalanceHold.status, 'open'))
-			);
-		const openHold = holds.length > 0;
-		const plan = holdReleasePlan({ ...order, openHold }, now, { holdDays, autoDeliverDays });
-		if (!plan.deliver && !plan.release) continue;
+	for (const candidate of [...orders, ...deliveredOrders]) {
+		// Row lock + re-check inside the transaction: a concurrent run or a dispute webhook cannot slip between check and write.
 		await db.transaction(async (tx) => {
+			const [order] = await tx
+				.select({
+					id: table.order.id,
+					status: table.order.status,
+					shippedAt: table.order.shippedAt,
+					deliveredAt: table.order.deliveredAt
+				})
+				.from(table.order)
+				.where(eq(table.order.id, candidate.id))
+				.for('update');
+			if (!order) return;
+			const holds = await tx
+				.select({ id: table.orderBalanceHold.id })
+				.from(table.orderBalanceHold)
+				.where(
+					and(
+						eq(table.orderBalanceHold.orderId, order.id),
+						eq(table.orderBalanceHold.status, 'open')
+					)
+				);
+			const plan = holdReleasePlan({ ...order, openHold: holds.length > 0 }, now, {
+				holdDays,
+				autoDeliverDays
+			});
+			if (!plan.deliver && !plan.release) return;
 			if (plan.deliver) {
 				await tx
 					.update(table.order)
@@ -104,7 +121,7 @@ export async function runHoldRelease(
 						),
 						updatedAt: now
 					})
-					.where(eq(table.order.id, order.id));
+					.where(and(eq(table.order.id, order.id), eq(table.order.status, 'shipped')));
 				delivered += 1;
 			}
 			if (plan.release) {

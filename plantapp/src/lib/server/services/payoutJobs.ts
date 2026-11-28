@@ -1,9 +1,13 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { AffiliateCommissionService } from './affiliateCommission';
-import { payableBalance } from './payoutExecution';
-import { affiliateBatchGate, netAfterDebt, sellerTransferGate } from './payoutExecution';
+import {
+	affiliateBatchGate,
+	payableBalance,
+	planSellerTransfer,
+	sellerTransferGate
+} from './payoutExecution';
 
 export type TransferClient = {
 	transfers: {
@@ -21,6 +25,7 @@ export type TransferClient = {
 	};
 };
 
+/** Pay released seller earnings. Every Stripe call carries a per-earning idempotency key. */
 export async function runSellerTransfers(
 	source: Record<string, string | undefined>,
 	client: TransferClient | null
@@ -44,12 +49,26 @@ export async function runSellerTransfers(
 	let transferred = 0;
 	for (const earning of released) {
 		const idempotencyKey = `seller-transfer:${earning.earningId}`;
-		const [existing] = await db
-			.select({ id: table.payoutTransfer.id, status: table.payoutTransfer.status })
+		const now = new Date();
+		const [done] = await db
+			.select({ id: table.payoutTransfer.id })
 			.from(table.payoutTransfer)
 			.where(eq(table.payoutTransfer.idempotencyKey, idempotencyKey))
 			.limit(1);
-		if (existing) continue;
+		if (done) continue;
+
+		// A dispute or refund opened after release pauses the transfer until it closes.
+		const [openHold] = await db
+			.select({ id: table.orderBalanceHold.id })
+			.from(table.orderBalanceHold)
+			.where(
+				and(
+					eq(table.orderBalanceHold.orderId, earning.orderId),
+					eq(table.orderBalanceHold.status, 'open')
+				)
+			)
+			.limit(1);
+		if (openHold) continue;
 
 		const [order] = await db
 			.select({
@@ -65,53 +84,110 @@ export async function runSellerTransfers(
 				transfersActive: table.payoutAccount.transfersActive
 			})
 			.from(table.payoutAccount)
+			.where(eq(table.payoutAccount.sellerId, earning.sellerId))
+			.limit(1);
+
+		// Retryable skip: the seller can finish onboarding later, so this never blocks a future transfer.
+		if (!account?.stripeAccountId || !account.transfersActive || !order?.stripeChargeId) {
+			const failureReason = !account?.transfersActive ? 'transfers_inactive' : 'charge_missing';
+			await db
+				.insert(table.payoutTransfer)
+				.values({
+					id: crypto.randomUUID(),
+					kind: 'seller',
+					earningId: earning.earningId,
+					amountMinor: earning.netMinor,
+					currency: earning.currency,
+					status: 'skipped',
+					failureReason,
+					idempotencyKey: `${idempotencyKey}:skipped`,
+					sourceTransaction: order?.stripeChargeId ?? null,
+					createdAt: now,
+					updatedAt: now
+				})
+				.onConflictDoUpdate({
+					target: table.payoutTransfer.idempotencyKey,
+					set: { failureReason, updatedAt: now }
+				});
+			continue;
+		}
+
+		const reversals = await db
+			.select({ amount: table.sellerEarningEvent.amountDeltaMinor })
+			.from(table.sellerEarningEvent)
 			.where(
 				and(
-					eq(table.payoutAccount.sellerId, earning.sellerId),
-					eq(table.payoutAccount.transfersActive, true)
+					eq(table.sellerEarningEvent.earningId, earning.earningId),
+					eq(table.sellerEarningEvent.eventType, 'reversed')
 				)
-			)
-			.limit(1);
-		const adjustments = await db
+			);
+		const [debtRow] = await db
 			.select({
-				eventType: table.sellerEarningEvent.eventType,
-				amount: table.sellerEarningEvent.amountDeltaMinor
+				total: sql<string>`COALESCE(SUM(${table.sellerEarningEvent.amountDeltaMinor}), 0)`
 			})
 			.from(table.sellerEarningEvent)
-			.where(eq(table.sellerEarningEvent.earningId, earning.earningId));
-		const debtMinor = adjustments.reduce((sum, row) => {
-			if (row.eventType === 'debt') return sum + row.amount;
-			if (row.eventType === 'reversed') return sum + Math.abs(row.amount);
-			return sum;
-		}, 0);
-		const { payMinor } = netAfterDebt(earning.netMinor, debtMinor);
-		if (
-			!account?.stripeAccountId ||
-			!account.transfersActive ||
-			!order?.stripeChargeId ||
-			payMinor <= 0
-		) {
-			await db.insert(table.payoutTransfer).values({
-				id: crypto.randomUUID(),
-				kind: 'seller',
-				earningId: earning.earningId,
-				amountMinor: payMinor,
-				currency: earning.currency,
-				status: 'skipped',
-				failureReason: !account?.transfersActive ? 'transfers_inactive' : 'not_payable',
-				idempotencyKey,
-				sourceTransaction: order?.stripeChargeId ?? null,
-				createdAt: new Date(),
-				updatedAt: new Date()
+			.innerJoin(
+				table.sellerEarning,
+				eq(table.sellerEarningEvent.earningId, table.sellerEarning.id)
+			)
+			.where(
+				and(
+					eq(table.sellerEarning.sellerId, earning.sellerId),
+					eq(table.sellerEarningEvent.eventType, 'debt')
+				)
+			);
+		const plan = planSellerTransfer({
+			netMinor: earning.netMinor,
+			ownReversalsMinor: reversals.reduce((sum, row) => sum + Math.abs(row.amount), 0),
+			sellerDebtMinor: Number(debtRow?.total ?? 0)
+		});
+		const settleDebt = async (tx: any) => {
+			if (plan.debtAppliedMinor <= 0) return;
+			await tx
+				.insert(table.sellerEarningEvent)
+				.values({
+					id: crypto.randomUUID(),
+					earningId: earning.earningId,
+					eventType: 'debt',
+					amountDeltaMinor: -plan.debtAppliedMinor,
+					currency: earning.currency,
+					eventReference: `seller-earning:${earning.earningId}:debt-settled`,
+					reasonCode: 'debt_settled',
+					createdAt: now
+				})
+				.onConflictDoNothing();
+		};
+
+		// Permanent: fully reversed or fully absorbed by debt. Stored under the main key so it is never retried.
+		if (plan.permanent) {
+			await db.transaction(async (tx) => {
+				await settleDebt(tx);
+				await tx
+					.insert(table.payoutTransfer)
+					.values({
+						id: crypto.randomUUID(),
+						kind: 'seller',
+						earningId: earning.earningId,
+						amountMinor: 0,
+						currency: earning.currency,
+						status: 'skipped',
+						failureReason: 'not_payable',
+						idempotencyKey,
+						sourceTransaction: order.stripeChargeId,
+						createdAt: now,
+						updatedAt: now
+					})
+					.onConflictDoNothing();
 			});
 			continue;
 		}
 
+		let transfer: { id: string };
 		try {
-			const transfer = await client.transfers.create(
+			transfer = await client.transfers.create(
 				{
-					amount: payMinor,
-					currency: earning.currency,
+					amount: plan.payMinor,
+					currency: earning.currency.toLowerCase(),
 					destination: account.stripeAccountId,
 					source_transaction: order.stripeChargeId,
 					...(order.transferGroup ? { transfer_group: order.transferGroup } : {}),
@@ -122,52 +198,70 @@ export async function runSellerTransfers(
 				},
 				{ idempotencyKey }
 			);
-			await db.insert(table.payoutTransfer).values({
-				id: crypto.randomUUID(),
-				kind: 'seller',
-				earningId: earning.earningId,
-				stripeAccountId: account.stripeAccountId,
-				amountMinor: payMinor,
-				currency: earning.currency,
-				status: 'succeeded',
-				idempotencyKey,
-				stripeTransferId: transfer.id,
-				sourceTransaction: order.stripeChargeId,
-				createdAt: new Date(),
-				updatedAt: new Date()
-			});
-			await db.insert(table.sellerEarningEvent).values({
-				id: crypto.randomUUID(),
-				earningId: earning.earningId,
-				eventType: 'transferred',
-				amountDeltaMinor: 0,
-				currency: earning.currency,
-				eventReference: `seller-earning:${earning.earningId}:transferred`,
-				reasonCode: 'payout',
-				stripeTransferId: transfer.id,
-				createdAt: new Date()
-			});
-			transferred += 1;
 		} catch {
 			await db.insert(table.payoutTransfer).values({
 				id: crypto.randomUUID(),
 				kind: 'seller',
 				earningId: earning.earningId,
 				stripeAccountId: account.stripeAccountId,
-				amountMinor: payMinor,
+				amountMinor: plan.payMinor,
 				currency: earning.currency,
 				status: 'failed',
 				failureReason: 'transfer_failed',
 				idempotencyKey: `${idempotencyKey}:failed:${crypto.randomUUID()}`,
 				sourceTransaction: order.stripeChargeId,
-				createdAt: new Date(),
-				updatedAt: new Date()
+				createdAt: now,
+				updatedAt: now
 			});
+			continue;
 		}
+
+		// Stripe holds the money now, so a failure here must be loud rather than recorded as a failed transfer.
+		// Re-running inside Stripe's 24h idempotency window returns this same transfer.
+		await db.transaction(async (tx) => {
+			await tx
+				.insert(table.payoutTransfer)
+				.values({
+					id: crypto.randomUUID(),
+					kind: 'seller',
+					earningId: earning.earningId,
+					stripeAccountId: account.stripeAccountId,
+					amountMinor: plan.payMinor,
+					currency: earning.currency,
+					status: 'succeeded',
+					idempotencyKey,
+					stripeTransferId: transfer.id,
+					sourceTransaction: order.stripeChargeId,
+					createdAt: now,
+					updatedAt: now
+				})
+				.onConflictDoNothing();
+			await tx
+				.insert(table.sellerEarningEvent)
+				.values({
+					id: crypto.randomUUID(),
+					earningId: earning.earningId,
+					eventType: 'transferred',
+					amountDeltaMinor: 0,
+					currency: earning.currency,
+					eventReference: `seller-earning:${earning.earningId}:transferred`,
+					reasonCode: 'payout',
+					stripeTransferId: transfer.id,
+					createdAt: now
+				})
+				.onConflictDoNothing();
+			await settleDebt(tx);
+		});
+		transferred += 1;
 	}
 	return { skipped: false, reason: 'ready', transferred };
 }
 
+/**
+ * Group approved, unbatched commission into one batch per affiliate and currency.
+ * Claim-then-pay: each commission gets its `payable` event (unique reference, row-locked) in the same
+ * transaction as the batch row, so a commission sits in at most one batch however often this runs.
+ */
 export async function runAffiliateBatch(
 	source: Record<string, string | undefined>,
 	client: TransferClient | null,
@@ -226,27 +320,116 @@ export async function runAffiliateBatch(
 		if (total.total < gate.minimumMinor) continue;
 		const batchId = crypto.randomUUID();
 		const needsApproval = gate.needsApproval(total.total);
-		await db.insert(table.affiliatePayoutBatch).values({
-			id: batchId,
-			currency: total.currency,
-			totalMinor: total.total,
-			status: needsApproval ? 'pending_approval' : 'approved',
-			createdAt: now,
-			approvedAt: needsApproval ? null : now
-		});
+		try {
+			await db.transaction(async (tx) => {
+				await tx.insert(table.affiliatePayoutBatch).values({
+					id: batchId,
+					currency: total.currency,
+					totalMinor: total.total,
+					status: needsApproval ? 'pending_approval' : 'approved',
+					createdAt: now,
+					approvedAt: needsApproval ? null : now
+				});
+				const payout = await AffiliateCommissionService.createPayoutInstruction(tx, {
+					affiliateId: total.affiliateId,
+					payoutReference: `batch:${batchId}`,
+					currency: total.currency,
+					amountMinor: total.total,
+					now
+				});
+				for (const commissionId of total.ids) {
+					await AffiliateCommissionService.recordLifecycleEvent(tx, {
+						commissionId,
+						eventType: 'payable',
+						eventReference: `commission:${commissionId}:payable`,
+						payoutId: payout.id,
+						causationReference: `batch:${batchId}`,
+						now
+					});
+				}
+			});
+		} catch (error) {
+			// Another run claimed one of these commissions first. Nothing was written; the next run re-reads.
+			console.error('[Affiliate batch] Claim rolled back', error);
+			continue;
+		}
 		batches += 1;
-		if (needsApproval || !client) continue;
-		await payAffiliateBatch(client, batchId, total, now);
+	}
+
+	if (client) {
+		const approved = await db
+			.select({ id: table.affiliatePayoutBatch.id })
+			.from(table.affiliatePayoutBatch)
+			.where(eq(table.affiliatePayoutBatch.status, 'approved'));
+		for (const batch of approved) await payApprovedAffiliateBatch(client, batch.id, now);
 	}
 	return { skipped: false, reason: 'ready', batches };
 }
 
-async function payAffiliateBatch(
+/**
+ * Send one approved batch. The amount is recomputed from the ledger, so a refund after the claim shrinks
+ * the transfer, and it is never above the approved total. Fully reversed commissions are not marked paid.
+ */
+export async function payApprovedAffiliateBatch(
 	client: TransferClient,
 	batchId: string,
-	total: { affiliateId: number; currency: string; total: number; ids: string[] },
-	now: Date
-): Promise<void> {
+	now = new Date()
+): Promise<'paid' | 'not_approved' | 'no_account' | 'nothing_due'> {
+	const [batch] = await db
+		.select()
+		.from(table.affiliatePayoutBatch)
+		.where(eq(table.affiliatePayoutBatch.id, batchId))
+		.limit(1);
+	if (!batch || batch.status !== 'approved') return 'not_approved';
+	const [payout] = await db
+		.select()
+		.from(table.affiliatePayout)
+		.where(eq(table.affiliatePayout.payoutReference, `batch:${batchId}`))
+		.limit(1);
+	if (!payout) return 'not_approved';
+
+	const events = await db
+		.select({
+			commissionId: table.affiliateCommissionLedgerEvent.commissionId,
+			eventType: table.affiliateCommissionLedgerEvent.eventType,
+			amountDeltaMinor: table.affiliateCommissionLedgerEvent.amountDeltaMinor,
+			payoutId: table.affiliateCommissionLedgerEvent.payoutId
+		})
+		.from(table.affiliateCommissionLedgerEvent)
+		.innerJoin(
+			table.affiliateCommissionLedger,
+			eq(table.affiliateCommissionLedgerEvent.commissionId, table.affiliateCommissionLedger.id)
+		)
+		.where(eq(table.affiliateCommissionLedger.affiliateId, payout.affiliateId));
+	const claimed = new Set(
+		events
+			.filter((event) => event.eventType === 'payable' && event.payoutId === payout.id)
+			.map((event) => event.commissionId)
+	);
+	const dueIds: string[] = [];
+	let dueMinor = 0;
+	for (const commissionId of claimed) {
+		const own = events.filter((event) => event.commissionId === commissionId);
+		if (own.some((event) => event.eventType === 'paid')) continue;
+		const net = own.reduce((sum, event) => sum + event.amountDeltaMinor, 0);
+		if (net <= 0) continue;
+		dueIds.push(commissionId);
+		dueMinor += net;
+	}
+	const amountMinor = Math.min(dueMinor, batch.totalMinor);
+	if (amountMinor <= 0) {
+		await db
+			.update(table.affiliatePayoutBatch)
+			.set({ status: 'skipped' })
+			.where(
+				and(
+					eq(table.affiliatePayoutBatch.id, batchId),
+					eq(table.affiliatePayoutBatch.status, 'approved')
+				)
+			);
+		return 'nothing_due';
+	}
+
 	const [account] = await db
 		.select({
 			stripeAccountId: table.payoutAccount.stripeAccountId,
@@ -255,73 +438,58 @@ async function payAffiliateBatch(
 		.from(table.payoutAccount)
 		.where(
 			and(
-				eq(table.payoutAccount.affiliateId, total.affiliateId),
+				eq(table.payoutAccount.affiliateId, payout.affiliateId),
 				eq(table.payoutAccount.transfersActive, true)
 			)
 		)
 		.limit(1);
-	if (!account?.stripeAccountId) return;
-	const idempotencyKey = `affiliate-batch:${batchId}`;
+	if (!account?.stripeAccountId) return 'no_account';
+
+	const idempotencyKey = `affiliate-batch:${batchId}:${amountMinor}`;
 	const transfer = await client.transfers.create(
 		{
-			amount: total.total,
-			currency: total.currency,
+			amount: amountMinor,
+			currency: batch.currency.toLowerCase(),
 			destination: account.stripeAccountId,
-			metadata: { batch_id: batchId, affiliate_id: String(total.affiliateId) }
+			metadata: { batch_id: batchId, affiliate_id: String(payout.affiliateId) }
 		},
 		{ idempotencyKey }
 	);
+	// Stripe holds the money now. A failure below is loud; a retry inside 24h returns this same transfer.
 	await db.transaction(async (tx) => {
-		const payout = await AffiliateCommissionService.createPayoutInstruction(tx, {
-			affiliateId: total.affiliateId,
-			payoutReference: `batch:${batchId}`,
-			currency: total.currency,
-			amountMinor: total.total,
-			now
-		});
-		for (const commissionId of total.ids) {
-			await tx.insert(table.affiliateCommissionLedgerEvent).values({
-				id: crypto.randomUUID(),
-				commissionId,
-				eventType: 'payable',
-				amountDeltaMinor: 0,
-				currency: total.currency,
-				payoutId: payout.id,
-				eventReference: `commission:${commissionId}:payable`,
-				reasonCode: 'payout',
-				createdAt: now
-			});
-			await tx.insert(table.affiliateCommissionLedgerEvent).values({
-				id: crypto.randomUUID(),
+		for (const commissionId of dueIds) {
+			await AffiliateCommissionService.recordLifecycleEvent(tx, {
 				commissionId,
 				eventType: 'paid',
-				amountDeltaMinor: 0,
-				currency: total.currency,
-				payoutId: payout.id,
 				eventReference: `commission:${commissionId}:paid`,
-				reasonCode: 'payout',
-				createdAt: now
+				payoutId: payout.id,
+				causationReference: `batch:${batchId}`,
+				now
 			});
 		}
-		await tx.insert(table.payoutTransfer).values({
-			id: crypto.randomUUID(),
-			kind: 'affiliate',
-			batchId,
-			payoutId: payout.id,
-			stripeAccountId: account.stripeAccountId,
-			amountMinor: total.total,
-			currency: total.currency,
-			status: 'succeeded',
-			idempotencyKey,
-			stripeTransferId: transfer.id,
-			createdAt: now,
-			updatedAt: now
-		});
+		await tx
+			.insert(table.payoutTransfer)
+			.values({
+				id: crypto.randomUUID(),
+				kind: 'affiliate',
+				batchId,
+				payoutId: payout.id,
+				stripeAccountId: account.stripeAccountId,
+				amountMinor,
+				currency: batch.currency,
+				status: 'succeeded',
+				idempotencyKey,
+				stripeTransferId: transfer.id,
+				createdAt: now,
+				updatedAt: now
+			})
+			.onConflictDoNothing();
 		await tx
 			.update(table.affiliatePayoutBatch)
 			.set({ status: 'paid' })
 			.where(eq(table.affiliatePayoutBatch.id, batchId));
 	});
+	return 'paid';
 }
 
 export { payableBalance };
