@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { env } from '$env/dynamic/private';
 import * as table from '$lib/server/db/schema';
 
@@ -431,6 +431,17 @@ export class AffiliateCommissionService {
 		now?: Date
 	): Promise<number> {
 		if (!this.isEnabled()) {
+			return 0;
+		}
+		// Every caller respects an open refund or dispute hold; the hold's close path clears later.
+		const [openHold] = await tx
+			.select({ id: table.orderBalanceHold.id })
+			.from(table.orderBalanceHold)
+			.where(
+				and(eq(table.orderBalanceHold.orderId, orderId), eq(table.orderBalanceHold.status, 'open'))
+			)
+			.limit(1);
+		if (openHold) {
 			return 0;
 		}
 		const commissions = await tx
