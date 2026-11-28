@@ -84,7 +84,7 @@ async function act(
 	const useId = formText(await request.formData(), 'useId');
 	try {
 		const result = await reviewInviteUse({ actor, useId, decision });
-		if (!result.ok) return fail(404, { message: "We couldn't find that person." });
+		if (!result.ok) return fail(409, { message: result.message });
 		const name = encodeURIComponent(result.name);
 		throw redirect(
 			303,

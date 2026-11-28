@@ -69,3 +69,33 @@ Usernames may not be email-shaped and are reserved across active and pending ema
 Real-Postgres flows for transfers and batches. Skipped unless `FLOW_TEST_DATABASE_URL` points at a throwaway database holding the schema. Run with `vitest run --no-file-parallelism` (the files share and truncate that database).
 Build one with `DATABASE_URL=x npx drizzle-kit export --sql > schema.sql`, load it with `psql` (one FK error on `checkout_payment_attempt` is pre-existing and harmless), and run `ALTER DATABASE <db> SET session_replication_role = replica` so fixtures skip FK checks. `drizzle-kit push` cannot build it because of that FK.
 Resume rule: a pending claim younger than `STALE_CLAIM_MS` belongs to a live worker; an older one is reconciled against Stripe (transfer_group + metadata) before anything is created.
+
+## Invite approval rules (manager invites)
+
+- Approval needs an active (not revoked) invite, a still-pending use, a verified email, and an account whose role is the base `customer` role (or already the invited role). One conditional UPDATE decides which reviewer wins. An account holds a single role; approving over `instructor`, `affiliate`, `seller` or `admin` is refused with an admin-facing message. **Owner question:** should an account be able to hold several roles? Until answered, remove the old role first.
+- The use limit is enforced under a row lock on the invite (`insertUse`), so concurrent visitors cannot pass it.
+- `manager_invite.token` keeps the raw token **on purpose**: the admin list and detail pages re-display and copy the invite link later (PR #49 body). Only `token_hash` is used for public lookup. If links should be shown once only, drop the column and the re-copy button together; that is a product decision, left as is.
+
+## Seller and payout-account ownership (PR #52)
+
+- `product.seller_id` is not writable through any route today: `SellerService.linkProduct` has no caller, and the admin product procedures strip unknown keys (no `sellerId` in their zod input). Whoever adds a UI for it must make it admin-only and keep the active-seller check in `linkProduct`.
+- Payout accounts are derived from the signed-in session user only (`localOwner`): a seller must hold the `seller` role, an affiliate must be an active approved affiliate. No Stripe account id is accepted from a request. `attachStripeAccount` attaches once (`stripe_account_id IS NULL`), and unique indexes cover one account per seller, per affiliate, and per Stripe account id.
+- `applyAccountSnapshot` only updates status flags on the row whose `stripe_account_id` matches a signature-verified Connect event; it cannot attach or move an account.
+
+## Owner decisions left open (payout stack)
+
+- **Shipping and the seller fee (H6).** `recordSellerEarnings` calls `sellerShare(lineTotalMinor, 0)`: shipping passthrough is always 0 and the 8% fee is taken on item price only. VENDOR-AGREEMENT 1.4 and 4.1 define Gross Sales as including shipping charged to the customer, and migration 0016 hard-codes `CHECK (fee_bps = 800)`. Code and contract disagree; the owner must pick (change the code to include shipping, or the contract), and a fee other than 8% needs the check constraint relaxed.
+- **Affiliate recovery after payment (M1).** A reversal recorded after a commission was paid is netted from that affiliate later batches in the same currency, and a claimed-but-unsent batch is re-priced down at send. There is deliberately no Stripe reversal against an affiliate and no forfeiture rule (AFFILIATE-AGREEMENT 5.3 and 10.4 leave both open). Owner decision: whether to recover from affiliates who never earn again.
+- **`AFFILIATE_PAYOUT_FLOAT_MINOR` (L4)** only has to be set for a batch to run; it is not compared with the platform Stripe balance. Treat it as a switch, not a safeguard, until the owner defines the check.
+- **Attribution window (PR #48).** With `AFFILIATE_ATTRIBUTION_WINDOW_DAYS` unset no attribution cookie is issued, so affiliate links stop attributing once #48 merges. Production has the ledger off, so nothing accrues today either way. Set the window and rate together.
+
+## Lock order (money paths)
+
+`order` row -> `seller_earning` row(s) -> `affiliate_commission_ledger` row -> `payout_account` row. Seller claim and affiliate send-claim take only `payout_account`; the transfer success transaction takes only the earning row; refund handling takes order, then earnings, then commissions in phase 1 and `payout_account` alone in phase 2 (`settleReservedDebt`). No path takes `payout_account` and then reaches for an order, earning or commission lock, so there is no cycle. Keep it that way when adding a path.
+
+## Refunds on multi-seller orders (PR #57)
+
+- A **partial** refund on an order whose lines belong to more than one seller (house lines count as one) is never spread by order total: `charge.refunded` is recorded in `refund_allocation`, the order stays held (`order_balance_hold` `alloc:<orderId>`, which blocks release, seller transfers and commission approval), and nothing is clawed back until an admin assigns the refund to order lines (`allocateRefund`). Full refunds and single-seller orders keep the proportional rule. Stripe refunds are made in the Dashboard today, so there is no refund metadata to read line ids from.
+- **Open owner policy:** how shipping and tax refunds are attributed. An allocation can only target item lines, so a shipping-only or tax-only partial refund on a multi-seller order cannot be assigned today; it stays held. A single-seller order still claws back proportionally on any partial refund, shipping and tax included.
+- **L2.** `settleReservedDebt` keeps the seller payout-account row lock while it calls Stripe (find, create). That is what stops a payout run netting the same debt, and it is bounded by one Stripe call per reservation. Cost: a payout run for that seller waits, and a connection is held. If it shows up as latency, shorten it by moving the find/create outside the lock and re-checking inside it.
+- Every path that reaches Stripe is find first, then create, then re-check the ledger. A reversal Stripe already holds is adopted even after the 24h idempotency window.

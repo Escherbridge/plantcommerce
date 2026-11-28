@@ -8,6 +8,7 @@ import payoutAccountStatusSql from '../../../../drizzle/0015_payout_account_stat
 import sellerEarningSql from '../../../../drizzle/0016_seller_earning.sql?raw';
 import payoutTransferSql from '../../../../drizzle/0017_payout_transfer.sql?raw';
 import affiliateBatchCommissionsSql from '../../../../drizzle/0018_affiliate_batch_commissions.sql?raw';
+import refundAllocationSql from '../../../../drizzle/0019_refund_allocation.sql?raw';
 import { executableMigrationSql } from './additiveMigration';
 
 const migrations = [
@@ -19,7 +20,8 @@ const migrations = [
 	payoutAccountStatusSql,
 	sellerEarningSql,
 	payoutTransferSql,
-	affiliateBatchCommissionsSql
+	affiliateBatchCommissionsSql,
+	refundAllocationSql
 ];
 
 let pending: Promise<void> | null = null;
