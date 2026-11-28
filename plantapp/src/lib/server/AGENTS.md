@@ -92,3 +92,24 @@ Resume rule: a pending claim younger than `STALE_CLAIM_MS` belongs to a live wor
 ## Lock order (money paths)
 
 `order` row -> `seller_earning` row(s) -> `affiliate_commission_ledger` row -> `payout_account` row. Seller claim and affiliate send-claim take only `payout_account`; the transfer success transaction takes only the earning row; refund handling takes order, then earnings, then commissions in phase 1 and `payout_account` alone in phase 2 (`settleReservedDebt`). No path takes `payout_account` and then reaches for an order, earning or commission lock, so there is no cycle. Keep it that way when adding a path.
+
+## Seller ledger vocabulary (one reader)
+
+Every seller balance comes from `services/sellerLedgerBalance.ts` (`earningBalance`, `clawbackRows`,
+`sellerNettableDebtMinor`). Payout planning, refund clawbacks, allocation, the console and reconciliation read through
+it; do not re-derive balances from raw events elsewhere.
+
+| event_type | amount | meaning |
+| --- | --- | --- |
+| `pending` | +net | the earning as accrued |
+| `released`, `held`, `transferred` | 0 | lifecycle markers |
+| `reversed` | -x | a reduction before payment (reason `refund`/`chargeback`), or money pulled back at Stripe (reason `reversal_of_debt`) |
+| `debt` | +x or -x | owed by the seller; the reason says which: `refund`/`chargeback` (clawback; reference `:debt-reserved:` while waiting on a Stripe reversal), `dispute_fee`, `overpay`, `debt_released` (a reservation Stripe refused), `debt_restored`, `debt_settled` (-x, netted from a transfer) |
+| `reversal_credited` | +x | undoes a `reversed` row (`credits_reference` is that row) |
+| `debt_credited` | -x | undoes a clawback or released `debt` row |
+| `fee_credited` | -x | undoes a `dispute_fee` row |
+
+Credits never reuse `reversed` or `debt` with a flipped sign, and always name the row they undo. Invariants: `clawedBack`
+never exceeds the earning net; reserved debt is never nettable while active and is counted once (in `clawedBack`, and
+in `reservedDebt` only until its outcome row exists); a credit of a clawback returns room for a later refund; the debt
+shown to admins as collectable is `nettableDebt` only.
