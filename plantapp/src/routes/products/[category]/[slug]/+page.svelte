@@ -4,8 +4,12 @@
 	import { ProductGallery, ProductCard } from '$lib/components/cards';
 	import { StatTile, SectionHeader, Badge, Button, GlassCard } from '$lib/components/ui';
 	import { sanitizeRichText } from '$lib/utils/sanitizeRichText';
-	import { productCategoryHref } from '../../catalog';
-	import { guideForCategory } from '$lib/catalog/categoryGuides';
+	import { productBreadcrumbLabel, productCategoryHref } from '../../catalog';
+	import {
+		guideForCategory,
+		guideForProduct,
+		rewriteProductGuideLinks
+	} from '$lib/catalog/categoryGuides';
 	import { productStructuredData } from '$lib/catalog/placeholderListing';
 	import { cart } from '$lib/stores/cart';
 	import type { PageData } from './$types';
@@ -20,9 +24,11 @@
 
 	const productUrl = $derived(`/products/${data.categorySlug}/${p.slug}`);
 	const categoryHref = $derived(productCategoryHref(data.categorySlug));
-	const categoryName = $derived(p.category?.name || data.categorySlug);
+	const categoryName = $derived(productBreadcrumbLabel(data.categorySlug, p.category));
 	const nextGuide = $derived(
-		guideForCategory(p.category?.slug) ?? guideForCategory(data.categorySlug)
+		guideForProduct(p.slug) ??
+			guideForCategory(p.category?.slug) ??
+			guideForCategory(data.categorySlug)
 	);
 
 	// ---- Currency-aware price formatting (currency from the model; default USD → $). ----
@@ -106,7 +112,11 @@
 	);
 
 	// ---- The long read: the ONLY @html on the page, always sanitized. ----
-	const longReadHtml = $derived(sanitizeRichText(p.descriptionHtml || p.description || ''));
+	// The load already rewrote descriptionHtml, so this payload has no old /learn
+	// anchors. Running the rewrite again must leave that HTML unchanged.
+	const longReadHtml = $derived(
+		sanitizeRichText(rewriteProductGuideLinks(p.descriptionHtml || p.description || ''))
+	);
 	const hasLongRead = $derived(stripHtml(p.descriptionHtml || p.description || '').length > 0);
 
 	// ---- Gallery images mapped to ProductGallery's {url, alt} contract. ----

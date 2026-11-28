@@ -17,6 +17,8 @@ describe('writing module', () => {
 		expect(xml).toContain('https://aevani.com/blog/raised-beds-for-heavy-clay-and-hot-summers');
 		expect(xml).toContain('https://aevani.com/blog/pre-spring-grower-checklist');
 		expect(xml).toContain('https://aevani.com/blog/cycling-your-first-aquaponics-loop');
+		expect(xml).toContain('https://aevani.com/blog/fall-soil-test');
+		expect(xml).toContain('A November soil test reads the slow stuff');
 		expect(xml).toContain('In a dry climate, cooling can use more water than the plants');
 		expect(xml).toContain('The seller fee is a flat 8%');
 		expect(xml).toContain(blogDescription);

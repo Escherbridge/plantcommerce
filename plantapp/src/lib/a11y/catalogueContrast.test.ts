@@ -75,4 +75,24 @@ describe('catalogue text contrast', () => {
 		expect(contrast('#8b938a', '#f4f1ea')).toBeLessThan(4.5);
 		expect(contrast('#5c665d', '#f4f1ea')).toBeGreaterThanOrEqual(4.5);
 	});
+
+	it('gives the signed-in account bar links at least 4.5:1 on #f4f1ea', () => {
+		const layout = readFileSync(join(srcDir, 'routes/+layout.svelte'), 'utf8');
+		const linkRule = layout.match(/\.user-bottom-bar__link \{[^}]*\}/s)?.[0] ?? '';
+
+		expect(linkRule).toContain('color: #5c665d;');
+		expect(linkRule).not.toContain('oklch(var(--bc) / 0.6)');
+		expect(contrast('#768177', '#f4f1ea')).toBeLessThan(4.5);
+		expect(contrast('#5c665d', '#f4f1ea')).toBeGreaterThanOrEqual(4.5);
+	});
+
+	it('gives search result blurbs at least 4.5:1 on #f4f1ea', () => {
+		const search = readFileSync(join(srcDir, 'routes/search/+page.svelte'), 'utf8');
+
+		expect(search).toContain('class="search-blurb text-sm">{course.description}');
+		expect(search).toContain('color: #5c665d');
+		expect(search).not.toMatch(/class="[^"]*text-base-content\/60/);
+		expect(contrast('#768177', '#f4f1ea')).toBeLessThan(4.5);
+		expect(contrast('#5c665d', '#f4f1ea')).toBeGreaterThanOrEqual(4.5);
+	});
 });

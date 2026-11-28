@@ -408,6 +408,13 @@ textarea.textarea-bordered {
 	outline-offset: 2px !important;
 }
 
+/* Script moves focus here after a server-side sign-up failure, so the ring is on :focus as well as :focus-visible. */
+.register-page #register-form-error:focus,
+.register-page #register-form-error:focus-visible {
+	outline: 2px solid var(--aevani-focus) !important;
+	outline-offset: 2px !important;
+}
+
 .input:disabled,
 .select:disabled,
 .textarea:disabled {

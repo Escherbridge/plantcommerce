@@ -94,3 +94,23 @@ export function focusRegistrationField(
 ): void {
 	elements[field]?.focus();
 }
+
+type Focusable = { focus(): void };
+
+/**
+ * After sign-up fails, move focus to the invalid field.
+ * A server failure that does not name a field moves focus to the error summary.
+ */
+export function focusRegistrationFailure(
+	field: RegisterField | null,
+	targets: {
+		fields: Partial<Record<RegisterField, Focusable | null | undefined>>;
+		error: Focusable | null | undefined;
+	}
+): void {
+	if (field && targets.fields[field]) {
+		focusRegistrationField(field, targets.fields);
+		return;
+	}
+	targets.error?.focus();
+}
