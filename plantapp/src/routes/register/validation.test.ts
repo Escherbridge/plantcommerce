@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
 	firstRegistrationError,
+	focusRegistrationFailure,
 	focusRegistrationField,
 	optionalRegisterName,
 	registrationFieldErrors
@@ -150,5 +151,43 @@ describe('focusRegistrationField', () => {
 
 	it('does nothing when the field is not mounted', () => {
 		expect(() => focusRegistrationField('email', {})).not.toThrow();
+	});
+});
+
+describe('focusRegistrationFailure', () => {
+	it('moves focus to the error after a server-side sign-up failure', () => {
+		const error = { focus: vi.fn() };
+		const email = { focus: vi.fn() };
+		const username = { focus: vi.fn() };
+
+		focusRegistrationFailure(null, { fields: { email, username }, error });
+
+		expect(error.focus).toHaveBeenCalledOnce();
+		expect(email.focus).not.toHaveBeenCalled();
+		expect(username.focus).not.toHaveBeenCalled();
+	});
+
+	it('moves focus to the first invalid field after a field-level failure', () => {
+		const error = { focus: vi.fn() };
+		const email = { focus: vi.fn() };
+		const username = { focus: vi.fn() };
+
+		focusRegistrationFailure('email', { fields: { email, username }, error });
+
+		expect(email.focus).toHaveBeenCalledOnce();
+		expect(username.focus).not.toHaveBeenCalled();
+		expect(error.focus).not.toHaveBeenCalled();
+	});
+
+	it('uses the error summary when the invalid field is not mounted', () => {
+		const error = { focus: vi.fn() };
+
+		focusRegistrationFailure('username', { fields: { username: null }, error });
+
+		expect(error.focus).toHaveBeenCalledOnce();
+	});
+
+	it('does nothing when neither target is mounted', () => {
+		expect(() => focusRegistrationFailure(null, { fields: {}, error: null })).not.toThrow();
 	});
 });

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
+import { presentSoilHealthGuide } from '$lib/content/soilHealthGuide';
 import { publicProcedure, protectedProcedure, adminProcedure, router } from './trpc';
 import { ContentService } from '../services/content';
 
@@ -41,7 +42,10 @@ export const contentRouter = router({
 				});
 			}
 
-			return page;
+			// Stored rows are not migrated. The guide load fetches this response,
+			// and SvelteKit inlines that body, so the retired sentences have to
+			// be gone before the procedure returns.
+			return presentSoilHealthGuide(page);
 		} catch (error) {
 			if (error instanceof TRPCError) {
 				throw error;
