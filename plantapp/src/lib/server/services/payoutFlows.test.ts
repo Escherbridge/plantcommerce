@@ -260,6 +260,25 @@ describe.skipIf(!databaseUrl)('payout flows on Postgres', { timeout: 30_000 }, (
 			expect(restored.amount).toBe(3000);
 		});
 
+		it('a refund that lands while the transfer is in flight leaves the excess as seller debt', async () => {
+			await resetAndSeedSeller({ transferGroup: 'draft-1' });
+			const stripe = fakeStripe();
+			const create = stripe.client.transfers.create;
+			stripe.client.transfers.create = async (...args: Parameters<typeof create>) => {
+				// The refund is recorded as a pre-transfer reduction while Stripe is still working.
+				await sql`INSERT INTO seller_earning_event (id, earning_id, event_type, amount_delta_minor, currency, event_reference, reason_code)
+					VALUES ('evr','e1','reversed',-2300,'usd','seller-earning:e1:reversed:ch_1:2500','refund')`;
+				return create(...args);
+			};
+
+			await jobs.runSellerTransfers(releasedEnv, stripe.client);
+
+			expect(stripe.transfers.map((transfer) => transfer.amount)).toEqual([9200]);
+			const [debt] =
+				await sql`SELECT amount_delta_minor::int AS amount FROM seller_earning_event WHERE event_reference = 'seller-earning:e1:debt:send-overpay'`;
+			expect(debt.amount).toBe(2300);
+		});
+
 		it('does not net refund debt that is reserved for a Stripe reversal', async () => {
 			const { sellerId } = await resetAndSeedSeller({ transferGroup: 'draft-1' });
 			const [otherOrder] = await sql`
@@ -338,6 +357,35 @@ describe.skipIf(!databaseUrl)('payout flows on Postgres', { timeout: 30_000 }, (
 			expect(count).toBe(2);
 			const batches = await sql`SELECT status FROM affiliate_payout_batch`;
 			expect(batches.map((row) => row.status)).toEqual(['paid']);
+		});
+
+		it('a reversal after a commission was paid is netted from the affiliate next batch', async () => {
+			await seedCommission(2);
+			// c0 was already paid; 200 of it was reversed afterwards. c1 is the new approved commission (500).
+			await sql`INSERT INTO affiliate_payout (id, affiliate_id, payout_reference, currency, amount_minor)
+				SELECT 'po0', affiliate_id, 'batch:old', 'usd', 500 FROM affiliate_commission_ledger WHERE id = 'c0'`;
+			await sql`INSERT INTO affiliate_commission_ledger_event (id, commission_id, event_type, amount_delta_minor, currency, event_reference, reason_code, payout_id, created_at)
+				VALUES ('x1','c0','payable',0,'usd','commission:c0:payable','payout','po0', now() - interval '3 hours'),
+				       ('x2','c0','paid',0,'usd','commission:c0:paid','payout','po0', now() - interval '2 hours'),
+				       ('x3','c0','reversed',-200,'usd','commission:c0:reversal:refund:ch_x','refund', NULL, now() - interval '1 hour')`;
+			const stripe = fakeStripe();
+
+			await jobs.runAffiliateBatch(batchEnv, stripe.client);
+
+			// Only c1 (500) is claimable; 200 of debt comes off it.
+			expect(stripe.transfers.map((transfer) => transfer.amount)).toEqual([300]);
+		});
+
+		it('a batch claimed but not yet sent is re-priced down by a later reversal', async () => {
+			await seedCommission(1);
+			await jobs.runAffiliateBatch(batchEnv, null);
+			await sql`INSERT INTO affiliate_commission_ledger_event (id, commission_id, event_type, amount_delta_minor, currency, event_reference, reason_code)
+				VALUES ('r1','c0','reversed',-200,'usd','commission:c0:reversal:refund:ch_x','refund')`;
+			const stripe = fakeStripe();
+
+			await jobs.runAffiliateBatch(batchEnv, stripe.client);
+
+			expect(stripe.transfers.map((transfer) => transfer.amount)).toEqual([300]);
 		});
 
 		it('a slow claimant stamped with an old caller clock keeps its lease against a second worker', async () => {
