@@ -1111,6 +1111,49 @@ export const orderBalanceHold = pgTable(
 	})
 );
 
+/** A partial refund on a multi-seller order, waiting for an admin to assign it to order lines. */
+export const refundAllocation = pgTable(
+	'refund_allocation',
+	{
+		id: text('id').primaryKey(),
+		orderId: integer('order_id')
+			.notNull()
+			.references(() => order.id),
+		chargeId: text('charge_id').notNull(),
+		refundedMinor: bigint('refunded_minor', { mode: 'number' }).notNull(),
+		allocatedMinor: bigint('allocated_minor', { mode: 'number' }).notNull().default(0),
+		status: text('status', { enum: ['needs_allocation', 'allocated'] }).notNull(),
+		reasonCode: text('reason_code', { enum: ['refund', 'chargeback'] })
+			.notNull()
+			.default('refund'),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+		resolvedAt: timestamp('resolved_at', { withTimezone: true, mode: 'date' }),
+		resolvedBy: text('resolved_by')
+	},
+	(table) => ({
+		orderIdx: uniqueIndex('refund_allocation_order_idx').on(table.orderId),
+		statusIdx: index('refund_allocation_status_idx').on(table.status)
+	})
+);
+
+export const refundAllocationLine = pgTable(
+	'refund_allocation_line',
+	{
+		id: text('id').primaryKey(),
+		allocationId: text('allocation_id')
+			.notNull()
+			.references(() => refundAllocation.id),
+		orderItemId: integer('order_item_id')
+			.notNull()
+			.references(() => orderItem.id),
+		amountMinor: bigint('amount_minor', { mode: 'number' }).notNull(),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		allocationIdx: index('refund_allocation_line_allocation_idx').on(table.allocationId)
+	})
+);
+
 export const payoutTransfer = pgTable(
 	'payout_transfer',
 	{

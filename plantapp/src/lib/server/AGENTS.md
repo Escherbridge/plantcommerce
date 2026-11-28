@@ -92,3 +92,10 @@ Resume rule: a pending claim younger than `STALE_CLAIM_MS` belongs to a live wor
 ## Lock order (money paths)
 
 `order` row -> `seller_earning` row(s) -> `affiliate_commission_ledger` row -> `payout_account` row. Seller claim and affiliate send-claim take only `payout_account`; the transfer success transaction takes only the earning row; refund handling takes order, then earnings, then commissions in phase 1 and `payout_account` alone in phase 2 (`settleReservedDebt`). No path takes `payout_account` and then reaches for an order, earning or commission lock, so there is no cycle. Keep it that way when adding a path.
+
+## Refunds on multi-seller orders (PR #57)
+
+- A **partial** refund on an order whose lines belong to more than one seller (house lines count as one) is never spread by order total: `charge.refunded` is recorded in `refund_allocation`, the order stays held (`order_balance_hold` `alloc:<orderId>`, which blocks release, seller transfers and commission approval), and nothing is clawed back until an admin assigns the refund to order lines (`allocateRefund`). Full refunds and single-seller orders keep the proportional rule. Stripe refunds are made in the Dashboard today, so there is no refund metadata to read line ids from.
+- **Open owner policy:** how shipping and tax refunds are attributed. An allocation can only target item lines, so a shipping-only or tax-only partial refund on a multi-seller order cannot be assigned today; it stays held. A single-seller order still claws back proportionally on any partial refund, shipping and tax included.
+- **L2.** `settleReservedDebt` keeps the seller payout-account row lock while it calls Stripe (find, create). That is what stops a payout run netting the same debt, and it is bounded by one Stripe call per reservation. Cost: a payout run for that seller waits, and a connection is held. If it shows up as latency, shorten it by moving the find/create outside the lock and re-checking inside it.
+- Every path that reaches Stripe is find first, then create, then re-check the ledger. A reversal Stripe already holds is adopted even after the 24h idempotency window.

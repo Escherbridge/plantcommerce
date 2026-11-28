@@ -238,3 +238,11 @@ approval threshold means every affiliate batch waits for approval. It does not
 update existing rows. It is applied by the same startup helper, after `0016`.
 It is not journaled. Do not use `db:migrate` or `db:push`. Run
 `preflight_payout_transfer.sql` read-only before a production apply.
+
+## `0019_refund_allocation.sql`
+
+Additive. Creates `refund_allocation` and `refund_allocation_line`: a partial refund on an order with more than one
+seller (house lines count as one) is recorded here, the order's earnings are held through an open
+`order_balance_hold`, and an admin assigns the refund to order lines before any clawback runs. It does not update
+existing rows. Applied by the same startup helper, after `0017` (and `0018` once that PR merges). Not journaled.
+Run `preflight_refund_allocation.sql` read-only before a production apply.

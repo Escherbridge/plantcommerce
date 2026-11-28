@@ -24,7 +24,7 @@ describe.skipIf(!databaseUrl)('refund flows on Postgres', { timeout: 30_000 }, (
 		apply = (await import('./refundApply')).applyMoneyEvent;
 		await sql.unsafe(
 			`TRUNCATE "order", "user", seller, payout_account, seller_earning, seller_earning_event,
-			 order_balance_hold, payout_transfer CASCADE`
+			 order_balance_hold, payout_transfer, order_item, product, refund_allocation, refund_allocation_line CASCADE`
 		);
 		await sql`INSERT INTO "user" (id, username, email, password_hash) VALUES ('u1','seller','s@example.com','x')`;
 		const [seller] =
@@ -280,5 +280,168 @@ describe.skipIf(!databaseUrl)('refund flows on Postgres', { timeout: 30_000 }, (
 			WHERE earning_id = 'e1' AND event_type = 'debt' AND event_reference NOT LIKE '%:debt-reserved:%'`;
 		const refundedShare = Math.round((9200 * cumulative) / 10000);
 		expect(recovered + owed).toBe(refundedShare);
+	});
+
+	it('a refund landing while the seller transfer is in flight becomes debt, not a silent pre-transfer reduction', async () => {
+		await seedPaidSeller({ withSecondEarning: false });
+		await sql`DELETE FROM payout_transfer`;
+		await sql`DELETE FROM seller_earning_event WHERE event_type = 'transferred'`;
+		await sql`INSERT INTO seller_earning_event (id, earning_id, event_type, amount_delta_minor, currency, event_reference)
+			VALUES ('rel','e1','released',0,'usd','seller-earning:e1:released')`;
+		const payouts = await import('./payoutJobs');
+		let sent = 0;
+		const stripe = {
+			transfers: {
+				create: async (params: { amount: number }) => {
+					await new Promise((resolve) => setTimeout(resolve, 500));
+					sent += params.amount;
+					return { id: 'tr_1' };
+				},
+				list: async () => ({ data: [], has_more: false })
+			}
+		};
+		const { client } = reversalClient({});
+
+		const payout = payouts.runSellerTransfers(
+			{ SELLER_TRANSFERS_ENABLED: 'true', PAYOUT_HOLD_DAYS_AFTER_DELIVERY: '14' },
+			stripe
+		);
+		await new Promise((resolve) => setTimeout(resolve, 200));
+		await apply('charge.refunded', refunded(2500), client);
+		await payout;
+
+		expect(sent).toBe(9200);
+		const [{ reversed }] =
+			await sql`SELECT count(*)::int AS reversed FROM seller_earning_event WHERE event_type = 'reversed'`;
+		expect(reversed).toBe(0);
+		expect(await nettableDebtMinor()).toBe(2300);
+	});
+
+	it('a timed-out reversal that did reach Stripe is adopted after the idempotency window, never repeated or released', async () => {
+		await seedPaidSeller({ withSecondEarning: true });
+		const stripeReversals: { id: string; amount: number; metadata: Record<string, string> }[] = [];
+		let visible = false;
+		const make = (lost: boolean) => ({
+			transfers: {
+				createReversal: async (
+					_id: string,
+					params: { amount?: number; metadata?: Record<string, string> }
+				) => {
+					stripeReversals.push({
+						id: `trr_${stripeReversals.length + 1}`,
+						amount: params.amount ?? 0,
+						metadata: params.metadata ?? {}
+					});
+					if (lost) throw Object.assign(new Error('timeout'), { type: 'StripeConnectionError' });
+					return { id: stripeReversals[stripeReversals.length - 1].id };
+				},
+				listReversals: async () => ({ data: visible ? stripeReversals : [], has_more: false })
+			}
+		});
+
+		await expect(apply('charge.refunded', refunded(2500), make(true))).rejects.toThrow();
+		expect(await nettableDebtMinor()).toBe(0);
+
+		// Two days later the key has expired (a create would make a second reversal) and the list has caught up.
+		visible = true;
+		await apply('charge.refunded', refunded(2500), make(false));
+
+		expect(stripeReversals).toHaveLength(1);
+		expect(await nettableDebtMinor()).toBe(0);
+		const [{ count }] =
+			await sql`SELECT count(*)::int AS count FROM seller_earning_event WHERE event_reference LIKE '%:reversed-at-stripe:%'`;
+		expect(count).toBe(1);
+	});
+
+	it('the admin sweep settles a reservation no webhook retry will reach', async () => {
+		await seedPaidSeller();
+		const lost = reversalClient({ createFails: true, listFails: true });
+		await expect(apply('charge.refunded', refunded(2500), lost.client)).rejects.toThrow();
+		const core = await import('./refundCore');
+		expect(await core.listReservedDebt()).toMatchObject([{ earningId: 'e1', reservedMinor: 2300 }]);
+
+		const healthy = reversalClient({});
+		const result = await core.sweepReservedDebt(healthy.client);
+
+		expect(result).toEqual({ settled: 1, stillReserved: 0 });
+		expect(healthy.reversals).toEqual([2300]);
+		expect(await core.listReservedDebt()).toEqual([]);
+	});
+
+	describe('partial refunds on multi-seller orders', () => {
+		beforeEach(async () => {
+			// Order 1 holds seller A (e1, line 6000) and seller B (e2, line 4000); both already have earnings.
+			const [orderRow] = await sql`SELECT id FROM "order" LIMIT 1`;
+			await sql`INSERT INTO "user" (id, username, email, password_hash) VALUES ('u2','sellerb','b@example.com','x')`;
+			const [sellerB] =
+				await sql`INSERT INTO seller (user_id, display_name) VALUES ('u2','B') RETURNING id`;
+			const [sellerA] = await sql`SELECT id FROM seller WHERE user_id = 'u1'`;
+			await sql`UPDATE seller_earning SET line_total_minor = 6000, fee_minor = 480, net_minor = 5520 WHERE id = 'e1'`;
+			await sql`UPDATE seller_earning_event SET amount_delta_minor = 5520 WHERE id = 'ev1'`;
+			await sql`INSERT INTO seller_earning (id, order_id, seller_id, currency, line_total_minor, fee_bps, fee_minor, net_minor)
+				VALUES ('e2', ${orderRow.id}, ${sellerB.id}, 'usd', 4000, 800, 320, 3680)`;
+			await sql`INSERT INTO seller_earning_event (id, earning_id, event_type, amount_delta_minor, currency, event_reference)
+				VALUES ('ev2','e2','pending',3680,'usd','seller-earning:e2:pending')`;
+			await sql`INSERT INTO product (id, name, slug, sku, price, category_id) VALUES (1,'p','p','p','1.00',1) ON CONFLICT DO NOTHING`;
+			await sql`INSERT INTO order_item (id, order_id, product_id, product_name, product_sku, quantity, unit_price, total_price, seller_id)
+				VALUES (1, ${orderRow.id}, 1, 'A item', 'a', 1, '60.00', '60.00', ${sellerA.id}),
+				       (2, ${orderRow.id}, 1, 'B item', 'b', 1, '40.00', '40.00', ${sellerB.id})`;
+		});
+
+		const claw = async (earningId: string) => {
+			const [row] =
+				await sql`SELECT COALESCE(SUM(ABS(amount_delta_minor)), 0)::int AS total FROM seller_earning_event
+				WHERE earning_id = ${earningId} AND reason_code = 'refund'`;
+			return row.total;
+		};
+
+		it('does not spread a partial refund over every seller; it holds and waits for an allocation', async () => {
+			await apply('charge.refunded', refunded(3000), null);
+
+			expect(await claw('e1')).toBe(0);
+			expect(await claw('e2')).toBe(0);
+			const core = await import('./refundAllocation');
+			expect(await core.listAllocationsNeedingAction()).toMatchObject([
+				{ unallocatedMinor: 3000, orderId: expect.any(Number) }
+			]);
+			const [{ open }] =
+				await sql`SELECT count(*)::int AS open FROM order_balance_hold WHERE status = 'open'`;
+			expect(open).toBe(1);
+		});
+
+		it('after an admin assigns the refund to seller A line, only seller A is clawed back', async () => {
+			await apply('charge.refunded', refunded(3000), null);
+			const allocation = await import('./refundAllocation');
+			const [waiting] = await allocation.listAllocationsNeedingAction();
+
+			const wrong = await allocation.allocateRefund({
+				allocationId: waiting.allocationId,
+				lines: [{ orderItemId: 1, amountMinor: 2000 }],
+				actorId: 'admin',
+				client: null
+			});
+			expect(wrong.ok).toBe(false);
+
+			const done = await allocation.allocateRefund({
+				allocationId: waiting.allocationId,
+				lines: [{ orderItemId: 1, amountMinor: 3000 }],
+				actorId: 'admin',
+				client: null
+			});
+			expect(done).toEqual({ ok: true });
+
+			// 3000 of A's 6000 line: half of A's 5520 net. B is untouched.
+			expect(await claw('e1')).toBe(2760);
+			expect(await claw('e2')).toBe(0);
+			const [{ open }] =
+				await sql`SELECT count(*)::int AS open FROM order_balance_hold WHERE status = 'open'`;
+			expect(open).toBe(0);
+		});
+
+		it('a full refund still claws back every seller proportionally', async () => {
+			await apply('charge.refunded', refunded(10000), null);
+			expect(await claw('e1')).toBe(5520);
+			expect(await claw('e2')).toBe(3680);
+		});
 	});
 });
