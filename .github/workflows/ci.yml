@@ -18,6 +18,19 @@ jobs:
       PUBLIC_BASE_URL: https://aevani.example
       AUTH_CAPABILITIES_ENABLED: "false"
       AUTH_ATOMIC_THROTTLES_ENABLED: "false"
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: flow
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -33,5 +46,15 @@ jobs:
         run: npm run check
       - name: Unit tests
         run: npm test
+      - name: Load flow-test schema
+        run: |
+          DATABASE_URL=unused npx drizzle-kit export --sql > "$RUNNER_TEMP/flow-schema.sql"
+          export PGPASSWORD=postgres
+          psql -h localhost -U postgres -d flow -q -f "$RUNNER_TEMP/flow-schema.sql" || true
+          psql -h localhost -U postgres -d flow -c "ALTER DATABASE flow SET session_replication_role = replica"
+      - name: Money-flow tests on Postgres
+        env:
+          FLOW_TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/flow
+        run: npx vitest run --no-file-parallelism --reporter=verbose Flows.test
       - name: Production build
         run: npm run build

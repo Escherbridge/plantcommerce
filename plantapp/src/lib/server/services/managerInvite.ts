@@ -1,5 +1,5 @@
 import { timingSafeEqual } from 'node:crypto';
-import { and, desc, eq, sql, type SQL } from 'drizzle-orm';
+import { and, count, desc, eq, sql, type SQL } from 'drizzle-orm';
 import type { InviteRole, UserRole } from '$lib/auth/userRole';
 import { db } from '$lib/server/db';
 import {
@@ -80,10 +80,17 @@ export type InviteRepository = {
 		inviteId: string;
 		userId: string;
 		createdAt: Date;
-	}): Promise<'created' | 'exists'>;
+	}): Promise<'created' | 'exists' | 'full'>;
 	getUse(useId: string): Promise<InviteUseRecord | null>;
 	listUses(inviteId: string): Promise<InviteUseRecord[]>;
-	setUseStatus(useId: string, status: ReviewState, reviewerId: string, now: Date): Promise<void>;
+	/** Conditional pending -> status update. False when another reviewer got there first. */
+	claimUseReview(
+		useId: string,
+		status: ReviewState,
+		reviewerId: string,
+		now: Date
+	): Promise<boolean>;
+	reopenUse(useId: string): Promise<void>;
 	markRoleRemoved(useId: string, now: Date): Promise<void>;
 };
 
@@ -291,21 +298,38 @@ const drizzleRepository: InviteRepository = {
 		};
 	},
 	async insertUse(row) {
-		try {
-			await db.insert(managerInviteUse).values({
+		// Row lock on the invite serializes concurrent uses, so the limit cannot be passed by a race.
+		return db.transaction(async (tx) => {
+			const [invite] = await tx
+				.select({ useLimit: managerInvite.useLimit })
+				.from(managerInvite)
+				.where(eq(managerInvite.id, row.inviteId))
+				.for('update');
+			if (!invite) return 'full' as const;
+			const [already] = await tx
+				.select({ id: managerInviteUse.id })
+				.from(managerInviteUse)
+				.where(
+					and(eq(managerInviteUse.inviteId, row.inviteId), eq(managerInviteUse.userId, row.userId))
+				)
+				.limit(1);
+			if (already) return 'exists' as const;
+			if (invite.useLimit !== null) {
+				const [{ used }] = await tx
+					.select({ used: count() })
+					.from(managerInviteUse)
+					.where(eq(managerInviteUse.inviteId, row.inviteId));
+				if (used >= invite.useLimit) return 'full' as const;
+			}
+			await tx.insert(managerInviteUse).values({
 				id: row.id,
 				inviteId: row.inviteId,
 				userId: row.userId,
 				status: 'pending',
 				createdAt: row.createdAt
 			});
-			return 'created';
-		} catch (error) {
-			if (error && typeof error === 'object' && 'code' in error && error.code === '23505') {
-				return 'exists';
-			}
-			throw error;
-		}
+			return 'created' as const;
+		});
 	},
 	async getUse(useId) {
 		const uses = await listInviteUses(eq(managerInviteUse.id, useId));
@@ -314,10 +338,18 @@ const drizzleRepository: InviteRepository = {
 	async listUses(inviteId) {
 		return listInviteUses(eq(managerInviteUse.inviteId, inviteId));
 	},
-	async setUseStatus(useId, status, reviewerId, now) {
-		await db
+	async claimUseReview(useId, status, reviewerId, now) {
+		const claimed = await db
 			.update(managerInviteUse)
 			.set({ status, reviewedBy: reviewerId, reviewedAt: now })
+			.where(and(eq(managerInviteUse.id, useId), eq(managerInviteUse.status, 'pending')))
+			.returning({ id: managerInviteUse.id });
+		return claimed.length > 0;
+	},
+	async reopenUse(useId) {
+		await db
+			.update(managerInviteUse)
+			.set({ status: 'pending', reviewedBy: null, reviewedAt: null })
 			.where(eq(managerInviteUse.id, useId));
 	},
 	async markRoleRemoved(useId, now) {
@@ -498,22 +530,65 @@ export async function reviewInviteUse(input: {
 	now?: Date;
 	repo?: InviteRepository;
 	setRole?: RoleUpdater;
-}): Promise<{ ok: true; name: string; role: InviteRole } | { ok: false }> {
+}): Promise<
+	| { ok: true; name: string; role: InviteRole }
+	| { ok: false; reason: ReviewRefusal; message: string }
+> {
 	assertInviteAdmin(input.actor);
 	const repo = input.repo ?? drizzleRepository;
 	const use = await repo.getUse(input.useId);
-	if (!use) return { ok: false };
+	if (!use) return refuse('missing');
 	const now = input.now ?? new Date();
-	if (input.decision === 'approved' && !use.emailVerified) return { ok: false };
-	if (input.decision === 'approved' && use.userRole !== 'admin' && !use.roleRemovedAt) {
-		await (input.setRole ?? defaultRoleUpdate)(use.userId, use.inviteRole);
+	if (use.status !== 'pending') return refuse('not_pending');
+	if (input.decision === 'approved') {
+		const invite = await repo.getInvite(use.inviteId);
+		if (!invite || invite.status !== 'active') return refuse('invite_inactive');
+		// A use can only exist from before the expiry; this guards a row that somehow post-dates it.
+		if (invite.expiresAt && use.createdAt.getTime() > invite.expiresAt.getTime()) {
+			return refuse('invite_expired');
+		}
+		if (!use.emailVerified) return refuse('unverified');
+		// The account has one role. Never overwrite anything but the base role, or the role already granted.
+		if (!use.roleRemovedAt && use.userRole !== 'customer' && use.userRole !== use.inviteRole) {
+			return refuse('role_conflict', use.userRole);
+		}
 	}
-	await repo.setUseStatus(use.id, input.decision, input.actor.id, now);
+	// Winner-takes-it: only one reviewer moves a use out of pending.
+	const claimed = await repo.claimUseReview(use.id, input.decision, input.actor.id, now);
+	if (!claimed) return refuse('not_pending');
+	if (input.decision === 'approved' && !use.roleRemovedAt && use.userRole !== use.inviteRole) {
+		try {
+			await (input.setRole ?? defaultRoleUpdate)(use.userId, use.inviteRole);
+		} catch (error) {
+			await repo.reopenUse(use.id);
+			throw error;
+		}
+	}
 	return {
 		ok: true,
 		name: displayName(use),
 		role: use.inviteRole
 	};
+}
+
+export type ReviewRefusal =
+	| 'missing'
+	| 'not_pending'
+	| 'invite_inactive'
+	| 'invite_expired'
+	| 'unverified'
+	| 'role_conflict';
+
+function refuse(reason: ReviewRefusal, currentRole?: string) {
+	const messages: Record<ReviewRefusal, string> = {
+		missing: "We couldn't find that person.",
+		not_pending: 'This request was already reviewed.',
+		invite_inactive: 'This invite was revoked, so it cannot be approved.',
+		invite_expired: 'This invite had expired, so it cannot be approved.',
+		unverified: 'Their email is not verified yet.',
+		role_conflict: `This account already has the ${currentRole} role. Remove that role first; an account holds one role.`
+	};
+	return { ok: false as const, reason, message: messages[reason] };
 }
 
 export async function removeInvitedRole(input: {

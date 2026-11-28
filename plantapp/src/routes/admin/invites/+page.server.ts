@@ -103,7 +103,7 @@ async function decide(
 	const useId = formText(await request.formData(), 'useId');
 	try {
 		const result = await reviewInviteUse({ actor, useId, decision });
-		if (!result.ok) return fail(400, { transport: true });
+		if (!result.ok) return fail(400, { transport: true, message: result.message });
 		const name = encodeURIComponent(result.name);
 		throw redirect(303, `/admin/invites?notice=${decision}&name=${name}&role=${result.role}`);
 	} catch (caught) {
