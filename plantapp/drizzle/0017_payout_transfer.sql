@@ -50,9 +50,23 @@ CREATE TABLE IF NOT EXISTS "public"."affiliate_payout_batch_line" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "affiliate_payout_batch_line_pk" PRIMARY KEY ("batch_id", "commission_id"),
 	CONSTRAINT "affiliate_payout_batch_line_batch_fk" FOREIGN KEY ("batch_id") REFERENCES "public"."affiliate_payout_batch"("id"),
-	CONSTRAINT "affiliate_payout_batch_line_commission_fk" FOREIGN KEY ("commission_id") REFERENCES "public"."affiliate_commission_ledger"("id"),
 	CONSTRAINT "affiliate_payout_batch_line_sent_check" CHECK ("sent_minor" >= 0)
 );
+
+-- affiliate_commission_ledger comes only from the source-only artifact 0007, which the startup applier does not
+-- run, so the live store may not have it yet. The foreign key is added when the table exists (now or on a later boot).
+DO $$
+BEGIN
+	IF to_regclass('public.affiliate_commission_ledger') IS NOT NULL
+		AND NOT EXISTS (
+			SELECT 1 FROM pg_constraint WHERE conname = 'affiliate_payout_batch_line_commission_fk'
+		) THEN
+		ALTER TABLE "public"."affiliate_payout_batch_line"
+			ADD CONSTRAINT "affiliate_payout_batch_line_commission_fk"
+			FOREIGN KEY ("commission_id") REFERENCES "public"."affiliate_commission_ledger"("id");
+	END IF;
+END
+$$;
 
 CREATE UNIQUE INDEX IF NOT EXISTS "affiliate_payout_batch_line_commission_idx"
 	ON "public"."affiliate_payout_batch_line" USING btree ("commission_id");

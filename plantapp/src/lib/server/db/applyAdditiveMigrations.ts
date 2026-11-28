@@ -44,6 +44,9 @@ async function apply(): Promise<void> {
 	if (statements.length === 0 || !sqlClient) return;
 
 	await sqlClient.begin(async (tx) => {
+		// Never queue behind a long transaction holding a table lock: fail this request's attempt after 5s.
+		// `pending` is reset on failure (see ensureAdditiveMigrations), so the next request retries from scratch.
+		await tx.unsafe("SET LOCAL lock_timeout = '5s'");
 		for (const statement of statements) {
 			await tx.unsafe(statement);
 		}

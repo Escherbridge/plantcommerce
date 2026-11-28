@@ -47,18 +47,37 @@ CREATE UNIQUE INDEX IF NOT EXISTS "payout_account_affiliate_idx"
 CREATE UNIQUE INDEX IF NOT EXISTS "payout_account_stripe_account_idx"
 	ON "public"."payout_account" USING btree ("stripe_account_id") WHERE "stripe_account_id" IS NOT NULL;
 
-ALTER TABLE "public"."product" ADD COLUMN IF NOT EXISTS "seller_id" integer;
-ALTER TABLE "public"."checkout_draft_item" ADD COLUMN IF NOT EXISTS "seller_id" integer;
-ALTER TABLE "public"."order_item" ADD COLUMN IF NOT EXISTS "seller_id" integer;
-
+-- Tables that must already exist, from the journaled baseline 0000: "user", product, order_item, affiliate.
+-- checkout_draft_item comes only from the source-only artifact 0003, which the startup applier does not run,
+-- so it is optional here. Each step is skipped when already applied, so later boots take no lock on these tables.
 DO $$
 BEGIN
+	IF NOT EXISTS (
+		SELECT 1 FROM information_schema.columns
+		WHERE table_schema = 'public' AND table_name = 'product' AND column_name = 'seller_id'
+	) THEN
+		ALTER TABLE "public"."product" ADD COLUMN "seller_id" integer;
+	END IF;
+	IF NOT EXISTS (
+		SELECT 1 FROM information_schema.columns
+		WHERE table_schema = 'public' AND table_name = 'order_item' AND column_name = 'seller_id'
+	) THEN
+		ALTER TABLE "public"."order_item" ADD COLUMN "seller_id" integer;
+	END IF;
+	IF to_regclass('public.checkout_draft_item') IS NOT NULL AND NOT EXISTS (
+		SELECT 1 FROM information_schema.columns
+		WHERE table_schema = 'public' AND table_name = 'checkout_draft_item' AND column_name = 'seller_id'
+	) THEN
+		ALTER TABLE "public"."checkout_draft_item" ADD COLUMN "seller_id" integer;
+	END IF;
+
 	IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'product_seller_id_seller_id_fk') THEN
 		ALTER TABLE "public"."product"
 			ADD CONSTRAINT "product_seller_id_seller_id_fk"
 			FOREIGN KEY ("seller_id") REFERENCES "public"."seller"("id");
 	END IF;
-	IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'checkout_draft_item_seller_id_fk') THEN
+	IF to_regclass('public.checkout_draft_item') IS NOT NULL
+		AND NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'checkout_draft_item_seller_id_fk') THEN
 		ALTER TABLE "public"."checkout_draft_item"
 			ADD CONSTRAINT "checkout_draft_item_seller_id_fk"
 			FOREIGN KEY ("seller_id") REFERENCES "public"."seller"("id");
@@ -68,10 +87,19 @@ BEGIN
 			ADD CONSTRAINT "order_item_seller_id_fk"
 			FOREIGN KEY ("seller_id") REFERENCES "public"."seller"("id");
 	END IF;
-END $$;
 
-CREATE INDEX IF NOT EXISTS "product_seller_idx" ON "public"."product" USING btree ("seller_id");
-CREATE INDEX IF NOT EXISTS "checkout_draft_item_seller_idx" ON "public"."checkout_draft_item" USING btree ("seller_id");
-CREATE INDEX IF NOT EXISTS "order_item_seller_idx" ON "public"."order_item" USING btree ("seller_id");
+	IF to_regclass('public.product_seller_idx') IS NULL THEN
+		CREATE INDEX "product_seller_idx" ON "public"."product" USING btree ("seller_id");
+	END IF;
+	IF to_regclass('public.checkout_draft_item') IS NOT NULL
+		AND to_regclass('public.checkout_draft_item_seller_idx') IS NULL THEN
+		CREATE INDEX "checkout_draft_item_seller_idx"
+			ON "public"."checkout_draft_item" USING btree ("seller_id");
+	END IF;
+	IF to_regclass('public.order_item_seller_idx') IS NULL THEN
+		CREATE INDEX "order_item_seller_idx" ON "public"."order_item" USING btree ("seller_id");
+	END IF;
+END
+$$;
 
 COMMIT;
