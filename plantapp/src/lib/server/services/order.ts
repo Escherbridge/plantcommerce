@@ -2,7 +2,8 @@ import { eq, desc, and, or, inArray } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { AffiliateCommissionService } from './affiliateCommission';
-import { commissionActionForOrderStatus } from './sellerEarnings';
+import { env } from '$env/dynamic/private';
+import { commissionActionForOrderStatus, readOptionalWholeDays } from './sellerEarnings';
 
 export type OrderStatus =
 	| 'pending'
@@ -291,9 +292,20 @@ export class OrderService {
 				})
 				.where(eq(table.order.id, orderId));
 
-			// Referral commission is approved by the hold-release job after delivery and the
-			// owner's return window. Marking an order shipped or delivered does not approve it.
-			if (commissionActionForOrderStatus(status) === 'reverse') {
+			// Shipped/delivered approve commission while the return window is unset (the hold job is off);
+			// once PAYOUT_HOLD_DAYS_AFTER_DELIVERY is set, the hold-release job approves it instead.
+			const commissionAction = commissionActionForOrderStatus(
+				status,
+				readOptionalWholeDays(env, 'PAYOUT_HOLD_DAYS_AFTER_DELIVERY')
+			);
+			if (commissionAction === 'clear') {
+				await AffiliateCommissionService.clearCommissionsForOrder(
+					tx,
+					orderId,
+					`order:${orderId}:status:${status}`,
+					now
+				);
+			} else if (commissionAction === 'reverse') {
 				await AffiliateCommissionService.reverseCommissionsForOrder(
 					tx,
 					orderId,
