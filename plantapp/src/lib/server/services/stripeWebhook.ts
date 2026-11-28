@@ -223,7 +223,14 @@ export class StripeWebhookService {
 			const type = event.type as string;
 			const connectedAccount =
 				'account' in event && typeof event.account === 'string' ? event.account : null;
-			if (type === 'account.updated' || type.startsWith('v2.core.account')) {
+			if (type.startsWith('v2.')) {
+				// Accounts v2 sends thin events with no data object. Fetching the account is a later design, so acknowledge
+				// instead of throwing into a retry loop. Transfers stay inactive until an account.updated snapshot arrives.
+				console.info('[Stripe Connect] Ignoring v2 thin event', event.id, type);
+				await this.finishEvent(event.id, 'ignored');
+				return 'ignored';
+			}
+			if (type === 'account.updated' && event.data?.object) {
 				const snapshot = connectAccountSnapshot(event.data.object);
 				if (!snapshot) {
 					await this.finishEvent(event.id, 'ignored');

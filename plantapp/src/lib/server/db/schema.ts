@@ -1149,6 +1149,7 @@ export const affiliatePayoutBatch = pgTable(
 		sendAmountMinor: bigint('send_amount_minor', { mode: 'number' }),
 		sendStartedAt: timestamp('send_started_at', { withTimezone: true, mode: 'date' }),
 		sendStripeAccountId: text('send_stripe_account_id'),
+		debtAppliedMinor: bigint('debt_applied_minor', { mode: 'number' }).notNull().default(0),
 		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 		approvedAt: timestamp('approved_at', { withTimezone: true, mode: 'date' })
 	},

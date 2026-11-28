@@ -79,8 +79,18 @@ export function holdReleasePlan(
 	return { deliver, release };
 }
 
-/** Shipment and delivery no longer approve referral commission. The hold job does. */
-export function commissionActionForOrderStatus(status: string): 'none' | 'reverse' {
+/**
+ * Referral commission on a status change. While the return window (PAYOUT_HOLD_DAYS_AFTER_DELIVERY) is unset the
+ * hold job does nothing, so shipment and delivery approve commission as they always did. Once the window is set,
+ * only the hold job approves it.
+ */
+export function commissionActionForOrderStatus(
+	status: string,
+	holdDaysAfterDelivery: number | null
+): 'none' | 'clear' | 'reverse' {
 	if (status === 'refunded' || status === 'cancelled') return 'reverse';
+	if ((status === 'shipped' || status === 'delivered') && holdDaysAfterDelivery === null) {
+		return 'clear';
+	}
 	return 'none';
 }

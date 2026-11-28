@@ -62,9 +62,18 @@ describe('seller earnings and hold', () => {
 		).toBe(false);
 	});
 
-	it('does not approve commission when an order is only marked shipped or delivered', () => {
-		expect(commissionActionForOrderStatus('shipped')).toBe('none');
-		expect(commissionActionForOrderStatus('delivered')).toBe('none');
-		expect(commissionActionForOrderStatus('refunded')).toBe('reverse');
-	});
+	it.each([
+		// status, hold days unset -> action, hold days set -> action
+		['shipped', 'clear', 'none'],
+		['delivered', 'clear', 'none'],
+		['processing', 'none', 'none'],
+		['refunded', 'reverse', 'reverse'],
+		['cancelled', 'reverse', 'reverse']
+	] as const)(
+		'commission on %s: approved by status while the window is unset, by the hold job once set',
+		(status, whenUnset, whenSet) => {
+			expect(commissionActionForOrderStatus(status, null)).toBe(whenUnset);
+			expect(commissionActionForOrderStatus(status, 14)).toBe(whenSet);
+		}
+	);
 });
