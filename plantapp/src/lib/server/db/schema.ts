@@ -14,6 +14,7 @@ import {
 	uniqueIndex,
 	check,
 	foreignKey,
+	primaryKey,
 	type AnyPgColumn
 } from 'drizzle-orm/pg-core';
 import { relations, sql } from 'drizzle-orm';
@@ -1155,6 +1156,25 @@ export const affiliatePayoutBatch = pgTable(
 	},
 	(table) => ({
 		statusIdx: index('affiliate_payout_batch_status_idx').on(table.status)
+	})
+);
+
+/** What each commission contributed to a batch at send time. Debt after payment is measured against this, never against timestamps. */
+export const affiliatePayoutBatchLine = pgTable(
+	'affiliate_payout_batch_line',
+	{
+		batchId: text('batch_id')
+			.notNull()
+			.references(() => affiliatePayoutBatch.id),
+		commissionId: text('commission_id')
+			.notNull()
+			.references(() => affiliateCommissionLedger.id),
+		sentMinor: bigint('sent_minor', { mode: 'number' }).notNull(),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()
+	},
+	(table) => ({
+		pk: primaryKey({ columns: [table.batchId, table.commissionId] }),
+		commissionIdx: uniqueIndex('affiliate_payout_batch_line_commission_idx').on(table.commissionId)
 	})
 );
 

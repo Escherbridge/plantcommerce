@@ -88,3 +88,7 @@ Resume rule: a pending claim younger than `STALE_CLAIM_MS` belongs to a live wor
 - **Affiliate recovery after payment (M1).** A reversal recorded after a commission was paid is netted from that affiliate later batches in the same currency, and a claimed-but-unsent batch is re-priced down at send. There is deliberately no Stripe reversal against an affiliate and no forfeiture rule (AFFILIATE-AGREEMENT 5.3 and 10.4 leave both open). Owner decision: whether to recover from affiliates who never earn again.
 - **`AFFILIATE_PAYOUT_FLOAT_MINOR` (L4)** only has to be set for a batch to run; it is not compared with the platform Stripe balance. Treat it as a switch, not a safeguard, until the owner defines the check.
 - **Attribution window (PR #48).** With `AFFILIATE_ATTRIBUTION_WINDOW_DAYS` unset no attribution cookie is issued, so affiliate links stop attributing once #48 merges. Production has the ledger off, so nothing accrues today either way. Set the window and rate together.
+
+## Lock order (money paths)
+
+`order` row -> `seller_earning` row(s) -> `affiliate_commission_ledger` row -> `payout_account` row. Seller claim and affiliate send-claim take only `payout_account`; the transfer success transaction takes only the earning row; refund handling takes order, then earnings, then commissions in phase 1 and `payout_account` alone in phase 2 (`settleReservedDebt`). No path takes `payout_account` and then reaches for an order, earning or commission lock, so there is no cycle. Keep it that way when adding a path.
