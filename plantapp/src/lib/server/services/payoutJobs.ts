@@ -1,4 +1,4 @@
-import { and, eq, inArray, isNull, lt, or, sql } from 'drizzle-orm';
+import { and, eq, inArray, isNull, or, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { AffiliateCommissionService } from './affiliateCommission';
@@ -34,8 +34,40 @@ export type TransferClient = {
 	};
 };
 
-/** A pending claim younger than this belongs to a live worker; older means it crashed and may be resumed. */
-export const STALE_CLAIM_MS = 2 * 60 * 1000;
+/**
+ * A claim younger than two minutes belongs to a live worker; older means it crashed and may be resumed.
+ * Always judged and stamped with the database clock (`now()`), never a caller's run-wide timestamp.
+ */
+const STALE_CLAIM_SQL = sql`now() - interval '2 minutes'`;
+
+/** Hold a transfer for a person: a prior send cannot be proven absent, so nothing is created. */
+async function flagForManualReview(input: {
+	key: string;
+	kind: 'seller' | 'affiliate';
+	reason: string;
+	earningId?: string;
+	batchId?: string;
+	amountMinor: number;
+	currency: string;
+}): Promise<void> {
+	await db
+		.insert(table.payoutTransfer)
+		.values({
+			id: crypto.randomUUID(),
+			kind: input.kind,
+			earningId: input.earningId ?? null,
+			batchId: input.batchId ?? null,
+			amountMinor: input.amountMinor,
+			currency: input.currency,
+			status: 'failed',
+			failureReason: input.reason,
+			idempotencyKey: `${input.key}:review`
+		})
+		.onConflictDoUpdate({
+			target: table.payoutTransfer.idempotencyKey,
+			set: { failureReason: input.reason, updatedAt: sql`now()` }
+		});
+}
 
 type FoundTransfer = { id: string; amount: number };
 
@@ -184,15 +216,24 @@ export async function runSellerTransfers(
 				.where(eq(table.payoutTransfer.idempotencyKey, idempotencyKey))
 				.limit(1);
 			if (existing?.status === 'pending') {
-				// Take over only a stale claim, atomically under the account lock.
-				if (now.getTime() - existing.updatedAt.getTime() < STALE_CLAIM_MS) {
-					return { kind: 'done' as const };
-				}
-				await tx
+				// Take over only a claim stale by the database clock, atomically under the account lock.
+				const takenOver = await tx
 					.update(table.payoutTransfer)
-					.set({ updatedAt: now })
-					.where(eq(table.payoutTransfer.idempotencyKey, idempotencyKey));
-				return { kind: 'resume' as const, amountMinor: existing.amountMinor };
+					.set({ updatedAt: sql`now()` })
+					.where(
+						and(
+							eq(table.payoutTransfer.idempotencyKey, idempotencyKey),
+							eq(table.payoutTransfer.status, 'pending'),
+							sql`${table.payoutTransfer.updatedAt} < ${STALE_CLAIM_SQL}`
+						)
+					)
+					.returning({ id: table.payoutTransfer.id });
+				if (takenOver.length === 0) return { kind: 'done' as const };
+				return {
+					kind: 'resume' as const,
+					amountMinor: existing.amountMinor,
+					destination: existing.stripeAccountId
+				};
 			}
 			if (existing) return { kind: 'done' as const };
 
@@ -219,7 +260,9 @@ export async function runSellerTransfers(
 					and(
 						eq(table.sellerEarning.sellerId, earning.sellerId),
 						eq(table.sellerEarningEvent.eventType, 'debt'),
-						eq(table.sellerEarningEvent.currency, earning.currency)
+						eq(table.sellerEarningEvent.currency, earning.currency),
+						// Refund debt reserved for a Stripe reversal is not nettable until that outcome is recorded.
+						sql`${table.sellerEarningEvent.eventReference} NOT LIKE '%:debt-reserved:%'`
 					)
 				);
 			const plan = planSellerTransfer({
@@ -254,8 +297,8 @@ export async function runSellerTransfers(
 				failureReason: plan.permanent ? 'not_payable' : null,
 				idempotencyKey,
 				sourceTransaction: stripeChargeId,
-				createdAt: now,
-				updatedAt: now
+				createdAt: sql`now()`,
+				updatedAt: sql`now()`
 			});
 			return plan.permanent
 				? { kind: 'done' as const }
@@ -267,6 +310,9 @@ export async function runSellerTransfers(
 		const transferGroup = order.transferGroup ?? `earning:${earning.earningId}`;
 		let amountMinor = claim.amountMinor;
 		let stripeTransferId: string | null = null;
+		// The destination fixed at claim time, not the seller's current account, is what a prior send used.
+		const sentTo =
+			claim.kind === 'resume' ? (claim.destination ?? stripeAccountId) : stripeAccountId;
 		if (claim.kind === 'resume') {
 			// A crash may have left Stripe holding a transfer that was never recorded. Read every page first.
 			// If Stripe cannot be read, the row stays pending: never create what might already exist.
@@ -274,7 +320,7 @@ export async function runSellerTransfers(
 			try {
 				found = await findTransferByMetadata(client, {
 					group: transferGroup,
-					destination: stripeAccountId,
+					destination: sentTo,
 					key: 'earning_id',
 					value: earning.earningId
 				});
@@ -300,6 +346,17 @@ export async function runSellerTransfers(
 						})
 						.onConflictDoNothing();
 				}
+			} else if (sentTo !== stripeAccountId) {
+				// The account changed since the claim and the earlier send cannot be proven absent: never re-send.
+				await flagForManualReview({
+					key: idempotencyKey,
+					kind: 'seller',
+					reason: 'destination_changed_manual_review',
+					earningId: earning.earningId,
+					amountMinor: claim.amountMinor,
+					currency: earning.currency
+				});
+				continue;
 			} else {
 				amountMinor = Math.min(claim.amountMinor, limits.maxPayMinor);
 				if (amountMinor <= 0) {
@@ -510,7 +567,7 @@ export async function payApprovedAffiliateBatch(
 	client: TransferClient,
 	batchId: string,
 	now = new Date()
-): Promise<'paid' | 'not_approved' | 'no_account' | 'nothing_due'> {
+): Promise<'paid' | 'not_approved' | 'no_account' | 'nothing_due' | 'manual_review'> {
 	const [batch] = await db
 		.select()
 		.from(table.affiliatePayoutBatch)
@@ -568,6 +625,8 @@ export async function payApprovedAffiliateBatch(
 		.limit(1);
 
 	let amountMinor: number;
+	// The destination fixed at claim time, not the affiliate's current account, is what a prior send used.
+	let sentTo: string | null = account?.stripeAccountId ?? null;
 	if (batch.status === 'approved') {
 		amountMinor = Math.min(dueMinor, batch.totalMinor);
 		if (amountMinor <= 0) {
@@ -585,7 +644,12 @@ export async function payApprovedAffiliateBatch(
 		if (!account?.stripeAccountId) return 'no_account';
 		const claimedRows = await db
 			.update(table.affiliatePayoutBatch)
-			.set({ status: 'sending', sendAmountMinor: amountMinor, sendStartedAt: now })
+			.set({
+				status: 'sending',
+				sendAmountMinor: amountMinor,
+				sendStartedAt: sql`now()`,
+				sendStripeAccountId: account.stripeAccountId
+			})
 			.where(
 				and(
 					eq(table.affiliatePayoutBatch.id, batchId),
@@ -599,20 +663,21 @@ export async function payApprovedAffiliateBatch(
 		// Take over only a stale claim; the conditional UPDATE lets exactly one resumer through.
 		const takenOver = await db
 			.update(table.affiliatePayoutBatch)
-			.set({ sendStartedAt: now })
+			.set({ sendStartedAt: sql`now()` })
 			.where(
 				and(
 					eq(table.affiliatePayoutBatch.id, batchId),
 					eq(table.affiliatePayoutBatch.status, 'sending'),
 					or(
 						isNull(table.affiliatePayoutBatch.sendStartedAt),
-						lt(table.affiliatePayoutBatch.sendStartedAt, new Date(now.getTime() - STALE_CLAIM_MS))
+						sql`${table.affiliatePayoutBatch.sendStartedAt} < ${STALE_CLAIM_SQL}`
 					)
 				)
 			)
 			.returning({ id: table.affiliatePayoutBatch.id });
 		if (takenOver.length === 0) return 'not_approved';
 		amountMinor = batch.sendAmountMinor;
+		sentTo = batch.sendStripeAccountId;
 	}
 
 	const idempotencyKey = `affiliate-batch:${batchId}`;
@@ -623,7 +688,7 @@ export async function payApprovedAffiliateBatch(
 				(
 					await findTransferByMetadata(client, {
 						group: idempotencyKey,
-						destination: account.stripeAccountId,
+						destination: sentTo ?? account.stripeAccountId,
 						key: 'batch_id',
 						value: batchId
 					})
@@ -631,6 +696,18 @@ export async function payApprovedAffiliateBatch(
 		} catch {
 			return 'no_account';
 		}
+	}
+	if (!stripeTransferId && batch.status === 'sending' && sentTo !== account.stripeAccountId) {
+		// The account changed since the claim (or was never recorded) and the earlier send cannot be proven absent.
+		await flagForManualReview({
+			key: `affiliate-batch:${batchId}`,
+			kind: 'affiliate',
+			reason: 'destination_changed_manual_review',
+			batchId,
+			amountMinor,
+			currency: batch.currency
+		});
+		return 'manual_review';
 	}
 	if (!stripeTransferId) {
 		try {
@@ -669,7 +746,7 @@ export async function payApprovedAffiliateBatch(
 				kind: 'affiliate',
 				batchId,
 				payoutId: payout.id,
-				stripeAccountId: account.stripeAccountId,
+				stripeAccountId: sentTo ?? account.stripeAccountId,
 				amountMinor,
 				currency: batch.currency,
 				status: 'succeeded',
