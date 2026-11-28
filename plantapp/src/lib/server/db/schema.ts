@@ -1072,13 +1072,25 @@ export const sellerEarningEvent = pgTable(
 			.notNull()
 			.references(() => sellerEarning.id),
 		eventType: text('event_type', {
-			enum: ['pending', 'held', 'released', 'transferred', 'reversed', 'debt']
+			enum: [
+				'pending',
+				'held',
+				'released',
+				'transferred',
+				'reversed',
+				'debt',
+				'reversal_credited',
+				'debt_credited',
+				'fee_credited'
+			]
 		}).notNull(),
 		amountDeltaMinor: bigint('amount_delta_minor', { mode: 'number' }).notNull(),
 		currency: varchar('currency', { length: 3 }).notNull(),
 		eventReference: text('event_reference').notNull(),
 		causationReference: text('causation_reference'),
 		reasonCode: text('reason_code'),
+		/** For a credit row: the event_reference of the row it undoes. */
+		creditsReference: text('credits_reference'),
 		stripeTransferId: text('stripe_transfer_id'),
 		stripeReversalId: text('stripe_reversal_id'),
 		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow()

@@ -99,3 +99,24 @@ Resume rule: a pending claim younger than `STALE_CLAIM_MS` belongs to a live wor
 - **Open owner policy:** how shipping and tax refunds are attributed. An allocation can only target item lines, so a shipping-only or tax-only partial refund on a multi-seller order cannot be assigned today; it stays held. A single-seller order still claws back proportionally on any partial refund, shipping and tax included.
 - **L2.** `settleReservedDebt` keeps the seller payout-account row lock while it calls Stripe (find, create). That is what stops a payout run netting the same debt, and it is bounded by one Stripe call per reservation. Cost: a payout run for that seller waits, and a connection is held. If it shows up as latency, shorten it by moving the find/create outside the lock and re-checking inside it.
 - Every path that reaches Stripe is find first, then create, then re-check the ledger. A reversal Stripe already holds is adopted even after the 24h idempotency window.
+
+## Seller ledger vocabulary (one reader)
+
+Every seller balance comes from `services/sellerLedgerBalance.ts` (`earningBalance`, `clawbackRows`,
+`sellerNettableDebtMinor`). Payout planning, refund clawbacks, allocation, the console and reconciliation read through
+it; do not re-derive balances from raw events elsewhere.
+
+| event_type | amount | meaning |
+| --- | --- | --- |
+| `pending` | +net | the earning as accrued |
+| `released`, `held`, `transferred` | 0 | lifecycle markers |
+| `reversed` | -x | a reduction before payment (reason `refund`/`chargeback`), or money pulled back at Stripe (reason `reversal_of_debt`) |
+| `debt` | +x or -x | owed by the seller; the reason says which: `refund`/`chargeback` (clawback; reference `:debt-reserved:` while waiting on a Stripe reversal), `dispute_fee`, `overpay`, `debt_released` (a reservation Stripe refused), `debt_restored`, `debt_settled` (-x, netted from a transfer) |
+| `reversal_credited` | +x | undoes a `reversed` row (`credits_reference` is that row) |
+| `debt_credited` | -x | undoes a clawback or released `debt` row |
+| `fee_credited` | -x | undoes a `dispute_fee` row |
+
+Credits never reuse `reversed` or `debt` with a flipped sign, and always name the row they undo. Invariants: `clawedBack`
+never exceeds the earning net; reserved debt is never nettable while active and is counted once (in `clawedBack`, and
+in `reservedDebt` only until its outcome row exists); a credit of a clawback returns room for a later refund; the debt
+shown to admins as collectable is `nettableDebt` only.

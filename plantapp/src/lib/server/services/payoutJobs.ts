@@ -2,6 +2,7 @@ import { and, eq, inArray, isNull, or, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { AffiliateCommissionService } from './affiliateCommission';
+import { earningBalance, loadEarningEvents, sellerNettableDebtMinor } from './sellerLedgerBalance';
 import {
 	affiliateBatchGate,
 	payableBalance,
@@ -152,20 +153,9 @@ async function resumablePayMinor(
 	earning: { earningId: string; netMinor: number },
 	executor: any = db
 ): Promise<{ maxPayMinor: number; debtSettledMinor: number }> {
-	const events: { eventType: string; amount: number; reasonCode: string | null }[] = await executor
-		.select({
-			eventType: table.sellerEarningEvent.eventType,
-			amount: table.sellerEarningEvent.amountDeltaMinor,
-			reasonCode: table.sellerEarningEvent.reasonCode
-		})
-		.from(table.sellerEarningEvent)
-		.where(eq(table.sellerEarningEvent.earningId, earning.earningId));
-	const reversedMinor = events
-		.filter((row) => row.eventType === 'reversed')
-		.reduce((sum, row) => sum + Math.abs(row.amount), 0);
-	const debtSettledMinor = events
-		.filter((row) => row.eventType === 'debt' && row.reasonCode === 'debt_settled')
-		.reduce((sum, row) => sum + Math.abs(row.amount), 0);
+	const balance = earningBalance(await loadEarningEvents(executor, earning.earningId));
+	const reversedMinor = balance.preTransferReversalMinor;
+	const debtSettledMinor = balance.debtSettledMinor;
 	return { maxPayMinor: earning.netMinor - reversedMinor - debtSettledMinor, debtSettledMinor };
 }
 
@@ -293,38 +283,13 @@ export async function runSellerTransfers(
 			}
 			if (existing) return { kind: 'done' as const };
 
-			const reversals = await tx
-				.select({ amount: table.sellerEarningEvent.amountDeltaMinor })
-				.from(table.sellerEarningEvent)
-				.where(
-					and(
-						eq(table.sellerEarningEvent.earningId, earning.earningId),
-						eq(table.sellerEarningEvent.eventType, 'reversed')
-					)
-				);
-			// Debt nets only within this earning currency.
-			const [debtRow] = await tx
-				.select({
-					total: sql<string>`COALESCE(SUM(${table.sellerEarningEvent.amountDeltaMinor}), 0)`
-				})
-				.from(table.sellerEarningEvent)
-				.innerJoin(
-					table.sellerEarning,
-					eq(table.sellerEarningEvent.earningId, table.sellerEarning.id)
-				)
-				.where(
-					and(
-						eq(table.sellerEarning.sellerId, earning.sellerId),
-						eq(table.sellerEarningEvent.eventType, 'debt'),
-						eq(table.sellerEarningEvent.currency, earning.currency),
-						// Refund debt reserved for a Stripe reversal is not nettable until that outcome is recorded.
-						sql`${table.sellerEarningEvent.eventReference} NOT LIKE '%:debt-reserved:%'`
-					)
-				);
+			const ownBalance = earningBalance(await loadEarningEvents(tx, earning.earningId));
+			// Debt nets only within this earning currency; reserved refund debt is not nettable until its outcome.
+			const sellerDebtMinor = await sellerNettableDebtMinor(tx, earning.sellerId, earning.currency);
 			const plan = planSellerTransfer({
 				netMinor: earning.netMinor,
-				ownReversalsMinor: reversals.reduce((sum, row) => sum + Math.abs(row.amount), 0),
-				sellerDebtMinor: Number(debtRow?.total ?? 0)
+				ownReversalsMinor: ownBalance.preTransferReversalMinor,
+				sellerDebtMinor
 			});
 			if (plan.debtAppliedMinor > 0) {
 				await tx

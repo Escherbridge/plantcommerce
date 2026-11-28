@@ -42,12 +42,16 @@ CREATE TABLE IF NOT EXISTS "public"."seller_earning_event" (
 	"event_reference" text NOT NULL,
 	"causation_reference" text,
 	"reason_code" text,
+	"credits_reference" text,
 	"stripe_transfer_id" text,
 	"stripe_reversal_id" text,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "seller_earning_event_earning_id_fk" FOREIGN KEY ("earning_id") REFERENCES "public"."seller_earning"("id"),
 	CONSTRAINT "seller_earning_event_type_check" CHECK (
-		"event_type" IN ('pending', 'held', 'released', 'transferred', 'reversed', 'debt')
+		"event_type" IN (
+			'pending', 'held', 'released', 'transferred', 'reversed', 'debt',
+			'reversal_credited', 'debt_credited', 'fee_credited'
+		)
 	)
 );
 
