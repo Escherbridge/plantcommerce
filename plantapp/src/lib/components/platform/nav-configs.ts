@@ -94,6 +94,11 @@ export const adminNavigation: NavigationConfig = [
 				label: 'Affiliates',
 				href: '/admin/affiliates',
 				icon: 'link'
+			},
+			{
+				label: 'Invites',
+				href: '/admin/invites',
+				icon: 'mail'
 			}
 		]
 	},
