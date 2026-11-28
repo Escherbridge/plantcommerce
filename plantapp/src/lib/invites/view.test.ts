@@ -168,7 +168,10 @@ describe('invite token pages', () => {
 			async listUses() {
 				return [];
 			},
-			async setUseStatus() {},
+			async claimUseReview() {
+				return true;
+			},
+			async reopenUse() {},
 			async markRoleRemoved() {}
 		};
 		const productCode = 'spring-kit';
@@ -232,7 +235,10 @@ describe('invite token pages', () => {
 			async listUses() {
 				return [];
 			},
-			async setUseStatus() {},
+			async claimUseReview() {
+				return true;
+			},
+			async reopenUse() {},
 			async markRoleRemoved() {}
 		};
 		const ada = { id: 'ada', email: 'ada@example.com', emailVerified: true };
