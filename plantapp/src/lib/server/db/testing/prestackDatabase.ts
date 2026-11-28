@@ -69,6 +69,10 @@ export async function createPrestackDatabase(
 		VALUES (1, 'A-1', 'u1', 'paid', '25.00', '25.00', 'shopper@example.com')`;
 	await sql`INSERT INTO order_item (id, order_id, product_id, product_name, product_sku, quantity, unit_price, total_price)
 		VALUES (1, 1, 1, 'Fern', 'fern-1', 1, '25.00', '25.00')`;
+	// Explicit ids were inserted above; move the sequences past them so app inserts do not collide.
+	for (const table of ['"order"', 'order_item', 'product', 'product_category']) {
+		await sql.unsafe(`SELECT setval(pg_get_serial_sequence('${table}', 'id'), 1000)`);
+	}
 	await sql.end({ timeout: 2 });
 	return url;
 }
