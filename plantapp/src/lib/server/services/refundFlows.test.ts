@@ -438,6 +438,98 @@ describe.skipIf(!databaseUrl)('refund flows on Postgres', { timeout: 30_000 }, (
 			expect(open).toBe(0);
 		});
 
+		const dispute = (status: string, extra: Record<string, unknown> = {}) => ({
+			id: 'dp_1',
+			charge: 'ch_1',
+			amount: 3000,
+			status,
+			...extra
+		});
+
+		it('a refund and then a dispute on a two-seller order are two separate needs with their own amounts', async () => {
+			await apply('charge.refunded', refunded(2000), null);
+			await apply('charge.dispute.closed', dispute('lost', { reason: 'fraudulent' }), null);
+
+			const allocation = await import('./refundAllocation');
+			const needs = await allocation.listAllocationsNeedingAction();
+			expect(needs.map((need) => [need.source, need.unallocatedMinor]).sort()).toEqual([
+				['Dispute', 3000],
+				['Refund', 2000]
+			]);
+			expect(await claw('e1')).toBe(0);
+			expect(await claw('e2')).toBe(0);
+		});
+
+		it('a dispute fee that needs allocation lands once, on the seller the admin assigns', async () => {
+			await apply(
+				'charge.dispute.closed',
+				dispute('lost', { reason: 'product_not_received', balance_transactions: [{ fee: 1500 }] }),
+				null
+			);
+			const allocation = await import('./refundAllocation');
+			const [need] = await allocation.listAllocationsNeedingAction();
+			expect(need.feeMinor).toBe(1500);
+
+			const lines = [{ orderItemId: 1, amountMinor: 3000 }];
+			expect(
+				await allocation.allocateRefund({
+					allocationId: need.allocationId,
+					lines,
+					actorId: 'admin',
+					client: null
+				})
+			).toEqual({ ok: true });
+			await allocation.allocateRefund({
+				allocationId: need.allocationId,
+				lines,
+				actorId: 'admin',
+				client: null
+			});
+
+			const fees =
+				await sql`SELECT earning_id, amount_delta_minor::int AS amount FROM seller_earning_event WHERE reason_code = 'dispute_fee'`;
+			expect(fees).toMatchObject([{ earning_id: 'e1', amount: 1500 }]);
+		});
+
+		it('a dispute won before it is allocated cancels the need and releases the hold', async () => {
+			await apply('charge.dispute.closed', dispute('lost'), null);
+			await apply('charge.dispute.funds_reinstated', dispute('won'), null);
+
+			const allocation = await import('./refundAllocation');
+			expect(await allocation.listAllocationsNeedingAction()).toEqual([]);
+			const [{ open }] =
+				await sql`SELECT count(*)::int AS open FROM order_balance_hold WHERE status = 'open'`;
+			expect(open).toBe(0);
+			expect(await claw('e1')).toBe(0);
+		});
+
+		it('a dispute won after it was allocated credits the clawback back exactly once', async () => {
+			await apply('charge.dispute.closed', dispute('lost'), null);
+			const allocation = await import('./refundAllocation');
+			const [need] = await allocation.listAllocationsNeedingAction();
+			await allocation.allocateRefund({
+				allocationId: need.allocationId,
+				lines: [{ orderItemId: 1, amountMinor: 3000 }],
+				actorId: 'admin',
+				client: null
+			});
+			const [{ clawed }] =
+				await sql`SELECT COALESCE(SUM(ABS(amount_delta_minor)), 0)::int AS clawed FROM seller_earning_event
+				WHERE earning_id = 'e1' AND reason_code = 'chargeback'`;
+			expect(clawed).toBe(2760);
+
+			await apply('charge.dispute.funds_reinstated', dispute('won'), null);
+			await apply('charge.dispute.funds_reinstated', dispute('won'), null);
+
+			const [{ net }] =
+				await sql`SELECT COALESCE(SUM(amount_delta_minor), 0)::int AS net FROM seller_earning_event
+				WHERE earning_id = 'e1' AND event_type = 'reversed'`;
+			expect(net).toBe(0);
+			const [{ credits }] =
+				await sql`SELECT count(*)::int AS credits FROM seller_earning_event WHERE event_reference LIKE '%:credited:%'`;
+			expect(credits).toBe(1);
+		});
+
 		it('a full refund still claws back every seller proportionally', async () => {
 			await apply('charge.refunded', refunded(10000), null);
 			expect(await claw('e1')).toBe(5520);

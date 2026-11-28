@@ -1120,9 +1120,13 @@ export const refundAllocation = pgTable(
 			.notNull()
 			.references(() => order.id),
 		chargeId: text('charge_id').notNull(),
+		/** `refund:<charge>` for the running refund total, or the dispute id. One row per source. */
+		sourceKey: text('source_key').notNull(),
 		refundedMinor: bigint('refunded_minor', { mode: 'number' }).notNull(),
 		allocatedMinor: bigint('allocated_minor', { mode: 'number' }).notNull().default(0),
-		status: text('status', { enum: ['needs_allocation', 'allocated'] }).notNull(),
+		feeMinor: bigint('fee_minor', { mode: 'number' }).notNull().default(0),
+		sellerPaysFee: boolean('seller_pays_fee').notNull().default(false),
+		status: text('status', { enum: ['needs_allocation', 'allocated', 'cancelled'] }).notNull(),
 		reasonCode: text('reason_code', { enum: ['refund', 'chargeback'] })
 			.notNull()
 			.default('refund'),
@@ -1131,7 +1135,7 @@ export const refundAllocation = pgTable(
 		resolvedBy: text('resolved_by')
 	},
 	(table) => ({
-		orderIdx: uniqueIndex('refund_allocation_order_idx').on(table.orderId),
+		sourceIdx: uniqueIndex('refund_allocation_source_idx').on(table.orderId, table.sourceKey),
 		statusIdx: index('refund_allocation_status_idx').on(table.status)
 	})
 );

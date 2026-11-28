@@ -1,7 +1,8 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, like } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { decimalToMinorUnits } from './checkoutDraft';
+import { proportionalShare } from './refundClawback';
 import {
 	clawbackEarning,
 	reverseCommissions,
@@ -23,17 +24,25 @@ export function isAmbiguousRefund(input: {
 	return new Set(input.sellerKeys).size > 1 && input.refundedMinor < input.orderTotalMinor;
 }
 
-const allocationHoldObject = (orderId: number) => `alloc:${orderId}`;
+/** One allocation per money source: the charge's running refund total, or a single dispute. Never merged. */
+export const refundSourceKey = (chargeId: string) => `refund:${chargeId}`;
 
-async function openAllocationHold(tx: any, orderId: number, now: Date): Promise<void> {
+const allocationHoldObject = (allocationId: string) => `alloc:${allocationId}`;
+
+async function openAllocationHold(
+	tx: any,
+	allocationId: string,
+	orderId: number,
+	now: Date
+): Promise<void> {
 	await tx
 		.insert(table.orderBalanceHold)
 		.values({
-			id: `hold:alloc:${orderId}`,
+			id: `hold:alloc:${allocationId}`,
 			orderId,
 			kind: 'refund',
 			status: 'open',
-			stripeObjectId: allocationHoldObject(orderId),
+			stripeObjectId: allocationHoldObject(allocationId),
 			createdAt: now
 		})
 		.onConflictDoUpdate({
@@ -42,65 +51,92 @@ async function openAllocationHold(tx: any, orderId: number, now: Date): Promise<
 		});
 }
 
-async function closeAllocationHold(tx: any, orderId: number, now: Date): Promise<void> {
+async function closeAllocationHold(tx: any, allocationId: string, now: Date): Promise<void> {
 	await tx
 		.update(table.orderBalanceHold)
 		.set({ status: 'closed', closedAt: now })
-		.where(eq(table.orderBalanceHold.stripeObjectId, allocationHoldObject(orderId)));
+		.where(eq(table.orderBalanceHold.stripeObjectId, allocationHoldObject(allocationId)));
 }
 
-/** Record that a partial refund needs line allocation and hold the order's earnings. Runs inside the order lock. */
+/** Record that a partial refund or dispute needs line allocation and hold the order. Runs inside the order lock. */
 export async function recordAllocationNeed(
 	tx: any,
 	input: {
 		orderId: number;
 		chargeId: string;
+		/** `refund:<charge>` for the cumulative refund total, or the dispute id. */
+		sourceKey: string;
 		refundedMinor: number;
 		reasonCode: 'refund' | 'chargeback';
+		feeMinor: number;
+		sellerPaysFee: boolean;
 		now: Date;
 	}
 ): Promise<void> {
 	const [existing] = await tx
 		.select()
 		.from(table.refundAllocation)
-		.where(eq(table.refundAllocation.orderId, input.orderId))
+		.where(
+			and(
+				eq(table.refundAllocation.orderId, input.orderId),
+				eq(table.refundAllocation.sourceKey, input.sourceKey)
+			)
+		)
 		.for('update');
 	if (!existing) {
+		const id = crypto.randomUUID();
 		await tx.insert(table.refundAllocation).values({
-			id: crypto.randomUUID(),
+			id,
 			orderId: input.orderId,
 			chargeId: input.chargeId,
+			sourceKey: input.sourceKey,
 			refundedMinor: input.refundedMinor,
 			allocatedMinor: 0,
+			feeMinor: input.feeMinor,
+			sellerPaysFee: input.sellerPaysFee,
 			status: 'needs_allocation',
 			reasonCode: input.reasonCode,
 			createdAt: input.now
 		});
-		await openAllocationHold(tx, input.orderId, input.now);
+		await openAllocationHold(tx, id, input.orderId, input.now);
 		return;
 	}
+	// A cancelled dispute stays cancelled; a late duplicate event must not resurrect it.
+	if (existing.status === 'cancelled') return;
+	// Within one source the figure is a running total (refunds) or constant (one dispute), so max is right.
 	const refundedMinor = Math.max(existing.refundedMinor, input.refundedMinor);
 	const needs = refundedMinor > existing.allocatedMinor;
 	await tx
 		.update(table.refundAllocation)
-		.set({ refundedMinor, status: needs ? 'needs_allocation' : existing.status })
+		.set({
+			refundedMinor,
+			feeMinor: Math.max(existing.feeMinor, input.feeMinor),
+			sellerPaysFee: existing.sellerPaysFee || input.sellerPaysFee,
+			status: needs ? 'needs_allocation' : existing.status
+		})
 		.where(eq(table.refundAllocation.id, existing.id));
-	if (needs) await openAllocationHold(tx, input.orderId, input.now);
+	if (needs) await openAllocationHold(tx, existing.id, input.orderId, input.now);
 }
 
-/** A full refund covers everything; any partial refund still waiting for allocation is settled by it. */
+/** A full refund covers everything; the partial refund still waiting for allocation is settled by it. */
 export async function resolveAllocationOnFullRefund(
 	tx: any,
 	orderId: number,
+	chargeId: string,
 	refundedMinor: number,
 	now: Date
 ): Promise<void> {
 	const [existing] = await tx
 		.select()
 		.from(table.refundAllocation)
-		.where(eq(table.refundAllocation.orderId, orderId))
+		.where(
+			and(
+				eq(table.refundAllocation.orderId, orderId),
+				eq(table.refundAllocation.sourceKey, refundSourceKey(chargeId))
+			)
+		)
 		.for('update');
-	if (!existing || existing.status === 'allocated') return;
+	if (!existing || existing.status !== 'needs_allocation') return;
 	await tx
 		.update(table.refundAllocation)
 		.set({
@@ -110,18 +146,115 @@ export async function resolveAllocationOnFullRefund(
 			resolvedAt: now
 		})
 		.where(eq(table.refundAllocation.id, existing.id));
-	await closeAllocationHold(tx, orderId, now);
+	await closeAllocationHold(tx, existing.id, now);
+}
+
+/**
+ * A dispute that closed in the platform's favour (won, warning closed, funds reinstated). Anything it left behind
+ * is undone: a waiting allocation is cancelled and its hold closed; a clawback already assigned is credited back
+ * as ledger events (no silent edit). A credit does not move money by itself.
+ */
+export async function cancelAllocationForDispute(
+	tx: any,
+	orderId: number,
+	disputeId: string,
+	now: Date
+): Promise<void> {
+	const [allocation] = await tx
+		.select()
+		.from(table.refundAllocation)
+		.where(
+			and(
+				eq(table.refundAllocation.orderId, orderId),
+				eq(table.refundAllocation.sourceKey, disputeId)
+			)
+		)
+		.for('update');
+	if (!allocation || allocation.status === 'cancelled') return;
+	if (allocation.status === 'allocated') {
+		const earnings = await tx
+			.select({ id: table.sellerEarning.id })
+			.from(table.sellerEarning)
+			.where(eq(table.sellerEarning.orderId, orderId));
+		for (const earning of earnings) {
+			const rows: {
+				eventType: string;
+				amount: number;
+				currency: string;
+				eventReference: string;
+			}[] = await tx
+				.select({
+					eventType: table.sellerEarningEvent.eventType,
+					amount: table.sellerEarningEvent.amountDeltaMinor,
+					currency: table.sellerEarningEvent.currency,
+					eventReference: table.sellerEarningEvent.eventReference
+				})
+				.from(table.sellerEarningEvent)
+				.where(
+					and(
+						eq(table.sellerEarningEvent.earningId, earning.id),
+						like(table.sellerEarningEvent.eventReference, `%:alloc:${allocation.id}%`)
+					)
+				);
+			for (const row of rows) {
+				// Credit the clawback, the Stripe reversal and the dispute fee; markers and earlier credits are skipped.
+				if (row.eventReference.includes(':credited:') || row.amount === 0) continue;
+				if (row.eventType !== 'reversed' && row.eventType !== 'debt') continue;
+				if (row.eventReference.includes(':debt-reserved:')) {
+					// Reserved for a Stripe reversal: cancel it so the reversal is not made; nothing was netted.
+					await tx
+						.insert(table.sellerEarningEvent)
+						.values({
+							id: crypto.randomUUID(),
+							earningId: earning.id,
+							eventType: 'debt',
+							amountDeltaMinor: 0,
+							currency: row.currency,
+							eventReference: row.eventReference.replace(':debt-reserved:', ':debt-released:'),
+							reasonCode: 'dispute_won',
+							createdAt: now
+						})
+						.onConflictDoNothing();
+					// The reservation was never collected (and is excluded from netting): nothing to credit.
+					continue;
+				}
+				await tx
+					.insert(table.sellerEarningEvent)
+					.values({
+						id: crypto.randomUUID(),
+						earningId: earning.id,
+						eventType: row.eventType === 'reversed' ? 'reversed' : 'debt',
+						amountDeltaMinor: -row.amount,
+						currency: row.currency,
+						eventReference: row.eventReference.replace(
+							/^seller-earning:([^:]+):/,
+							'seller-earning:$1:credited:'
+						),
+						reasonCode: 'dispute_won',
+						createdAt: now
+					})
+					.onConflictDoNothing();
+			}
+		}
+	}
+	await tx
+		.update(table.refundAllocation)
+		.set({ status: 'cancelled', resolvedAt: now })
+		.where(eq(table.refundAllocation.id, allocation.id));
+	await closeAllocationHold(tx, allocation.id, now);
 }
 
 export type AllocationRow = {
 	allocationId: string;
 	orderId: number;
 	orderNumber: string;
+	source: string;
 	unallocatedMinor: number;
+	feeMinor: number;
 	items: { id: number; name: string; sellerId: number | null; remainingMinor: number }[];
 };
 
-/** Refunds waiting for an admin, with each order line and how much of it can still be assigned. */
+/** Refunds and disputes waiting for an admin, with each order line and how much of it can still be assigned. */
 export async function listAllocationsNeedingAction(): Promise<AllocationRow[]> {
 	const waiting = await db
 		.select()
@@ -145,7 +278,9 @@ export async function listAllocationsNeedingAction(): Promise<AllocationRow[]> {
 			allocationId: allocation.id,
 			orderId: allocation.orderId,
 			orderNumber: order?.orderNumber ?? String(allocation.orderId),
+			source: allocation.reasonCode === 'chargeback' ? 'Dispute' : 'Refund',
 			unallocatedMinor: allocation.refundedMinor - allocation.allocatedMinor,
+			feeMinor: allocation.sellerPaysFee ? allocation.feeMinor : 0,
 			items: items.map((item) => ({
 				id: item.id,
 				name: item.productName,
@@ -164,8 +299,9 @@ export async function listAllocationsNeedingAction(): Promise<AllocationRow[]> {
 export type AllocateResult = { ok: true } | { ok: false; message: string };
 
 /**
- * Assign the unallocated part of a partial refund to order lines. The normal clawback then runs for just the
- * sellers who own those lines, sized by what was assigned to their lines. House lines absorb their share.
+ * Assign the unallocated part of a refund or dispute to order lines. The normal clawback then runs for just the
+ * sellers who own those lines, sized by what was assigned to their lines; a dispute fee follows the assignment.
+ * House lines absorb their share.
  */
 export async function allocateRefund(input: {
 	allocationId: string;
@@ -194,7 +330,7 @@ export async function allocateRefund(input: {
 			.where(eq(table.refundAllocation.id, input.allocationId))
 			.for('update');
 		if (!allocation || allocation.status !== 'needs_allocation') {
-			return { ok: false, message: 'This refund was already allocated.' };
+			return { ok: false, message: 'This refund was already allocated or cancelled.' };
 		}
 		const items = await tx
 			.select()
@@ -207,7 +343,7 @@ export async function allocateRefund(input: {
 
 		const lines = input.lines.filter((line) => line.amountMinor !== 0);
 		let newTotal = 0;
-		const perItem = new Map<number, number>();
+		const perItem = new Set<number>();
 		for (const line of lines) {
 			const item = items.find((candidate) => candidate.id === line.orderItemId);
 			if (!item) return { ok: false, message: 'A selected line is not on this order.' };
@@ -221,14 +357,14 @@ export async function allocateRefund(input: {
 			if (assigned + line.amountMinor > decimalToMinorUnits(item.totalPrice)) {
 				return { ok: false, message: `${item.productName} cannot take more than its line total.` };
 			}
-			perItem.set(item.id, line.amountMinor);
+			perItem.add(item.id);
 			newTotal += line.amountMinor;
 		}
 		const expected = allocation.refundedMinor - allocation.allocatedMinor;
 		if (newTotal !== expected) {
 			return {
 				ok: false,
-				message: `The lines must add up to the refund that is waiting (${expected} cents); they add up to ${newTotal}.`
+				message: `The lines must add up to the amount that is waiting (${expected} cents); they add up to ${newTotal}.`
 			};
 		}
 
@@ -244,6 +380,7 @@ export async function allocateRefund(input: {
 		}
 		const orderTotalMinor = decimalToMinorUnits(order.totalAmount);
 		const reasonCode = allocation.reasonCode;
+		const cumulative = reasonCode === 'refund';
 		const earnings = await tx
 			.select()
 			.from(table.sellerEarning)
@@ -255,12 +392,19 @@ export async function allocateRefund(input: {
 				refundedMinor: assignedMinor,
 				totalMinor: earning.lineTotalMinor,
 				orderTotalMinor,
-				sourceKey: `alloc:${allocation.id}:${assignedMinor}`,
+				// A refund allocation is a running total per seller; a dispute allocation happens once.
+				sourceKey: cumulative
+					? `alloc:${allocation.id}:${assignedMinor}`
+					: `alloc:${allocation.id}`,
 				objectId: `alloc:${allocation.id}`,
-				cumulative: true,
+				cumulative,
 				reasonCode,
 				feeMinor: 0,
-				sellerPaysFee: false,
+				sellerPaysFee: allocation.sellerPaysFee,
+				// The dispute fee follows the assignment: this seller's share of what was assigned in total.
+				feeForEarningMinor: allocation.sellerPaysFee
+					? proportionalShare(allocation.feeMinor, assignedMinor, allocation.refundedMinor)
+					: 0,
 				client: input.client,
 				now
 			};
@@ -270,9 +414,11 @@ export async function allocateRefund(input: {
 		await reverseCommissions(tx, order.id, {
 			refundedMinor: allocation.refundedMinor,
 			orderTotalMinor,
-			sourceKey: `alloc:${allocation.id}:${allocation.refundedMinor}`,
+			sourceKey: cumulative
+				? `alloc:${allocation.id}:${allocation.refundedMinor}`
+				: `alloc:${allocation.id}`,
 			objectId: `alloc:${allocation.id}`,
-			cumulative: true,
+			cumulative,
 			reasonCode,
 			now
 		});
@@ -300,7 +446,7 @@ export async function allocateRefund(input: {
 					eq(table.refundAllocation.status, 'needs_allocation')
 				)
 			);
-		await closeAllocationHold(tx, order.id, now);
+		await closeAllocationHold(tx, allocation.id, now);
 		return { ok: true };
 	});
 	for (const work of pendingReversals) await settleReservedDebt(input.client, work, now);
