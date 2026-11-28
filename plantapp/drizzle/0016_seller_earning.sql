@@ -3,8 +3,23 @@
 
 BEGIN;
 
-ALTER TABLE "public"."order" ADD COLUMN IF NOT EXISTS "shipped_at" timestamp with time zone;
-ALTER TABLE "public"."order" ADD COLUMN IF NOT EXISTS "delivered_at" timestamp with time zone;
+-- "order" is in the journaled baseline (0000). Columns are added only when missing, so later boots take no lock.
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1 FROM information_schema.columns
+		WHERE table_schema = 'public' AND table_name = 'order' AND column_name = 'shipped_at'
+	) THEN
+		ALTER TABLE "public"."order" ADD COLUMN "shipped_at" timestamp with time zone;
+	END IF;
+	IF NOT EXISTS (
+		SELECT 1 FROM information_schema.columns
+		WHERE table_schema = 'public' AND table_name = 'order' AND column_name = 'delivered_at'
+	) THEN
+		ALTER TABLE "public"."order" ADD COLUMN "delivered_at" timestamp with time zone;
+	END IF;
+END
+$$;
 
 CREATE TABLE IF NOT EXISTS "public"."seller_earning" (
 	"id" text PRIMARY KEY NOT NULL,
