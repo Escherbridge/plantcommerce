@@ -159,6 +159,9 @@ describe('public crawler discovery', () => {
 			'<loc>https://aevani.com/guides/getting-started-companion-planting</loc>'
 		);
 		expect(published).not.toContain('aquaponics-stocking-notes');
+		expect(published).not.toContain('/white-papers');
+		expect(contentPaths).not.toContain('/white-papers');
+		expect(contentPaths.some((path) => path.startsWith('/white-papers'))).toBe(false);
 		expect(published).toContain(
 			'<loc>https://aevani.com/products/aquaponics/tilapia-fingerlings-starter-pack</loc>'
 		);

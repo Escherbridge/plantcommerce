@@ -42,6 +42,8 @@ describe('public site origin', () => {
 		expect(isPublicIndexablePath('/search')).toBe(false);
 		expect(isPublicIndexablePath('/cart')).toBe(false);
 		expect(isPublicIndexablePath('/api/admin/seller-applications')).toBe(false);
+		expect(isPublicIndexablePath('/white-papers')).toBe(false);
+		expect(isPublicIndexablePath('/white-papers/example-white-paper')).toBe(false);
 	});
 
 	it('gives leftover public pages their own title and lets posts own theirs', () => {
