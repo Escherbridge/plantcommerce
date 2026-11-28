@@ -74,7 +74,10 @@ function memoryRepo() {
 		async listUses() {
 			return [];
 		},
-		async setUseStatus() {},
+		async claimUseReview() {
+			return true;
+		},
+		async reopenUse() {},
 		async markRoleRemoved() {}
 	};
 	return { repo, rows };
