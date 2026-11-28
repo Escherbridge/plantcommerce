@@ -7,6 +7,14 @@ export interface EssaySource {
 	alsoLead?: string;
 }
 
+/** A configured related link. The blog template renders these instead of the other field notes. */
+export interface EssayLink {
+	label: string;
+	href: string;
+	/** Plain text that follows the anchor, when the item continues past the link. */
+	after?: string;
+}
+
 export interface CornerstoneEssay {
 	slug: string;
 	title: string;
@@ -18,10 +26,133 @@ export interface CornerstoneEssay {
 	publishedAt: string;
 	tags: readonly string[];
 	sources: readonly EssaySource[];
+	/**
+	 * When set, the blog template prints this list as the only Related section.
+	 * Omitted essays keep the automatic list of the other field notes.
+	 */
+	related?: readonly EssayLink[];
 	body: string;
 }
 
 export const cornerstoneEssays: readonly CornerstoneEssay[] = [
+	{
+		slug: 'fall-soil-test',
+		title: 'A November soil test reads the slow stuff',
+		excerpt:
+			"A late-fall soil test will not reliably predict next spring's nitrogen. Colorado State's own lab says so. It will read pH, salts, lime, phosphorus, potassium, and organic matter: the slow numbers next year's beds depend on.",
+		metaDescription:
+			"A November soil test will not reliably predict next spring's nitrogen. Colorado State's lab says so. It will read the slow numbers next year's beds depend on.",
+		publishedAt: '2026-11-23T00:00:00.000Z',
+		tags: ['Aevani', 'soil', 'soil test', 'Intermountain West'],
+		sources: [
+			{
+				label:
+					'Iowa State University Extension and Outreach, Yard and Garden FAQ, “How do I collect a soil sample?” (updated 20 November 2026)',
+				href: 'https://yardandgarden.extension.iastate.edu/faq/how-do-i-collect-soil-sample',
+				datePublished: '2026-11-20'
+			},
+			{
+				label:
+					'CSU Extension, CMG GardenNotes #221, “Soil Tests” (Card, Hammond, Whiting, Wilson, and Reeder; published October 2015, reviewed September 2022)',
+				href: 'https://extension.colostate.edu/resource/soil-tests/',
+				datePublished: '2015-10'
+			},
+			{
+				label:
+					'Colorado State University Soil, Water and Plant Testing Lab, “Interpreting a Soil Test Report” (PDF named September 2026; prepared and reviewed by Dr. Wilma Trujillo, 3 January 2024)',
+				href: 'https://agsci.colostate.edu/soiltestinglab/wp-content/uploads/sites/140/2026/10/Soil-Test-Interpretation-September-2026.pdf',
+				datePublished: '2024-01-03'
+			},
+			{
+				label:
+					'CSU Extension / CMG, “Desirable range of soil properties” table (Dr. Jean Reeder, 6 December 2020); paraphrase only',
+				href: 'https://cmg.extension.colostate.edu/wp-content/uploads/sites/59/2021/03/Soil-Results-Table.pdf',
+				datePublished: '2020-12-06'
+			},
+			{
+				label: 'Utah State University Analytical Laboratories, “Home Soil Test”',
+				href: 'https://www.usu.edu/analytical-laboratories/tests/home-soil-testing'
+			},
+			{
+				label:
+					'Washington State University Whatcom County Extension, “Soil Testing for Home Gardeners” (revised March 2021)',
+				href: 'https://wpcdn.web.wsu.edu/wp-extension/uploads/sites/2093/2021/03/SoilTestingHomeGardeners.pdf',
+				datePublished: '2021-03'
+			},
+			{
+				label:
+					'University of Idaho, Bulletin 704, “Soil Sampling,” R. L. Mahler and T. A. Tindall (revised; reprint dated 8-97); revised edition hosted by WSU Extension',
+				href: 'https://wpcdn.web.wsu.edu/wp-extension/uploads/sites/2093/2024/03/SoilSampling704.pdf',
+				datePublished: '1997-08'
+			},
+			{
+				label:
+					'University of Idaho Library archive record for Bulletin 704 (1989 edition, marked archived content)',
+				href: 'https://www.lib.uidaho.edu/digital/uiext/items/uiext23464.html',
+				datePublished: '1989'
+			}
+		],
+		related: [
+			{
+				label: 'Soil health: the foundation of a garden',
+				href: '/guides/understanding-soil-health'
+			},
+			{ label: 'Raised beds: width, depth, and soil', href: '/guides/raised-beds' },
+			{ label: 'PlantGeo', href: 'https://plantgeo.aevani.com' },
+			{ label: 'No-dig beds and sheet mulching', href: '/guides/no-dig-sheet-mulch' },
+			{ label: 'Frost dates and hardiness zones', href: '/guides/frost-dates-hardiness' },
+			{
+				label: 'Winterizing tunnels, irrigation, and pots',
+				href: '/guides/winterizing-growing-systems'
+			},
+			{
+				label: 'How to build a raised bed that works in heavy clay and hot summers',
+				href: '/blog/raised-beds-for-heavy-clay-and-hot-summers'
+			},
+			{
+				label: 'Before you buy seed packets: a five-step pre-spring checklist',
+				href: '/blog/pre-spring-grower-checklist'
+			},
+			{ label: 'Guides', href: '/guides' }
+		],
+		body: `The garden is done, the beds are bare, and the ground isn't frozen yet. That is the window.
+
+Most advice to test your soil stops at the verb. The useful part is narrower. A late-fall sample can give a usable baseline for pH, salts, free lime, phosphorus, potassium, and organic matter, in time to plan next year's beds. It is a poor forecast of next spring's nitrogen.
+
+Colorado State University's Soil, Water and Plant Testing Lab says so, in its interpretation guide: sampling in the fall "does not always capture the true amount of nitrogen (N) that will be available at planting in the spring." If the fall and winter are cold and dry, the same guide notes, little mineralization or leaching occurs. Treat the nitrate line as a snapshot.
+
+Iowa State University Extension, in a Yard and Garden FAQ updated 20 November 2026, says soil can be sampled any time the ground is not frozen, and that late summer, fall, or early spring are often best because they leave room to apply recommended amendments before the next growing season. Avoid collecting samples when soils are excessively wet or dry, or right after fertilizer, compost, lime, or manure. CSU Extension's GardenNotes #221 agrees that spring or fall is usually the most convenient.
+
+## Is a test always worth it?
+
+Washington State University's Whatcom County Extension puts the honest limit in one sentence: in smaller growing spaces, usually those of a home gardener, the cost of a soil test can be much more than the cost of all the soil amendments needed for at least one growing season. A test still pays off for a new garden baseline, a long history of fertilizing when you want to know if you can cut back, a big investment in new plantings, or symptoms of deficiency or toxicity.
+
+## How to pull the sample
+
+Bulletin 704 is blunt: poor sampling procedures account for more than 90 percent of all errors in fertilizer recommendations based on soil tests. "Soil test results are only as good as the soil sample." Do not send the lab a scoop from the old manure pile. Iowa State says to avoid recently amended spots. WSU Whatcom adds unusual areas such as wetlands. GardenNotes says to sample the garden separately from the lawn, and differently treated beds separately from each other.
+
+The depths and counts are close, but they are not one number, so they stay with their sources:
+
+- Garden beds: about 6 to 8 inches (Iowa State and GardenNotes). Lawns: 0 through 2 to 3 inches (GardenNotes). Standard topsoil: 6 to 12 inches; turf: 6 inches (USU Analytical Laboratories).
+- Subsamples: five or more from a small area, and ten to fifteen for larger ones (GardenNotes); 10 to 15 (Iowa State); 10 to 20 (WSU Whatcom). Mix them in a clean plastic bucket.
+- Volume: about a pint (Iowa State); about two cups (CSU and USU). Follow your lab's instructions, and do not oven-dry the sample.
+
+## What the report is good for
+
+GardenNotes says a test gives a gardener a useful baseline on soil salts, phosphorus, potassium, pH, and free lime, or a buffer index if the soil is acid. Nitrogen results can have limited use for the home gardener, because that level constantly changes.
+
+Most plants grow well within a pH of 6.0 to 7.5, the CSU lab guide says. In soils with free lime, GardenNotes says sulfur will not effectively lower the pH. Choose plants for the pH you have. Plant tolerance to soluble salts also varies widely, the CSU lab says, so read the salt line against what you actually grow.
+
+Organic matter is usually low in Colorado, typically below 3 percent, according to the lab guide. A CSU Extension / Colorado Master Gardener table of desirable soil properties treats below 3 percent as low, and says compost helps most plants. For vegetables, fruits, and annual flowers, 3 to 4 percent is adequate and 4.1 to 6 percent is preferred. For annual beds, add no more than 1 inch of manure or manure compost, or 2 inches of plant-based compost, a year, worked into the top 6 to 8 inches, until a moderate level is reached. Then stop routine annual compost at about 5 percent, because over-amending may add excess salts, and switch to mulch and cover crops. Many native and xeric plants prefer organic matter under 3 percent.
+
+GardenNotes is plain: "The recommendations resulting from a soil test need to be made by the laboratory doing the work." Pick a lab that processes the alkaline calcareous soils of the mountain west, and use the same lab next time. WSU Whatcom agrees, because labs differ on methods, phosphorus among them. Skip the drugstore kit: GardenNotes says home kits may have questionable accuracy on the alkaline soils of the West.
+
+In Colorado's neutral and alkaline soils, GardenNotes says to re-test about every one to three years, or sooner if you change the crop or add larger quantities of manure, biosolids, or compost that may be high in salts. WSU Whatcom, for a new vegetable garden, wants a baseline and, if fertility is high or adequate, another analysis three to four years later.
+
+## If the ground is already frozen
+
+If the beds are already frozen or under snow, wait. Sample in early spring once they thaw and are not soggy. Bulletin 704 notes that frozen soil will not change the results, though it is hard to collect, and says not to sample snow-covered fields. The CSU lab guide prefers an annual spring sample when the goal is to estimate nutrients for the coming season, taken at the same time each year so you can see trends. Keep the report with the map of the beds. The [frost dates and hardiness guide](/guides/frost-dates-hardiness) is the place to check whether the ground is likely to stay closed, and the [pre-spring grower checklist](/blog/pre-spring-grower-checklist) is a natural next read when the beds thaw.`
+	},
 	{
 		slug: 'cooling-can-use-more-water-than-the-crop',
 		title: 'In a dry climate, cooling can use more water than the plants',
@@ -149,6 +280,18 @@ While growers read free [field guides](/guides) and sketch beds, greenhouses, an
 			},
 			{ label: 'Sell on Aevani', href: 'https://aevani.com/sell' }
 		],
+		related: [
+			{
+				label: 'The seller fee is a flat 8%',
+				href: '/blog/a-flat-eight-percent',
+				after: ' — the published Aevani rate, in one place.'
+			},
+			{
+				label: 'In a dry climate, cooling can use more water than the plants',
+				href: '/blog/cooling-can-use-more-water-than-the-crop'
+			},
+			{ label: 'Sell on Aevani', href: '/sell' }
+		],
 		body: `A $40 order of seed packets, shipping included, no sales tax, from a U.S. seller with a U.S. bank account. That is a small, ordinary sale. What the seller keeps is not the headline rate someone checked in the spring. It is the total of every line that still prints on the statement.
 
 Etsy's headline seller fees did not change in 2026 for a U.S. shop. Growtsy's changelog, which compared the February 13 and October 5 versions of the fees policy, is the source for that October 5 revision date. Etsy's own legal fees page blocked a fetch for this piece, so the date is treated as secondary. The number people watch held still. The other lines did what they always do.
@@ -180,21 +323,7 @@ A few limits belong next to those numbers. The Etsy listing fee is per listing, 
 
 Selling on Aevani is one line: a flat 8% on each sale, with card processing included and absorbed by Aevani, and no listing, monthly, or ad fees. That is the whole published rate. Etsy and eBay bring a buyer audience that Aevani does not have yet. That is the honest trade, and it is the part of the comparison that a headline rate will not tell you.
 
-This is not a claim that Etsy or eBay are a bad deal. They are large markets with real buyers. The useful critique is of a fee bill with many lines, not of the companies. It is also not a pitch to buyers. If you grow or make tools that belong here, [applications to sell](https://aevani.com/sell) are open.
-
-## Sources
-
-1. Etsy Help, “What are the Fees and Taxes for Selling on Etsy,” opened 10 November 2026. https://help.etsy.com/hc/en-us/articles/115014483627-What-are-the-Fees-and-Taxes-for-Selling-on-Etsy
-2. Etsy Help, “What are Payment Processing Fees for Selling on Etsy,” opened 10 November 2026. https://help.etsy.com/hc/en-us/articles/115015628847-What-are-Payment-Processing-Fees-for-Selling-on-Etsy
-3. eBay Seller Center, “Seller fees,” opened 10 November 2026. https://www.ebay.com/sellercenter/selling/start-selling-on-ebay/seller-fees
-4. Growtsy, Etsy changes changelog, opened 10 November 2026. Used only for the October 5 revision date and the June 22 non-U.S. Regulatory Operating Fee date. https://www.growtsy.com/etsy-changes
-5. Sell on Aevani, flat 8% with card processing included and no other fees. https://aevani.com/sell
-
-## Related
-
-- [The seller fee is a flat 8%](/blog/a-flat-eight-percent) — the published Aevani rate, in one place.
-- [In a dry climate, cooling can use more water than the plants](/blog/cooling-can-use-more-water-than-the-crop)
-- [Sell on Aevani](/sell)`
+This is not a claim that Etsy or eBay are a bad deal. They are large markets with real buyers. The useful critique is of a fee bill with many lines, not of the companies. It is also not a pitch to buyers. If you grow or make tools that belong here, [applications to sell](https://aevani.com/sell) are open.`
 	},
 	{
 		slug: 'dwc-vs-kratky-vs-nft',
@@ -511,6 +640,7 @@ export function cornerstoneEssayRecord(essay: CornerstoneEssay) {
 			tags: JSON.stringify(essay.tags)
 		},
 		author: null,
-		sources: essay.sources
+		sources: essay.sources,
+		related: essay.related ?? null
 	};
 }
