@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { listAllocationsNeedingAction, type AllocationRow } from './refundAllocation';
+import { AffiliateCommissionService } from './affiliateCommission';
 import { listReservedDebt } from './refundCore';
 import { earningBalance } from './sellerLedgerBalance';
 import {
@@ -77,17 +78,20 @@ export async function loadPayoutConsole(): Promise<PayoutConsole> {
 		}
 	}
 
-	const affiliateRows = await db
-		.select({
-			id: table.affiliateCommissionLedger.id,
-			eventType: table.affiliateCommissionLedgerEvent.eventType,
-			amountDeltaMinor: table.affiliateCommissionLedgerEvent.amountDeltaMinor
-		})
-		.from(table.affiliateCommissionLedgerEvent)
-		.innerJoin(
-			table.affiliateCommissionLedger,
-			eq(table.affiliateCommissionLedgerEvent.commissionId, table.affiliateCommissionLedger.id)
-		);
+	// The commission tables come from a source-only artifact; with the ledger off they may not exist, so do not read them.
+	const affiliateRows = !AffiliateCommissionService.isEnabled()
+		? []
+		: await db
+				.select({
+					id: table.affiliateCommissionLedger.id,
+					eventType: table.affiliateCommissionLedgerEvent.eventType,
+					amountDeltaMinor: table.affiliateCommissionLedgerEvent.amountDeltaMinor
+				})
+				.from(table.affiliateCommissionLedgerEvent)
+				.innerJoin(
+					table.affiliateCommissionLedger,
+					eq(table.affiliateCommissionLedgerEvent.commissionId, table.affiliateCommissionLedger.id)
+				);
 	for (const events of groupEvents(affiliateRows).values()) {
 		buckets = addBuckets(buckets, affiliateCommissionBuckets(events));
 	}
@@ -215,6 +219,8 @@ export async function loadSellerBuckets(userId: string): Promise<MoneyBuckets | 
 }
 
 export async function loadAffiliateBuckets(affiliateId: number): Promise<MoneyBuckets> {
+	// Ledger off (the live default): the commission tables may not exist, and there is nothing to show.
+	if (!AffiliateCommissionService.isEnabled()) return emptyBuckets();
 	const rows = await db
 		.select({
 			id: table.affiliateCommissionLedger.id,
