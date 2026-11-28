@@ -1,4 +1,5 @@
 import type { IconName } from '$lib/components/icons';
+import type { UserRole } from '$lib/auth/userRole';
 
 export interface NavItem {
 	label: string;
@@ -17,6 +18,6 @@ export type NavigationConfig = NavGroup[];
 export interface PlatformUser {
 	name: string;
 	email: string;
-	role: 'admin' | 'customer' | 'affiliate' | 'instructor';
+	role: UserRole;
 	avatarUrl?: string;
 }

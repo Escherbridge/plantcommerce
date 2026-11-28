@@ -62,7 +62,7 @@ describe('credentialSummaryItems', () => {
 		});
 		expect(errors).toEqual([{ field: 'confirmPassword', message: 'Confirm your password' }]);
 		const { body } = render(RegisterPage, {
-			props: { form: { message: undefined, fieldErrors: errors } }
+			props: { form: { message: undefined, fieldErrors: errors, returnPath: '', invite: '' } }
 		});
 
 		const confirm = body.match(/<input\b[^>]*\bid="confirmPassword"[^>]*>/)?.[0] ?? '';

@@ -2,9 +2,10 @@
 	import { goto } from '$app/navigation';
 	import { browser } from '$app/environment';
 	import { Icon, type IconName } from '$lib/components/icons';
+	import type { UserRole } from '$lib/auth/userRole';
 
 	interface Props {
-		userRole: 'admin' | 'customer' | 'affiliate' | 'instructor';
+		userRole: UserRole;
 	}
 
 	interface PalettePage {

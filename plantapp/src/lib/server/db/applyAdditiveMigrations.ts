@@ -1,10 +1,11 @@
 import { sqlClient } from '$lib/server/db';
 import comingSoonSql from '../../../../drizzle/0010_product_coming_soon.sql?raw';
 import sellerApplicationSql from '../../../../drizzle/0011_seller_application.sql?raw';
+import managerInviteSql from '../../../../drizzle/0012_manager_invites.sql?raw';
 import orderTransferGroupSql from '../../../../drizzle/0013_order_transfer_group.sql?raw';
 import { executableMigrationSql } from './additiveMigration';
 
-const migrations = [comingSoonSql, sellerApplicationSql, orderTransferGroupSql];
+const migrations = [comingSoonSql, sellerApplicationSql, managerInviteSql, orderTransferGroupSql];
 
 let pending: Promise<void> | null = null;
 
@@ -28,6 +29,9 @@ async function apply(): Promise<void> {
 	if (statements.length === 0 || !sqlClient) return;
 
 	await sqlClient.begin(async (tx) => {
+		// Never queue behind a long transaction holding a table lock: fail this request's attempt after 5s.
+		// `pending` is reset on failure (see ensureAdditiveMigrations), so the next request retries from scratch.
+		await tx.unsafe("SET LOCAL lock_timeout = '5s'");
 		for (const statement of statements) {
 			await tx.unsafe(statement);
 		}

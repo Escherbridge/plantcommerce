@@ -59,6 +59,9 @@ describe('public site origin', () => {
 		expect(publicRouteMetadata('/register').title).toBe('Create an account — Aevani');
 		expect(layoutOwnsDocumentMeta('/cart')).toBe(false);
 		expect(layoutOwnsDocumentMeta('/sell')).toBe(false);
+		expect(layoutOwnsDocumentMeta('/admin/invites')).toBe(false);
+		expect(layoutOwnsDocumentMeta('/admin/invites/example')).toBe(false);
+		expect(layoutOwnsDocumentMeta('/invite/example')).toBe(false);
 		expect(publicRouteMetadata('/sell').title).toBe('Sell on Aevani — a flat 8%');
 		expect(publicRouteMetadata('/login').title).not.toBe(publicSite.defaultTitle);
 	});
