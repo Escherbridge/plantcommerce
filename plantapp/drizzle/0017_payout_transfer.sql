@@ -43,6 +43,20 @@ CREATE TABLE IF NOT EXISTS "public"."affiliate_payout_batch" (
 	)
 );
 
+CREATE TABLE IF NOT EXISTS "public"."affiliate_payout_batch_line" (
+	"batch_id" text NOT NULL,
+	"commission_id" text NOT NULL,
+	"sent_minor" bigint NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "affiliate_payout_batch_line_pk" PRIMARY KEY ("batch_id", "commission_id"),
+	CONSTRAINT "affiliate_payout_batch_line_batch_fk" FOREIGN KEY ("batch_id") REFERENCES "public"."affiliate_payout_batch"("id"),
+	CONSTRAINT "affiliate_payout_batch_line_commission_fk" FOREIGN KEY ("commission_id") REFERENCES "public"."affiliate_commission_ledger"("id"),
+	CONSTRAINT "affiliate_payout_batch_line_sent_check" CHECK ("sent_minor" >= 0)
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS "affiliate_payout_batch_line_commission_idx"
+	ON "public"."affiliate_payout_batch_line" USING btree ("commission_id");
+
 CREATE INDEX IF NOT EXISTS "affiliate_payout_batch_status_idx"
 	ON "public"."affiliate_payout_batch" USING btree ("status");
 

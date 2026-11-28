@@ -41,48 +41,41 @@ export type TransferClient = {
 const STALE_CLAIM_SQL = sql`now() - interval '2 minutes'`;
 
 /**
- * What an affiliate still owes back: reversals recorded after a commission was already paid, minus the debt
- * earlier batches already netted. Recovery is by netting from later batches only; there is no Stripe reversal for
- * affiliates and no forfeiture policy (owner decision, see AGENTS.md).
+ * What an affiliate still owes back: for each commission already sent, what was sent minus what remains of it
+ * after reversals, minus the debt earlier batches already netted. Measured against the amount recorded when the
+ * batch was sent (affiliate_payout_batch_line), never against event timestamps. Recovery is by netting from later
+ * batches only; there is no Stripe reversal for affiliates and no forfeiture policy (owner decision, AGENTS.md).
  */
 async function affiliateDebtMinor(
 	executor: any,
 	affiliateId: number,
 	currency: string
 ): Promise<number> {
-	const rows = await executor
+	const lines: { commissionId: string; sentMinor: number; net: string }[] = await executor
 		.select({
-			commissionId: table.affiliateCommissionLedgerEvent.commissionId,
-			eventType: table.affiliateCommissionLedgerEvent.eventType,
-			amount: table.affiliateCommissionLedgerEvent.amountDeltaMinor,
-			createdAt: table.affiliateCommissionLedgerEvent.createdAt
+			commissionId: table.affiliatePayoutBatchLine.commissionId,
+			sentMinor: table.affiliatePayoutBatchLine.sentMinor,
+			net: sql<string>`COALESCE((SELECT SUM(e.amount_delta_minor) FROM affiliate_commission_ledger_event e WHERE e.commission_id = ${table.affiliatePayoutBatchLine.commissionId}), 0)`
 		})
-		.from(table.affiliateCommissionLedgerEvent)
+		.from(table.affiliatePayoutBatchLine)
 		.innerJoin(
-			table.affiliateCommissionLedger,
-			eq(table.affiliateCommissionLedgerEvent.commissionId, table.affiliateCommissionLedger.id)
+			table.affiliatePayoutBatch,
+			eq(table.affiliatePayoutBatchLine.batchId, table.affiliatePayoutBatch.id)
+		)
+		.innerJoin(
+			table.affiliatePayout,
+			sql`${table.affiliatePayout.payoutReference} = 'batch:' || ${table.affiliatePayoutBatch.id}`
 		)
 		.where(
 			and(
-				eq(table.affiliateCommissionLedger.affiliateId, affiliateId),
-				eq(table.affiliateCommissionLedger.currency, currency)
+				eq(table.affiliatePayout.affiliateId, affiliateId),
+				eq(table.affiliatePayoutBatch.currency, currency),
+				inArray(table.affiliatePayoutBatch.status, ['sending', 'paid'])
 			)
 		);
-	const paidAt = new Map<string, number>();
-	for (const row of rows as { commissionId: string; eventType: string; createdAt: Date }[]) {
-		if (row.eventType === 'paid') paidAt.set(row.commissionId, row.createdAt.getTime());
-	}
 	let owedMinor = 0;
-	for (const row of rows as {
-		commissionId: string;
-		eventType: string;
-		amount: number;
-		createdAt: Date;
-	}[]) {
-		const paid = paidAt.get(row.commissionId);
-		if (row.eventType === 'reversed' && paid !== undefined && row.createdAt.getTime() > paid) {
-			owedMinor += Math.abs(row.amount);
-		}
+	for (const line of lines) {
+		owedMinor += Math.max(line.sentMinor - Math.max(Number(line.net), 0), 0);
 	}
 	const [applied] = await executor
 		.select({
@@ -474,6 +467,13 @@ export async function runSellerTransfers(
 		}
 
 		await db.transaction(async (tx) => {
+			// Lock order is order -> earning -> payout account. Refund handling takes the same earning lock before it
+			// decides whether this transfer is pending or paid, so a refund cannot slip between the read and the update.
+			await tx
+				.select({ id: table.sellerEarning.id })
+				.from(table.sellerEarning)
+				.where(eq(table.sellerEarning.id, earning.earningId))
+				.for('update');
 			// Re-check after the send: a refund that landed while Stripe was working shrank what was owed, and the
 			// excess already sent becomes debt against the seller (netted from a later transfer).
 			const limits = await resumablePayMinor(earning, tx);
@@ -668,11 +668,14 @@ export async function payApprovedAffiliateBatch(
 			.map((event) => event.commissionId)
 	);
 	const dueIds: string[] = [];
+	// Every claimed commission gets a line, including ones whose net fell to zero or below after the claim.
+	const batchLines: { commissionId: string; sentMinor: number }[] = [];
 	let dueMinor = 0;
 	for (const commissionId of claimed) {
 		const own = events.filter((event) => event.commissionId === commissionId);
 		if (own.some((event) => event.eventType === 'paid')) continue;
 		const net = own.reduce((sum, event) => sum + event.amountDeltaMinor, 0);
+		batchLines.push({ commissionId, sentMinor: Math.max(net, 0) });
 		if (net <= 0) continue;
 		dueIds.push(commissionId);
 		dueMinor += net;
@@ -720,6 +723,13 @@ export async function payApprovedAffiliateBatch(
 				.for('update');
 			const debtMinor = await affiliateDebtMinor(tx, payout.affiliateId, batch.currency);
 			const debtAppliedMinor = Math.min(debtMinor, dueCappedMinor);
+			// Fix what each commission contributes before any money moves; debt is measured against these rows.
+			const lineRows = await tx
+				.insert(table.affiliatePayoutBatchLine)
+				.values(batchLines.map((line) => ({ batchId, ...line })))
+				.onConflictDoNothing()
+				.returning({ commissionId: table.affiliatePayoutBatchLine.commissionId });
+			if (batchLines.length > 0 && lineRows.length === 0) return null;
 			const rows = await tx
 				.update(table.affiliatePayoutBatch)
 				.set({

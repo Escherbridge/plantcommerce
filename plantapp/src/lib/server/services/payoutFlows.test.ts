@@ -279,6 +279,34 @@ describe.skipIf(!databaseUrl)('payout flows on Postgres', { timeout: 30_000 }, (
 			expect(debt.amount).toBe(2300);
 		});
 
+		it('a refund committing while the success transaction waits for the earning lock is seen, not missed', async () => {
+			await resetAndSeedSeller({ transferGroup: 'draft-1' });
+			const stripe = fakeStripe();
+			let holder: Promise<unknown> = Promise.resolve();
+			const create = stripe.client.transfers.create;
+			stripe.client.transfers.create = async (...args: Parameters<typeof create>) => {
+				const created = await create(...args);
+				// A refund transaction takes the earning lock and writes its reduction, but has not committed yet.
+				holder = sql.begin(async (tx) => {
+					await tx`SELECT id FROM seller_earning WHERE id = 'e1' FOR UPDATE`;
+					await tx`INSERT INTO seller_earning_event (id, earning_id, event_type, amount_delta_minor, currency, event_reference, reason_code)
+						VALUES ('late','e1','reversed',-2300,'usd','seller-earning:e1:reversed:ch_1:2500','refund')`;
+					await new Promise((resolve) => setTimeout(resolve, 400));
+				});
+				await new Promise((resolve) => setTimeout(resolve, 100));
+				return created;
+			};
+
+			await jobs.runSellerTransfers(releasedEnv, stripe.client);
+			await holder;
+
+			// The success transaction had to wait for the refund to commit, then read it and recorded the excess.
+			expect(stripe.transfers.map((transfer) => transfer.amount)).toEqual([9200]);
+			const [debt] =
+				await sql`SELECT amount_delta_minor::int AS amount FROM seller_earning_event WHERE event_reference = 'seller-earning:e1:debt:send-overpay'`;
+			expect(debt.amount).toBe(2300);
+		});
+
 		it('does not net refund debt that is reserved for a Stripe reversal', async () => {
 			const { sellerId } = await resetAndSeedSeller({ transferGroup: 'draft-1' });
 			const [otherOrder] = await sql`
@@ -359,21 +387,36 @@ describe.skipIf(!databaseUrl)('payout flows on Postgres', { timeout: 30_000 }, (
 			expect(batches.map((row) => row.status)).toEqual(['paid']);
 		});
 
-		it('a reversal after a commission was paid is netted from the affiliate next batch', async () => {
-			await seedCommission(2);
-			// c0 was already paid; 200 of it was reversed afterwards. c1 is the new approved commission (500).
-			await sql`INSERT INTO affiliate_payout (id, affiliate_id, payout_reference, currency, amount_minor)
-				SELECT 'po0', affiliate_id, 'batch:old', 'usd', 500 FROM affiliate_commission_ledger WHERE id = 'c0'`;
-			await sql`INSERT INTO affiliate_commission_ledger_event (id, commission_id, event_type, amount_delta_minor, currency, event_reference, reason_code, payout_id, created_at)
-				VALUES ('x1','c0','payable',0,'usd','commission:c0:payable','payout','po0', now() - interval '3 hours'),
-				       ('x2','c0','paid',0,'usd','commission:c0:paid','payout','po0', now() - interval '2 hours'),
-				       ('x3','c0','reversed',-200,'usd','commission:c0:reversal:refund:ch_x','refund', NULL, now() - interval '1 hour')`;
+		async function addApprovedCommission(index: number) {
+			const [affiliate] = await sql`SELECT id FROM affiliate LIMIT 1`;
+			const id = `c${index}`;
+			await sql`INSERT INTO affiliate_commission_ledger (id, affiliate_id, affiliate_link_id, source_order_id, source_checkout_draft_id,
+				source_stripe_webhook_event_id, source_reference, currency, quoted_amount_minor, commission_rate_bps, draft_snapshot_hash,
+				tier_code, tier_version, terms_version, disclosure_version)
+				VALUES (${id}, ${affiliate.id}, 1, ${index + 1}, ${'d' + index}, ${'w' + index}, ${'r' + index}, 'usd', 500, 500, ${'a'.repeat(64)}, 'unset', 0, 't', 'd')`;
+			await sql`INSERT INTO affiliate_commission_ledger_event (id, commission_id, event_type, amount_delta_minor, currency, event_reference, reason_code)
+				VALUES (${'p' + index}, ${id}, 'pending', 500, 'usd', ${'commission:' + id + ':pending'}, 'initial_accrual'),
+				       (${'a' + index}, ${id}, 'approved', 0, 'usd', ${'commission:' + id + ':approved'}, 'manual_adjustment')`;
+		}
+
+		it('a reversal after payment, even in the same millisecond as the paid event, is owed exactly once and netted from the next batch', async () => {
+			await seedCommission(1);
 			const stripe = fakeStripe();
-
 			await jobs.runAffiliateBatch(batchEnv, stripe.client);
+			expect(stripe.transfers.map((transfer) => transfer.amount)).toEqual([500]);
 
-			// Only c1 (500) is claimable; 200 of debt comes off it.
-			expect(stripe.transfers.map((transfer) => transfer.amount)).toEqual([300]);
+			// 200 of the paid commission is reversed with the very same timestamp as its paid event.
+			await sql`INSERT INTO affiliate_commission_ledger_event (id, commission_id, event_type, amount_delta_minor, currency, event_reference, reason_code, created_at)
+				SELECT 'rv1', 'c0', 'reversed', -200, 'usd', 'commission:c0:reversal:refund:ch_x', 'refund', created_at
+				FROM affiliate_commission_ledger_event WHERE commission_id = 'c0' AND event_type = 'paid'`;
+
+			await addApprovedCommission(1);
+			await jobs.runAffiliateBatch(batchEnv, stripe.client);
+			expect(stripe.transfers.map((transfer) => transfer.amount)).toEqual([500, 300]);
+
+			await addApprovedCommission(2);
+			await jobs.runAffiliateBatch(batchEnv, stripe.client);
+			expect(stripe.transfers.map((transfer) => transfer.amount)).toEqual([500, 300, 500]);
 		});
 
 		it('a batch claimed but not yet sent is re-priced down by a later reversal', async () => {
