@@ -127,7 +127,12 @@ export async function loadPayoutConsole(): Promise<PayoutConsole> {
 				transfersActive: row.transfersActive
 			})),
 		failedTransfers: transfers
-			.filter((row) => row.status === 'failed' || row.status === 'skipped')
+			.filter(
+				(row) =>
+					row.status === 'failed' ||
+					row.status === 'skipped' ||
+					(row.status === 'pending' && row.failureReason !== null)
+			)
 			.map((row) => ({
 				id: row.id,
 				kind: row.kind,

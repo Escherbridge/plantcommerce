@@ -63,3 +63,9 @@ Usernames may not be email-shaped and are reserved across active and pending ema
 ## Development seeds
 
 `db/seed.ts` erases and recreates UAT fixtures. It is intentionally blocked unless the target database name is clearly disposable (`*_dev`, `*_test`, or `*_uat`), `AEVANI_UAT_SEED_CONFIRM` contains the exact destructive acknowledgement, and a unique 16-character-or-longer `AEVANI_UAT_SEED_PASSWORD` is supplied at runtime. Never add a shared seed credential or weaken the database-name check. The optional default-admin helper likewise requires `AEVANI_DEV_ADMIN_PASSWORD`; its purpose is local setup only, not production provisioning.
+
+## Payout flow tests (`services/payoutFlows.test.ts`)
+
+Real-Postgres flows for transfers and batches. Skipped unless `FLOW_TEST_DATABASE_URL` points at a throwaway database holding the schema.
+Build one with `DATABASE_URL=x npx drizzle-kit export --sql > schema.sql`, load it with `psql` (one FK error on `checkout_payment_attempt` is pre-existing and harmless), and run `ALTER DATABASE <db> SET session_replication_role = replica` so fixtures skip FK checks. `drizzle-kit push` cannot build it because of that FK.
+Resume rule: a pending claim younger than `STALE_CLAIM_MS` belongs to a live worker; an older one is reconciled against Stripe (transfer_group + metadata) before anything is created.

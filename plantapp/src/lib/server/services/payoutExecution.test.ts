@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
 	affiliateBatchGate,
 	netAfterDebt,
+	planSellerTransfer,
 	payableBalance,
 	sellerTransferGate
 } from './payoutExecution';
@@ -12,6 +13,9 @@ vi.mock('$lib/server/db', () => ({ db: {}, sqlClient: null }));
 const stripe = {
 	transfers: {
 		create: vi.fn(() => {
+			throw new Error('Stripe must not be called while payouts are off');
+		}),
+		list: vi.fn(() => {
 			throw new Error('Stripe must not be called while payouts are off');
 		})
 	}
@@ -80,5 +84,21 @@ describe('payout kill switches', () => {
 	it('nets seller debt from the next transfer', () => {
 		expect(netAfterDebt(9200, 2000)).toEqual({ payMinor: 7200, debtAppliedMinor: 2000 });
 		expect(netAfterDebt(500, 800)).toEqual({ payMinor: 0, debtAppliedMinor: 500 });
+	});
+});
+
+describe('planSellerTransfer', () => {
+	it.each([
+		// net, reversed before transfer, seller debt -> pay, debt applied, permanent
+		[9200, 0, 0, 9200, 0, false],
+		[9200, 2300, 0, 6900, 0, false],
+		[9200, 0, 3000, 6200, 3000, false],
+		[9200, 0, 20000, 0, 9200, true],
+		[9200, 9200, 5000, 0, 0, true],
+		[9200, 12000, 0, 0, 0, true]
+	])('net %i, reversed %i, debt %i', (net, reversed, debt, pay, applied, permanent) => {
+		expect(
+			planSellerTransfer({ netMinor: net, ownReversalsMinor: reversed, sellerDebtMinor: debt })
+		).toEqual({ payMinor: pay, debtAppliedMinor: applied, permanent });
 	});
 });

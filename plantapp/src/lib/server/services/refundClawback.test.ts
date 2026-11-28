@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { disputeSellerPaysFee, moneyEventFacts, proportionalShare } from './refundClawback';
+import {
+	clawbackDelta,
+	disputeSellerPaysFee,
+	moneyEventFacts,
+	proportionalShare
+} from './refundClawback';
 
 describe('refund and dispute clawbacks', () => {
 	it('refunds the 8% in proportion and leaves the rest of the seller net', () => {
@@ -41,5 +46,48 @@ describe('refund and dispute clawbacks', () => {
 				balance_transactions: [{ fee: 1500 }]
 			})
 		).toMatchObject({ action: 'reverse', feeMinor: 1500, sellerPaysFee: true });
+	});
+
+	it('reads refunds only from charge.refunded, as a running total', () => {
+		expect(moneyEventFacts('charge.refunded', { id: 'ch_1', amount_refunded: 2500 })).toMatchObject(
+			{ action: 'reverse', cumulative: true, amountMinor: 2500, objectId: 'ch_1' }
+		);
+		expect(
+			moneyEventFacts('refund.created', { id: 're_1', charge: 'ch_1', amount: 2500 })
+		).toBeNull();
+	});
+
+	it('does not claw back twice when a lost dispute ends as a refunded charge', () => {
+		expect(
+			moneyEventFacts('charge.dispute.closed', {
+				id: 'dp_1',
+				charge: 'ch_1',
+				amount: 5000,
+				status: 'charge_refunded',
+				reason: 'fraudulent'
+			})
+		).toMatchObject({ action: 'close' });
+	});
+});
+
+describe('clawbackDelta', () => {
+	// base 9200 on a 10000 order
+	it.each([
+		['first partial refund of 25%', 2500, 0, 0, 2300],
+		['replay of the same running total', 2500, 2300, 2300, 0],
+		['second partial refund takes only the increase', 5000, 2300, 2300, 2300],
+		['an older running total arriving late takes nothing', 2500, 4600, 4600, 0],
+		['refund after a lost dispute cannot exceed the base', 10000, 0, 9000, 200],
+		['full refund after full chargeback takes nothing', 10000, 0, 9200, 0]
+	])('%s', (_name, refunded, forSource, all, expected) => {
+		expect(
+			clawbackDelta({
+				baseMinor: 9200,
+				refundedMinor: refunded,
+				totalMinor: 10000,
+				alreadyForSourceMinor: forSource,
+				alreadyAllMinor: all
+			})
+		).toBe(expected);
 	});
 });

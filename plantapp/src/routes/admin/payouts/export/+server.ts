@@ -1,7 +1,9 @@
 import type { RequestHandler } from './$types';
+import { requireAdminUser } from '$lib/server/adminGuard';
 import { consoleCsv, loadPayoutConsole } from '$lib/server/services/payoutConsole';
 
-export const GET: RequestHandler = async () => {
+export const GET: RequestHandler = async ({ locals }) => {
+	requireAdminUser(locals.user);
 	const data = await loadPayoutConsole();
 	return new Response(consoleCsv(data), {
 		headers: {

@@ -73,3 +73,18 @@ export function netAfterDebt(
 	const debtAppliedMinor = Math.min(Math.max(debtMinor, 0), Math.max(netMinor, 0));
 	return { payMinor: Math.max(netMinor, 0) - debtAppliedMinor, debtAppliedMinor };
 }
+
+/**
+ * What one released earning may pay. Reversals recorded before the transfer shrink this earning; debt is
+ * seller-wide (earlier refunds on already-transferred earnings) and is netted from the next transfer.
+ * `permanent` means no transfer will ever be due for this earning.
+ */
+export function planSellerTransfer(input: {
+	netMinor: number;
+	ownReversalsMinor: number;
+	sellerDebtMinor: number;
+}): { payMinor: number; debtAppliedMinor: number; permanent: boolean } {
+	const remainingMinor = Math.max(input.netMinor - Math.max(input.ownReversalsMinor, 0), 0);
+	const { payMinor, debtAppliedMinor } = netAfterDebt(remainingMinor, input.sellerDebtMinor);
+	return { payMinor, debtAppliedMinor, permanent: payMinor <= 0 };
+}

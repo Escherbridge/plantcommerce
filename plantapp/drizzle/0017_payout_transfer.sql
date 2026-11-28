@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS "public"."payout_transfer" (
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "payout_transfer_earning_id_fk" FOREIGN KEY ("earning_id") REFERENCES "public"."seller_earning"("id"),
 	CONSTRAINT "payout_transfer_kind_check" CHECK ("kind" IN ('seller', 'affiliate')),
-	CONSTRAINT "payout_transfer_status_check" CHECK ("status" IN ('skipped', 'failed', 'succeeded', 'pending_approval'))
+	CONSTRAINT "payout_transfer_status_check" CHECK ("status" IN ('pending', 'skipped', 'failed', 'succeeded', 'pending_approval'))
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS "payout_transfer_idempotency_idx"
@@ -34,8 +34,11 @@ CREATE TABLE IF NOT EXISTS "public"."affiliate_payout_batch" (
 	"status" text NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"approved_at" timestamp with time zone,
+	"send_amount_minor" bigint,
+	"send_started_at" timestamp with time zone,
+	"send_stripe_account_id" text,
 	CONSTRAINT "affiliate_payout_batch_status_check" CHECK (
-		"status" IN ('pending_approval', 'approved', 'paid', 'skipped')
+		"status" IN ('pending_approval', 'approved', 'sending', 'paid', 'skipped')
 	)
 );
 
