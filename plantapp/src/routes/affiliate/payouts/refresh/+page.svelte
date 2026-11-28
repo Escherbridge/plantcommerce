@@ -1,5 +1,5 @@
 <script lang="ts">
-	let { data } = $props();
+	let { form } = $props();
 </script>
 
 <svelte:head>
@@ -9,5 +9,11 @@
 
 <main>
 	<h1>Payout setup</h1>
-	<p>{data.notice}</p>
+	<p>Your setup link expired. Continue to get a new one.</p>
+	<form method="POST" action="?/setup">
+		<button type="submit">Continue payout setup</button>
+	</form>
+	{#if form?.notice}
+		<p>{form.notice}</p>
+	{/if}
 </main>
