@@ -1,3 +1,5 @@
+import { earningBalance, type LedgerEvent } from './sellerLedgerBalance';
+
 export type MoneyBuckets = {
 	pendingMinor: number;
 	heldMinor: number;
@@ -27,12 +29,11 @@ function netOf(events: { eventType: string; amountDeltaMinor: number }[]): numbe
 	}, 0);
 }
 
-/** Seller earning display buckets. A transferred earning is paid. */
-export function sellerEarningBuckets(
-	events: { eventType: string; amountDeltaMinor: number }[]
-): MoneyBuckets {
+/** Seller earning display buckets, read through the single seller ledger reader. A transferred earning is paid. */
+export function sellerEarningBuckets(events: LedgerEvent[]): MoneyBuckets {
 	const buckets = emptyBuckets();
-	const net = netOf(events);
+	const balance = earningBalance(events);
+	const net = balance.netMinor - balance.preTransferReversalMinor - balance.stripeRecoveredMinor;
 	if (net <= 0) return buckets;
 	const types = new Set(events.map((event) => event.eventType));
 	if (types.has('transferred')) buckets.paidMinor = net;

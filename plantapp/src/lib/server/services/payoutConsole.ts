@@ -3,6 +3,7 @@ import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { listAllocationsNeedingAction, type AllocationRow } from './refundAllocation';
 import { listReservedDebt } from './refundCore';
+import { earningBalance } from './sellerLedgerBalance';
 import {
 	addBuckets,
 	affiliateCommissionBuckets,
@@ -44,36 +45,31 @@ function groupEvents<T extends { id: string; eventType: string; amountDeltaMinor
 export async function loadPayoutConsole(): Promise<PayoutConsole> {
 	const sellerRows = await db
 		.select({
-			id: table.sellerEarning.id,
+			earningId: table.sellerEarningEvent.earningId,
 			eventType: table.sellerEarningEvent.eventType,
 			amountDeltaMinor: table.sellerEarningEvent.amountDeltaMinor,
-			stripeReversalId: table.sellerEarningEvent.stripeReversalId,
-			eventReference: table.sellerEarningEvent.eventReference
+			reasonCode: table.sellerEarningEvent.reasonCode,
+			eventReference: table.sellerEarningEvent.eventReference,
+			creditsReference: table.sellerEarningEvent.creditsReference,
+			stripeReversalId: table.sellerEarningEvent.stripeReversalId
 		})
-		.from(table.sellerEarningEvent)
-		.innerJoin(table.sellerEarning, eq(table.sellerEarningEvent.earningId, table.sellerEarning.id));
+		.from(table.sellerEarningEvent);
 	let buckets = emptyBuckets();
 	let debtMinor = 0;
 	const transferredEarningIds: string[] = [];
 	const reversedWithStripeIds: string[] = [];
-	const byEarning = groupEvents(
-		sellerRows.map((row) => ({
-			id: row.id,
-			eventType: row.eventType,
-			amountDeltaMinor: row.amountDeltaMinor
-		}))
-	);
+	const byEarning = new Map<string, typeof sellerRows>();
+	for (const row of sellerRows) {
+		const list = byEarning.get(row.earningId) ?? [];
+		list.push(row);
+		byEarning.set(row.earningId, list);
+	}
 	for (const [earningId, events] of byEarning) {
 		buckets = addBuckets(buckets, sellerEarningBuckets(events));
-		for (const event of events) {
-			if (event.eventType === 'transferred') transferredEarningIds.push(earningId);
-		}
-	}
-	for (const row of sellerRows) {
-		// Reserved refund debt is waiting on Stripe and cannot be netted yet, so it is not collectable debt.
-		if (row.eventType === 'debt' && !row.eventReference.includes(':debt-reserved:')) {
-			debtMinor += row.amountDeltaMinor;
-		}
+		// Collectable debt only: reserved refund debt waiting on Stripe is reported separately.
+		debtMinor += earningBalance(events).nettableDebtMinor;
+		if (events.some((event) => event.eventType === 'transferred'))
+			transferredEarningIds.push(earningId);
 	}
 	for (const row of sellerRows) {
 		if (row.eventType === 'reversed' && row.stripeReversalId) {
@@ -195,15 +191,24 @@ export async function loadSellerBuckets(userId: string): Promise<MoneyBuckets | 
 	if (!seller) return emptyBuckets();
 	const rows = await db
 		.select({
-			id: table.sellerEarning.id,
+			earningId: table.sellerEarningEvent.earningId,
 			eventType: table.sellerEarningEvent.eventType,
-			amountDeltaMinor: table.sellerEarningEvent.amountDeltaMinor
+			amountDeltaMinor: table.sellerEarningEvent.amountDeltaMinor,
+			reasonCode: table.sellerEarningEvent.reasonCode,
+			eventReference: table.sellerEarningEvent.eventReference,
+			creditsReference: table.sellerEarningEvent.creditsReference
 		})
 		.from(table.sellerEarningEvent)
 		.innerJoin(table.sellerEarning, eq(table.sellerEarningEvent.earningId, table.sellerEarning.id))
 		.where(eq(table.sellerEarning.sellerId, seller.id));
 	let buckets = emptyBuckets();
-	for (const events of groupEvents(rows).values()) {
+	const grouped = new Map<string, typeof rows>();
+	for (const row of rows) {
+		const list = grouped.get(row.earningId) ?? [];
+		list.push(row);
+		grouped.set(row.earningId, list);
+	}
+	for (const events of grouped.values()) {
 		buckets = addBuckets(buckets, sellerEarningBuckets(events));
 	}
 	return buckets;
