@@ -90,3 +90,10 @@ export function reconcileLedgers(input: {
 	}
 	return { ok: mismatches.length === 0, mismatches };
 }
+
+/** Strict dollars to cents: "12", "12.5", "12.50". Anything else is refused. */
+export function dollarsToMinor(value: string): number | null {
+	const match = /^(\d{1,9})(?:\.(\d{1,2}))?$/.exec(value.trim());
+	if (!match) return null;
+	return Number(match[1]) * 100 + Number((match[2] ?? '').padEnd(2, '0') || '0');
+}

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
 	affiliateCommissionBuckets,
+	dollarsToMinor,
 	formatMinor,
 	reconcileLedgers,
 	sellerEarningBuckets
@@ -57,5 +58,21 @@ describe('earnings buckets and reconciliation', () => {
 				recordedReversalIds: ['re_1']
 			}).ok
 		).toBe(true);
+	});
+});
+
+describe('dollarsToMinor', () => {
+	it.each([
+		['12', 1200],
+		['12.5', 1250],
+		['12.50', 1250],
+		['0.05', 5],
+		[' 7.00 ', 700]
+	])('reads %s as %i cents', (input, cents) => {
+		expect(dollarsToMinor(input)).toBe(cents);
+	});
+
+	it.each(['', '-1', '1.234', '1,50', '$5', '1e3', 'abc'])('refuses %j', (input) => {
+		expect(dollarsToMinor(input)).toBeNull();
 	});
 });

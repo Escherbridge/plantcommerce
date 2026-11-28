@@ -9,8 +9,11 @@ import {
 } from '$lib/server/services/payoutJobs';
 import { affiliateBatchGate, sellerTransferGate } from '$lib/server/services/payoutExecution';
 import { loadPayoutConsole } from '$lib/server/services/payoutConsole';
-import { formatMinor } from '$lib/server/services/ledgerBuckets';
+import { dollarsToMinor, formatMinor } from '$lib/server/services/ledgerBuckets';
 import { runHoldRelease } from '$lib/server/services/sellerEarningLedger';
+import { allocateRefund } from '$lib/server/services/refundAllocation';
+import { sweepReservedDebt } from '$lib/server/services/refundCore';
+import { fail } from '@sveltejs/kit';
 
 function stripeIfReady(ready: boolean) {
 	if (!ready) return null;
@@ -31,6 +34,19 @@ export const load: PageServerLoad = async ({ locals }) => {
 		released: formatMinor(consoleData.buckets.releasedMinor),
 		paid: formatMinor(consoleData.buckets.paidMinor),
 		debt: formatMinor(consoleData.debtMinor),
+		reservedDebt: {
+			count: consoleData.reservedDebt.count,
+			amount: formatMinor(consoleData.reservedDebt.totalMinor),
+			oldestAt: consoleData.reservedDebt.oldestAt?.toISOString() ?? null
+		},
+		allocations: consoleData.allocations.map((allocation) => ({
+			...allocation,
+			unallocated: formatMinor(allocation.unallocatedMinor),
+			items: allocation.items.map((item) => ({
+				...item,
+				remaining: formatMinor(item.remainingMinor)
+			}))
+		})),
 		accountsNeedingSetup: consoleData.accountsNeedingSetup,
 		failedTransfers: consoleData.failedTransfers.map((row) => ({
 			...row,
@@ -69,6 +85,42 @@ export const actions: Actions = {
 		const result = await runAffiliateBatch(env, stripeIfReady(ready));
 		if (result.skipped) return { summary: 'Affiliate batch did not run.' };
 		return { summary: `Affiliate batches recorded: ${result.batches}.` };
+	},
+	sweep: async ({ locals }) => {
+		requireAdminUser(locals.user);
+		const client = stripeIfReady(sellerTransferGate(env) === 'ready');
+		if (!client)
+			return { summary: 'Reservations were not touched. Seller transfers are not turned on.' };
+		const result = await sweepReservedDebt(client);
+		return {
+			summary: `Reservations settled: ${result.settled}. Still waiting on Stripe: ${result.stillReserved}.`
+		};
+	},
+	allocate: async ({ request, locals }) => {
+		const actor = requireAdminUser(locals.user);
+		const data = await request.formData();
+		const allocationId = data.get('allocationId');
+		if (typeof allocationId !== 'string' || allocationId.length === 0) {
+			return fail(400, { summary: 'No refund was selected.' });
+		}
+		const lines: { orderItemId: number; amountMinor: number }[] = [];
+		for (const [name, value] of data.entries()) {
+			if (!name.startsWith('line_') || typeof value !== 'string' || value.trim() === '') continue;
+			const amountMinor = dollarsToMinor(value);
+			if (amountMinor === null) {
+				return fail(400, { summary: 'Enter each amount in dollars, like 12.50.' });
+			}
+			lines.push({ orderItemId: Number(name.slice('line_'.length)), amountMinor });
+		}
+		const ready = sellerTransferGate(env) === 'ready';
+		const result = await allocateRefund({
+			allocationId,
+			lines,
+			actorId: actor.id,
+			client: stripeIfReady(ready)
+		});
+		if (!result.ok) return fail(400, { summary: result.message });
+		return { summary: 'Refund assigned. The sellers on those lines were adjusted.' };
 	},
 	approve: async ({ request, locals }) => {
 		requireAdminUser(locals.user);

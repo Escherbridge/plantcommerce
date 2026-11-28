@@ -17,13 +17,53 @@
 			<li>Held: {data.held}</li>
 			<li>Released: {data.released}</li>
 			<li>Paid: {data.paid}</li>
-			<li>Seller debt: {data.debt}</li>
+			<li>Seller debt (collectable): {data.debt}</li>
 		</ul>
 		<p>
 			<a href="/admin/payouts/reconciliation">Reconciliation</a>
 			·
 			<a href="/admin/payouts/export">Download CSV</a>
 		</p>
+	</div>
+	<div class="platform-card">
+		<h2>Refund reversals waiting on Stripe</h2>
+		{#if data.reservedDebt.count === 0}
+			<p>None.</p>
+		{:else}
+			<p>
+				{data.reservedDebt.count} reserved, {data.reservedDebt.amount}. Oldest since
+				{data.reservedDebt.oldestAt}. Not counted as collectable debt.
+			</p>
+			<form method="POST" action="?/sweep">
+				<button class="platform-action-btn" type="submit">Retry reservations</button>
+			</form>
+		{/if}
+	</div>
+	<div class="platform-card">
+		<h2>Needs line allocation</h2>
+		{#if data.allocations.length === 0}
+			<p>None.</p>
+		{:else}
+			{#each data.allocations as allocation (allocation.allocationId)}
+				<form method="POST" action="?/allocate">
+					<input type="hidden" name="allocationId" value={allocation.allocationId} />
+					<p>
+						Order {allocation.orderNumber}: {allocation.unallocated} refunded and not yet assigned.
+					</p>
+					<ul>
+						{#each allocation.items as item (item.id)}
+							<li>
+								<label>
+									{item.name} (up to {item.remaining})
+									<input name={`line_${item.id}`} inputmode="decimal" autocomplete="off" />
+								</label>
+							</li>
+						{/each}
+					</ul>
+					<button class="platform-action-btn" type="submit">Assign refund</button>
+				</form>
+			{/each}
+		{/if}
 	</div>
 	<div class="platform-card">
 		<h2>Accounts still setting up</h2>
