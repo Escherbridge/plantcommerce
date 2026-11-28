@@ -14,12 +14,13 @@ describe('coming soon migration', () => {
 	const sql = executableMigrationSql(source);
 
 	it('adds a nullable column and does not rewrite product rows', () => {
-		expect(sql).toContain(
-			'ALTER TABLE "public"."product" ADD COLUMN IF NOT EXISTS "coming_soon" boolean'
-		);
+		// Added only when missing, so later boots take no table lock.
+		expect(sql).toContain('ALTER TABLE "public"."product" ADD COLUMN "coming_soon" boolean');
+		expect(sql).toContain("column_name = 'coming_soon'");
 		expect(sql).not.toMatch(/\b(DROP|DELETE|UPDATE|TRUNCATE|ALTER COLUMN)\b/i);
 		expect(sql).not.toMatch(/\bNOT NULL\b/i);
-		expect(sql).not.toMatch(/\bBEGIN\b|\bCOMMIT\b/i);
+		// No transaction wrapper (BEGIN; / COMMIT;); the DO block's own BEGIN is PL/pgSQL.
+		expect(sql).not.toMatch(/\bBEGIN\s*;|\bCOMMIT\s*;/i);
 	});
 });
 
