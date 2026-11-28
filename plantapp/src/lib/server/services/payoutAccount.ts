@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import type { ConnectAccountSnapshot } from './connectAccountStatus';
@@ -45,10 +45,16 @@ export class PayoutAccountService {
 		stripeAccountId: string,
 		now = new Date()
 	): Promise<void> {
+		// Attach once. A payout account never switches Stripe account through the app; a replay cannot overwrite it.
 		await db
 			.update(table.payoutAccount)
 			.set({ stripeAccountId, country: 'US', updatedAt: now })
-			.where(eq(table.payoutAccount.id, payoutAccountId));
+			.where(
+				and(
+					eq(table.payoutAccount.id, payoutAccountId),
+					isNull(table.payoutAccount.stripeAccountId)
+				)
+			);
 	}
 
 	/** Apply a connected-account snapshot. Unknown accounts are left alone. */
